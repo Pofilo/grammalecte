@@ -4221,6 +4221,9 @@ __tu_substantifs__
         <<- /tu/ ->> \1\2|\1-\2|\2 \1                           # Mettez un trait d’union, fusionnez ou inversez les termes.
         <<- ~>> ␣
 
+    >cul de sac
+        <<- /tu/ ->> \1-\2-\3                                   # Mettez des traits d’union.|https://fr.wiktionary.org/wiki/cul-de-sac
+
     déjà vu
         <<- /tu/ morph(<1, ":D.*:[me]") ->> \1-\2               # S’il s’agit d’un nom, mettez un trait d’union.|https://fr.wiktionary.org/wiki/d%C3%A9j%C3%A0-vu
 
@@ -4315,6 +4318,9 @@ __tu_substantifs__
     du sur >mesure
         <<- /tu/ -2:0>> sur-mesures                             # Il manque un trait d’union.
 
+    tape [à|a] l’ [œil|oeil]
+        <<- /tu/ not morph(<1, ":O[sv]") ->> tape-à-l’œil       # Il manque des traits d’union.|https://fr.wiktionary.org/wiki/tape-%C3%A0-l%E2%80%99%C5%93il
+
     [un|le|ce|du|mon|ton|son|notre|votre|leur] terre plein
         <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    # Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
 
@@ -4362,6 +4368,7 @@ TEST: un {{château fort}} n’est pas une demeure confortable
 TEST: des {{châteaux forts}}
 TEST: un {{coffre fort}}
 TEST: des {{coffres forts}}
+TEST: encore un {{cul de sac}}
 TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: L’{{état major}} n’a pas encore tranché la question.
@@ -4398,6 +4405,7 @@ TEST: implications {{sous jacentes}}                    ->> sous-jacentes
 TEST: c’est du {{sur mesure}}
 TEST: leur {{terre plein}}
 TEST: Ils versent dans leur terre plein de poisons.
+TEST: C’est un peu trop {{tape à l’œil}} comme couleur, tu ne trouves pas ?
 TEST: beaucoup de {{tête à tête}}
 TEST: {{un}} {{trompe l’œil}}
 TEST: un {{va et vient}} incessant me casse la tête
@@ -7383,6 +7391,15 @@ TEST: {{a en jugé part}} cet article, c’est bientôt la fin.
 TEST: ils sont à en juger par leurs résultats les prochains champions.
 
 
+__conf_à_prendre_ou_à_laisser__
+    !! à prendre ou à laisser ¡¡
+    [à|a] prendre [ou|où|houe|hou] [à|a] [laisser|laissé+ses]
+        <<- /conf/ ->> à prendre ou à laisser       # Confusion. Locution “à prendre ou à laisser”.|https://fr.wiktionary.org/wiki/%C3%A0_prendre_ou_%C3%A0_laisser
+
+TEST: C’était {{à prendre où à laisser}}.
+TEST: C’est à prendre ou à laisser : cent pour cent sur cinq ans ou rien du tout et faillite immédiate.
+
+
 __conf_à_tout_bout_de_champ__
     !! à tout bout de champ ¡¡
     [à|a] [tout|tous] [bout|bous|>boue] [de|d’] [champ+s|>chant|>chan]
@@ -7972,7 +7989,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 # cou / coup / coût
 __conf_coup_cout_cou1__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -9542,6 +9559,61 @@ TEST: dans la {{pomme}} de sa main
 TEST: c’est la {{paume}} de discorde
 
 
+# porc / pore / port
+__conf_porc_port_pore__
+    [>porc|>port] de la peau
+        <<- /conf/ -1>> pore|pores                                          # Confusion. Les pores de la peau .|https://fr.wiktionary.org/wiki/pore
+
+    [>pore|>port] [braisé+ses|caramélisé+ses|confit+s|cuit+s|farci+ses|grillé+ses|laqué+ses|mariné+ses|mijoté+ses|poêlé+ses]
+    [>pore|>port] au [caramel|cognac|cidre|citron|chorizo|cumin|curry|four|fenouil|gingembre|lait|miel|roquefort|vin|vinaigre]
+    [>pore|>port] aux [abricots|cèpes|champignons|carottes|épices|fèves|figues|fruits|girolles|haricots|herbes|lardons|légumes|lentilles|marrons|morilles|noisettes|nouilles|oignons|ognons|pâtes|poires|pommes|patates|pruneaux]
+    [>pore|>port] à la [bière|crème|cocotte|curcuma|moutarde|sauce|sauge]
+    [>pore|>port] à l’ [ananas|armagnac|estragon|orange]
+    [>pore|>port] en [>croûte|>croute]
+        <<- /conf/ -1>> porc|porcs                                          # Confusion. Pour évoquer l’animal, écrivez “porc”.|https://fr.wiktionary.org/wiki/porc
+
+    [>blanquette|>boulette|>brochette|>confit|>côte|>côtelette|>émincé|>escalope|>jarret|>joue|>longe|>mijoté|>nem|>paupiette|>pied|>poitrine|>ragoût|>ragout|>rillette|>rouelle|>rôti|>rognon|>sauté|>terrine]
+        || [de|d’] [>pore|>port]
+    >filet ?[mignon+s]¿ [de|d’] [>pore|>port]
+        <<- /conf/ --1>> porc                                               # Confusion. Pour évoquer l’animal, écrivez “porc”.|https://fr.wiktionary.org/wiki/porc
+
+    [>avaler|>bouffer|>élever|>manger|>mâcher|>mastiquer] $:D¬:R [>pore|>port]
+    [>avaler|>bouffer|>élever|>manger|>mâcher|>mastiquer] $:D¬:R [>pore|>port]
+    >élevage [de|d’] [>pore|>port]
+        <<- /conf/ --1>> porc|porcs                                         # Confusion. Pour évoquer l’animal, écrivez “porc”.|https://fr.wiktionary.org/wiki/porc
+
+    [>pore|>porc] [de|d’] [plaisance|pêche]
+    [>pore|>porc] [>maritime|>spatial]
+        <<- /conf/ -1>> port|ports                                          # Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
+
+    [<start>|,|le|au|du]  [pore|porc]  [de|d’]  [Alexandrie|Algésiras|Almirante␣Barroso|Amsterdam|Angra␣dos␣Reis|Anvers|Baltimore|Bandar␣Abbas|Bandar␣Khomeini|Bangkok|Barcelone|Bayonne|Beaumont|Bergen|Bintulu|Bombay|Bordeaux|Botaş|Bremerhaven|Brisbane|Brême|Busan|Bâton-Rouge|Calais|Calcutta|Callao|Cannes|Canton|Cayo␣Arcas|Ceyhan|Chennai|Cherbourg|Chiba|Chittagong|Colombo|Constanța|Corpus␣Christi|Daesan|Dakar|Dalian|Dampier|Dieppe|Djeddah|Dubaï|Dunkerque|Durban|el-Dekheila|Gladstone|Goa|Grimsby|Guangzhou|Gwangyang|Gênes|Göteborg|Hambourg|Hampton␣Roads|Hay␣Point|Honfleur|Hong-Kong|Hong␣Kong|Honshu|Houston|Huntington-Tristate|Hô-Chi-Minh-Ville|Ibiza|Immingham|Inchon|Istanbul|Itaguaí|Itaqui|Izmir|Izmit|Jaffa|Jakarta|Jawaharlal␣Nehru|Jebel␣Ali|Jubail|Kaohsiung|Karachi|Kitakyushu|Kobe|Kota␣Baru|Laem␣Chabang|Lake␣Charles|La␣Nouvelle-Orléans|La␣Rochelle|Lianyungang|Londres|Long␣Beach|Lorient|Los␣Angeles|Madras|Manille|Marseille|Miami|Milford␣Haven|Mobile|Monaco|Montréal|Mormugão|Mumbai|Nagoya|Nantes|Naples|Newcastle|New␣Jersey|New␣York|Nice|Ningbo-Zhoushann|Novorossiysk|Odessa|Oran|Osaka|Ouistreham|Oust-Louga|Paradip|Paranaguá|Philadelphie|Plaquemine|Pohang|Porto-Vecchio|Port␣Hedlandn|Primorsk|Qingdao|Qinhuangdao|Quibéron|Quimper|Richards␣Bay|Rizhao|Rome|Rotterdam|Rouen|Saigon|Saint-Pétersbourg|Saldanha␣Bay|Santos|San␣Lorenzo|Sepetiba|Shanghai|Shenzhen|Singapour|Southampton|São␣Sebastião|Taichung|Tanger|Tangshan|Tanjung␣Pelepas|Tanjung␣Priok|Texas␣City|Tianjin|Tientsin|Tokyo|Toulon|Trieste|Tsingtao|Tubarão|Tunis|Ulsan|Valence|Vancouver|Vannes|Venise|Visakhapatnam|Waigaoqiao|Washington|Wellington|Wuhan|Xiamen|Xingang|Yanbu|Yangshan|Yantian|Yingkou|Yokohama|Youjne|Zeebruges]
+    [<start>|,|le|au|du]  [pore|porc]  du       [Havre|Touquet]
+        <<- /conf/ -2>> port                                                # Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
+
+    [>arriver|>parvenir] ?@:[WX]¿ [à|a] bon [>pore|>porc]
+    >accoster ?@:[WX]¿ au [>pore|>porc]
+    >accoster ?@:[WX]¿ à ce ?petit¿ [>pore|>porc]
+        <<- /conf/ --1>> port                                               # Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
+
+    [>pore|>porc] [usb|RJ45|DVI|HDMI|Ethernet|DisplayPort]
+        <<- /conf/ -1>> port|ports                                          # Confusion. Pour évoquer les connecteurs, écrivez “port”.|https://fr.wiktionary.org/wiki/port
+
+    [pore|porc] de l’ [écharpe|étoile|épée]
+        <<- /conf/ -1>> port                                                # Confusion. Pour évoquer les objects que l’on porte, écrivez “port”.|https://fr.wiktionary.org/wiki/port
+
+TEST: les {{ports}} de la peau
+TEST: du {{port}} au caramel
+TEST: elle prépare un rôti de {{port}}
+TEST: j’en ai marre de bouffer du {{port}}
+TEST: le {{pore}} de l’étoile jaune
+TEST: un petit {{porc}} de plaisance
+TEST: nous parvenons enfin à bon {{pore}}
+TEST: Accoste au {{porc}}
+TEST: le {{pore}} de La Rochelle
+TEST: Connecte le {{pore}} USB
+TEST: je transporte des porcs de Calais à Londres.
+
+
 # pot aux roses / poteau rose
 __conf_pot_aux_roses__
     poteau rose
@@ -10571,7 +10643,8 @@ __conf_voie_voix_vois_voit__
     à ?[si|très|trop]¿ haute [>voie|vois|voit]
     à ?[si|très|trop]¿ haute et intelligible [>voie|vois|voit]
     de vive [>voie|vois|voit]
-    à portée de [>voie|vois|voit]
+    [à|a] portée [de|d’] [>voie|vois|voit]
+    >éclat [de|d’] [>voie|vois|voit]
         <<- /conf/ --1>> voix       # Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
 
     à [>voie|vois|voit] [basse|haute|basses|hautes]
@@ -12983,7 +13056,7 @@ __gestion_mots_grammaticaux__
     à [base|force|raison]                                                                                                                       [de|d’]
     à grand renfort                                                                                                                             [de|d’]
     à grands coups                                                                                                                              [de|d’]
-    au [bout|courant|cours|détriment|fond|gré|lieu|long|large|milieu|nord|profit|ras|sein|sommet|sortir|sud|sujet|vu]                           [de|du|d’|des]
+    au [bout|courant|cours|détriment|fond|gré|lieu|large|long|milieu|nord|profit|ras|sein|sommet|sortir|sud|sujet|vu]                           [de|du|d’|des]
     au beau milieu                                                                                                                              [de|du|d’|des]
     au fin fond                                                                                                                                 [de|du|d’|des]
     au grand dam                                                                                                                                [de|du|d’|des]
@@ -13009,15 +13082,15 @@ __gestion_mots_grammaticaux__
     par manque                                                                                                                                  [de|d’]
     sous la houlette                                                                                                                            [de|du|d’|des]
         <<- ~1:-2>> ␣
-        <<- =>> define(\1, [":R:LR"])
+        <<- =>> define(\1, [":G:R:LR"])
 
-    tout au long [de|du|d’|des]
+    tout au [bout|long] [de|du|d’|des]
         <<- not morph(<1, ":R") ~1>> *
 
     à travers $:D
     à travers >différent
         <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
+        <<- =>> define(\1, [":G:R:LR"])
 
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
@@ -13298,6 +13371,9 @@ __purge_conditionnelle__
     entre [moi|toi|lui|elle|nous|vous|eux|elles] et [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- ~>> *
 
+    haut [placé+ses]
+        <<- not value(<1, "|en|de|d’|") ~1>> *
+
     haut et fort
         <<- not morph(<1, ":D") ~>> *
 
@@ -13468,7 +13544,7 @@ __simplication_substantifs__
     >brosse à [>dent|reluire]
     >bureau [de|d’] [tabac|vote]
     >cabinet [de|d’] [toilette|travail]
-    >camp [de|d’] [concentration|internement|rééducation|vacances]
+    >camp [de|d’] [concentration|internement|rééducation|travail|vacances]
     >canne à [pêche|sucre]
     >canon à eau
     >caisse à >outil
@@ -13487,11 +13563,14 @@ __simplication_substantifs__
     >chasse à l’ homme
     >chasse d’ eau
     >chasseur [de|d’] primes
+    >chef [de|d’] file
+    >chef d’ état-major
     >chemin [de|d’] [traverse|fer]
     >chemise [de|d’] nuit
     >chemise sans >manche
     >chèque sans provision
     >chili con carne
+    >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
     >cité u
     >clair comme [de|d’] l’ eau [de|d’] [boudin|roche|source]
@@ -13632,7 +13711,7 @@ __simplication_substantifs__
     >langue [de|d’] bois
     >lavage [de|d’] cerveau
     >liaison sans lendemain
-    >ligne [de|d’] mire
+    >ligne [de|d’] [conduite|mire]
     >lime à >ongle
     >liste d’ attente
     >lit à baldaquin
@@ -13672,7 +13751,8 @@ __simplication_substantifs__
     >montre à gousset
     >mot [de|d’] passe
     >moteur [>essence|>diésel|>diesel]
-    >motion [de|d’] [blâme|censure|défiance]
+    >motion [de|d’] blâme
+    >motion [de|d’] [censure|défiance] ?constructive¿
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >moulin à [café|eau|paroles|poivre|prières|vent]
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
@@ -13682,6 +13762,7 @@ __simplication_substantifs__
     >oiseau [de|d’] [malheur|nuit|proie]
     >oiseau [de|d’] mauvais augure
     >onde [de|d’] choc
+    >ordre du jour
     orge [perlé|mondé|carré]
     >nuit [de|d’] noces
     >pain [de|d’] mie
@@ -13744,7 +13825,7 @@ __simplication_substantifs__
     >sac à [bandoulière|dos|main|langer|merde|foutre]
     >sac [de|d’] [couchage|sport|voyage]
     >salle à manger
-    >salle [de|d’] [attente|>bain|conférence|lecture|séjour|vente]
+    >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
     >sclérose en plaques
     [secret+s] défense
     >sel [de|d’] [aluminium|ammonium|mer]
@@ -13757,6 +13838,7 @@ __simplication_substantifs__
     >sonnette d’ alarme
     >sortie [de|d’] secours
     >soue à >cochonne
+    >suspension [de|d’] séance
     >système d’ exploitation
     >système D
     >tableau [de|d’] chasse
@@ -13783,6 +13865,7 @@ __simplication_substantifs__
     >tour [de|d’] passe-passe
     >torrent à sec
     >train à grande vitesse
+    >train [de|d’] vie
     >traitement [de|d’] faveur
     >transport en commun
     >travail d’ intérêt général
@@ -13824,6 +13907,7 @@ __simplication_substantifs__
     [cousu+ses] [de|d’] fil blanc
     [daté+ses] du [1er|1ᵉʳ|1|01|2|02|3|03|4|04|5|05|6|06|7|07|8|08|9|09|10|11|12|13|14|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] {mois} ?[prochain|passé|dernier|~^[0-9]{2,5}$]¿
     >droit comme un i
+    >fort en gueule
     >fou de rage ?[contenue|retenue]¿
     >haut comme [trois|3] pommes
     >mort de trouille
@@ -13856,6 +13940,9 @@ __simplication_substantifs__
         <<- =>> =select(\1, ":N")
 
     une bonne chose de réglée
+        <<- ~-2:0>> *
+
+    [le|la|l’|les]  $:N  d’ alors
         <<- ~-2:0>> *
 
 
@@ -14647,7 +14734,7 @@ __purge_vite__
 
 
 __purge_locutions_verbales__
-    >avoir foule
+    >avoir [foule|vent]
     >aller bon train
     >aller de l’ avant
     >armer jusqu’ aux dents
@@ -14689,6 +14776,7 @@ __purge_locutions_verbales__
     >faire [bonne|fausse] route
     >faire salle comble
     >faire table rase
+    >faire tache d’ huile
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
     >fausser compagnie
     >fermer à [clé|clef]
@@ -14733,7 +14821,8 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ au pied de la lettre
     >prendre bonne note
     >prendre [congé|conscience|contact|ombrage|note|peur|position|possession|racine|soin|vie]
-    >prendre de [court|vitesse]
+    >prendre d’ assaut
+    >prendre [de|d’] [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
@@ -14743,6 +14832,7 @@ __purge_locutions_verbales__
     >rebrousser chemin
     >réduire à néant
     >réduire en miettes
+    >refaire surface
     >remettre en cause
     >rendre [compte|hommage|service|visite]
     >reprendre haleine
@@ -19345,6 +19435,8 @@ TEST: une {{tâche}} rouge.
 TEST: Une {{tâche}} sur ma chemise.
 TEST: J’ai {{tâché}} ma chemise.
 TEST: Nettoie cette {{tâche}}
+TEST: ça fera {{tâche}} d’huile
+TEST: ça fait tache d’huile
 TEST: en tâche de fond
 TEST: la tâche de la justice
 TEST: c’est une tâche de grande envergure
@@ -19433,8 +19525,14 @@ __conf_tant_temps_tan__
     il >être [tant|>tan] [de|d’] $:Y
         <<- /conf/ -3>> temps                                       # Confusion. Si vous voulez dire “c’est le moment de”, écrivez “temps”.|https://fr.wiktionary.org/wiki/il_est_temps
 
+    [>avoir|>prendre|<start>|,|(] du bon [tant|>tan]
+    c’ >être [le|l’] bon ?vieux¿ [tant|>tan]
+        <<- /conf/ --1>> temps                                      # Confusion. Pour parler d’un période heureuse, écrivez “temps”.
+
 TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
 TEST: il est bien évidemment {{tant}} d’en finir avec ça.
+TEST: c’était le bon {{tan}}
+TEST: elle sait prendre du bon {{tant}}
 
 
 # tort / tord / tore / torr / tors
