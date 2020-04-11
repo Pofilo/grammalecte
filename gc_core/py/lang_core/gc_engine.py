@@ -639,11 +639,12 @@ class TextParser:
                                         self.lToken[i]["aTags"] = set(sWhat.split("|"))
                                 if bDebug:
                                     echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"]))
-                                if sWhat not in self.dTags:
-                                    self.dTags[sWhat] = [nTokenStart, nTokenStart]
-                                else:
-                                    self.dTags[sWhat][0] = min(nTokenStart, self.dTags[sWhat][0])
-                                    self.dTags[sWhat][1] = max(nTokenEnd, self.dTags[sWhat][1])
+                                for sTag in sWhat.split("|"):
+                                    if sTag not in self.dTags:
+                                        self.dTags[sTag] = [nTokenStart, nTokenEnd]
+                                    else:
+                                        self.dTags[sTag][0] = min(nTokenStart, self.dTags[sTag][0])
+                                        self.dTags[sTag][1] = max(nTokenEnd, self.dTags[sTag][1])
                             elif cActionType == "!":
                                 # immunity
                                 if bDebug:

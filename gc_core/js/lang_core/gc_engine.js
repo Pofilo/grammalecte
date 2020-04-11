@@ -735,10 +735,12 @@ class TextParser {
                                 if (bDebug) {
                                     console.log(`    TAG:  ${sWhat} > [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]`);
                                 }
-                                if (!this.dTags.has(sWhat)) {
-                                    this.dTags.set(sWhat, [nTokenStart, nTokenStart]);
-                                } else {
-                                    this.dTags.set(sWhat, [Math.min(nTokenStart, this.dTags.get(sWhat)[0]), Math.max(nTokenEnd, this.dTags.get(sWhat)[1])]);
+                                for (let sTag of sWhat.split("|")) {
+                                    if (!this.dTags.has(sTag)) {
+                                        this.dTags.set(sTag, [nTokenStart, nTokenEnd]);
+                                    } else {
+                                        this.dTags.set(sTag, [Math.min(nTokenStart, this.dTags.get(sTag)[0]), Math.max(nTokenEnd, this.dTags.get(sTag)[1])]);
+                                    }
                                 }
                             }
                             else if (cActionType == "!") {
