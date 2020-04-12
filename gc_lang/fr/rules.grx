@@ -2258,9 +2258,12 @@ __immunités__
     soit pour soit contre
         <<- !3>>
 
+    y a ?@:[WX]¿ faute
+        <<- !-1>>
 
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
 TEST: de Bordeaux ou de n’importe où
+TEST: il n’y a pas faute.
 
 
 
@@ -3865,10 +3868,10 @@ __tu_ce_cette_ces_nom_là_ci__
     [ce|cet|cette|ces] *WORD ci
         <<- /tu/ morph(\2, ":[NB]", ":V0e") -2:3>> \2-\3                                # Il manque probablement un trait d’union.
 
-    [ce|cet|cette|ces] *WORD la [<end>|,]
+    [ce|cet|cette|ces] *WORD la [<end>|,|)]
         <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                        # Il manque probablement un trait d’union.
 
-    [ce|cet|cette|ces] *WORD si [<end>|,]
+    [ce|cet|cette|ces] *WORD si [<end>|,|)]
         <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-ci                                        # Il manque probablement un trait d’union.
 
 TEST: à ce {{moment là}}                                                        ->> moment-là
@@ -4265,7 +4268,7 @@ __tu_substantifs__
     [nord|sud] ouest
         <<- /tu/ ->> \1-ouest                                   # Il manque un trait d’union.
 
-    [nord|sud] est [<end>|,]
+    [nord|sud] est [<end>|,|)]
         <<- /tu/ ->> \1-est                                     # Il manque un trait d’union.
 
     outre mer
@@ -4696,7 +4699,7 @@ __inte_union_nous1!7__
         <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tag_before(\1, "_1p_")
         --2:-1>> \-2-\-1                                                                            # Forme interrogative ? Mettez un trait d’union.
 
-    ,  ~ons$  nous  [<end>|,]
+    ,  ~ons$  nous  [<end>|,|)]
     ,  ~ons$  nous  @:¬:(?:1p|Y)
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -4730,7 +4733,7 @@ __inte_union_vous1!7__
         <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tag_before(\1, "_2p_")
         --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
 
-    ,  ~ez$  vous  [<end>|,]
+    ,  ~ez$  vous  [<end>|,|)]
     ,  ~ez$  vous  @:¬:(?:2p|Y)
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -4826,7 +4829,7 @@ __typo_À_début_phrase!7__
         <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|")
         -2>> À                                                                                      # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 
-    <start>  A  bientôt  [<end>|,]
+    <start>  A  bientôt  [<end>|,|)]
         <<- /typo/ -2>> À                                                                           # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 
     <start>  A  t’  *WORD
@@ -7645,7 +7648,7 @@ __conf_campagne_compagne__
     en rase compagne
         <<- /conf/ -3>> campagne                                    # Confusion probable. Une compagne est un compagnon de sexe féminin.|https://fr.wiktionary.org/wiki/campagne
 
-    à la compagne [<end>|,]
+    à la compagne [<end>|,|)]
         <<- /conf/ -3>> campagne                                    # Confusion probable. Une compagne est un compagnon de sexe féminin.|https://fr.wiktionary.org/wiki/campagne
 
 TEST: La {{compagne}} électorale tourne à la guerre.
@@ -8178,7 +8181,7 @@ __conf_dès_des_dés__
         <<- /conf/ not \1.isupper() and not \2.isupper() -1>> de|dès                                # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
         <<- /conf/ __also__ and hasSimil(\2, ":[NA].*:[pi]") -2>> =suggSimil(\2, ":[NA].*:[pi]", True)      # Confusion probable. Pour la préposition, écrivez “dès” ou “de”.
 
-    des ~^\d{2,5}$  [<end>|,]
+    des ~^\d{2,5}$  [<end>|,|)]
     des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
         <<- /conf/ not value(<1, "|%|") and not morph(<1, ":B|>(?:pourcent|barre|seuil|aucun|plusieurs|certaine?s|une?)/")
         -1>> dès # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
@@ -8458,7 +8461,7 @@ __conf_évidemment_évidement__
     évidement
         <<- /conf/ morph(<1, ":V", ":A") ->> évidemment     # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
 
-    [un|l’|cet]  évidemment  [<end>|,]
+    [un|l’|cet]  évidemment  [<end>|,|)]
     [un|l’|cet]  évidemment  $:¬:A
         <<- /conf/ -2>> évidement                           # Confusion probable : “évidemment” est un adverbe. L’action de “vider” s’écrit “évidement”.|https://fr.wiktionary.org/wiki/évidement
 
@@ -8648,7 +8651,7 @@ __conf_forcément_forcement__
     forcement
         <<- /conf/ morph(<1, ":V", ":A") ->> forcément      # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
-    [un|le|ce|au]  forcément  [<end>|,]
+    [un|le|ce|au]  forcément  [<end>|,|)]
     [un|le|ce|au]  forcément  $:¬:A
         <<- /conf/ -2>> forcement                           # Confusion probable : “forcément” est un adverbe. L’action de “forcer” s’écrit “forcement”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
@@ -8702,7 +8705,7 @@ __conf_préverbes_guère_guerre!5__
     sur le pied de guère
         <<- /conf/ --1>> guerre                                 # Confusion. Locution “sur le pied de guerre”.|https://fr.wiktionary.org/wiki/sur_le_pied_de_guerre
 
-    guère [<end>|,]
+    guère [<end>|,|)]
         <<- /conf/ morph(<1, ":D.*:f:s") -1>> guerre            # Confusion probable : “guère” signifie “peu”. Si vous évoquez un conflit, écrivez “guerre”.|https://fr.wiktionary.org/wiki/guerre
 
 TEST: tout ceci ne me rapporte {{guerre}}
@@ -8928,7 +8931,7 @@ __conf_les_lés_lès__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques]  lès
         <<- /conf/ -2>> lés                                     # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez “lés”.|https://fr.wiktionary.org/wiki/l%C3%A8s
 
-    lès  [<end>|,]
+    lès  [<end>|,|)]
         <<- /conf/ -1>> lés                                     # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez “lés”.|https://fr.wiktionary.org/wiki/l%C3%A8s
 
     lès  @¬:D.*:p
@@ -9911,7 +9914,7 @@ TEST: de {{quoique}} ce soit, je ne veux pas en entendre parler.
 
 # quoiqu’il en coûte
 __conf_quoi_qu_il_en_coûte__
-    quoiqu’ il ?[m’|t’|lui|nous|vous|leur]¿ en [coûte|coute]  [<end>|,]
+    quoiqu’ il ?[m’|t’|lui|nous|vous|leur]¿ en [coûte|coute]  [<end>|,|)]
         <<- /conf/ -1:2>> quoi qu’il                                        # Confusion probable.
 
 TEST: Elle y parviendra, {{quoiqu’il}} en coûte.
@@ -10005,7 +10008,7 @@ __conf_quoique_quoi_que__
     quoiqu’ il se soit ?$:W¿ passé
     quoiqu’ il se passe
     quoiqu’ il advienne
-    quoiqu’ il arrive [<end>|,]
+    quoiqu’ il arrive [<end>|,|)]
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels] en >penser
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels] >avoir pu faire
         <<- /conf/ -1>> quoi que|quoi qu’                       # Confusion probable.|https://fr.wiktionary.org/wiki/quoi_que
@@ -10383,7 +10386,7 @@ __conf_statu_statue_statut__
         <<- /conf/ ->> statu quo                # Confusion. Écrivez “statu quo”.|https://fr.wiktionary.org/wiki/statu_quo
 
     statu ~¬^[qQ][uU][oO]$
-    statu [<end>|,]
+    statu [<end>|,|)]
         <<- /conf/ -1>> status|statut|statue    # Confusion : “statu” ne s’emploie que dans l’expression “statu quo”.
 
 TEST: Ça n’en finit pas, c’est le {{statut quo}}.
@@ -10826,7 +10829,7 @@ TEST: elles arrivent en rangs serrés.
 
 # entre autres
 __sgpl_entre_autres!6__
-    entre autre [<end>|,]
+    entre autre [<end>|,|)]
     entre autre @:(?:[GW]|[NA].*:[pi])
         <<- /sgpl/ -2>> autres                                      # La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
 
@@ -12113,7 +12116,8 @@ __purge_locutions__
     au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
     au-delà du descriptible
     au-dessus [de|d’] {pronom_obj}
-    aujourd’hui
+    ?d’¿ aujourd’hui
+    ?tout¿ aussi
     auparavant
     aussitôt
     ?tout¿ au fond [de|d’] {pronom_obj}
@@ -12122,15 +12126,15 @@ __purge_locutions__
     autant que faire se peut
     autour [de|d’] {pronom_obj}
     autrement dit
-    av. J.-C.
+    ?d’¿ av. J.-C.
     avant longtemps
     avant terme
     avant tout le monde
     avant toute chose
     avant toutes choses
     avant d’ aller plus loin
-    avant J.-C.
-    avant Jésus-Christ
+    ?d’¿ avant J.-C.
+    ?d’¿ avant Jésus-Christ
     avant d’ en arriver là
     avant de faire quoi que ce soit
     avant de faire quoi que ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
@@ -12164,7 +12168,7 @@ __purge_locutions__
     [cela|ça|ceci] va sans dire
     [cela|ceci] étant dit
     certes
-    ces derniers temps
+    ?[de|d’]¿ ces derniers temps
     cette [fois|fois-là|fois-ci]
     chaque fois
     ci-dessous
@@ -12605,10 +12609,10 @@ __purge_locutions__
     grosso modo
     guère
     ?d’¿ [hier|avant-hier] ?[matin|soir|après-midi]¿
-    hors [de|d’] [contrôle|portée|atteinte]
-    hors d’ état [de|d’] [fonctionner|nuire]
-    hors [de|d’] [ma|ta|sa|notre|votre|leur] portée
-    hors du commun
+    ?d’¿ hors [de|d’] [contrôle|portée|atteinte]
+    ?d’¿ hors d’ état [de|d’] [fonctionner|nuire]
+    ?d’¿ hors [de|d’] [ma|ta|sa|notre|votre|leur] portée
+    ?d’¿ hors du commun
     ?d’¿ ici
     ?d’¿ ici [comme|ou] ailleurs
     ?d’¿ ici et [là|maintenant]
@@ -12682,7 +12686,7 @@ __purge_locutions__
     l’ [un|une] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
     l’ [un|une] près de l’ autre
     l’ [un|une] par rapport à l’ autre
-    loin
+    ?de¿ loin
     loin [de|d’] là
     loin [de|d’] tout [ça|cela|ceci]
     loin d’ [être|ici]
@@ -13064,7 +13068,7 @@ __gestion_mots_grammaticaux__
     à [bonne|faible|grande] distance                                                                                                            [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                   [de|du|d’|des]
     à l’ autre bout                                                                                                                             [de|du|d’|des]
-    à la [hauteur|portée|suite]                                                                                                                 [de|du|d’|des]
+    à la [hauteur|portée|proximité|suite]                                                                                                       [de|du|d’|des]
     à la grande surprise                                                                                                                        [de|du|d’|des]
     à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                        [de|du|d’|des]
     à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                 [de|du|d’|des]
@@ -13084,8 +13088,10 @@ __gestion_mots_grammaticaux__
     compte tenu                                                                                                                                 [de|du|d’|des]
     d’ un bout à l’ autre                                                                                                                       [de|du|d’|des]
     dans l’ attente                                                                                                                             [de|du|d’|des]
+    dans la ligne de mire                                                                                                                       [de|du|d’|des]
     des [quatre|4] coins                                                                                                                        [de|du|d’|des]
-    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|présence|provenance|quête|raison|sus|termes|vertu]    [de|du|d’|des]
+    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|présence|provenance|quête|raison|sus|termes|travers|vertu]    [de|du|d’|des]
+    en dépit de la proximité                                                                                                                    [de|du|d’|des]
     en flagrant délit                                                                                                                           [de|d’]
     en lieu et place                                                                                                                            [de|du|d’|des]
     en matière                                                                                                                                  [de|d’]
@@ -13311,17 +13317,8 @@ __purge_conditionnelle__
     aussi $:W que [nécessaire|possible]
         <<- ~>> *
 
-    aussi $:W que ce soit [<end>|,]
+    aussi $:W que ce soit [<end>|,|)]
         <<- ~1:5>> *
-
-    ?tout¿  aussi  [<end>|,|(|)]
-        <<- ~1:-2>>*
-
-    ?tout¿  aussi  *WORD  [<end>|,|(|)]
-        <<- ~1:-3>>*
-
-    ?tout¿  aussi  *WORD  *WORD
-        <<- not morphVC(\-1, ">être/") ~1:-3>> *
 
     au sens le [plus|moins] @:A.*:[me]:[si] du terme
     au sens @:A.*:[me]:[si] du terme
@@ -14475,166 +14472,166 @@ __purge_ponctuations__
 
 __purge_locutions_potentielles__
     à ce [jour|moment] @¬:A.*:[me]:[si]
-    à ce [jour|moment] [<end>|,]
+    à ce [jour|moment] [<end>|,|)]
         <<- ~1:3>> *
 
     à [mon|ton|son|notre|votre|leur] sens @¬:A.*:[me]:[si]
-    à [mon|ton|son|notre|votre|leur] sens [<end>|,]
+    à [mon|ton|son|notre|votre|leur] sens [<end>|,|)]
         <<- ~1:3>> *
 
     à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
-    à [mes|tes|ses|nos|vos|leurs] yeux  [<end>|,]
+    à [mes|tes|ses|nos|vos|leurs] yeux  [<end>|,|)]
         <<- ~1:3>> *
 
     à la dernière [minute|seconde]  @¬:A.*:[fe]:[si]
-    à la dernière [minute|seconde]  [<end>|,]
+    à la dernière [minute|seconde]  [<end>|,|)]
         <<- ~1:4>> *
 
     à la longue  @¬:N.*:[fe]:[si]
-    à la longue  [<end>|,]
+    à la longue  [<end>|,|)]
     à la dérive  @¬:A.*:[fe]:[si]
-    à la dérive  [<end>|,]
+    à la dérive  [<end>|,|)]
     à l’ époque  @¬:A.*:[fe]:[si]
-    à l’ époque  [<end>|,]
+    à l’ époque  [<end>|,|)]
         <<- ~1:3>> *
 
     à répétition  @¬:A.*:[fe]:[si]
-    à répétition  [<end>|,]
+    à répétition  [<end>|,|)]
         <<- ~1:2>> *
 
     au [départ|quotidien]  @:¬:A.*:[me]:[si]
-    au [départ|quotidien]  [<end>|,]
+    au [départ|quotidien]  [<end>|,|)]
         <<- ~1:2>> *
 
     au pire  @:A¬:N.*:[me]:[si]
-    au pire  [<end>|,]
+    au pire  [<end>|,|)]
         <<- ~1:2>> *
 
     [<start>|,|(] ben voyons
         <<- ~2:3>> *
 
     chaque [année|semaine|journée|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
-    chaque [année|semaine|journée|décennie]  [<end>|,]
+    chaque [année|semaine|journée|décennie]  [<end>|,|)]
         <<- ~1:2>> *
 
     chaque [an|jour|mois]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
-    chaque [an|jour|mois]  [<end>|,]
+    chaque [an|jour|mois]  [<end>|,|)]
         <<- ~1:2>> *
 
     d’ apparat
         <<- morph(<1, ":N", ":V") ~>> *
 
     d’ [avance|évidence]  @¬:A.*:[fe]:[si]
-    d’ [avance|évidence]  [<end>|,]
+    d’ [avance|évidence]  [<end>|,|)]
         <<- ~1:2>> *
 
     d’ entrée                           @¬:A:[fe]:[si]
-    d’ entrée                           [<end>|,]
+    d’ entrée                           [<end>|,|)]
         <<- ~1:2>> *
 
     dans ce cas                         @¬:A:[me]:[pi]
-    dans ce cas                         [<end>|,]
+    dans ce cas                         [<end>|,|)]
         <<- ~1:3>> *
 
     dans la grande majorité des cas     @¬:A:[me]:[pi]
-    dans la grande majorité des cas     [<end>|,]
+    dans la grande majorité des cas     [<end>|,|)]
         <<- ~1:6>> *
 
     dans la majorité des cas            @¬:A:[me]:[pi]
     dans de [très|trop] nombreux cas    @¬:A:[me]:[pi]
     dans la plupart des cas             @¬:A:[me]:[pi]
-    dans la majorité des cas            [<end>|,]
-    dans de [très|trop] nombreux cas    [<end>|,]
-    dans la plupart des cas             [<end>|,]
+    dans la majorité des cas            [<end>|,|)]
+    dans de [très|trop] nombreux cas    [<end>|,|)]
+    dans la plupart des cas             [<end>|,|)]
         <<- ~1:5>> *
 
     dans les faits                      @¬:A:[me]:[pi]
-    dans les faits                      [<end>|,]
+    dans les faits                      [<end>|,|)]
         <<- ~1:3>> *
 
     dans maints cas                     @¬:A:[me]:[pi]
-    dans maints cas                     [<end>|,]
+    dans maints cas                     [<end>|,|)]
         <<- ~1:3>> *
 
     dans l’ ensemble  @¬:A.*:[me]:[si]
-    dans l’ ensemble  [<end>|,]
+    dans l’ ensemble  [<end>|,|)]
         <<- ~1:3>> *
 
     dans un [lointain|proche] avenir    @¬:A.*:[me]:[si]
-    dans un [lointain|proche] avenir    [<end>|,]
+    dans un [lointain|proche] avenir    [<end>|,|)]
     dans un avenir [lointain|proche]    @¬:A.*:[me]:[si]
-    dans un avenir [lointain|proche]    [<end>|,]
+    dans un avenir [lointain|proche]    [<end>|,|)]
         <<- ~-2>> *
 
     dans tous les cas  @:A¬:A.*:[me]:[pi]
-    dans tous les cas  [<end>|,]
+    dans tous les cas  [<end>|,|)]
         <<- ~1:4>> *
 
     de ce fait  @¬:A.*:[me]:[si]
-    de ce fait  [<end>|,]
+    de ce fait  [<end>|,|)]
         <<- ~1:3>> *
 
     de ce seul fait  @¬:A.*:[me]:[si]
-    de ce seul fait  [<end>|,]
+    de ce seul fait  [<end>|,|)]
         <<- ~1:4>> *
 
     des fois  @¬:A.*:[fe]:[pi]
-    des fois  [<end>|,]
+    des fois  [<end>|,|)]
         <<- ~1:2>> *
 
     dès le départ  @¬:A.*:[me]:[si]
-    dès le départ  [<end>|,]
+    dès le départ  [<end>|,|)]
         <<- ~1:3>> *
 
     dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  @¬:A.*:[me]:[pi]
-    dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  [<end>|,]
+    dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  [<end>|,|)]
         <<- ~1:4>> *
 
     dès les premières [années|semaines|minutes|secondes|heures|décennies]  @¬:A.*:[fe]:[pi]
-    dès les premières [années|semaines|minutes|secondes|heures|décennies]  [<end>|,]
+    dès les premières [années|semaines|minutes|secondes|heures|décennies]  [<end>|,|)]
         <<- ~1:4>> *
 
     en [certaines|quelques|plusieurs] occasions  @¬:A.*:[fe]:[pi]
-    en [certaines|quelques|plusieurs] occasions  [<end>|,]
+    en [certaines|quelques|plusieurs] occasions  [<end>|,|)]
         <<- ~1:3>> *
 
     en de multiples occasions  @¬:A.*:[fe]:[pi]
-    en de multiples occasions  [<end>|,]
+    en de multiples occasions  [<end>|,|)]
         <<- ~1:4>> *
 
     en un sens  @¬:A.*:[me]:[si]
-    en un sens  [<end>|,]
+    en un sens  [<end>|,|)]
         <<- ~1:3>> *
 
     en sus
         <<- not value(<1, "|j’|tu|il|elle|on|n’") ~>> *
 
     entre autres choses  @¬:A.*:[fe]:[pi]
-    entre autres choses  [<end>|,]
+    entre autres choses  [<end>|,|)]
         <<- ~1:3>> *
 
     [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
-    [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
+    [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,|)]
         <<- ~1:2>> *
 
     de [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
-    de [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
+    de [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,|)]
         <<- ~1:3>> *
 
     de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
-    de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
+    de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,|)]
         <<- ~1:3>> *
 
     [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
-    [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,]
+    [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,|)]
         <<- ~1:2>> *
 
     de [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
-    de [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,]
+    de [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,|)]
         <<- ~1:3>> *
 
     de nombreux [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
-    de nombreux [instants|moments|jours|mois|ans|siècles]  [<end>|,]
+    de nombreux [instants|moments|jours|mois|ans|siècles]  [<end>|,|)]
         <<- ~1:3>> *
 
     [de|d’]  [façon|manière]  ?non¿  @:A.*:[fe]:[si]  et  ?non¿  @:A.*:[fe]:[si]¬:[GM]
@@ -14642,11 +14639,11 @@ __purge_locutions_potentielles__
         <<- ~>> *
 
     le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps @:¬:A:[me]:[si]|>d[e’]/
-    le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps [<end>|,]
+    le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps [<end>|,|)]
         <<- ~1:6>> *
 
     pour partie  @:¬:A.*:f:s
-    pour partie  [<end>|,]
+    pour partie  [<end>|,|)]
         <<- ~1:2>> *
 
     semblait-il
@@ -14657,17 +14654,17 @@ __purge_locutions_potentielles__
         <<- /conf/ not morph(<1, ":D") and not morph(>1, ":[NA].*:[fe]:[si]") ~>> *
 
     ?à¿ un [instant|moment]  @¬>où/|:A.*:[me]:[si]
-    ?à¿ un [instant|moment]  [<end>|,]
+    ?à¿ un [instant|moment]  [<end>|,|)]
     un seul [instant|moment]  @¬>où|:A.*:[me]:[si]
-    un seul [instant|moment]  [<end>|,]
+    un seul [instant|moment]  [<end>|,|)]
         <<- not morph(<1, ":R|>d’/") ~1:-2>> *
 
     un jour  @:¬:A.*:[me]:[si]
-    un jour  [<end>|,]
+    un jour  [<end>|,|)]
         <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
     vu les circonstances  @¬:A:[fe]:[pi]
-    vu les circonstances  [<end>|,]
+    vu les circonstances  [<end>|,|)]
         <<- ~1:3>> *
 
 
@@ -17379,6 +17376,7 @@ TEST: Ce sont des biens de peu de valeur.
 
 # a / à
 __conf_à_a_après_verbes__
+    >appeler a l’ aide
     >avoir a l’ œil
     >arriver a [destination|échéance]
     >arriver a point nommé
@@ -17418,8 +17416,10 @@ __conf_à_a_après_verbes__
     en proie a
     >laisser libre cours a
     >parvenir a
-        <<- /conf/ not tag_before(\1, "_àCOI_") --1>> à             # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    >prêter attention a
+        <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") --1>> à      # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >appeler a
     >avoir du mal a
     >commencer a
     >condamner a
@@ -17428,14 +17428,14 @@ __conf_à_a_après_verbes__
     >réussir a
     >viser a
         <<- /conf/ not tag_before(\1, "_propsub_") and not morph(\1, ":Y")
-        --1>> à                                                     # Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        --1>> à                                                             # Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
     @:V¬:[YGNAWM]  a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_propsub_") and not morph(>1, ":Q")
-        --1>> à                                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        --1>> à                                                             # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     [/VCint|/VCimp]  a
-        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à                   # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: en proie {{a}} toutes sortes d’illusions
 TEST: ce contrat arrive {{a}} échéance.
@@ -19035,10 +19035,10 @@ TEST: Se faire porter {{pale}}.
 
 # pas / par
 __conf_pas_par2__
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par  [<end>|,]
-    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par  [<end>|,]
-    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par  [<end>|,]
-    [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,]
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par  [<end>|,|)]
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par  [<end>|,|)]
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par  [<end>|,|)]
+    [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,|)]
         <<- /conf/ morph(\-3, ":V") --2>> pas                   # Confusion probable. Après “\1 \-3”, il est probable qu’il faille écrire l’adverbe de négation “pas” au lieu de la préposition “par”.
 
 TEST: Ils ne viendront probablement {{par}}…
@@ -19345,7 +19345,7 @@ TEST: tu n’as {{cas}} prendre le train
 
 # quand même / comme même
 __conf_quand_même__
-    comme même [<end>|,]
+    comme même [<end>|,|)]
     comme même @:(?:Os|C)
         <<- /conf/ space_after(\1, 1, 1) -1:2>> quand même      # Confusion probable.|http://fr.wiktionary.org/wiki/quand_m%C3%AAme
 
@@ -19356,7 +19356,7 @@ TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}
 # quoi qu’il en soit
 __conf_quoi_qu_il_en_soit__
     quoiqu’ il en soit @:¬:[AQ]
-    quoiqu’ il en soit [<end>|,]
+    quoiqu’ il en soit [<end>|,|)]
         <<- /conf/ -1:4>> quoi qu’il en soit                    # Confusion.|https://fr.wiktionary.org/wiki/quoi_qu%E2%80%99il_en_soit
 
 TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez compter sur nous.
@@ -19611,7 +19611,7 @@ TEST: elle sait prendre du bon {{tant}}
 
 # tort / tord / tore / torr / tors
 __conf_tort_tord_tore__
-    en [tord|tords] [<end>|,]
+    en [tord|tords] [<end>|,|)]
     à [tord|tords]
         <<- /conf/ -2>> tort                                            # Confusion : “tord” est une conjugaison du verbe tordre.
 
@@ -20190,7 +20190,7 @@ TEST: sa simple présence les a fait reculer
 
 __infi_laisser__
     [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
-    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [<end>|,|)]
     [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
     [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
         <<- /infi/ morph(\3, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q")
@@ -20208,7 +20208,7 @@ __infi_laisser__
         --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
     [le|la|l’|les|leur]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
-    [le|la|l’|les|leur]  >laisser  *WORD  [<end>|,]
+    [le|la|l’|les|leur]  >laisser  *WORD  [<end>|,|)]
     [le|la|l’|les|leur]  >laisser  *WORD  [dans|avec]
     [le|la|l’|les|leur]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
         <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:(?:Q|Ip.*:2p)", ">désemparer/.*:Q")
@@ -20226,7 +20226,7 @@ __infi_laisser__
         --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
     [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
-    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [<end>|,]
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [<end>|,|)]
     [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [dans|avec]
     [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
         <<- /infi/ morphVC(\1, ">laisser") and (morph(\2, ":V1.*:(?:Q|Ip.*:2[sp])", ">désemparer/.*:Q") or (not morph(<1, ":D") and morph(\-1, ":V1.*:Iq.*:[123]s", ">désemparer/.*:Q")))
@@ -20980,9 +20980,9 @@ TEST: Cela s’est entre autres traduit par l’absence de grandes controverses 
 
 
 __ppas_pron_pluriel_se_être_ppas__
-    <start>  nous            ?[ne|n’]¿  nous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,]
-    <start>  vous            ?[ne|n’]¿  vous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,]
-    <start>  [on|ils|elles]  ?[ne|n’]¿  [se|s’]  >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,]
+    <start>  nous            ?[ne|n’]¿  nous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
+    <start>  vous            ?[ne|n’]¿  vous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
+    <start>  [on|ils|elles]  ?[ne|n’]¿  [se|s’]  >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
         <<- /ppas/ not morph(\-2, ">(?:matin|soir|soirée|nuit|après-midi|jour|année|semaine|mois|seconde|minute|heure|siècle|millénaire|fois)/") --4>> =suggVerbPpas(\-4, ":m:s")
         # Usage pronominal. Si “\-3 \-2” est le COD de “\-4”, alors ce participe passé devrait être au masculin singulier. (Il ne s’accorde avec le sujet “\2” que si l’action agit sur “\2”.)
 
@@ -20998,7 +20998,7 @@ TEST: elles s’étaient aimées ce matin.
 
 
 __ppas_désoler__
-    [<start>|,|(] désoler [<end>|,]
+    [<start>|,|(] désoler [<end>|,|)]
     [<start>|,|(] désoler pour $:D
         <<- /ppas/ -2>> désolé|désolée          # Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
 
@@ -22883,7 +22883,7 @@ __imp_confusion_2e_pers_pluriel__
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORCD]", ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
-    [<start>|,|(]  *WORD  [les|la|lui|nous|vous|leur]  [<end>|,]
+    [<start>|,|(]  *WORD  [les|la|lui|nous|vous|leur]  [<end>|,|)]
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
@@ -24262,17 +24262,17 @@ TEST: Veillez votre mari qui est malade.
 !!
 
 __inte_union_je!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..[éèe]$  je  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..[éèe]$  je  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..[éèe]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GW]")
         -2:3>> =\2[:-1]+"é-je"                                                                      # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~..[éèe]$  je  [<end>|,]
+    *WORD  ~..[éèe]$  je  [<end>|,|)]
     *WORD  ~..[éèe]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GNW]") and not value(\1, "|je|j’|il|elle|")
         -2:3>> =\2[:-1]+"é-je"                                                                      # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[is]$  je  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[is]$  je  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[is]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GW]")
         -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24281,7 +24281,7 @@ __inte_union_je!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~.[is]$  je  [<end>|,]
+    *WORD  ~.[is]$  je  [<end>|,|)]
     *WORD  ~.[is]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|")
         -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24294,7 +24294,7 @@ TEST: quel amour {{connaîtrai je}} si je juge sans cesse ?
 
 
 __inte_union_tu!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  @:¬:2s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]")
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24303,7 +24303,7 @@ __inte_union_tu!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~.s$  tu  [<end>|,]
+    *WORD  ~.s$  tu  [<end>|,|)]
     *WORD  ~.s$  tu  @:¬:2s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GNW]") and not value(\1, "|je|j’|tu|")
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24315,7 +24315,7 @@ TEST: Comment {{peux tu}} ?
 
 
 __inte_union_il_on!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [il|on]  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [il|on]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [il|on]  @:¬:3s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24324,7 +24324,7 @@ __inte_union_il_on!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~.[td]$  [il|on]  [<end>|,]
+    *WORD  ~.[td]$  [il|on]  [<end>|,|)]
     *WORD  ~.[td]$  [il|on]  @:¬:3s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|il|elle|on|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24348,7 +24348,7 @@ TEST: Cette liberté, formalisée par le libéralisme économique, dès les Phys
 
 
 __inte_union_elle_iel!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [elle|iel]  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [elle|iel]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [elle|iel]  @:¬:3s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24357,7 +24357,7 @@ __inte_union_elle_iel!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~.[td]$  [elle|iel]  [<end>|,]
+    *WORD  ~.[td]$  [elle|iel]  [<end>|,|)]
     *WORD  ~.[td]$  [elle|iel]  @:¬:3s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|c’|ça|ç’|il|elle|on|iel|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24372,7 +24372,7 @@ TEST: C’était elle qui avait pris le contrôle.
 
 
 __inte_union_nous2!7__
-    ,  ~ons$  nous  [<end>|,]
+    ,  ~ons$  nous  [<end>|,|)]
     ,  ~ons$  nous  @:¬:(?:1p|Y)
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24389,7 +24389,7 @@ __inte_union_nous2!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~ons$  nous  [<end>|,]
+    *WORD  ~ons$  nous  [<end>|,|)]
     *WORD  ~ons$  nous  @:¬:(?:Y|1p)
         <<- /inte/ space_after(\2, 1, 1) and
             ( (value(\2, "|avions|") and not morph(\1, ":A.*:[me]:[sp]") and not morph(\-1, ":(:?3[sp]|Ov)"))
@@ -24408,7 +24408,7 @@ TEST: les avions nous font rêver.
 
 
 __inte_union_vous2!7__
-    ,  ~ez$  vous  [<end>|,]
+    ,  ~ez$  vous  [<end>|,|)]
     ,  ~ez$  vous  @:¬:(?:2p|Y)
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24425,7 +24425,7 @@ __inte_union_vous2!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~..e[zs]$  vous  [<end>|,]
+    *WORD  ~..e[zs]$  vous  [<end>|,|)]
     *WORD  ~..e[zs]$  vous  @:¬:(?:Y|2p)
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GNW]") and not value(\2, "|veuillez|") and not morph(\1, ":Os")
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
@@ -24441,7 +24441,7 @@ TEST: Veuillez vous instruire avant de contester ces mesures.
 
 
 __inte_union_ils!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  ils  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  ils  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  ils  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24450,7 +24450,7 @@ __inte_union_ils!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~[eo]nt$  ils  [<end>|,]
+    *WORD  ~[eo]nt$  ils  [<end>|,|)]
     *WORD  ~[eo]nt$  ils  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24461,7 +24461,7 @@ TEST: dans quel retaurant {{iront ils}} ?
 
 
 __inte_union_elles_iels!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  [elles|iels]  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  [elles|iels]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  [elles|iels]  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -24470,7 +24470,7 @@ __inte_union_elles_iels!7__
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~[eo]nt$  [elles|iels]  [<end>|,]
+    *WORD  ~[eo]nt$  [elles|iels]  [<end>|,|)]
     *WORD  ~[eo]nt$  [elles|iels]  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
@@ -25675,7 +25675,7 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 # Règles casse-gueule, prudence…
 
 __conj_nom_propre_virgule__
-    <start>  $:M  ,  @:3s¬:[NAGEM]  [<end>|,]
+    <start>  $:M  ,  @:3s¬:[NAGEM]  [<end>|,|)]
         <<- /conj/ space_after(\2, 0, 0) -2:3>> \2
         # Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")
@@ -25715,7 +25715,7 @@ TEST: L’amour, expliqua la femme.
 
 
 __conj_det_nom_plur_virgule__
-    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  [<end>|,]
+    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  [<end>|,|)]
         <<- /conj/ space_after(\3, 0, 0)
         -3:4>> \3                                                               # La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
