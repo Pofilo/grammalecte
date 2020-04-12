@@ -148,7 +148,7 @@ _______________________________________________________________________________
 * Mise à jour avec les entrées proposées sur le site "dico|savant".
 * Reprise partielle des corrections et ajouts du dictionnaire de Vazkor
   du 08 septembre 2007.
-  A la demande de l'intéressé, seul son pseudonyme demeure. La page web
+  À la demande de l'intéressé, seul son pseudonyme demeure. La page web
   fournissant ce dictionnaire a été effacée.
   La plupart des ajouts et des modifications ont été repris (environ 3200 sur 4900).
   Seules les suppressions des entrées erronées ont été reprises (environ 800 sur 12300).
@@ -319,11 +319,11 @@ Celles du dictionnaire "Réforme 1990" sont légèrement différentes.
 ##### VERSION 1.0.1 ###########################################################
 Version corrigée de la liste de mots avec regroupement des mots équivalents afin 
 de supprimer des fautes lors de la correction (les mots sont considérés comme faux
-si ils existent en double dans la liste de mots)
+s’ils existent en double dans la liste de mots)
 
 
 ##### VERSION 1.0.0 ###########################################################
 Version du dictionnaire MySpell fr_FR générée automatiquement depuis à partir de la
-convertion du fichier affix et des listes de mots créés par Christophe Pythoud pour
+conversion du fichier affix et des listes de mots créés par Christophe Pythoud pour
 Ispell
 
