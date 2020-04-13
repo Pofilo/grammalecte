@@ -1809,31 +1809,31 @@ __purge_chapitres_références__
 !!!
 
 __da_le_la_les_leur__
-    je [le|la|les|leur]
+    je [le|la|l’|les|leur]
         <<- not morph(<1, ":1s") =>> select(\2, ":Ov")
 
-    tu [le|la|les|leur]
+    tu [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Ov")
 
-    [il|on] [le|la|les|leur]
+    [il|on] [le|la|l’|les|leur]
         <<- not morph(<1, ":3s") =>> select(\2, ":Ov")
 
-    elle [le|la|les|leur]
+    elle [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Ov")
 
-    nous [le|la|les|leur]
+    nous [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Ov")
 
-    vous [le|la|les|leur]
+    vous [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Ov")
 
-    ils [le|la|les|leur]
+    ils [le|la|l’|les|leur]
         <<- not morph(<1, ":3p") =>> select(\2, ":Ov")
 
-    elles [le|la|les|leur]
+    elles [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Ov")
 
-    [ne|n’|me|m’|te|t’|se|s’] [le|la|les|leur]
+    [ne|n’|me|m’|te|t’|se|s’] [le|la|l’|les|leur]
         <<- =>> select(\2, ":Ov")
 
     le   $:N¬*
@@ -1846,7 +1846,7 @@ __da_le_la_les_leur__
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
     l’   $:N¬*
-        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> define(\1, [":D:e:s"])
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
 
 __da_nous_vous__
