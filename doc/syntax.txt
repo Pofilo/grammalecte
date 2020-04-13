@@ -1,9 +1,9 @@
-# Writing rules for Grammalecte
+# Writing rules for Grammalecte #
 
 Note: This documentation is a __draft__. Information may be obsolete or incomplete.
 
 
-## Files required
+## FILES REQUIRED ##
 
 The rules file for your language must be named `rules.grx` in the folder `gc_lang/<lang>/`.
 The settings file must be named `config.ini`.
@@ -11,7 +11,7 @@ The settings file must be named `config.ini`.
 These files are simple UTF-8 text files.
 
 
-## Principles
+## PRINCIPLES ##
 
 Grammalecte is a bi-passes grammar checker engine. On the first pass, the
 engine checks the text paragraph by paragraph. On the second pass, the engine
@@ -37,7 +37,7 @@ A regex rule is defined by:
 * a regex pattern trigger
 * a list of actions
 
-A token rules is defined by:
+A token rule is defined by:
 
 * rule name
 * [optional] priority number
@@ -48,11 +48,11 @@ Token rules must be defined within a graph.
 
 Each graph is defined within the second pass with the command:
 
-        @@@@GRAPH: graph_name|graph_code
+    @@@@GRAPH: graph_name|graph_code
 
 A graph ends when another graph is defined or when is found the command:
 
-        @@@@END_GRAPH
+    @@@@END_GRAPH
 
 There is no limit to the number of actions and the type of actions a rule can
 launch. Each action has its own condition to be triggered.
@@ -61,7 +61,7 @@ There are several kinds of actions:
 
 * Error warning, with a message, and optionally suggestions, and optionally a URL
 * Text transformation, modifying internally the checked text
-* [second pass only] Disambiguation action
+* Disambiguation action
 * [second pass only] Tagging token
 * [second pass only] Immunity rules
 
@@ -69,22 +69,7 @@ There are several kinds of actions:
 On the first pass, you can only write regex rules.
 On the second pass, you can write regex rules and token rules. All tokens rules must be written within a graph.
 
-## Syntax details
-
-
-
-### Comments
-
-Lines beginning with `#` are comments.
-
-
-### End of parsing
-
-With the command `#END` at the beginning of a line, the parser won’t go further.
-Whatever is written after will be considered as comments.
-
-
-## Regex rule syntax
+## REGEX RULE SYNTAX ##
 
     __LCR/option(rulename)!priority__
         pattern
@@ -99,14 +84,7 @@ http://docs.python.org/library/re.html
 There can be one or several actions for each rule, executed following the order they are
 written.
 
-Optional:
-
-* option
-* rulename
-* priority
-* conditions
-* URL
-
+Optional: option, rulename, priority, condition, URL
 
 LCR flags means:
 
@@ -229,8 +207,7 @@ Example. Back reference in messages.
 
 ### Pattern matching
 
-Repeating pattern matching of a single rule continues after the previous matching, so
-instead of general multiword patterns, like
+Repeating pattern matching of a single rule continues after the previous matching, so instead of general multiword patterns, like
 
         (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
 
@@ -239,41 +216,193 @@ use
         (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
 
 
-### Definitions
+## TOKEN RULES ##
 
-Grammalecte supports definitions to simplify the description of complex rules.
+Token rules must be defined within a graph.
+
+### Token rules syntax
+
+    __rulename!priority__
+        list_of_tokens
+        list_of_tokens
+        list_of_tokens
+        ...
+            <<- /option/ condition ->> suggestions|URL
+            <<- /option/ condition ~>> rewriting
+            <<- /option/ condition =>> disambiguation
+            <<- /option/ condition />> tagging
+            <<- /option/ condition !>> <immunity>
+            ...
+             
+        list_of_tokens
+        ...
+            <<- action1
+            <<- action2
+            ...
+
+With token rules, for one rule name, you can define several blocks of list of tokens with different kinds of actions. Each block must be separated by an empty line.
+
+Optional: priority, option, condition, URL
+
+### Tokens
+
+Tokens can be defined in several ways:
+
+* Value (the text of the token). Examples: `word`, `<start>`, `<end>`, `,`.
+* Lemma: `>lemma`.
+* Regex: `~pattern`, `~pattern¬antipattern`.
+* Regex on morphologies: `@pattern`, `@pattern¬antipattern`.
+* Tags: `/tag`.
+* Metatags: *NAME. Examples: `*WORD`, `*NUM`, `*SIGN`, etc.
+* Jump over token: `<>`
+
+Selection of tokens: `[value1|value2||>lemma|~pattern|@pattern|*META|/tag|…]`
+
+Conditional token: `?token¿`
+
+Conditional selection of token: `?[token1|token2|…]¿`
+
+### Token references
+
+Positive references are defined by a positive integer (> 0). Examples: `\1`, `\2`, `\3`, etc.
+If there is at least one token set between parenthesis, these numbers refer to tokens between parenthesis, ignoring all others.
+If there is no token between parenthesis, these numbers refer to tokens found in order defined by the rule triggered.
+
+Negative references are defined by a negative integer (< 0). Examples: `\-1`, `\-2`, `\-3`, etc.
+These numbers refer to the tokens beginning by the last one found by the rule triggered.
+
+Examples:
+
+    tokens:             alpha       beta        gamma       delta       epsilon
+    positive refs:      1           2           3           4           5
+    negative refs:      -5          -4          -3          -2          -1
+
+    tokens:             alpha       (beta)      gamma       (delta)     epsilon
+    positive refs:                  1                       2
+    negative refs:      -5          -4          -3          -2          -1
+
+    tokens:             alpha       (beta)      ?gamma¿     (delta)     epsilon
+    positive refs:                  1                       2
+    negative refs:      (-4/-5)     (-3/-4)     (-3/none)   -2          -1
+
+
+## CONDITIONS ##
+
+Conditions are Python expressions, they must return a value, which will be
+evaluated as boolean. You can use the usual Python syntax and libraries.
+
+With regex rules, you can call pattern subgroups via `\1`, `\2`… `\0` is the full pattern.
 
 Example:
 
-    DEF: name pattern
+    these (\w+)
+        <<- \1 == "man" -1>> men        # Man is a singular noun. Use the plural form:
 
-Usage in the rules:
+You can also apply functions to subgroups like: `\1.startswith("a")` or `\3.islower()` or `re.search("pattern", \2)`.
 
-    ({name}) (\w+) ->> "\1-\2"          # Missing hyphen?
+With token rules, you can also call each token with their reference, like `\1`, `\2`... or `\-1`, `\-2`...
 
+Example:
 
-### Multiple suggestions
-
-Use `|` in the replacement text to add multiple suggestions:
-
-Example. Foo, FOO, Bar and BAR suggestions for the input word "foo".
-
-    foo <<- ->> Foo|FOO|Bar|BAR         # Did you mean:
+    foo [really|often|sometimes] bar
+        <<- ->> \1 \-1                  # We say “foo bar”.
 
 
-### No suggestion
+### Functions for regex rules
 
-You can display message without making suggestions. For this purpose,
-use a single character _ in the suggestion field.
+`word(n)`
 
-Example. No suggestion.
+>   Catches the nth next word after the pattern (separated only by white spaces).
+>   Returns None if no word caught
 
-    foobar <<- ->> _                    # Message
+`word(-n)`
+
+>   Catches the nth next word before the pattern (separated only by white spaces).
+>   Returns None if no word caught
+
+`textarea(regex[, neg_regex])`
+
+>    Checks if the full text of the checked area (paragraph or sentence) matches the regex.
+
+`morph(n, regex[, neg_regex][, no_word=False])`
+
+>   Checks if all tags of the word in group n match the regex.
+>   If neg_regex = "*", returns True only if all morphologies match the regex.
+>   If there is no word at position n, returns the value of no_word.
+
+`analyse(n, regex[, neg_regex][, no_word=False])`
+
+>   Checks if all tags of the word in group n match the regex.
+>   If neg_regex = "*", returns True only if all morphologies match the regex.
+>   If there is no word at position n, returns the value of no_word.
+
+### Functions for token rules
+
+`value(n, values_string)`
+
+>   Analyses the value of the nth token.
+>   The <values_string> contains values separated by the sign `|`.
+>   Example: `"|foo|bar|"`
+
+`morph(n, "regex", "neg_regex")`
+`analyse(n, "regex", "neg_regex")`
+
+>   Same action with morph() and morph0() for regex rules.
+
+### Functions for regex and token rules
+
+`__also__`
+
+>   Returns True if the previous condition returned True.
+>   Example: `<<- __also__ and condition2 ->>`
+
+`__else__`
+
+>   Returns False if the previous condition returned False.
+>   Example: `<<- __else__ and condition2 ->>`
+
+`option(option_name)`
+
+>   Returns True if <option_name> is activated else False
+
+Note: the analysis is done on the preprocessed text.
+
+`after(regex[, neg_regex])`
+
+>   Checks if the text after the pattern matches the regex.
+
+`before(regex[, neg_regex])`
+
+>   Checks if the text before the pattern matches the regex.
+
+### Default variables
+
+`sCountry`
+
+>   It contains the current country locale of the checked paragraph.
+
+    colour <<- sCountry == "US" ->> color       # Use American English spelling.
+
+
+## ACTIONS ##
+
+There are 5 kinds of actions:
+
+1. Suggestions. The grammar checker suggests corrections.
+2. Text processor. A internal process to modify the text internally. This is used to simplify grammar checking.
+     * text rewriting
+     * text deletion
+     * token rewriting
+     * token merging
+     * token deletion
+3. Disambiguation. Select, exclude or define morphologies of tokens.
+4. Tagging. Add information on token.
+5. Immunity. Prevent suggestions to be triggered.
 
 
 ### Positioning
 
-Positioning is valid only for error creation and text rewriting.
+Positioning is valid for suggestions, text processing, tagging and immunity.
 
 By default, the full pattern will be underlined with blue. You can shorten the
 underlined text area by specifying a back reference group of the pattern.
@@ -308,13 +437,42 @@ With the rule B, only the first group is underlined:
     ^^^^
 
 
-### Longer explanations with URLs
+### Suggestions
+
+#### Multiple suggestions
+
+Use `|` in the replacement text to add multiple suggestions:
+
+Example. Foo, FOO, Bar and BAR suggestions for the input word "foo".
+
+    foo <<- ->> Foo|FOO|Bar|BAR         # Did you mean:
+
+#### No suggestion
+
+You can display message without making suggestions. For this purpose,
+use a single character _ in the suggestion field.
+
+Example. No suggestion.
+
+    foobar <<- ->> _                    # Message
+
+#### Longer explanations with URLs
 
 Warning messages can contain optional URL for longer explanations.
 
     your’s
         <<- ->> yours
             # Possessive pronoun:|http://en.wikipedia.org/wiki/Possessive_pronoun
+
+#### Expressions in suggestion or replacement
+
+Suggestions started by an equal sign are Python string expressions
+extended with possible back references and named definitions:
+
+Example:
+
+    <<- ->> ='"' + \1.upper() + '"'         # With uppercase letters and quotation marks
+    <<- ~>> =\1.upper()
 
 
 ### Text rewriting
@@ -336,8 +494,7 @@ Specific commands for text rewriting:
 
 `~>> @`
 
->   Replace with the at sign, useful mostly at first pass, where it is advised to
->   check usage of punctuations and whitespaces.
+>   Replace with the at sign, useful mostly at first pass, where it is advised to check usage of punctuations and whitespaces.
 >   Successions of @ are automatically removed at the beginning of the second pass.
 
 `~>> _`
@@ -354,8 +511,6 @@ You can also call Python expressions.
     __[s]__ Mr. ([a-z]\w+) <<- ~1>> =\1.upper()
 
 
-### Text processing
-
 The text processor is useful to simplify texts and write simpler checking
 rules.
 
@@ -367,8 +522,7 @@ For example, sentences with the same grammar mistake:
     These stupid “cats” are all blacks.
     These unknown cats are as per usual blacks.
 
-Instead of writing complex rules or several rules to find mistakes for all possible 
-cases, you can use the text preprocessor to simplify the text.
+Instead of writing complex rules or several rules to find mistakes for all possible cases, you can use the text preprocessor to simplify the text.
 
 To remove the chars “”, write:
 
@@ -415,7 +569,7 @@ You can also replace any text as you wish.
 
 ### Disambiguation
 
-When Grammalecte analyses a word with morph, before requesting the
+When Grammalecte analyses a word with `morph()`, before requesting the
 POS tags to the dictionary, it checks if there is a stored marker for the
 position where the word is. If there is a marker, Grammalecte uses the stored
 data and don’t make request to the dictionary.
@@ -452,134 +606,43 @@ With define, you must set a list of POS tags. Example:
 
     define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
 
+### Tagging
 
-### Conditions
+**Only for token rules**
 
-Conditions are Python expressions, they must return a value, which will be
-evaluated as boolean. You can use the usual Python syntax and libraries.
+### Immunity
 
-You can call pattern subgroups via \0, \1, \2…
-
-Example:
-
-    these (\w+)
-        <<- \1 == "man" -1>> men        # Man is a singular noun. Use the plural form:
-
-You can also apply functions to subgroups like:
-
-    \1.startswith("a")
-    \3.islower()
-    re.search("pattern", \2)
+**Only for token rules**
 
 
-### Standard functions
+## OTHER COMMANDS ##
 
-`word(n)`
+### Comments
 
->   catches the nth next word after the pattern (separated only by white spaces).
->   returns None if no word caught
+Lines beginning with `#` are comments.
 
-`word(-n)`
+### End of parsing
 
->   catches the nth next word before the pattern (separated only by white spaces).
->   returns None if no word caught
+With the command `#END` at the beginning of a line, the parser won’t go further.
+Whatever is written after will be considered as comments.
 
-`after(regex[, neg_regex])`
+### Definitions
 
->   checks if the text after the pattern matches the regex.
+Grammalecte supports definitions to simplify the description of complex rules.
 
-`before(regex[, neg_regex])`
+Definition:
 
->   checks if the text before the pattern matches the regex.
+    DEF: name definition
 
-`textarea(regex[, neg_regex])`
-
->    checks if the full text of the checked area (paragraph or sentence) matches the regex.
-
-`morph(n, regex[, neg_regex][, no_word=False])`
-
->   checks if all tags of the word in group n match the regex.
->   if neg_regex = "*", returns True only if all morphologies match the regex.
->   if there is no word at position n, returns the value of no_word.
-
-`morph0(n, regex[, neg_regex][, no_word=False])`
-
->   checks if all tags of the word in group n match the regex.
->   if neg_regex = "*", returns True only if all morphologies match the regex.
->   if there is no word at position n, returns the value of no_word.
-
-
-`option(option_name)`
-
->   returns True if option_name is activated else False
-
-Note: the analysis is done on the preprocessed text.
-
-
-### Default variables
-
-`sCountry`
-
->   It contains the current country locale of the checked paragraph.
-
-    colour <<- sCountry == "US" ->> color       # Use American English spelling.
-
-
-
-### Expressions in suggestion or replacement
-
-Suggestions started by an equal sign are Python string expressions
-extended with possible back references and named definitions:
+Usage: `{name}` will be replaced by its definition
 
 Example:
 
-    <<- ->> ='"' + \1.upper() + '"'         # With uppercase letters and quotation marks
-    <<- ~>> =\1.upper()
+    DEF: word_3_letters     \w\w\w+  
+    DEF: uppercase_token    ~^[A-Z]+$
+    DEF: month_token        [January|February|March|April|May|June|July|August|September|October|November|december]
 
+    ({word_3_letters}) (\w+) <<- condition ->> suggestion     # message|URL
 
-## Token rules
-
-Token rules must be defined within a graph.
-
-
-### Tokens
-
-Tokens can be defined in several ways:
-
-* Value (meaning the text of the token). Examples: `word`, `<start>`, `<end>`, `,`.
-* Lemma: `>lemma`.
-* Regex: `~pattern`, `~pattern¬antipattern`.
-* Regex on morphologies: `@pattern`, `@pattern¬antipattern`.
-* Tags: `/tag`.
-* Metatags: *NAME. Examples: `*WORD`, `*NUM`, `*SIGN`, etc.
-
-Selection of tokens: `[token1|token2|>lemma1|>lemma2|~pattern1|@pattern1|…]`
-
-Conditional token: `?token¿`
-
-Conditional selection of token: `?[token1|token2|…]¿`
-
-
-### Token references
-
-Positive references are defined by a positive integer `>= 1`. Examples: \1, \2, \3, etc.
-If there is at least one token set between parenthesis, these numbers refer to tokens between parenthesis, ignoring all others.
-If there is no token between parenthesis, these numbers refer to tokens found in order defined by the rule triggered.
-
-Negative references are defined by a negative integer `<= -1`. Examples: \-1, \-2, \-3, etc.
-These numbers refer to the tokens beginning by the last one found by the rule triggered.
-
-Examples:
-
-    tokens:             alpha       beta        gamma       delta       epsilon
-    positive refs:      1           2           3           4           5
-    negative refs:      -5          -4          -3          -2          -1
-
-    tokens:             alpha       (beta)      gamma       (delta)     epsilon
-    positive refs:                  1                       2
-    negative refs:      -5          -4          -3          -2          -1
-
-    tokens:             alpha       (beta)      ?gamma¿     (delta)     epsilon
-    positive refs:                  1                       2
-    negative refs:      (-4/-5)     (-3/-4)     (-3/none)   -2          -1
-
+    {uppercase_token} {month_token}
+        <<- condition ->> message                             # message|URL
