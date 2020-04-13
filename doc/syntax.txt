@@ -205,6 +205,27 @@ Example. Back reference in messages.
     (fooo) bar <<- ->> foo      # “\1” should be:
 
 
+### Group positioning codes for JavaScript:
+
+There is no way in JavaScript to know where a captured group starts and ends. To avoid misplacement, regex rules may specify group positioning codes which indicate to the grammar checker where is the position of the captured groups.
+
+A group positioning code always begins by `@@`. If there is several codes, they are separated by a comma `,`.
+
+Other codes:
+
+    0 1 2 3 ... n       left boundary position from left
+    -1 -2 -2 ... -n     right boundary position from right
+    $                   extreme right boundary
+    w                   somewhere with word boundaries
+    *                   something somewhere
+    **                  something somewhere after previous group
+
+Examples:
+
+    ([A-ZÉÈÂÎ][\w-]+) [A-ZÉÈÂ]([.]) ([A-ZÉÈÂ][\w-]+)  @@0,*,$
+    " ([?!;])"  @@1
+
+
 ### Pattern matching
 
 Repeating pattern matching of a single rule continues after the previous matching, so instead of general multiword patterns, like
