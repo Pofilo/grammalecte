@@ -455,7 +455,9 @@ With the rule B, only the first group is underlined:
     ^^^^
 
 
-### Suggestions
+### Errors and suggestions
+
+The command to suggest something is: `->>`.
 
 #### Multiple suggestions
 
@@ -494,12 +496,14 @@ Example:
 
 ### Text rewriting
 
+**WARNING**: The replacing text must be shorter than the replaced text or have the same length. Breaking this rule will misplace following error reports.
+You have to ensure yourself the rules comply with this constraint, the text processor won’t do it for you.
+
+The command for text rewriting is: `~>>`.
+
 Example. Replacing a string by another.
 
     Mr. [A-Z]\w+ <<- ~>> Mister
-
-**WARNING**: The replacing text must be shorter than the replaced text or have the same length. Breaking this rule will misplace following error reports.
-You have to ensure yourself the rules comply with this constraint, the text processor won’t do it for you.
 
 Specific commands for text rewriting:
 
@@ -586,6 +590,8 @@ You can also replace any text as you wish.
 
 When the grammar checker analyses a token with `morph()`, before requesting the POS tags to the dictionary, it checks if there is a stored marker for the position of the token. If a marker is found, it uses the stored data and don’t make request to the dictionary.
 
+Command for disambiguation is: `=>>`. No positioning allowed.
+
 There are 4 commands for disambiguation.
 
 `select(n, pattern)`
@@ -621,15 +627,19 @@ With `define()` and `add_morph()`, you must set a list of POS tags. Example:
 
 ### Tagging
 
-**Only for token rules**
+**Only for token rules**. Tagging can be done with the command `/>>`. You can set one or several tags at once. Use `|` as a separator.
+
+Example: `/>> a_tag` to set the same tag on all takens of the rule.
+Example: `/3>> a_tag` to set the tag on the third token.
+Example: `/>> a_tag|another_tag` to set two tags.
+
+You can know if a token is tagged with eh function `tag()` and you can know if tags have been set on previous or following tokens with `tag_before()` and `tag_after()`.
 
 ### Immunity
 
-**Only for token rules**
+**Only for token rules**. A immunity rule set a flag on token(s) who are not supposed to be considered as an error. If any other rules find an error, it will be ignored. If an error has already been found, it will be removed.
 
-A immunity rule set a flag on token(s) who are not supposed to be considered as an error. If any other rules find an error, it will be ignored. If an error has already been found, it will be removed.
-
-Example: `!2>>` means no error can be set of the second token.
+Example: `!2>>` means no error can be set on the second token.
 Example: `!>>` means all tokens will be considered as correct.
 
 The immunity rules are useful to create simple antipattern that will simplify writing of other rules.
