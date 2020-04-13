@@ -283,7 +283,7 @@ Examples:
 
     tokens:             alpha       (beta)      ?gamma¿     (delta)     epsilon
     positive refs:                  1                       2
-    negative refs:      (-4/-5)     (-3/-4)     (-3/none)   -2          -1
+    negative refs:      (-5/-4)     (-4/-3)     (-3/none)   -2          -1
 
 
 ## CONDITIONS ##
@@ -296,7 +296,7 @@ With regex rules, you can call pattern subgroups via `\1`, `\2`… `\0` is the f
 Example:
 
     these (\w+)
-        <<- \1 == "man" -1>> men        # Man is a singular noun. Use the plural form:
+        <<- \1 == "man" -1>> men        # Man is a singular noun.
 
 You can also apply functions to subgroups like: `\1.startswith("a")` or `\3.islower()` or `re.search("pattern", \2)`.
 
@@ -344,10 +344,27 @@ Example:
 >   The <values_string> contains values separated by the sign `|`.
 >   Example: `"|foo|bar|"`
 
-`morph(n, "regex", "neg_regex")`
-`analyse(n, "regex", "neg_regex")`
+`morph(n, "regex"[, "neg_regex"][, trim_left=0][, trim_right=0])`
+`analyse(n, "regex"[, "neg_regex"][, trim_left=0][, trim_right=0])`
 
->   Same action with morph() and morph0() for regex rules.
+>   Same action with `morph()` and `morph0()` for regex rules.
+>   Parameters <trim_left> and <trim_right> removed n characters at left or the right of the token before performing an analyse.
+
+`space_after(n, min_space[, max_space])`
+
+>   Returns True if the next token after token n is separated with at least <min_space> blank spaces and at most with <max_space> blank spaces.
+
+`tag(n, tag)`
+
+>   Returns True if <tag> exists on taken the nth token.
+
+`tag_before(n, tag)`
+
+>   Returns True if <tag> is found any token before the nth tag.
+   
+`tag_after(n, tag)`
+
+>   Returns True if <tag> is found any token after the nth tag.
 
 ### Functions for regex and token rules
 
@@ -379,9 +396,9 @@ Note: the analysis is done on the preprocessed text.
 
 `sCountry`
 
->   It contains the current country locale of the checked paragraph.
+>   Contains the current country locale of the checked paragraph.
 
-    colour <<- sCountry == "US" ->> color       # Use American English spelling.
+    colour <<- sCountry == "US" ->> color   # Use American English spelling.
 
 
 ## ACTIONS ##
@@ -404,10 +421,11 @@ There are 5 kinds of actions:
 
 Positioning is valid for suggestions, text processing, tagging and immunity.
 
-By default, the full pattern will be underlined with blue. You can shorten the
-underlined text area by specifying a back reference group of the pattern.
-Instead of writing ->>, write -n>>  n being the number of a back reference
-group. Actually,  ->>  is similar to  -0>>
+By default, rules apply on the full text triggered. You can shorten the
+effect of rules by specifying a back reference group of the pattern or token references.
+
+Instead of writing `->>`, write `-n>>`  n being the number of a back reference
+group. Actually,  `->>`  is similar to  `-0>>`.
 
 Example:
 
@@ -466,12 +484,11 @@ Warning messages can contain optional URL for longer explanations.
 
 #### Expressions in suggestion or replacement
 
-Suggestions started by an equal sign are Python string expressions
-extended with possible back references and named definitions:
+Suggestions started by an equal sign are Python string expressions extended with possible back references and named definitions:
 
 Example:
 
-    <<- ->> ='"' + \1.upper() + '"'         # With uppercase letters and quotation marks
+    <<- ->> ='"' + \1.upper() + '"'      # With uppercase letters and quotation marks
     <<- ~>> =\1.upper()
 
 
@@ -481,10 +498,8 @@ Example. Replacing a string by another.
 
     Mr. [A-Z]\w+ <<- ~>> Mister
 
-**WARNING**: The replacing text must be shorter than the replaced text or have the
-same length. Breaking this rule will misplace following error reports. You
-have to ensure yourself the rules comply with this constraint, Grammalecte
-won’t do it for you.
+**WARNING**: The replacing text must be shorter than the replaced text or have the same length. Breaking this rule will misplace following error reports.
+You have to ensure yourself the rules comply with this constraint, the text processor won’t do it for you.
 
 Specific commands for text rewriting:
 
@@ -569,42 +584,40 @@ You can also replace any text as you wish.
 
 ### Disambiguation
 
-When Grammalecte analyses a word with `morph()`, before requesting the
-POS tags to the dictionary, it checks if there is a stored marker for the
-position where the word is. If there is a marker, Grammalecte uses the stored
-data and don’t make request to the dictionary.
+When the grammar checker analyses a token with `morph()`, before requesting the POS tags to the dictionary, it checks if there is a stored marker for the position of the token. If a marker is found, it uses the stored data and don’t make request to the dictionary.
 
-The disambiguation commands store POS tags at the position of a word.
-
-There are 3 commands for disambiguation.
+There are 4 commands for disambiguation.
 
 `select(n, pattern)`
 
->   stores at position n only the POS tags of the word matching the pattern.
+>   At reference n, select morphologies that match the pattern.
 
 `exclude(n, pattern)`
 
->   stores at position n the POS tags of the word, except those matching the
-    pattern.
+>   At reference n, exclude morphologies that match the pattern.
 
-`define(n, [definitions])`
+`define(n, [morph_list])`
 
->   stores at position n the POS tags in definitions (a list of strings).
+>   At reference n, set the listed morphologies (a list of strings).
+
+`add_morph(n, [morph_list])`
+
+>   At reference n, add the listed morphologies (a list of strings).
 
 Examples:
 
     =>> select(\1, "po:noun is:pl")
     =>> exclude(\1, "po:verb")
-    =>> define(\1, ["po:adv"])
     =>> exclude(\1, "po:verb") and define(\2, ["po:adv"]) and select(\3, "po:adv")
 
-Note: select(), exclude() and define() ALWAYS return True.
+Note: All these functions ALWAYS return True.
 
-If select() and exclude() generate an empty list, no marker is set.
+If `select()` and `exclude()` generate an empty list, nothing change.
 
-With define, you must set a list of POS tags. Example:
+With `define()` and `add_morph()`, you must set a list of POS tags. Example:
 
-    define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
+    =>> define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
+    =>> add_morph(\1, ["po:adv"])
 
 ### Tagging
 
@@ -613,6 +626,13 @@ With define, you must set a list of POS tags. Example:
 ### Immunity
 
 **Only for token rules**
+
+A immunity rule set a flag on token(s) who are not supposed to be considered as an error. If any other rules find an error, it will be ignored. If an error has already been found, it will be removed.
+
+Example: `!2>>` means no error can be set of the second token.
+Example: `!>>` means all tokens will be considered as correct.
+
+The immunity rules are useful to create simple antipattern that will simplify writing of other rules.
 
 
 ## OTHER COMMANDS ##
