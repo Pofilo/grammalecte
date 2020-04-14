@@ -291,6 +291,10 @@ function handleConnexion (xPort) {
     xPort.onMessage.addListener(function (oRequest) {
         let {sCommand, oParam, oInfo} = oRequest;
         switch (sCommand) {
+            case "ping":
+                //console.log("[background] ping");
+                xPort.postMessage({sActionDone: "ping", result: null, bInfo: null, bEnd: true, bError: false});
+                break;
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":

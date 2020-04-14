@@ -281,7 +281,23 @@ autoRefreshOption();
 */
 const oGrammalecteBackgroundPort = {
 
+    bConnected: false,
+
     xConnect: browser.runtime.connect({name: "content-script port"}),
+
+    start: function () {
+        //console.log("[Grammalecte] background port: start.");
+        this.listen();
+        this.listen2();
+        //this.ping();
+    },
+
+    restart: function () {
+        console.log("[Grammalecte] try to reconnect to the background.")
+        this.xConnect = browser.runtime.connect({name: "content-script port"});
+        this.listen();
+        this.ping();
+    },
 
     /*
         Send messages to the background
@@ -293,11 +309,17 @@ const oGrammalecteBackgroundPort = {
     */
 
     send: function (sCommand, oParam={}, oInfo={}) {
-        if (this.xConnect) {
+        if (this.bConnected) {
             this.xConnect.postMessage({ sCommand: sCommand, oParam: oParam, oInfo: oInfo });
         } else {
-            oGrammalecte.showMessage("Erreur. La connexion vers le correcteur grammatical est perdue.");
+            oGrammalecte.showMessage("Erreur. La connexion vers le correcteur grammatical est perdue.",
+                                     "Tentative de reconnexion. Fermer la fenêtre et relancez. Si ça ne fonctionne pas, il sera nécessaire de recharger la page.");
+            this.restart();
         }
+    },
+
+    ping: function () {
+        this.xConnect.postMessage({ sCommand: "ping", oParam: {}, oInfo: {} });
     },
 
     parseAndSpellcheck: function (sText, sDestination) {
@@ -349,16 +371,21 @@ const oGrammalecteBackgroundPort = {
                 sError = browser.runtime.lastError.message;
             }
             console.log("[Grammalecte] Connection to the background script has been lost. Error :", sError);
-            this.xConnect = browser.runtime.connect({name: "content-script port"});
-            this.listen();
+            this.bConnected = false;
+            this.restart();
         }.bind(this));
         this.xConnect.onMessage.addListener(function (oMessage) {
             let { sActionDone, result, oInfo, bEnd, bError } = oMessage;
             switch (sActionDone) {
                 case "init":
+                    this.bConnected = true;
                     oGrammalecte.sExtensionUrl = oMessage.sUrl;
                     oGrammalecte.listen();
                     oGrammalecte.createButton();
+                    break;
+                case "ping":
+                    console.log("[Grammalecte] Connection to background done.");
+                    this.bConnected = true;
                     break;
                 case "parseAndSpellcheck":
                     if (oInfo.sDestination == "__GrammalectePanel__") {
@@ -440,9 +467,9 @@ const oGrammalecteBackgroundPort = {
                     }
                     break;
                 default:
-                    console.log("[Content script] Unknown command: " + sActionDone);
+                    console.log("[Grammalecte] Content-script. Unknown command: ", sActionDone);
             }
-        });
+        }.bind(this));
     },
 
     /*
@@ -464,14 +491,14 @@ const oGrammalecteBackgroundPort = {
                     }
                     break;
                 default:
-                    console.log("[Content script] Unknown command: " + sActionDone);
+                    console.log("[Grammalecte] Content-script. Unknown command: ", sActionRequest);
             }
         });
     }
 }
 
-oGrammalecteBackgroundPort.listen()
-oGrammalecteBackgroundPort.listen2()
+
+oGrammalecteBackgroundPort.start();
 
 
 
