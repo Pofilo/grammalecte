@@ -44,6 +44,9 @@ class SuggResult {
         if (!this.aSugg.has(sSugg)) {
             let nDist = str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, char_player.simplifyWord(sSugg));
             if (nDist <= this.nDistLimit) {
+                if (sSugg.includes(" ")) { // add 1 to distance for split suggestions
+                    nDist += 1;
+                }
                 if (!this.dSugg.has(nDist)) {
                     this.dSugg.set(nDist, []);
                 }

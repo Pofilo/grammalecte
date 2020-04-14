@@ -57,6 +57,8 @@ class SuggResult:
         if sSugg not in self.aSugg:
             nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg))
             if nDist <= self.nDistLimit:
+                if " " in sSugg:
+                    nDist += 1
                 if nDist not in self.dSugg:
                     self.dSugg[nDist] = []
                 self.dSugg[nDist].append(sSugg)
