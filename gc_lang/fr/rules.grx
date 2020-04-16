@@ -13148,7 +13148,7 @@ __gestion_mots_grammaticaux__
     à [bonne|faible|grande] distance                                                                                                            [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                   [de|du|d’|des]
     à l’ autre bout                                                                                                                             [de|du|d’|des]
-    à la [hauteur|portée|proximité|suite]                                                                                                       [de|du|d’|des]
+    à la [hauteur|portée|proximité|recherche|suite]                                                                                             [de|du|d’|des]
     à la grande surprise                                                                                                                        [de|du|d’|des]
     à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                        [de|du|d’|des]
     à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                 [de|du|d’|des]
@@ -15928,8 +15928,8 @@ TEST: aux {{personne}}
 
 
 __gn_det_epi_plur_2m__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult|$:B]  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|de|d’|au|aux|") and not \3.startswith("seul") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné entre « \2 » et « \3 ».
@@ -15951,6 +15951,7 @@ TEST: ces {{beaux}} {{institutions}}
 TEST: nos petites {{fille}}
 TEST: de plusieurs {{grands}} {{avocates}}
 TEST: de vos défauts {{terrible}}, je connais presque tout.
+TEST: sept valeurs {{aléatoire}}
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
 TEST: Pour maintenir le potentiel de membrane qui lui permet de communiquer avec ses voisins sous forme d’influx nerveux, un neurone a besoin d’énergie.
