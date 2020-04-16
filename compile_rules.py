@@ -57,6 +57,7 @@ def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
+    s = s.replace("sContext", "_sAppContext")
     s = re.sub(r"isStart *\(\)", 'before("^ *$|, *$")', s)
     s = re.sub(r"isRealStart *\(\)", 'before("^ *$")', s)
     s = re.sub(r"isStart0 *\(\)", 'before0("^ *$|, *$")', s)
