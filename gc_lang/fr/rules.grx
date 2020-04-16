@@ -10345,6 +10345,10 @@ __conf_son_sont__
     son [ceux|celles]
         <<- /conf/ not morph(<1, ":D.*:m:s") -1>> sont          # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
+    [<start>|,|(]  [elles|certaines|quelques-uns|quelques-unes]  son  @:[AQW]
+        <<- /conf/ -2>> \2,                                     # Confusion possible : ou vous confondez “son” et “sont”, ou vous devriez mettre une virgule après “\2”.
+        <<- /conf/ -3>> sont                                    # Confusion possible : pour la conjugaison de “être” à la 3ᵉ personne du pluriel, écrivez “sont”.
+
 TEST: ne leur {{son}} pas odieux.
 TEST: Ces chiens me {{son}} odieux.
 TEST: ces gens qui {{son}}, dans le meilleur des cas, des imbéciles ne peuvent nous aider.
@@ -10355,6 +10359,7 @@ TEST: chez {{sont}} amis
 TEST: il a perdu {{sont}} {{ami}}
 TEST: ces gens {{son}} ceux qui nous mettent constamment dans la merde          ->> sont
 TEST: à {{sont}} précis de mathématiques                                        ->> son
+TEST: {{elles}} {{son}} là
 TEST: elles s’en sont mal portées
 TEST: ils en sont reconnaissants
 TEST: sont loin, ces gens…
@@ -20932,10 +20937,11 @@ TEST: une chambre {{ou}} nous n’avons rien trouvé
 ## Accord et incohérences
 __ppas_sont_adj__
     sont  *WORD
-        <<- /ppas/ morph(\2, ":V", ":(?:N|A|Q|W|G|3p)") and not tag_before(\1, "_ceque_")
+        <<- /ppas/ morph(\2, ":V[123]", ":(?:N|A|Q|W|G|3p)") and not tag_before(\1, "_ceque_")
         -2>> =suggVerbPpas(\2, ":m:p")                      # Incohérence : “\2” n’est pas un participe passé.
 
 TEST: après avoir mis à jour sont {{profile}}.
+TEST: maintenir en confinement certaines personnes sous prétexte qu’elles sont à risques serait une mesure inconstitutionnelle et discriminatoire.
 
 
 
