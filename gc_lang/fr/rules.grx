@@ -2168,6 +2168,12 @@ __fusions_noms_communs__
         <<- space_after(\1, 0, 0) ~>> ␣
 
 
+__fusions_noms_communs_séparés_slah__
+    *WORD  /  *WORD
+        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and morph(\1, ":N") and morph(\-1, ":N") ~>> ␣
+        <<- =>> define(\1, [":N:e:i"])
+
+
 __fusions_noms_propres__
     cac  40
         <<- ~>> ␣
@@ -2241,7 +2247,7 @@ __immunités__
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
 TEST: de Bordeaux ou de n’importe où
 TEST: il n’y a pas faute.
-
+TEST: une séparation hommes/femmes
 
 
 !!!! Noms composés                                                                                !!
@@ -8053,11 +8059,15 @@ TEST: ils vont passer prochainement en cour martiale.
 # cuir / cuire
 __conf_cuir_cuire__
     >dur [à|a] >cuir
-        <<- /conf/ -3>> cuire           # Confusion. Locution “dur à cuire” Le cuir est le nom qu’on donne à la peau animale. Pour évoquer la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
+        <<- /conf/ -3>> cuire           # Confusion. Locution “dur à cuire”. Le cuir est le nom qu’on donne à la peau animale. Pour évoquer la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
         <<- /conf/ \2 == "a" -2>> à     # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+    en cuire [de|d’] [buffle|crocodile|hippopotame|porc|vache]
+        <<- /conf/ -2>> cuir            # Confusion. La peau animale s’écrit “cuir”.|https://fr.wiktionary.org/wiki/cuire
 
 TEST: ce sont des durs à {{cuir}}
 TEST: Quelle dure {{a}} {{cuir}}, celle-là.
+TEST: revêtement en {{cuire}} de vache
 
 
 # dans / d’en
@@ -8184,7 +8194,7 @@ __conf_dès_des_dés__
     [dés|des] *NUM ans
     [dés|des] $:B ans
     [dés|des] un an
-        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|délai|échéance|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
             and not before("% +$")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
@@ -8258,6 +8268,7 @@ TEST: 98 % des 18‑29 ans considéraient cela comme évident
 TEST: Gagnez trois dés lors d’un test
 TEST: aucun des 19 peuples concernés n’en veut
 TEST: un des 18 sera bientôt là.
+TEST: Le délai des cinq ans pourra-t-il être tenu pour une réouverture ?
 
 
 # diagnostic / diagnotique // pronostic / pronostique // public / publique
@@ -11585,78 +11596,113 @@ TEST: avec qui la transformer ?
 !!!
 !!!
 
-__purge_dates__
-    depuis le           [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
-    [le|du|au]          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
-    jusqu’  au          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
-    à  compter  du      [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
-    en  l’  an  ~^\d{2,5}$
-    en  l’  an  de  grâce  ~^\d{2,5}$
-    en  {mois}  ~^\d{2,5}$
-    [de|d’|D’]  {mois}  ~^\d{2,5}$
-    à  la  {mi_mois}    ?~^\d{2,5}$¿
-    entre {mois} ?~^\d{2,5}$¿ et {mois} ?~^\d{2,5}$¿
-    début {mois} ~^\d{2,5}$
-    au début {mois} ~^\d{2,5}$
-    en ce début {mois} ~^\d{2,5}$
-    au [début|cours] de l’ an ?[passé|prochain|~^\d{2,5}$]¿
-    au [début|cours] de l’ année ?[passée|prochaine|~^\d{2,5}$]¿
-    au [début|cours] des années ~^\d{2,5}$
-    au [début|cours] du mois [de|d’] {mois} ?[passé|prochain|~^\d{2,5}$]¿
-    à la fin de l’ an ?[passé|~^\d{2,5}$]¿
-    à la fin de l’ année ?[passée|~^\d{2,5}$]¿
-    à la fin des années ~^\d{2,5}$
-    à la fin du mois [de|d’] {mois} ?[passé|prochain|~^\d{2,5}$]¿
-    à l’ orée de l’ an ?[passé|~^\d{2,5}$]¿
-    à l’ orée de l’ année ?[passée|~^\d{2,5}$]¿
-    à l’ orée des années ~^\d{2,5}$
-    à l’ orée du mois [de|d’] {mois} ?[passé|prochain|~^\d{2,5}$]¿
-    jusqu’ en {mois} ~^\d{2,5}$
-    jusqu’ à la {mi_mois} ~^\d{2,5}$
-    depuis {mois} ?~^\d{2,5}$¿
-    depuis la {mi_mois} ~^\d{2,5}$
+__purge_années__
+    au cours [de|d’] l’             an ?[passé|prochain|~^\d{2,5}$]¿
+    au cours [de|d’] l’             année ?[passée|prochaine|~^\d{2,5}$]¿
+    au cours des                    années ~^\d{2,5}$
         <<- ~>> *
 
-    [début|fin]  {mois}  ?~^\d{2,5}$¿
-        <<- not morph(<1, ":D") ~>> *
+    à [compter|partir] [de|d’] l’   an ?[passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’] l’   année ?[passée|prochaine|~^\d{2,5}$]¿
+    à [compter|partir] des          années ~^\d{2,5}$
+    ?jusqu’¿ à l’ orée de l’        an ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’ orée de l’        année ?[passée|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’ orée des          années ~^\d{2,5}$
+    ?jusqu’¿ à l’                   an ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’                   année ?[passée|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ aux                    années ~^\d{2,5}$
+    [dès|depuis|de|d’] l’           an ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’] l’           année ?[passée|prochaine|~^\d{2,5}$]¿
+    [dès|depuis] [les|ces]          années ~^\d{2,5}$
+        <<- ~>> *
+
+    à [compter|partir] du           début de l’ an ?[passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du           début de l’ année ?[passée|prochaine|~^\d{2,5}$]¿
+    à [compter|partir] du           début des années ~^\d{2,5}$
+    ?jusqu’¿ au                     début de l’ an ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au                     début de l’ année ?[passée|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ au                     début des années ~^\d{2,5}$
+    [dès|depuis] le                 début de l’ an ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le                 début de l’ année ?[passée|prochaine|~^\d{2,5}$]¿
+    [dès|depuis] le                 début des années ~^\d{2,5}$
+        <<- ~>> *
+
+    à [compter|partir] [de|d’] la   fin de l’ an ?[passé|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’] la   fin de l’ année ?[passée|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’] la   fin des années ~^\d{2,5}$
+    ?jusqu’¿ à la                   fin de l’ an ?[passé|~^\d{2,5}$]¿
+    ?jusqu’¿ à la                   fin de l’ année ?[passée|~^\d{2,5}$]¿
+    ?jusqu’¿ à la                   fin des années ~^\d{2,5}$
+    [dès|depuis|de|d’] la           fin de l’ an ?[passé|~^\d{2,5}$]¿
+    [dès|depuis|de|d’] la           fin de l’ année ?[passée|~^\d{2,5}$]¿
+    [dès|depuis|de|d’] la           fin des années ~^\d{2,5}$
+        <<- ~>> *
+
+    en  l’  an  ~^\d{2,5}$
+    en  l’  an  de  grâce  ~^\d{2,5}$
+        <<- ~>> *
 
     en  ~^\d{2,5}$  [,|<end>|)]
     en  ~^\d{2,5}$  @:¬:[AN].*:[pi]
     de  ~^\d{2,5}$  @:A.*:s
         <<- ~1:2>> *
 
+
+__purge_dates__
+    à [compter|partir] du   [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le         [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    [le|du]                 [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au             [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    au cours         [de|d’]    {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+    au cours du mois [de|d’]    {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    à l’ orée du mois [de|d’]   {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’]  {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ [en|à]             {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’]          {mois}  ?[passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    [début|fin] {mois} ?~^\d{2,5}$¿
+        <<- not morph(<1, ":D") ~>> *
+
+    à [compter|partir]          [début|fin] {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ [en|à]             [début|fin] {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’]          [début|fin] {mois} ?[passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    ?jusqu’¿ au début                       {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au début [de|d’]               {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au début du mois [de|d’]       {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le début                   {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le début [de|d’]           {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le début du mois [de|d’]   {mois} ?[passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    ?jusqu’¿ à la fin                           {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à la fin [de|d’]                   {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à la fin du mois [de|d’]           {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la fin                   {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la fin [de|d’]           {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la fin du mois [de|d’]   {mois} ?[passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    en ce début {mois} ~^\d{2,5}$
+    en la fin   {mois} ~^\d{2,5}$
+        <<- ~>> *
+
+    entre {mois} ?~^\d{2,5}$¿ et {mois} ?~^\d{2,5}$¿
+        <<- ~>> *
+
+    ?jusqu’¿ à          la {mi_mois} ~^\d{2,5}$
+    [dès|depuis|de|d’]  la {mi_mois} ~^\d{2,5}$
+        <<- ~>> *
+
 TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
 TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 TEST: profanation de plusieurs églises françaises début février.
-
-
-__purge_saisons__
-    à  l’  [été|automne|hiver]  ~^\d{2,4}$
-    au  printemps  ~^\d{2,4}$
-        <<- ~>> *
-
-TEST: Une étude de 2005 publiée dans le Journal
-TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consacrée à Silicon Valley.
-TEST: c’est donc la cinquième en 50 ans
-
-
-__purge_un_nombre__
-    un  *NUM  @:A.*:s¬:G
-        <<- ~2>> *
-
-TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
-
-
-__purge_début_phrase__
-    <start>  car
-    <start>  de plus
-    <start>  et  ?puis¿
-    <start>  mais
-    <start>  m’  est   avis  [que|qu’]
-    <start>  or  donc
-    <start>  puis
-    [<start>|,|(] grand bien lui fasse
-        <<- ~2:0>> *
 
 
 __purge_horaires_et_durée__
@@ -11713,6 +11759,35 @@ __purge_horaires_et_durée__
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
 TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
 TEST: Le train de 2h47 du matin {{arriveraient}} en retard.
+
+
+__purge_saisons__
+    à  l’  [été|automne|hiver]  ~^\d{2,4}$
+    au  printemps  ~^\d{2,4}$
+        <<- ~>> *
+
+TEST: Une étude de 2005 publiée dans le Journal
+TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consacrée à Silicon Valley.
+TEST: c’est donc la cinquième en 50 ans
+
+
+__purge_un_nombre__
+    un  *NUM  @:A.*:s¬:G
+        <<- ~2>> *
+
+TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
+
+
+__purge_début_phrase__
+    <start>  car
+    <start>  de plus
+    <start>  et  ?puis¿
+    <start>  mais
+    <start>  m’  est   avis  [que|qu’]
+    <start>  or  donc
+    <start>  puis
+    [<start>|,|(] grand bien lui fasse
+        <<- ~2:0>> *
 
 
 __purge_prépositions_qqn__
@@ -11798,6 +11873,7 @@ __purge_locutions_latines__
 
 __purge_locutions__
     , [oui|non] ,
+    , fait remarquable ,
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
@@ -12106,7 +12182,8 @@ __purge_locutions__
     au ras des pâquerettes
     au saut du lit
     au second plan
-    au sens [figuré|large|propre]
+    au sens [figuré|large|littéral|propre]
+    au sens littéral du terme
     au surplus
     au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
     au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
@@ -12158,6 +12235,7 @@ __purge_locutions__
     bon gré ?,¿ mal gré
     bras dessus ?,¿ bras dessous
     çà et là
+    >carabine à plomb
     ce faisant
     cependant
     [cela|ça|ceci] mis à part
@@ -12271,14 +12349,21 @@ __purge_locutions__
     d’ une [minute|seconde] à l’ autre
     d’ utilité publique
     de-ci ?,¿ de-là
+    [de|d’] ?[assez|si|très]¿ [faible|grande|médiocre|moindre|petite] [taille|envergure|stature|valeur]
+    [de|d’] ?[assez|si|très]¿ haute [lignée|lutte|naissance|stature|taille|valeur|volée]
+    [de|d’] ?[assez|si|très]¿ basse [condition|extraction|lignée|naissance]
+    [de|d’] ?[assez|si|très]¿ bon [aloi|cœur|goût|gout|gré|matin|poil|sens|ton]
+    [de|d’] ?[assez|si|très]¿ mauvais [aloi|cœur|goût|gout|gré|poil]
+    [de|d’] ?[assez|si|très]¿ bonne [compagnie|facture|famille|foi|grâce|heure|humeur|qualité]
+    [de|d’] ?[assez|si|très]¿ haut [rang|vol]
+    [de|d’] ?[assez|si|très]¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
+    [de|d’] ?[assez|si|très]¿ longue [date|haleine]
+    [de|d’] ?[assez|si|très]¿ [courte|longue] durée
     [de|d’] *NUM %
     [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|préférence|rechange|routine|surcroît|surcroit|visu]
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
-    [de|d’] ?assez¿ basse [condition|extraction]
-    [de|d’] ?assez¿ bon [aloi|cœur|gré|matin|poil|sens|ton]
-    [de|d’] ?assez¿ bonne [compagnie|facture|famille|foi|grâce|heure|humeur|qualité]
     [de|d’] bouche en bouche
     [de|d’] bric et [de|d’] broc
     [de|d’] but en blanc
@@ -12297,39 +12382,34 @@ __purge_locutions__
     [de|d’] fil en aiguille
     [de|d’] fond en comble
     [de|d’] fort [loin|près]
-    [de|d’] [fraîche|fraiche] date
+    [de|d’] ?[assez|si|très]¿ [fraîche|fraiche] date
     [de|d’] [gaieté|gaîté|gaité] de cœur
     [de|d’] gauche à droite
     [de|d’] gauche comme de droite
     [de|d’] génération en génération
-    [de|d’] grande [taille|envergure|stature|valeur]
     [de|d’] gré à gré
     [de|d’] gré ou de force
     [de|d’] guerre lasse
     [de|d’] haut en bas
-    [de|d’] ?très¿ haut [rang|vol]
-    [de|d’] ?très¿ haute [lignée|lutte|naissance|stature|taille|valeur|volée]
     [de|d’] jour comme de nuit
     [de|d’] jour en jour
     [de|d’] là-bas
     [de|d’] la meilleure [manière|façon] possible
     [de|d’] la même [façon|manière]
+    [de|d’] la plus haute importance
     [de|d’] la sorte
     [de|d’] la tête aux pieds
     [de|d’] la veille
     [de|d’] loin
     [de|d’] loin en loin
-    [de|d’] longue [date|durée|haleine]
     [de|d’] main [de|d’] [maître|maitre]
-    [de|d’] mauvais [aloi|goût|gout|gré]
-    [de|d’] ?assez¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
     [de|d’] mieux en mieux
     [de|d’] millénaire en millénaire
     [de|d’] moindre [envergure|valeur]
     [de|d’] mois en mois
     [de|d’] nature [étrangère|inconnue|indéterminée|insolite]
-    [de|d’] nombreuses années plus [tôt|tard]
-    [de|d’] nombreuses fois
+    [de|d’] ?[assez|si|très]¿ nombreuses années plus [tôt|tard]
+    [de|d’] ?[assez|si|très]¿ nombreuses fois
     [de|d’] nos jours
     [de|d’] notoriété publique
     [de|d’] nulle part
@@ -12340,7 +12420,6 @@ __purge_locutions__
     [de|d’] part en part
     [de|d’] part et d’ autre
     [de|d’] ?presque¿ partout
-    [de|d’] petite [taille|envergure|stature|valeur]
     [de|d’] pied ferme
     [de|d’] place en place
     [de|d’] plein [droit|fouet]
@@ -12388,6 +12467,7 @@ __purge_locutions__
     [de|d’] mieux en mieux
     [de|d’] pire en pire
     [de|d’] jour en jour
+    [de|d’] seconde en seconde
     [de|d’] minute en minute
     [de|d’] semaine en semaine
     [de|d’] mois en mois
@@ -12408,14 +12488,14 @@ __purge_locutions__
     depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis belle lurette
     depuis bien longtemps
-    depuis [de|d’] ?[assez|très]¿ longues années
+    depuis [de|d’] ?[assez|si|très]¿ longues années
     depuis des lustres
     depuis la nuit des temps
     depuis la [première|dernière|~ième$] fois
     depuis les années ~^\d{2,5}$
-    depuis ?[assez|très]¿ longtemps
+    depuis ?[assez|si|très]¿ longtemps
     depuis lors
-    depuis ?[assez|très]¿ peu de temps
+    depuis ?[assez|si|très]¿ peu de temps
     depuis quelque temps
     depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     depuis si longtemps
@@ -12449,10 +12529,10 @@ __purge_locutions__
     en réalité ?[augmentée|virtuelle]¿
     en aucun cas
     en aucune [circonstance|façon|manière]
-    en ?[assez|très]¿ bas âge
-    en ?[assez|très]¿ bon état ?général¿
-    en ?[assez|très]¿ bon état de [fonctionnement|marche]
-    en ?[assez|très]¿ bonne [compagnie|place|posture|voie]
+    en ?[assez|si|très]¿ bas âge
+    en ?[assez|si|très]¿ bon état ?général¿
+    en ?[assez|si|très]¿ bon état de [fonctionnement|marche]
+    en ?[assez|si|très]¿ bonne [compagnie|place|posture|voie]
     en bonne et due forme
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
@@ -12485,24 +12565,24 @@ __purge_locutions__
     en état [de|d’] choc ?circulatoire¿
     en ?[excellent|mauvais|parfait]¿ état [de|d’] marche
     en état d’ ébriété ?avancée¿
-    en ?[assez|très]¿ excellent état ?général¿
-    en ?[assez|très]¿ fâcheuse posture
+    en ?[assez|si|très]¿ excellent état ?général¿
+    en ?[assez|si|très]¿ fâcheuse posture
     en file indienne
     en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
     en forte [baisse|hausse]
     en gage [de|d’] bonne foi
     en garde à vue ?prolongée¿
-    en ?[assez|très]¿ grand nombre
-    en ?[assez|très]¿ grande [difficulté|majorité|partie|pompe]
-    en ?[assez|très]¿ haut lieu
-    en ?[assez|très]¿ haute [estime|mer]
+    en ?[assez|si|très]¿ grand nombre
+    en ?[assez|si|très]¿ grande [difficulté|majorité|partie|pompe]
+    en ?[assez|si|très]¿ haut lieu
+    en ?[assez|si|très]¿ haute [estime|mer]
     en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
     en main propre
     en mains propres
-    en ?[assez|très]¿ mauvais état
-    en ?[assez|très]¿ mauvaise [posture|santé]
+    en ?[assez|si|très]¿ mauvais état
+    en ?[assez|si|très]¿ mauvaise [posture|santé]
     en même temps
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
     en moyenne
@@ -12512,13 +12592,13 @@ __purge_locutions__
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
-    en ?très¿ petit nombre
+    en ?[assez|si|très]¿ petit nombre
     en place publique
     en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|nuit|poire|tronche]
     en perte [de|d’] vitesse
-    en ?[assez|très]¿ peu [de|d’] temps
-    en ?[assez|très]¿ [piteux|piètre] état
+    en ?[assez|si|très]¿ peu [de|d’] temps
+    en ?[assez|si|très]¿ [piteux|piètre] état
     en point [de|d’] [mire|orgue]
     en porte-à-faux
     en position [de|d’] [force|faiblesse]
@@ -12602,6 +12682,7 @@ __purge_locutions__
     excepté la [mienne|tienne|sienne|nôtre|vôtre|leur]
     excepté les [miens|miennes|siennes|nôtres|vôtres|leurs]
     face à face
+    >fusil à plomb
     $:B fois [de|d’] suite
     grosso modo
     guère
@@ -12616,8 +12697,8 @@ __purge_locutions__
     ?d’¿ ici même
     ?d’¿ ici-bas
     ?d’¿ il y a belle lurette
-    ?d’¿ il y a ?très¿ longtemps
-    ?d’¿ il y a ?très¿ peu [de|d’] temps
+    ?d’¿ il y a ?[assez|si|très]¿ longtemps
+    ?d’¿ il y a ?[assez|si|très]¿ peu [de|d’] temps
     ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a moins [de|d’] [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
@@ -12770,6 +12851,7 @@ __purge_locutions__
     peu à peu
     peut-être
     pile poil
+    >pistolet à plomb
     plein [nord|sud|ouest]
     plein [de|d’] fois
     plus [près|loin|tôt|tard]
@@ -12865,6 +12947,7 @@ __purge_locutions__
     sans l’ ombre d’ un doute
     sans mot dire
     sans nul doute
+    sans perdre [de|d’] temps
     sans pour autant y [parvenir|réussir|réfléchir|songer|penser]
     sans pour autant y faire attention
     sans pour autant y prendre [garde|goût|gout]
@@ -13416,7 +13499,7 @@ __purge_conditionnelle__
     nombre [de|des]
         <<- morph(<1, ":(?:R|C[sc])") ~1>> *
 
-    non @:A
+    non $:A¬>content/
         <<- not morph(<1, ":D.*:m:[si]") ~1>> *
 
     par trop $:A
@@ -13468,6 +13551,9 @@ __purge_conditionnelle__
 
     [le|un|ce|mon|ton|son]  putain  [de|d’]  @:[NA].*:[me]
         <<- ~2:3>> *
+
+    >répandre comme une [traînée|trainée] [de|d’] poudre
+        <<- ~2:0>> *
 
     quand  même  @:[AW]¬:D
         <<- ~1:2>> *
@@ -13548,9 +13634,6 @@ __simplication_substantifs__
     >bête à [manger|bouffer] du foin
     >billet [de|d’] [*NUM|$:B] [>euro|>dollar|>centime|>cent|>livre|>shilling]
     [>bisphénol|>bisphenol] A
-    >blanc comme neige
-    >blanc comme [de|d’] la craie
-    >blanc comme un linge
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à [gants|outils|sardines]
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
@@ -13570,6 +13653,7 @@ __simplication_substantifs__
     >caisse à >outil
     >carton d’ emballage
     cas [de|d’] figure
+    cas [de|d’] force majeure
     >cellule [de|d’] détention provisoire
     >centre d’ éducation [populaire|surveillée]
     >centre [de|d’] rétention ?[préventive|administrative]¿
@@ -13657,6 +13741,7 @@ __simplication_substantifs__
     >entrée [de|d’] service
     >épée à deux mains
     >épingle à cravate
+    >épreuve [de|d’] force
     >erreur [de|d’] jugement
     >espérance [de|d’] vie
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
@@ -13668,12 +13753,13 @@ __simplication_substantifs__
     faits et gestes
     farces et attrapes
     >fard à paupières
-    >fer à cheval
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage]
     >femme d’ âge mûr
     >femme à poigne
     >femme à tout faire
+    >fer à cheval
     >fer à repasser
+    >fer [de|d’] lance
     >ferme à >clic
     >fermeture à glissière
     >fermoir à [cliquet|levier|ressort]
@@ -13930,6 +14016,9 @@ __simplication_substantifs__
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
 
+    >blanc comme neige
+    >blanc comme [de|d’] la craie
+    >blanc comme un linge
     >brut [de|d’] décoffrage
     >con comme la lune
     >con comme un balai
@@ -13944,6 +14033,7 @@ __simplication_substantifs__
     >fou de rage ?[contenue|retenue]¿
     >élu à la majarité absolue
     >haut comme [trois|3] pommes
+    >haut en couleur
     >mort de trouille
     >nu comme un ver
     >nu comme des vers
@@ -14785,6 +14875,7 @@ __purge_locutions_verbales__
     >condamner à mort
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
+    >dire [adieu|merde]
     [>donner|>redonner] [naissance|sens|suite|vie]
     [>donner|>redonner] quartier libre
     >élire domicile
@@ -17436,6 +17527,7 @@ __conf_à_a_après_verbes__
     >avoir du mal a
     >commencer a
     >condamner a
+    >dire [adieu|merde] a
     >faire confiance a
     >mentir a
     >préparer a
@@ -18155,6 +18247,14 @@ __conf_coup_cout_cou2__
 TEST: il a été roué de {{cou}}
 TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
 TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
+
+
+# cuire / cuir
+__conf_cuire_cuir__
+    >faire >cuir $:D [>blanquette|>boulette|>brochette|>bœuf|>carotte|>champignons|>confit|>cèpe|>côte|>côtelette|>escalope|>fruit|>fève|>girolle|>haricot|>herbe|>jarret|>joue|>lardon|>lentille|>longe|>légume|>marron|>mijoté|>morille|>nem|>nouille|>ognon|>oignon|>omelette|>patate|>paupiette|>pied|>poire|>poitrine|>pomme|>porc|>potée|>poêlée|>pruneau|>pâte|>pâte|>pâté|>ragout|>ragoût|>rillette|>rognon|>rouelle|>rôti|>sauté|>steak|>terrine|>veau|>émincé|>épice|>œuf]
+        <<- /conf/ -2>> cuire                                                           # Confusion. Le cuir est la peau d’un animal. Pour parler de la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
+
+TEST: Va te faire {{cuir}} un œuf.                              ->> cuire
 
 
 # date / datte
@@ -19915,6 +20015,12 @@ __infi_qqch_de__
         <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
 
+    non >content                                [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “non content de”, le verbe devrait être à l’infinitif.
+
+    non >content                                [de|d’]  [l’|la]                   ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “non content de”, le verbe devrait être à l’infinitif.
+
     sous peine                                  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “sous peine de”, le verbe devrait être à l’infinitif.
 
@@ -19941,6 +20047,8 @@ TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bon
 TEST: sous peine de nous {{pesée}} lourd sun l’estomac
 TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
 TEST: Ne fais pas semblant de l’{{oubliée}}.
+TEST: non content de {{damnés}} pour l’éternité
+TEST: non contente de l’{{ignorée}}, elle en était fière.
 
 
 __infi_de_verbe__
@@ -24130,6 +24238,12 @@ __énumérations_substantifs__
         <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> _enum_
 
 
+__da_est__
+    *WORD  est
+        <<- morph(\1, ":V", ":N") =>> select(\2, ":V")
+
+
+
 @@@@
 @@@@
 @@@@
@@ -24894,6 +25008,17 @@ TEST: une des dames qui se sentent mal à l’aise dans cet avion est venue nous
 TEST: l’un des chants les plus diffusés pendant la Révolution culturelle
 
 
+__conj_ce_que__
+    ce  [que|qu’]  [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  @:V[123].*:[123][sp]  @:V¬:(?:G|P|Q|M|Y|3s)
+        <<- /conj/ not (morph(<1, ":R") and morph(\-1, ":3p"))
+        --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1 \2 \3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: ce qu’ils font me {{donnent}} la nausée.                              ->> donne
+TEST: tu ne sais pas, mais ce que tu fais {{deviens}} plus facile           ->> devient
+TEST: ceux contre ce que nous faisons deviennent hargneux.
+TEST: ce qu’elles accomplissent est formidable.
+
+
 ## 3pl
 __conj_elles__
     elles  @:V¬:(?:3p|P|G|M|A.*:f:p)
@@ -25084,14 +25209,14 @@ TEST: elles vont toutes aller faire un tour
 
 
 __conj_det_plur_nom__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3) -3>> =suggVerb(\3, ":3p") # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
         -3>> =suggVerb(\3, ":3p", suggPlur)                             # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
-    [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
