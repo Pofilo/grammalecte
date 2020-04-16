@@ -8350,6 +8350,22 @@ TEST: usage débridé des armes dites létales
 TEST: Vous dîtes “idiotes”, je dis “originales”.
 
 
+# dont / don
+__conf_dont_don__
+    [celui|celle|ceux|celles] don
+        <<- /conf/ --1>> dont                                   # Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
+
+    *WORD  *WORD  don  @:(?:D|B|Os)¬:A.*:[me]:[si]
+        <<- /conf/ morph(\1, ":[DB]") and morph(\2, ":N", ":[GAWM]")
+        -3>> dont                                               # Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
+
+TEST: celle {{don}} il est question est sublime             ->> dont
+TEST: ce partage {{don}} il est question                    ->> dont
+TEST: trente hommes {{don}} deux sont malades               ->> dont
+TEST: ce petit don je ne sais pas ce dont il s’agit.
+TEST: ce dont on parle tous les jours
+
+
 # dû / du
 __ppas_dû_du__
     du  [à|a|au|aux]
@@ -9551,6 +9567,19 @@ TEST: il est parti en pole position.
 TEST: elle fait de la pole dance.
 
 
+# plutôt / plus tôt
+__conf_plutôt_plus_tôt__
+    le plutôt possible
+        <<- /conf/ -2>> plus tôt                            # Confusion. Plus tard, plus tôt. Plutôt signifie “de préférence” ou “assez”.|https://fr.wiktionary.org/wiki/plut%C3%B4t
+
+    *WORD plus tôt que $:Y
+        <<- /conf/ morph(\1, ":Y") -2:3>> plutôt            # Confusion probable. Si vous voulez dire faire quelque chose de préférence à autre chose, écrivez “plutôt”.|https://fr.wiktionary.org/wiki/plut%C3%B4t
+
+TEST: Le {{plutôt}} possible sera le mieux
+TEST: agir {{plus tôt}} que pleurer sur son sort.
+TEST: Viens le plus tôt possible.
+
+
 # pomme / paume
 __conf_pomme_paume__
     >tomber ?[pas|jamais|guère|peu]¿ dans les >paume
@@ -10268,6 +10297,9 @@ __conf_soi_soit_soie__
     estime de soit
         <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.
 
+    [ça|cela|ceci] >aller ?$:W¿ de soit
+        <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.|https://fr.wiktionary.org/wiki/aller_de_soi
+
     en soit
         <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
         -2>> soi                                                                                    # Confusion probable.
@@ -10287,6 +10319,7 @@ TEST: quel que {{soie}} sa pensée, je refuse d’y accorder de l’attention.
 TEST: Penser par {{soit même}}…
 TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
 TEST: pas sûr que {{sa}} {{soi}} terminé avant demain
+TEST: Cela va presque de {{soit}}
 TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
 TEST: Quoi qu’il en soit
 TEST: À moins qu’elle n’en soit la victime.
@@ -12263,6 +12296,7 @@ __purge_locutions__
     comme au bon vieux temps
     comme cul et chemise
     comme [frappé+ses] par la foudre
+    comme gage [de|d’] bonne foi
     comme n’importe où ?ailleurs¿
     comme par [enchantement|magie]
     comme par un fait exprès
@@ -12486,6 +12520,7 @@ __purge_locutions__
     avant demain ?[matin|soir|après-midi]¿
     debout
     derechef
+    derrière tout [cela|ceci|ça]
     donc
     dorénavant
     déjà
@@ -12875,6 +12910,12 @@ __purge_locutions__
     plusieurs fois
     plusieurs fois [de|d’] suite
     plutôt
+    pour [ce|c’] [que|qu’] j’ en [sais|savais|sus|saurai|saurais]
+    pour [ce|c’] [que|qu’] tu en [sais|savais|sus|sauras|saurais]
+    pour [ce|c’] [que|qu’] [il|elle|on|iel] en [sait|savait|sut|saura|saurait]
+    pour [ce|c’] [que|qu’] nous en [savons|savions|sûmes|saurons|saurions]
+    pour [ce|c’] [que|qu’] vous en [savez|saviez|sûtes|saurez|sauriez]
+    pour [ce|c’] [que|qu’] [ils|elles|iels] en [savent|savaient|surent|sauront|sauraient]
     pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
     pour [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
     pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
@@ -13675,6 +13716,7 @@ __simplication_substantifs__
     >chasseur [de|d’] primes
     >chef [de|d’] file
     >chef d’ [état-major|entreprise]
+    >chef d’ orchestre ?[moderne|symphonique]¿
     >chemin [de|d’] [traverse|fer]
     >chemise [de|d’] nuit
     >chemise sans >manche
@@ -13728,6 +13770,7 @@ __simplication_substantifs__
     >délai [de|d’] [attente|carence|connexion|prescription|préavis|rétraction|rigueur]
     >demande d’ asile
     >descente aux [enfers|flambeaux]
+    dieu tout-puissant
     [>dîner|>diner] aux chandelles
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
@@ -13919,6 +13962,7 @@ __simplication_substantifs__
     >presse à >scandale
     preuve ?suffisante¿ du contraire
     preuves ?suffisantes¿ du contraire
+    >pure comme [le|du] cristal
     prix [de|d’] revient
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
@@ -13967,7 +14011,7 @@ __simplication_substantifs__
     >système D
     >tableau [de|d’] chasse
     >table à repasser
-    >table [de|d’] chevet
+    >table [de|d’] [calcul|chevet|nuit]
     >taille *NUM
     tas [de|d’] ferraille ?rouillée¿
     >talon >aiguille
@@ -14009,6 +14053,7 @@ __simplication_substantifs__
     >vente aux enchères
     >vérification [de|d’] routine
     vernis à ongles
+    >ver [de|d’] terre
     >verre à pied
     >virage à [*NUM|:B] degrés
     >voie [de|d’] [recours|perdition]
@@ -14040,6 +14085,8 @@ __simplication_substantifs__
     >élu à la majarité absolue
     >haut comme [trois|3] pommes
     >haut en couleur
+    [libéré+ses] sur parole
+    >lent à la détente
     >mort de trouille
     >nu comme un ver
     >nu comme des vers
@@ -14053,6 +14100,9 @@ __simplication_substantifs__
     >têtu comme une [bourrique|mule]
     >têtu comme un [âne|bourriquot|mulet]
         <<- ~2:0>> *
+
+    flambant >neuf
+        <<- ~1>> *
 
     [>homme|>femme|>cinéaste|>politicien|>acteur|>auteur|>sculpteur|>compositeur|>musicien|>groupe|>romancier|>peintre|>photographe|>sportif|>philosophe|>intellectuel|>polémiste] à succès
     [>homme|>femme] d’ >affaire à succès
