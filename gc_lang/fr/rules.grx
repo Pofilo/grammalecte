@@ -25644,6 +25644,9 @@ __vmode_verbe_que_subjonctif__
     >tenir  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             # Après “tenir à ce que”, le verbe doit être au subjonctif.
 
+    >veiller  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ not value(<1, "|la|") --1>> =suggVerbMode(\-1, ":S", \-2)                       # Après “veiller à ce que”, le verbe doit être au subjonctif.
+
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
         <<- /vmode/ not tag(\1, "upron") and not tag(\1, "neg") and morph(\1, ":V", ":N")
         --1>> =suggVerbMode(\-1, ":S", \-2)                                                         # Après “\1 que”, ce verbe devrait être au subjonctif.
@@ -25664,6 +25667,7 @@ TEST: il importera que nous {{devenons}} prêts.
 TEST: prends garde que vous {{revenez}} en un seul morceau.
 TEST: faites attention à ce qu’elle ne {{devient}} pas timorée.
 TEST: je tiens à ce que vous {{devenez}} grands.
+TEST: Veille à ce qu’il y {{est}} des gâteaux.
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
 TEST: Je me doutais bien qu’elle me détestait
