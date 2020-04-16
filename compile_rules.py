@@ -18,7 +18,6 @@ dDECLENSIONS = {}
 lFUNCTIONS = []
 
 aRULESET = set()     # set of rule-ids to check if there is several rules with the same id
-nRULEWITHOUTNAME = 0
 
 dJSREGEXES = {}
 
@@ -138,7 +137,6 @@ def countGroupInRegex (sRegex):
 def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     "returns rule as list [option name, regex, bCaseInsensitive, identifier, list of actions]"
     global dJSREGEXES
-    global nRULEWITHOUTNAME
 
     sLineId = "#" + str(nIdLine) + ("p" if bParagraph else "s")
     sRuleId = sLineId
@@ -157,26 +155,24 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     cCaseMode = 'i'         # i: case insensitive,  s: case sensitive,  u: uppercasing allowed
     cWordLimitLeft = '['    # [: word limit, <: no specific limit
     cWordLimitRight = ']'   # ]: word limit, >: no specific limit
-    m = re.match("^__(?P<borders_and_case>[\\[<]\\w[\\]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
+    m = re.match("^__(?P<borders_and_case>[\\[<]\\w[\\]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\))(?P<priority>![0-9]|)__ *", s)
     if m:
         cWordLimitLeft = m.group('borders_and_case')[0]
         cCaseMode = m.group('borders_and_case')[1]
         cWordLimitRight = m.group('borders_and_case')[2]
         sOption = m.group('option')[1:]  if m.group('option')  else False
-        if m.group('ruleid'):
-            sRuleId =  m.group('ruleid')[1:-1]
-            if sRuleId in aRULESET:
-                print("# Error. Several rules have the same id: " + sRuleId)
-                exit()
-            aRULESET.add(sRuleId)
-        else:
-            nRULEWITHOUTNAME += 1
+        sRuleId =  m.group('ruleid')[1:-1]
+        if sRuleId in aRULESET:
+            print("# Error. Several rules have the same id: " + sRuleId)
+            exit()
+        aRULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
         if m.group('priority'):
             nPriority = int(m.group('priority')[1:])
         s = s[m.end(0):]
     else:
-        print("# Warning. No option defined at line: " + sLineId)
+        print("# Warning. Rule wrongly shaped at line: " + sLineId)
+        exit()
 
     #### REGEX TRIGGER
     i = s.find(" <<-")
@@ -564,7 +560,7 @@ def make (spLang, sLang, bUseCache=False):
         elif re.match("[  \t]*$", sLine):
             # empty line
             pass
-        elif sLine.startswith(("    ", "\t")):
+        elif sLine.startswith("    "):
             # rule (continuation)
             lRuleLine[-1][1] += " " + sLine.strip()
         else:
@@ -629,8 +625,6 @@ def make (spLang, sLang, bUseCache=False):
         sJSCallables += "    },\n"
 
     displayStats(lParagraphRules, lSentenceRules)
-
-    print("Unnamed rules: " + str(nRULEWITHOUTNAME))
 
     dVars = {
         "fBuildTime": fBuildTime,

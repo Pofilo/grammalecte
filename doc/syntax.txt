@@ -84,7 +84,7 @@ http://docs.python.org/library/re.html
 There can be one or several actions for each rule, executed following the order they are
 written.
 
-Optional: option, rulename, priority, condition, URL
+Optional: option, priority, condition, URL
 
 LCR flags means:
 
@@ -114,47 +114,23 @@ Case sensitiveness (C):
 
 >>          i.e.:  "Word"  becomes  "W[oO][rR][dD]"
 
-Examples:
-
-    __[i]__
-    __<s]__
-    __[u>__
-    __<s>__
-
+Examples: `[i]`, `<s]`, `[u>`, `<s>`
 
 User option activating/deactivating is possible with an option name placed
 just after the LCR flags, i.e.:
 
-    __[i]/option1__
-    __[u]/option2__
-    __[s>/option1__
-    __<u>/option3__
-    __<i>/option3__
-
-Rules can be named:
-
-    __[i]/option1(name1)__
-    __[u]/option2(name2)__
-    __[s>/option1(name3)__
-    __<u>(name4)__
-    __<i>(name5)__
+    __[i]/option1(rulename1)__
+    __[u]/option2(rulename2)__
+    __[s>/option3(rulename3)__
+    __<u>(rulename4)__
+    __<i>(rulename5)__
 
 Each rule name must be unique.
-
-
-The LCR flags are also optional. If you don’t set these flags, the default LCR
-flags will be:
-
-    __[i]__
-
-Example. Report “foo” in the text and suggest “bar”:
-
-    foo <<- ->> bar         # Use bar instead of foo.
 
 Example. Recognize and suggest missing hyphen and rewrite internally the text
 with the hyphen:
 
-    __[s]__
+    __[s](rulename)__
         foo bar
             <<- ->> foo-bar     # Missing hyphen.
             <<- ~>> foo-bar
@@ -167,9 +143,9 @@ You should use 4 spaces.
 
 Examples:
 
-    __<s>__ pattern <<- condition ->> replacement # message
+    __<s>(rulename)__ pattern <<- condition ->> replacement # message
 
-    __<s>__
+    __<s>(rulename)__
         pattern
             <<- condition ->> replacement
             # message
@@ -182,7 +158,7 @@ Examples:
 
 Example: Recognize double or more spaces and suggests a single space:
 
-    __<s>__  "  +" <<- ->> " "      # Remove extra space(s).
+    __<s>(rulename)__  "  +" <<- ->> " "      # Remove extra space(s).
 
 Characters `"` protect spaces in the pattern and in the replacement text.
 
@@ -198,7 +174,7 @@ Example. Suggest a word with correct quotation marks:
 
 Example. Suggest the missing space after the signs `!`, `?` or `.`:
 
-    __<i]__  \b([?!.])([A-Z]+) <<- ->> \1 \2     # Missing space?
+    \b([?!.])([A-Z]+) <<- ->> \1 \2     # Missing space?
 
 Example. Back reference in messages.
 
@@ -230,11 +206,11 @@ Examples:
 
 Repeating pattern matching of a single rule continues after the previous matching, so instead of general multiword patterns, like
 
-        (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
+    (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
 
 use
 
-        (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
+    (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
 
 
 ## TOKEN RULES ##
