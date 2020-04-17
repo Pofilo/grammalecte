@@ -55,7 +55,7 @@ OPT/unit:           True        True        True        False       False       
 OPT/nf:             True        True        True        True        True        True
 OPT/liga:           False       False       False       False       False       False
 OPT/mapos:          False       False       False       False       False       False
-OPT/chim:           False       False       False       False       False       False
+OPT/chim:           True        True        False       True        True        True
 OPT/ocr:            False       False       False       False       False       False
 OPT/conf:           True        True        True        True        True        True
 OPT/sgpl:           True        True        True        True        True        True
@@ -163,7 +163,7 @@ OPTLABEL/unit:      Espaces insécables avant unités de mesure
 OPTLABEL/nf:        Normes françaises
 OPTLABEL/liga:      Signaler ligatures typographiques|Ligatures de fi, fl, ff, ffi, ffl, ft, st.
 OPTLABEL/mapos:     Apostrophe manquante après lettres isolées [!]|Apostrophe manquante après les lettres l d s n c j m t ç. Cette option sert surtout à repérer les défauts de numérisation des textes et est déconseillée pour les textes scientifiques.
-OPTLABEL/chim:      Chimie [!]|Typographie des composés chimiques (H₂O, CO₂, etc.).
+OPTLABEL/chim:      Chimie|Typographie des composés chimiques (H₂O, CO₂, etc.).
 OPTLABEL/ocr:       Erreurs de numérisation (OCR) [!]|Erreurs de reconnaissance optique des caractères. Beaucoup de faux positifs.
 
 OPTLABEL/gramm:     Noms et adjectifs
@@ -212,7 +212,7 @@ OPTLABEL/unit:      Non-breaking spaces before units of measurement
 OPTLABEL/nf:        French standards
 OPTLABEL/liga:      Report typographical ligatures|Ligatures of fi, fl, ff, ffi, ffl, ft, st.
 OPTLABEL/mapos:     Missing apostrophes after single letters [!]|Missing apostrophes after l d s n c j m t ç. This option is mostly useful to detect defects of digitized texts and is not recommended for scientific texts.
-OPTLABEL/chim:      Chemistry [!]|Typography for molecules (H₂O, CO₂, etc.)
+OPTLABEL/chim:      Chemistry|Typography for molecules (H₂O, CO₂, etc.)
 OPTLABEL/ocr:       OCR errors [!]|Warning: many false positives.
 
 OPTLABEL/gramm:     Nouns and Adjectives
@@ -1276,33 +1276,33 @@ TEST: « J’en suis “malade”. »
 !!
 
 __[s]/unit(unit_nbsp_avant_unités1)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|MHz|°C|℃)(?![’'])  @@0,0
-    <<- option("num") -1>> =formatNumber(\2) + " "              # Avec une unité de mesure, mettez un espace insécable.
-    <<- __else__ -1>> "\2 "                                     # Avec une unité de mesure, mettez un espace insécable.
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|px|MHz|°C|℃)(?![’'])  @@0,0,$
+    <<- option("num") ->> =formatNumber(\2) + " " + \3          # Avec une unité de mesure, mettez un espace insécable.
+    <<- __else__ ->> "\2 \3"                                    # Avec une unité de mesure, mettez un espace insécable.
 
 __[s]/unit(unit_nbsp_avant_unités2)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
     <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
-    <<- option("num") -1>> =formatNumber(\2) + " "              # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-    <<- __else__ -1>> "\2 "                                     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- option("num") ->> =formatNumber(\2) + " " + \3          # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- __else__ ->> "\2 \3"                                    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 __[s]/unit(unit_nbsp_avant_unités3)__
     ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
     <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
-    <<- option("num") -1>> =formatNumber(\2) + " "              # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-    <<- __else__ -1>> "\2 "                                     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- option("num") ->> =formatNumber(\2) + " " + \3          # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- __else__ ->> "\2 \3"                                    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
-TEST: Ça a duré {{3}}µs
-TEST: Ça a duré {{3,5 }}µs
-TEST: il y en a {{3 }}m²
-TEST: il a fait {{10}}%
-TEST: Ça coûte {{13,4}}¥.
-TEST: il mesure {{30,3 }}cm
-TEST: il est monté à {{18 }}%
-TEST: une température de {{22,4 }}°C
-TEST: il en veut {{18}}kg
-TEST: il me le propose pour {{243 }}gCO2/kWh
-TEST: il me le propose pour {{243,4 }}gCO2/kWh
+TEST: Ça a duré {{3µs}}                                 ->> 3 µs
+TEST: Ça a duré {{3,5 µs}}                              ->> 3,5 µs
+TEST: il y en a {{3 m²}}                                ->> 3 m²
+TEST: il a fait {{10%}}                                 ->> 10 %
+TEST: Ça coûte {{13,4¥}}.                               ->> 13,4 ¥
+TEST: il mesure {{30,3 cm}}                             ->> 30,3 cm
+TEST: il est monté à {{18 %}}                           ->> 18 %
+TEST: une température de {{22,4 °C}}                    ->> 22,4 °C
+TEST: il en veut {{18kg}}                               ->> 18 kg
+TEST: il me le propose pour {{243 gCO2/kWh}}            ->> 243 gCO2/kWh
+TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
 TEST: en l’an 2000 Urgondorletroll eut une idée
 TEST: 1998 s’annonce grandiose.
 TEST: il y en a 3,43 milliards.
@@ -6986,7 +6986,7 @@ __conf_à_a_locutions__
     a bien des égards
     a bien y [penser|réfléchir|songer]
     a bon [compte|escient|droit]
-    a bout de [bras|souffle|>force]
+    a bout [de|d’] [bras|souffle|>force]
     a bout [portant|touchant]
     a bras le corps
     a bras ouverts
@@ -6999,10 +6999,10 @@ __conf_à_a_locutions__
     a cet égard
     a cet instant précis
     a cette époque
-    a cette époque de l’année
-    a cette heure de la [journée|nuit]
+    a cette époque [de|d’] l’année
+    a cette heure [de|d’] la [journée|nuit]
     a chaque [fois|instant]
-    a charge de revanche
+    a charge [de|d’] revanche
     a ?[si|très|trop]¿ chaudes larmes
     a cheval sur
     a cœur [joie|ouvert|perdu]
@@ -7015,7 +7015,7 @@ __conf_à_a_locutions__
     a ?[si|très|trop]¿ courte [échéance|portée]
     a couilles rabattues
     a >couteau [tiré|tirés]
-    a de ?[si|très|trop]¿ nombreuses reprises
+    a [de|d’] ?[si|très|trop]¿ nombreuses reprises
     a des kilomètres à la ronde
     a dose homéopathique
     a double [titre|tranchant]
@@ -7027,9 +7027,11 @@ __conf_à_a_locutions__
     a ?[si|très|trop]¿ faible [allure|revenu]
     a ?[si|très|trop]¿ faible tirant d’ eau
     a feu et à sang
-    a flanc de [colline|montagne]
-    a fleur de peau
+    a flanc [de|d’] [colline|montagne]
+    a fleur [de|d’] peau
+    a >fond [perdu+ses]
     a géométrie variable
+    a gorge déployée
     a grand-peine
     a grande échelle
     a grands frais
@@ -7045,7 +7047,7 @@ __conf_à_a_locutions__
     a l’ heure qu’ il est
     a l’ [accoutumée|amiable|arrache|avance|avenant|avenir|aveuglette|écart|emporte-pièce|évidence|étouffée|extérieur|improviste|intérieur|inverse|occasion|unanimité|unisson]
     a l’ air libre
-    a l’ exclusion de toute autre chose
+    a l’ exclusion [de|d’] toute autre chose
     a l’ ordre du jour
     a l’ œil nu
     a l’ en croire
@@ -7055,12 +7057,12 @@ __conf_à_a_locutions__
     a l’ une des leurs
     a la [con|dérive|dérobée|diable|fois|mords-moi-le-nœud|papa|rescousse|sauvette|va-vite|volée]
     a la bonne franquette
-    a la fin de l’ an ?[passé|~^[0-9]{2,5}$]¿
-    a la fin de l’ année ?[passée|~^[0-9]{2,5}$]¿
+    a la fin [de|d’] l’ an ?[passé|~^[0-9]{2,5}$]¿
+    a la fin [de|d’] l’ année ?[passée|~^[0-9]{2,5}$]¿
     a la fin des années ~^[0-9]{2,5}$
     a la fin du mois [de|d’] {mois} ?[passé|prochain|~^[0-9]{2,5}$]¿
     a la limite du supportable
-    a la lumière de tout [ceci|cela|ça]
+    a la lumière [de|d’] tout [ceci|cela|ça]
     a la petite semaine
     a la pointe du progrès
     a la queue leu leu
@@ -7099,10 +7101,10 @@ __conf_à_a_locutions__
     a parts égales
     a pas [de|d’] [géant|loup|tortue|velours]
     a personne en danger
-    a perte de vue
+    a perte [de|d’] vue
     a ?[si|très|trop]¿ petit feu
     a ?[si|très|trop]¿ petite [dose|échelle]
-    a ?[si|très|trop]¿ peu de >chose près
+    a ?[si|très|trop]¿ peu [de|d’] >chose près
     a peu près
     a pied d’ œuvre
     a pieds joints
@@ -7115,17 +7117,17 @@ __conf_à_a_locutions__
     a plus d’ un titre
     a poil [court|dur|long|rêche]
     a point nommé
-    a portée de main
+    a portée [de|d’] main
     a première vue
     a prix [cassé|cassés|>modique]
     a proprement parler
-    a qui de droit
+    a qui [de|d’] droit
     a qui mieux mieux
     a qui que ce soit
     a quelque distance
     a quelques exceptions près
     a ras >bord
-    a ras de terre
+    a ras [de|d’] terre
     a ras [du|le] sol
     a rude épreuve
     a >seul [>fin|>faim] [de|d’]
@@ -7139,13 +7141,13 @@ __conf_à_a_locutions__
     a tombeau ouvert
     a tort et à travers
     a tort ou à raison
-    a tour de [bras|rôle]
+    a tour [de|d’] [bras|rôle]
     a tous crins
-    a tous points de vue
+    a tous points [de|d’] vue
     a tout [âge|crin|instant|jamais|moment|prix]
-    a tout bout de champ
+    a tout bout [de|d’] champ
     a tout le [moins|monde]
-    a tout point de vue
+    a tout point [de|d’] vue
     a tout un chacun
     a toute [allure|berzingue|bride|épreuve|force|heure|vitesse|volée]
     a toutes jambes
@@ -7162,7 +7164,7 @@ __conf_à_a_locutions__
     a vrai dire
     a vue d’ œil
     a y [réfléchir|songer|penser]
-    a y regarder de plus près
+    a y regarder [de|d’] plus près
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -7512,7 +7514,7 @@ TEST: il va dans l’{{haut delà}}
 __conf_aile_elle__
     l’ [elle+s]
     [mon|son|ton|son|notre|votre|leur] [elle+s] [droite|gauche]
-    une [elle+s] [de|d’] [poulet|poule|perdreau|canard|perdrix|pigeon|raie|papillon|voiture|bâtiment|château|manoir|palais]
+    une [elle+s] [de|d’|du] [poulet|poule|perdreau|canard|perdrix|pigeon|raie|papillon|voiture|bâtiment|château|manoir|palais]
         <<- /conf/ -2>> aile
         # Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
 
@@ -7996,7 +7998,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 # cou / coup / coût
 __conf_coup_cout_cou1__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -8359,9 +8361,22 @@ __conf_dont_don__
         <<- /conf/ morph(\1, ":[DB]") and morph(\2, ":N", ":[GAWM]")
         -3>> dont                                               # Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
 
-TEST: celle {{don}} il est question est sublime             ->> dont
-TEST: ce partage {{don}} il est question                    ->> dont
-TEST: trente hommes {{don}} deux sont malades               ->> dont
+    ce  don  @:(?:Os|M)             ?n’¿        >avoir  ?@[:WX]¿    besoin
+    ce  don  je                     ?[ne|n’]¿   me      >souvenir
+    ce  don  tu                     ?[ne|n’]¿   te      >souvenir
+    ce  don  nous                   ?[ne|n’]¿   nous    >souvenir
+    ce  don  vous                   ?[ne|n’]¿   vous    >souvenir
+    ce  don  [il|elle|on|iel|$:M]   ?[ne|n’]¿   se      >souvenir
+    ce  don  [ils|elles|iels]       ?[ne|n’]¿   se      >souvenir
+        <<- /conf/ not value(>1, "|de|d’|des|du|") and not value(>2, "|de|d’|des|du|")
+        -2>> dont                                               # Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
+
+TEST: celle {{don}} il est question est sublime                     ->> dont
+TEST: ce partage {{don}} il est question                            ->> dont
+TEST: trente hommes {{don}} deux sont malades                       ->> dont
+TEST: ce {{don}} tu te souviens, c’est pas ça                       ->> dont
+TEST: c’est ce {{don}} nous avons besoin                            ->> dont
+TEST: ce don il a besoin de savoir qui lui offre
 TEST: ce petit don je ne sais pas ce dont il s’agit.
 TEST: ce dont on parle tous les jours
 
@@ -9572,11 +9587,15 @@ __conf_plutôt_plus_tôt__
     le plutôt possible
         <<- /conf/ -2>> plus tôt                            # Confusion. Plus tard, plus tôt. Plutôt signifie “de préférence” ou “assez”.|https://fr.wiktionary.org/wiki/plut%C3%B4t
 
-    *WORD plus tôt que $:Y
-        <<- /conf/ morph(\1, ":Y") -2:3>> plutôt            # Confusion probable. Si vous voulez dire faire quelque chose de préférence à autre chose, écrivez “plutôt”.|https://fr.wiktionary.org/wiki/plut%C3%B4t
+    [<start>|*WORD]  plus  tôt  que  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    [<start>|*WORD]  plus  tôt  que  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    [<start>|*WORD]  plus  tôt  que  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    [<start>|*WORD]  plus  tôt  que  ?[ne|n’]¿  [lui|leur|y]                    en                          $:Y
+        <<- /conf/ morph(\1, ":Y|<start>") -2:3>> plutôt   # Confusion probable. Si vous voulez dire faire quelque chose de préférence à autre chose, écrivez “plutôt”.|https://fr.wiktionary.org/wiki/plut%C3%B4t
 
 TEST: Le {{plutôt}} possible sera le mieux
 TEST: agir {{plus tôt}} que pleurer sur son sort.
+TEST: {{plus tôt}} que leur donner raison, dénigre leur personne.
 TEST: Viens le plus tôt possible.
 
 
@@ -11989,9 +12008,11 @@ __purge_locutions__
     à flanc de [colline|montagne]
     à fleur de peau
     à franchement parler
+    à fonds perdus
     à géométrie variable
     à glacer le sang
     à glacer les sangs
+    à gorge déployée
     à grande échelle
     à ?[si|très|trop]¿ grands frais
     à ?[si|très|trop]¿ haut risque
@@ -13650,6 +13671,7 @@ __simplication_substantifs__
     >administrateur >système
     >agence [de|d’] >voyage
     >agité du bocal
+    >aide [de|d’] camp
     >aire d’ atterrissage
     >animal [de|d’] compagnie
     >appel au secours
@@ -13881,6 +13903,7 @@ __simplication_substantifs__
     >livraison à domicile
     >livre [de|d’] [poche|chevet]
     >livret d’ épargne ?[bancaire|populaire|salariale]¿
+    >loi d’ airain
     >longueur d’ avance
     >lune [de|d’] miel
     >machine à [café|coudre|écrire|laver|sous|voter]
@@ -13892,6 +13915,7 @@ __simplication_substantifs__
     >maison [de|d’] [passe|retraite]
     >mal [de|d’] [tête|ventre|mer]
     >mandat [de|d’] [arrêt|dépôt]
+    >marchand [de|d’] tapis
     >marchand [de|d’] fruits et légumes
     >marché aux puces
     >maréchal des [logis|logis-chef]
@@ -13927,9 +13951,9 @@ __simplication_substantifs__
     >ordre du jour
     orge [perlé|mondé|carré]
     >nuit [de|d’] noces
+    >pacte de non-agression
     >pain [de|d’] mie
     >panier à linge
-    >piano à queue
     >papier à [>lettre|musique]
     >parc à thème
     >parc d’ attractions
@@ -13940,6 +13964,7 @@ __simplication_substantifs__
     >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
     >peur [de|d’] tous les diables
+    >piano à queue
     >pièce à conviction
     >pièce [de|d’] [théâtre|monnaie]
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
@@ -14006,6 +14031,7 @@ __simplication_substantifs__
     >sonnette d’ alarme
     >sortie [de|d’] secours
     >soue à >cochonne
+    >sujet [de|d’] prédilection
     >suspension [de|d’] séance
     >système d’ exploitation
     >système D
@@ -14551,7 +14577,7 @@ __purge_avant_adjectifs_adverbes__
         <<- morph(\1, ":V") ~2:3>> *
 
     bien sûr
-        <<- not value(>1, "|de|d’|") ~>> *
+        <<- not value(>1, "|de|d’|des|du|") ~>> *
 
     à peu près   @:[AW]
         <<- ~1:3>> *
@@ -17559,6 +17585,7 @@ __conf_à_a_après_verbes__
     >prêter a >confusion
     >réduire a néant
     >saigner a blanc
+    >sentir a l’ aise
     >tenir a [carreau|cœur|distance]
     >tirer a blanc
     >tomber a [pic|point]
@@ -17567,18 +17594,19 @@ __conf_à_a_après_verbes__
     >vendre a >perte
     >venir a bout
     [>venir|>revenir] a point
-        <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     >appartenir a
     >appartenir en propre a
     >avoir vocation a
     >donner [sens|suite] a
     enclin a
+    en être [réduit+ses] a
     en proie a
     >laisser libre cours a
     >parvenir a
     >prêter attention a
-        <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") --1>> à      # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") --1>> à      # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     >appeler a
     >avoir du mal a
@@ -17589,10 +17617,11 @@ __conf_à_a_après_verbes__
     >mentir a
     >préparer a
     >prêter serment a
+    >rendre service a
     >réussir a
     >viser a
         <<- /conf/ not tag_before(\1, "_propsub_") and not morph(\1, ":Y")
-        --1>> à                                                             # Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        --1>> à                                                             # Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     @:V¬:[YGNAWM]  a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_propsub_") and not morph(>1, ":Q")
@@ -17815,12 +17844,16 @@ __conf_air_aire_ère__
     >libre comme l’ [ère|aire]
         <<- /conf/ --1>> air        # Confusion. Une ère est une époque. L’aire est une surface. Pour parler de l’atmosphère, écrivez “air”.|https://fr.wiktionary.org/wiki/air
 
+    >foutre en l’ [ère|air]
+        <<- /conf/ --1>> air        # Confusion. Locution “foutre en l’air”.|https://fr.wiktionary.org/wiki/foutre_en_l%E2%80%99air
+
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
 TEST: Ce sera un jour dans l’{{ère}} du temps
 TEST: il a l’{{aire}} d’un plouc.
 TEST: il en a tout l’{{ère}}
 TEST: on s’arrêtera sur l’{{air}} d’autoroute
 TEST: baptême de l’{{aire}}
+TEST: il va se foutre en l’{{ère}} si ça continue comme ça.
 
 
 # auspice / hospice
