@@ -234,7 +234,7 @@ class GraphBuilder:
                         dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
                 # Parse actions
-                for iAction, (iActionLine, sAction) in enumerate(lActions):
+                for iAction, (iActionLine, sAction) in enumerate(lActions, 1):
                     sAction = sAction.strip()
                     if sAction:
                         sActionId = self.sGraphCode + "__" + sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
@@ -386,7 +386,7 @@ class GraphBuilder:
 
     def storeAction (self, sActionId, aAction):
         "store <aAction> in <self.dActions> avoiding duplicates and return action name"
-        nVar = 0
+        nVar = 1
         while True:
             sActionName = sActionId + "_" + str(nVar)
             if sActionName not in self.dActions:
