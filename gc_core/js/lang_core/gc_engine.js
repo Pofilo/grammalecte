@@ -1349,7 +1349,7 @@ function g_token (lToken, i) {
         return lToken[0];
     }
     if (i >= lToken.length) {
-        return lToken[-1];
+        return lToken[lToken.length-1];
     }
     return lToken[i];
 }
