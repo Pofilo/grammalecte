@@ -3788,7 +3788,7 @@ __chim_molécules__
     [Yb2O3|Yb2S3|Yb2Se3|YB6|YbBr2|YbBr3|YbCl2|YbCl3|YbF2|YbF3|YbI2|YbI3|YbPO4|YBr3|YbSi2|YC2|YCl3|YF3|YVO4]
     [Zn2P2O7|Zn2SiO4|Zn3As2|Zn3N2|Zn3P2|Zn3Sb2|ZnBr2|ZnCl2|ZnCO3|ZnCr2O4|ZnF2|ZnI2|ZnMoO4|ZnO2|ZnS2O3|ZnSeO3|ZnSeO4|ZnSnO3|ZnSO3|ZnSO4|ZnTeO3|ZnTeO4|ZnTiO3|ZnWO4|ZnZrO3|ZrB2|ZrBr4|ZrCl4|ZrF4|ZrI4|ZrO2|ZrP2|ZrS2|ZrSi2|ZrSiO4]
         <<- /chim/ ->> =\1.replace("1", "₁").replace("2", "₂").replace("3", "₃").replace("4", "₄").replace("5", "₅").replace("6", "₆").replace("7", "₇").replace("8", "₈").replace("9", "₉").replace("0", "₀")
-        # Typographie des composés chimiques. [!]
+        # Typographie des composés chimiques.
 
 TEST: __chim__ les molécules {{CaCO3}}…                                     ->> CaCO₃
 TEST: __chim__ {{C5H10N2O3}}                                                ->> C₅H₁₀N₂O₃
@@ -4145,7 +4145,7 @@ __tu_substantifs__
         <<- /tu/ not (value(<1, "|par|") and value(<2, "|un|"))
         -2:3>> \2-\3                                            # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
 
-    >aller >retour
+    [aller+s] >retour
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     >arc en ciel
@@ -7045,7 +7045,7 @@ __conf_à_a_locutions__
     a ?[si|très|trop]¿ juste [raison|titre]
     a l’ heure actuelle
     a l’ heure qu’ il est
-    a l’ [accoutumée|amiable|arrache|avance|avenant|avenir|aveuglette|écart|emporte-pièce|évidence|étouffée|extérieur|improviste|intérieur|inverse|occasion|unanimité|unisson]
+    a l’ [accoutumée|amiable|arrache|avance|avenant|avenir|aveuglette|écart|échelle|échelon|emporte-pièce|évidence|étouffée|extérieur|improviste|intérieur|inverse|occasion|unanimité|unisson]
     a l’ air libre
     a l’ exclusion [de|d’] toute autre chose
     a l’ ordre du jour
@@ -7537,6 +7537,29 @@ TEST: De l’autre côté du mur, dans l’{{elle}} réservée aux femmes, il y 
 TEST: vous réfugier sous leurs {{elles}}.
 TEST: les {{elles}} du désir
 TEST: {{elle}} droite du palais du roi
+
+
+# allée / aller
+__conf_aller_allée__
+    [allé+ses] >retour
+        <<- /conf/ ->> aller-retour|allers-retours                      # Confusion. Un aller-retour, des allers-retours. Une allée est une voie de passage.|https://fr.wiktionary.org/wiki/aller-retour
+
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques] allés
+        <<- /conf/ --1>> allers|allées                                  # Confusion. Écrivez “allers” pour évoquer un voyage. Écrivez “allées” pour évoquer une voie de passage.
+
+    [l’|cet|mon|ton|son|notre|votre|leur|chaque] allé
+        <<- /conf/ --1>> aller|allée                                    # Confusion. Écrivez “aller” pour évoquer un voyage. Écrivez “allée” pour évoquer une voie de passage.
+
+    [>nettoyer|>parcourir|>traverser]  [l’|cet|mon|ton|son|notre|votre|leur]  aller
+        <<- /conf/ --1>> allée                                          # Confusion. Un aller est un voyage. Une allée est voie de passage.
+
+TEST: il descendait l’{{allé}}
+TEST: Des {{allés retour}}
+TEST: quelques {{allés}} simples
+TEST: l’{{allé}} perdu dans les montagnes
+TEST: va nettoyer l’{{aller}}
+TEST: Un aller-routour. Des allers-retours.
+TEST: je traversais l’allée discrètement.
 
 
 # aux dépens
@@ -9228,26 +9251,28 @@ TEST: En français, la plupart des noms de métier traditionnellement masculins 
 # ou / où
 __conf_où_ou__
     <start>  Ou  @:3[sp]¬:Y
-        <<- /conf/ -2>> Où                                  # Confusion probable. La conjonction “ou” signale une alternative. Utilisez “où” pour “en quel lieu”.
+        <<- /conf/ -2>> Où                                  # Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     au moment ou
     jusqu’ ou
     par ou
     d’ ou
-        <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+    mais ou
+    ni ou
+        <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     ou et [comment|que|qui|quand|pourquoi|quel|quels|quelle|quelles]
     ou et $:R
-        <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     vers ou
-        <<- /conf/ not morph(<1, ":D") -2>> où              # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ not morph(<1, ":D") -2>> où              # Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     [au|le|des] cas ou
-        <<- /conf/ -3>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ -3>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     [les|ces|des|aux|auxdites] fois ou
-        <<- /conf/ -3>> où                                  # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ -3>> où                                  # Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     à partir du [lieu|moment|jour|mois]     ou
     à partir de l’ [instant|année|heure]    ou
@@ -9255,11 +9280,14 @@ __conf_où_ou__
     depuis le [jour|millénaire|moment|mois|siècle]  ou
     depuis la [minute|semaine|seconde]              ou
     depuis l’ [année|heure|instant]                 ou
-        <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     >être ?$:W¿ dans [une|cette|la] situation ou
     [vient|vint|viendra|viendrait] un temps ou
-        <<- /conf/ --1>> où                                 # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ --1>> où                                 # Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
+
+    là ou le vent
+        <<- /conf/ -2>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
 TEST: {{Ou}} sont tes affaires ?                                    ->> Où
 TEST: au moment {{ou}} elle allait enfin réussir                    ->> où
@@ -9274,6 +9302,8 @@ TEST: depuis l’année {{ou}} nous sommes allés en Bretagne           ->> où
 TEST: depuis la seconde {{ou}} tu as parlé                          ->> où
 TEST: depuis le jour {{ou}} il a été blessé.                        ->> où
 TEST: nous sommes dans une situation {{ou}} il faut avancer         ->> où
+TEST: j’irai là {{ou}} le vent me portera                           ->> où
+TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
 
 
 # pale / pâle
@@ -12026,6 +12056,8 @@ __purge_locutions__
     à l’ [accoutumée|amiable|arrache|arrachée|avance|avenant|aveuglette|emporte-pièce|évidence|étouffée|improviste|inverse|occasion|unanimité|unisson]
     à l’ air libre
     à l’ avenir ?[incertain|prometteur]¿
+    à l’ échelon [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
+    à l’ échelle [locale|cantonale|départementale|régionale|nationale|européenne|américaine|africaine|asiatique|continentale|internationale|planétaire|galactique|universelle]
     à l’ en croire
     à l’ état pur
     à l’ exclusion de toute autre chose
@@ -13635,6 +13667,9 @@ __purge_conditionnelle__
 
     tant  que  ça  @¬:(?:3s|X|Oo)
         <<- ~1:3>> *
+
+    toutes faites
+        <<- value(<1, "|recettes|réponses|solutions|") ~>> *
 
     pas  tant  que  ça  @¬:(?:3s|X|Oo)
         <<- ~1:4>> *
@@ -17771,14 +17806,6 @@ __conf_d_affilée__
 TEST: C’est arrivé trois jours d’{{affilé}}
 
 
-# allée / allé
-__conf_allée__
-    l’ allé
-        <<- /conf/ -2>> allée                           # Confusion. Une allée.
-
-TEST: il descendait l’{{allé}}
-
-
 # amende / amande
 __conf_amande_amende__
     yeux en [>amende]
@@ -20589,9 +20616,6 @@ TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
 TEST: sans pour autant la {{vouée}} aux gémonies.
 TEST: Il faut être sans préjugés.
 TEST: je craignais d’être pour toujours abandonnée
-
-__sans_pour_autant__
-
 
 
 __infi_locutions__
@@ -26183,6 +26207,7 @@ TEST: ils nous ont agenouillés
 TEST: C’est pure folie.
 TEST: Du côté de ceux sans qui le cinéma se réduirait à pas grand-chose
 TEST: Il commence à monter sur scène au Club Méditerranée
+TEST: Je n’en avais cure.
 
 
 
