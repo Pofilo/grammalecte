@@ -8,6 +8,7 @@ import traceback
 import json
 import colorsys
 import time
+import hashlib
 
 import compile_rules_js_convert as jsconv
 import compile_rules_graph as crg
@@ -471,31 +472,44 @@ def make (spLang, sLang, bUseCache=False):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
-    if bUseCache and os.path.isfile("_build/data_cache.json"):
-        print("> don’t rebuild rules, use cache...")
+    dCacheVars = None
+
+    if os.path.isfile("_build/data_cache.json"):
+        print("> data cache found")
         sJSON = open("_build/data_cache.json", "r", encoding="utf-8").read()
         dCacheVars = json.loads(sJSON)
-        print("  build made at: " + time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(dCacheVars.get("fBuildTime", 0))))
-        return dCacheVars
-
-    fBuildTime = time.time()
+        sBuildDate = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(dCacheVars.get("fBuildTime", 0)))
+        if bUseCache:
+            print("> use cache (no rebuild asked)")
+            print("  build made at: " + sBuildDate)
+            return dCacheVars
 
     print("> read rules file...")
     try:
-        lRules = open(spLang + "/rules.grx", 'r', encoding="utf-8").readlines()
+        sFileContent = open(spLang + "/rules.grx", 'r', encoding="utf-8").read()
     except OSError:
         print("Error. Rules file in project [" + sLang + "] not found.")
         exit()
 
+    xHasher = hashlib.new("sha3_512")
+    xHasher.update(sFileContent.encode("utf-8"))
+    sFileHash = xHasher.hexdigest()
+
+    if dCacheVars and sFileHash == dCacheVars.get("sFileHash", ""):
+        print("> cache hash identical to file hash, use cache")
+        print("  build made at: " + sBuildDate)
+        return dCacheVars
+
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
+    fBuildTime = time.time()
     lRuleLine = []
     lTest = []
     lOpt = []
     bGraph = False
     lGraphRule = []
 
-    for i, sLine in enumerate(lRules, 1):
+    for i, sLine in enumerate(sFileContent.split("\n"), 1):
         if sLine.startswith('#END'):
             # arbitrary end
             printBookmark(0, "BREAK BY #END", i)
@@ -628,6 +642,7 @@ def make (spLang, sLang, bUseCache=False):
 
     dVars = {
         "fBuildTime": fBuildTime,
+        "sFileHash": sFileHash,
         "callables": sPyCallables,
         "callablesJS": sJSCallables,
         "gctests": sGCTests,

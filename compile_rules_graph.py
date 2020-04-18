@@ -457,7 +457,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     # for clarity purpose, don’t create any file here
 
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
-    print("  parsing rules...")
+    print("  parsing graph rules...")
     lTokenLine = []
     lActions = []
     bActionBlock = False
@@ -545,7 +545,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             print(sLine)
 
     # processing rules
-    print("  processing rules...")
+    print("  processing graph rules...")
     initProcessPoolExecutor()
     fStartTimer = time.time()
     # build graph
