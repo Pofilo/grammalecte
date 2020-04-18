@@ -3874,11 +3874,18 @@ TEST: Ce fut là en fait une appellation fautive
 
 ### Préfixes
 __tu_préfixe_ex__
-    ex  $:N¬*
-        <<- /tu/ not value(\2, "|aequo|nihilo|cathedra|absurdo|abrupto|")
-        ->> ex-\2                                                           # S’il s’agit d’un seul mot, il manque un trait d’union.
+    l’ ex  @:[NT]¬*
+        <<- /tu/ not value(\3, "|aequo|nihilo|cathedra|absurdo|abrupto|")
+        -2:3>> \2-\3                                                        # S’il s’agit d’un seul mot, il manque un trait d’union.
 
+    ex [>ami|>patron|>locataire]
+    ex @:N¬:[AGWMV]
+        <<- /tu/ not value(\2, "|aequo|nihilo|cathedra|absurdo|abrupto|") and not value(<1, "|l’|")
+        ->> \1-\2                                                           # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+TEST: l’{{ex fournisseur}} de ce produit
 TEST: Son {{ex ami}} est un vrai cauchemar.
+TEST: Mon ex alcoolique
 TEST: Ton ex donne du fil à retordre.
 
 
@@ -10345,9 +10352,9 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 
 
 __conf_soi_soit_soie__
-    [chez|sur|avec|pour] soit
-    don de soit
-    estime de soit
+    [chez|sur|avec|pour] [soit|sois]
+    don de [soit|sois]
+    estime de [soit|sois]
         <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.
 
     [ça|cela|ceci] >aller ?$:W¿ de soit
@@ -10364,7 +10371,17 @@ __conf_soi_soit_soie__
         <<- /conf/ ->> soi-même                                                                     # Confusion : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
 
     que  sa  soi  @:[WXAQ]
-        <<- /conf/ -3>> soit|soie                       # Confusion. Pour le verbe être au subjonctif, écrivez “soit”. Pour la fibre servant à la confection de textile, écrivez “soie”.
+        <<- /conf/ -3>> soit|soie                                               # Confusion. Pour le verbe être au subjonctif, écrivez “soit”. Pour la fibre servant à la confection de textile, écrivez “soie”.
+
+    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être [soi+s|>soie] $:D $:N ?,¿ [soit|soi+s|>soie]
+        <<- /conf/ morph(\1, "[123][sp]") -2>> soit                             # Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+
+    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être soit $:D $:N ?,¿ [soit|soi+s|>soie]
+        <<- /conf/ morph(\1, "[123][sp]") --1>> soit                            # Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
 
 TEST: chez {{soit}}, c’est presque toujours mieux.
 TEST: ce n’est pas la philosophie en {{soit}} qui est problématique
@@ -10373,6 +10390,8 @@ TEST: Penser par {{soit même}}…
 TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
 TEST: pas sûr que {{sa}} {{soi}} terminé avant demain
 TEST: Cela va presque de {{soit}}
+TEST: c’est {{soi}} lui, soit moi                                                   ->> soit
+TEST: ce serait soit elle, {{soie}} une inconnue                                    ->> soit
 TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
 TEST: Quoi qu’il en soit
 TEST: À moins qu’elle n’en soit la victime.
@@ -14037,7 +14056,7 @@ __substantifs_multi_mots__
     >port [de|d’] plaisance
     >porte [de|d’] [entrée|service|garage|sortie]
     >porte d’ entrée
-    >pot [de|d’] [chambre|colle]
+    >pot [de|d’] [chambre|colle|départ]
     >poudre aux yeux
     >pouvoir d’ achat
     >presse à >scandale
