@@ -8410,6 +8410,7 @@ TEST: ce partage {{don}} il est question                            ->> dont
 TEST: trente hommes {{don}} deux sont malades                       ->> dont
 TEST: ce {{don}} tu te souviens, c’est pas ça                       ->> dont
 TEST: c’est ce {{don}} nous avons besoin                            ->> dont
+TEST: la façon {{don}} la société réagit                            ->> dont
 TEST: ce don il a besoin de savoir qui lui offre
 TEST: ce petit don je ne sais pas ce dont il s’agit.
 TEST: ce dont on parle tous les jours
@@ -8859,13 +8860,16 @@ TEST: C’est un {{huit}} clos terrifiant.
 TEST: Un procès à huis clos.
 
 
-# l’issue
-__conf_l_issue__
-    l’ issu
-        <<- /conf/ -2>> issue                                                   # Confusion. Le nom “issue” est féminin.
+# issue / issu
+__conf_issue_issu__
+    [l’|leur] issu
+        <<- /conf/ --1>> issue                                                  # Confusion. Le nom “issue” est féminin.
+
+    [les|des|ces|mes|tes|ces|nos|vos|leurs] issus
+        <<- /conf/ --1>> issues                                                 # Confusion. Le nom “issue” est féminin.
 
 TEST: à l’{{issu}} de la partie.
-
+TEST: où sont les {{issus}} de secours
 
 
 # jeune / jeûne
@@ -8941,7 +8945,7 @@ __conf_la_là!7__
 
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
     la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute|non)/
-        <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
+        <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
 
     [ce|cet|cette|ces]  /-la
         <<- /conf/ -2>> =\2[:-2]+"là"                                                               # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
@@ -8972,7 +8976,7 @@ TEST: de la non moins indispensable défense des libertés, individuelles ou col
         <<- /conf/ __else__ -1>> =\1[:-3]+" là"                                                     # Confusion. Si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
     [ne|me|te|se] là
-        <<- /conf/ -2>> la                                          # Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
+        <<- /conf/ -2>> la                                                                          # Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/la
 
 TEST: {{jusque-la}}, tout va bien
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
@@ -8997,6 +9001,29 @@ __conf_la_plupart__
 
 TEST: la {{plus part}}
 TEST: la {{plu-part}}
+
+
+__conf_lancer_lancé__
+    lancé [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>javelot|>hache|>marteau|>nain|poids|rayon]
+        <<- /conf/ not morph(<1, ":V0a") -1>> lancer            # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    lancés [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>javelot|>hache|>marteau|>nain|poids|rayon]
+        <<- /conf/ not morph(<1, ":V0a") -1>> lancers           # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    [le|ce|mon|ton|son|notre|votre|leur|quel] lancé
+        <<- /conf/ --1>> lancer                                 # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    [des|les|mes|tes|ses|nos|vos|leurs|quelques|quels] lancés
+        <<- /conf/ --1>> lancers                                # Confusion. L’action de lancer s’écrit “lancer”. Des lancers de javelots, de fléchettes, de dés, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+TEST: un beau {{lancé}} de marteau
+TEST: {{lancés}} de dés
+TEST: ce {{lancé}} est puissant
+TEST: quels {{lancés}} magnifiques !
+TEST: il y en eut plusieurs lancés à travers la vitre.
+TEST: quelques-uns lancés à travers l’espace se perdirent dans la nuit
+TEST: j’en vis un lancé par la fenêtre.
+TEST: des cris, j’en entendis plusieurs lancés à travers la nuit
 
 
 __conf_les_lés_lès__
@@ -11544,29 +11571,25 @@ TEST: __neg__ il {{a}} qu’à venir demain                ->> n’a
 !!
 
 __infi_ne_pas_jamais_etc__
-    ne ?presque¿ [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point]                   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point]                   [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point]                   [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
     ne ?presque¿ jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
@@ -11574,29 +11597,25 @@ __infi_ne_pas_jamais_etc__
     ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
-    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
@@ -13004,6 +13023,7 @@ __purge_locutions__
     plusieurs fois
     plusieurs fois [de|d’] suite
     plutôt
+    pour [ce|c’] [que|qu’] [ça|cela|ceci] vaut
     pour [ce|c’] [que|qu’] j’ en [sais|savais|sus|saurai|saurais]
     pour [ce|c’] [que|qu’] tu en [sais|savais|sus|sauras|saurais]
     pour [ce|c’] [que|qu’] [il|elle|on|iel] en [sait|savait|sut|saura|saurait]
@@ -13014,7 +13034,7 @@ __purge_locutions__
     pour [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
     pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
     pour [mon|ton|son|notre|votre|leur] propre [compte|bien]
-    pour [m’|t’|s’|nous|vous] en rendre compte
+    pour [m’|t’|s’|nous|vous|leur] en rendre compte
     pour ainsi dire
     pour ce faire
     pour ce que [j’|tu] en [sais|savais]
@@ -13119,6 +13139,7 @@ __purge_locutions__
     si le besoin s’en [fait|faisait] sentir
     si le besoin [doit|devait] s’en faire sentir
     si tel est le cas
+    si tant est que ce ?[ne|n’]¿ [soit|fût] ?pas¿ @:A.*:[me]:[si]
     sine die
     sine qua non
     six pieds sous terre
@@ -13445,6 +13466,9 @@ __gestion_mots_grammaticaux__
     suite [à|au|aux]
         <<- not value(<1, "|une|la|cet|cette|ma|ta|sa|notre|votre|leur|de|quelque|certaine|") ~1>> *
 
+    tout sauf @:[WA]
+        <<- ~1:2>> *
+
     tout un chacun
         <<- ~1:2>> *
 
@@ -13631,6 +13655,18 @@ __purge_conditionnelle__
     les [moins|plus] @:A.*:[pi] possible
         <<- ~-1>> *
 
+    le  *WORD  proprement  dit
+        <<- morph(\2, ":N.*:[me]:[si]") ~3:0>> *
+
+    la  *WORD  proprement  dite
+        <<- morph(\2, ":N.*:[fe]:[si]") ~3:0>> *
+
+    les  *WORD proprement  dits
+        <<- morph(\2, ":N.*:[me]:[pi]") ~3:0>> *
+
+    les  *WORD proprement  dites
+        <<- morph(\2, ":N.*:[fe]:[pi]") ~3:0>> *
+
     mais
         <<- not morph(<1, ":(?:D.*:p|N|V)") ~>> *
 
@@ -13745,6 +13781,7 @@ __substantifs_multi_mots__
     >acte [de|d’] procédure ?pénale¿
     >acte d’ état ?civil¿
     >administrateur >système
+    >âge d’ or
     >agence [de|d’] >voyage
     >agité du bocal
     >aide [de|d’] camp
@@ -13898,7 +13935,7 @@ __substantifs_multi_mots__
     >face [A|B]
     faits et gestes
     farces et attrapes
-    >fard à paupières
+    >fard à [joues|paupières]
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage]
     >femme d’ âge mûr
     >femme à poigne
@@ -13913,6 +13950,7 @@ __substantifs_multi_mots__
     >feu de paille
     >feuille [de|d’] route
     >fibre [de|d’] verre
+    >fiche de [paie|paye]
     >fiche S
     >file d’ attente
     >fille à [papa|maman|>soldat]
@@ -15136,6 +15174,7 @@ __purge_locutions_verbales__
     >rester lettres mortes
     >revenir à la case départ
     >saigner à blanc
+    >souffler mot
     >suivre ?[ça|cela|ceci]¿ de près
     >tenir à [carreau|cœur]
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
@@ -17720,6 +17759,7 @@ __conf_à_a_après_verbes__
     >faire confiance a
     >faire faux bond a
     >mentir a
+    >plaire a
     >préparer a
     >prêter serment a
     >rendre service a
@@ -17758,6 +17798,7 @@ TEST: l’appel auquel j’ai donné suite a eu des conséquences désastreuses.
 TEST: le problème avec lequel j’ai du mal a été résolu avec brio par mon rival
 TEST: quand on doute, minutieusement se préparer a des vertus apaisantes
 TEST: ce que tu fais a des conséquences
+TEST: le bonheur de plaire a des conséquences bénéfiques sur le moral.
 
 
 __conf_pronom_à_l_air__
@@ -20155,9 +20196,6 @@ __infi_qqch_de__
     à >seul >fin                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “à seule fin de”, le verbe devrait être à l’infinitif.
 
-    en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
-
     >avoir l’ air                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir l’air de”, le verbe devrait être à l’infinitif.
 
@@ -20181,6 +20219,15 @@ __infi_qqch_de__
 
     n’ >avoir de cesse                          [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “n’avoir de cesse de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_de_cesse
+
+    [de|d’]  crainte                            [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “de crainte de”, le verbe devrait être à l’infinitif.
+
+    [de|d’]  crainte                            [de|d’]  [l’|la]                   ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “de crainte de”, le verbe devrait être à l’infinitif.
+
+    en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
 
     >faire  [exprès|semblant|mine]              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
@@ -20237,6 +20284,8 @@ TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
 TEST: Ne fais pas semblant de l’{{oubliée}}.
 TEST: non content de {{damnés}} pour l’éternité
 TEST: non contente de l’{{ignorée}}, elle en était fière.
+TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements
+TEST: d’crainte d’l’{{touché}}, m’sieur…
 
 
 __infi_de_verbe__
@@ -22338,61 +22387,9 @@ TEST: Ses amies ont l’air distant, mais l’âme généreuse.
 
 
 
-!!!! Accords avec l’adjectif précédant le pronom                                                  !!
-
-__ppas_adj_accord_je_tu__
-    <start>  *WORD  ?,¿  [je|j’|tu|iel]
-        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]")
-        -2>> =suggSing(\2)                                                      # Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
-
-TEST: {{Découragés}}, je suis parti.
-
-
-__ppas_adj_accord_il__
-    <start>  *WORD  ?,¿  il
-        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
-        -2>> =suggMasSing(\2)                                                   # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
-
-TEST: — {{Déçue}}, il s’en est allé.
-TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
-TEST: Si délégués il doit y avoir, ce sera uniquement des gens choisis parmi nous.
-TEST: Étudiante, il s’agissait de s’inventer des parents riches.
-
-
-__ppas_adj_accord_elle__
-    <start>  *WORD  ?,¿  elle
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|P|f:[si])")
-        -2>> =suggFemSing(\2)                                                   # Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
-
-TEST: — {{Déçu}}, elle s’en est allée.
-TEST: Parlant de réussite, elle se donne bonne conscience en y rajoutant de la bienveillance.
-
-
-__ppas_adj_accord_ils__
-    <start>  *WORD  ?,¿  ils
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|P|m:[pi])")
-        -2>> =suggMasPlur(\2)                                                   # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
-
-TEST: Vraiment {{soucieuse}}, ils sont.
-TEST: Très vite, ils sont partis
-TEST: Une fois terminé, ils sont revenus.
-TEST: Désolé, ils ne viendront pas.
-TEST: Pire, ils piétinent parfois les droits humains.
-TEST: Bref, ils veulent des services publics là où ces derniers font de plus en plus défaut.
-
-
-__ppas_adj_accord_elles__
-    <start>  *WORD  ?,¿  elles
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|P|f:[pi])")
-        -2>> =suggFemPlur(\2)                                                   # Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
-
-TEST: Absolument {{heureux}}, elles exultèrent de joie.
-
-
-
 !!
 !!
-!!!! Participes passés : inversion verbe/sujet                                                    !!
+!!!! Participes passés: inversion verbe/sujet                                                     !!
 !!
 !!
 
@@ -22616,7 +22613,7 @@ TEST: ayant été elles-mêmes {{ignorés}} par leur hiérarchie         ->> ign
 
 !!
 !!
-!!!! Se croire/considérer/montrer/penser/révéler/savoir/sentir/voir/vouloir + participe passé/adj !!
+!!!! Participes passés après se croire/considérer/montrer/penser/révéler/savoir/sentir/voir/vouloir !!
 !!
 !!
 
@@ -23044,7 +23041,7 @@ TEST: nous avons vu des avions voler haut dans le ciel.
 
 !!
 !!
-!!!! COD précédant que                                                                            !!
+!!!! Participes passés: COD précédant que                                                         !!
 !!
 !!
 
@@ -23100,7 +23097,7 @@ TEST: ce qu’il leur a {{données}}
 
 
 
-!!!! du / dû                                                                                      !!
+!!!! Participes passés: du / dû                                                                   !!
 
 __ppas_avoir_dû_vinfi__
     >avoir  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|$:Y]
@@ -23185,6 +23182,60 @@ TEST: les avais-tu {{acheté}} là-bas ?
 TEST: les ont-ils {{détecté}} ?
 TEST: les avaient-ils {{détectez}} ?
 
+
+!!
+!!
+!!!! Accords avec l’adjectif précédant le pronom                                                  !!
+!!
+!!
+
+__ppas_adj_accord_je_tu__
+    <start>  *WORD  ?,¿  [je|j’|tu|iel]
+        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]")
+        -2>> =suggSing(\2)                                                      # Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
+
+TEST: {{Découragés}}, je suis parti.
+
+
+__ppas_adj_accord_il__
+    <start>  *WORD  ?,¿  il
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
+        -2>> =suggMasSing(\2)                                                   # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
+
+TEST: — {{Déçue}}, il s’en est allé.
+TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
+TEST: Si délégués il doit y avoir, ce sera uniquement des gens choisis parmi nous.
+TEST: Étudiante, il s’agissait de s’inventer des parents riches.
+
+
+__ppas_adj_accord_elle__
+    <start>  *WORD  ?,¿  elle
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|P|f:[si])")
+        -2>> =suggFemSing(\2)                                                   # Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
+
+TEST: — {{Déçu}}, elle s’en est allée.
+TEST: Parlant de réussite, elle se donne bonne conscience en y rajoutant de la bienveillance.
+
+
+__ppas_adj_accord_ils__
+    <start>  *WORD  ?,¿  ils
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|P|m:[pi])")
+        -2>> =suggMasPlur(\2)                                                   # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
+
+TEST: Vraiment {{soucieuse}}, ils sont.
+TEST: Très vite, ils sont partis
+TEST: Une fois terminé, ils sont revenus.
+TEST: Désolé, ils ne viendront pas.
+TEST: Pire, ils piétinent parfois les droits humains.
+TEST: Bref, ils veulent des services publics là où ces derniers font de plus en plus défaut.
+
+
+__ppas_adj_accord_elles__
+    <start>  *WORD  ?,¿  elles
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|P|f:[pi])")
+        -2>> =suggFemPlur(\2)                                                   # Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
+
+TEST: Absolument {{heureux}}, elles exultèrent de joie.
 
 
 !!
