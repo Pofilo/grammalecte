@@ -794,7 +794,6 @@ class GrammalecteTooltip {
     constructor (xParent, xGCPanelContent) {
         this.xParent = xParent;
         this.sErrorId = null;
-        this.bDebug = false;
         this.xTooltip = oGrammalecte.createNode("div", {id: "grammalecte_tooltip"});
         this.xTooltipArrow = oGrammalecte.createNode("img", {
             id: "grammalecte_tooltip_arrow",
@@ -814,7 +813,7 @@ class GrammalecteTooltip {
         let xActions = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"});
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
-        xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_db_search", textContent: " ››› base de données"}, {url: ""}));
+        xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_db_search", textContent: "››"}, {url: ""}));
         this.xTooltip.appendChild(xActions);
         // add tooltip to the page
         xGCPanelContent.appendChild(this.xTooltip);
@@ -837,16 +836,13 @@ class GrammalecteTooltip {
             this.xTooltip.style.left = (xNodeErr.offsetLeft > nTooltipLeftLimit) ? nTooltipLeftLimit + "px" : xNodeErr.offsetLeft + "px";
             if (xNodeErr.dataset.error_type === "grammar") {
                 // grammar error
-                this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 if (xNodeErr.dataset.gc_message.includes(" ##")) {
-                    this.bDebug = true;
                     // display rule id
                     let n = xNodeErr.dataset.gc_message.indexOf(" ##");
                     this.xParent.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
                     this.xParent.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
                     this.xParent.getElementById("grammalecte_tooltip_rule_id").style.display = "block";
                 } else {
-                    this.bDebug = false;
                     this.xParent.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message;
                     this.xParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 }
@@ -857,6 +853,7 @@ class GrammalecteTooltip {
                     this.xParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
                     this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
                 }
+                this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 let iSugg = 0;
                 this.clearSuggestionBlock();
@@ -877,12 +874,8 @@ class GrammalecteTooltip {
                 this.xParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
                 this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
-                if (this.bDebug) {
-                    this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline";
-                    this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://grammalecte.net/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
-                } else {
-                    this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
-                }
+                this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline-block";
+                this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://grammalecte.net/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
                 oGrammalecteBackgroundPort.getSpellSuggestions(xNodeErr.textContent, "__GrammalectePanel__", xNodeErr.dataset.error_id);
@@ -899,10 +892,6 @@ class GrammalecteTooltip {
         while (this.xTooltipSuggBlock.firstChild) {
             this.xTooltipSuggBlock.removeChild(this.xTooltipSuggBlock.firstChild);
         }
-    }
-
-    setTooltipColor () {
-        // todo
     }
 
     hide () {
