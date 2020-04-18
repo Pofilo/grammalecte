@@ -5066,6 +5066,15 @@ TEST: ils vont {{de mal en pire}}
 TEST: {{Au pire aller}}, on s’en passera.
 
 
+# pour de rire
+__bs_pour_de_rire__
+    pour de rire
+        <<- /bs/ ->> pour rire                                      # Tournure erronée (ou enfantine si elle est délibérée).|https://fr.wiktionary.org/wiki/pour_de_rire
+
+TEST: c’est {{pour de rire}}
+TEST: c’est pour rire.
+
+
 # pour ne pas que
 __bs_pour_ne_pas_que__
     pour ne pas [que|qu’]
@@ -8862,14 +8871,24 @@ TEST: Un procès à huis clos.
 
 # issue / issu
 __conf_issue_issu__
-    [l’|leur] issu
+    l’ issu
         <<- /conf/ --1>> issue                                                  # Confusion. Le nom “issue” est féminin.
 
-    [les|des|ces|mes|tes|ces|nos|vos|leurs] issus
+    leur issu
+        <<- /conf/ not value(<1, "|le|") --1>> issue                            # Confusion. Le nom “issue” est féminin.
+
+    [les|des|ces|mes|tes|ces|nos|vos] issus
         <<- /conf/ --1>> issues                                                 # Confusion. Le nom “issue” est féminin.
+
+    leurs issus
+        <<- /conf/ not value(<1, "|les|des|") --1>> issues                      # Confusion. Le nom “issue” est féminin.
 
 TEST: à l’{{issu}} de la partie.
 TEST: où sont les {{issus}} de secours
+TEST: leur {{issu}} n’est pas ce qu’ils croient.
+TEST: leurs {{issus}} sont à présent dans la zone rouge.
+TEST: ne fais rien avec le leur issu des pires raclures de ce monde
+TEST: les leurs issus des meilleures écoles.
 
 
 # jeune / jeûne
