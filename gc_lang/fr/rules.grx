@@ -717,7 +717,7 @@ TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   -
 
 
 __[u](eepi_écriture_épicène_pluriel_aux_ales)__
-    ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?ale[.)/·•⋅–—-]?s  @@0
+    ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?a?le[.)/·•⋅–—-]?s  @@0
     <<- option("eepi") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 # Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -732,6 +732,7 @@ __[u](eepi_écriture_épicène_pluriel_er_ère)__
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers
+#TEST: les {{artificièr.e.s}}                                            ->> artificiers et artificières|artificières et artificiers
 
 
 __[u](eepi_écriture_épicène_pluriel_if_ive)__
@@ -1715,7 +1716,7 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: purge_tag_disambiguate|ptd                                                              _
+@@@@GRAPH: graphe0|g0                                                                       _
 @@@@
 @@@@
 @@@@
@@ -1766,7 +1767,7 @@ __purge_punc_début_phrase__
 
 
 __purge_fin_phrase__
-    [.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]  ?[.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]¿ <end>
+    [.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]  ?[.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]¿  ?[.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]¿  <end>
         <<- ~1:-2>> *
 
 
@@ -4248,6 +4249,9 @@ __tu_substantifs__
     gagne >pain
         <<- /tu/ not morph(<1, ":O[sv]") ->> gagne-pain         # Il manque un trait d’union.
 
+    goutte [à|a] goutte
+        <<- /tu/ morph(<1, ":D") ->> goutte-à-goutte            # S’il s’agit d’un nom, mettez des traits d’union.
+
     [grand+s] [>père|>mère]
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
@@ -4385,6 +4389,7 @@ TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: L’{{état major}} n’a pas encore tranché la question.
 TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se poursuit devant l’hôtel de ville à Bordeaux depuis environ 1h30.
 TEST: {{gagne pain}} de merde
+TEST: perfusé par des {{goutte à goutte}}
 TEST: mes deux {{grands pères}} sont décédés
 TEST: un crime de {{lèse majesté}}
 TEST: pour {{la}} {{n ième}} fois
@@ -7591,18 +7596,34 @@ __conf_aux_dépens__
 TEST: Ce sont des clichés {{au dépend}} d’un grand chef. Tout ça pour faire du buzz et exister médiatiquement.
 
 
-# arrivé / arrivée
+# arrivée / arrivé
 __conf_arrivée_arrivé__
-    [mon|ton|son|notre|votre|leur|une|cet]  arrivé
-    [des|les|nos|vos|leurs|ces|mes|tes|ses|aux] arrivés
-    [l’|d’] [arrivé|arrivés]
-        <<- /conf/ -2>> =\2.replace("é", "ée").replace("É", "ÉE")               # Confusion. Une arrivée est un nom féminin.
+    [mon|notre|votre|une|cet]               arrivé
+    [des|les|nos|vos|ces|mes|tes|ses|aux]   arrivés
+    [l’|d’]                                 [arrivé|arrivés]
+        <<- /conf/ --1>> =\-1.replace("é", "ée").replace("É", "ÉE")             # Confusion. Une arrivée est un nom féminin.
+
+    [ton|son] arrivé
+        <<- /conf/ not value(<1, "|du|") --1>> arrivée                          # Confusion. Une arrivée est un nom féminin.
+
+    leur arrivé
+        <<- /conf/ not value(<1, "|le|") --1>> arrivée                          # Confusion. Une arrivée est un nom féminin.
+
+    leurs arrivés
+        <<- /conf/ not value(<1, "|les|des|")
+        --1>> arrivées                                                          # Confusion. Une arrivée est un nom féminin.
 
 TEST: l’{{arrivé}} est pour bientôt.
 TEST: Son {{arrivé}} m’a fait plaisir.
 TEST: Leurs {{arrivés}} m’ont fait plaisir.
 TEST: {{Cette}} {{arrivé}} était de trop.
+TEST: leur {{arrivé}} coïncide avec les événements
+TEST: son {{arrivé}} a tout changé.
 TEST: Vous connaissez le nouvel arrivé ?
+TEST: les nouvellement arrivés
+TEST: utilise les leurs arrivés cette semaine
+TEST: l’ingénieur du son arrivé hier
+TEST: combien de nouveaux arrivés
 
 
 # au temps / autant
@@ -15146,7 +15167,7 @@ __purge_locutions_verbales__
     >laisser carte blanche
     >marcher à rebours
     >mener par le bout du nez
-    [>mettre|>remettre] à [bas|dos|exécution|flot|jour|niveau|nu|plat|table|terre]
+    [>mettre|>remettre] à [bas|dos|exécution|flot|jour|niveau|nu|plat|profit|table|terre]
     [>mettre|>remettre] à l’ [écart|épreuve]
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] bon ordre
@@ -17736,7 +17757,7 @@ __conf_à_a_après_verbes__
     >fermer a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
-    [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>plat|>table|>terre]
+    [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>plat|>profit|>table|>terre]
     [>mettre|>remettre] a l’ [écart|épreuve]
     >naviguer a [vu+ses]
     >parer a toute éventualité
@@ -20924,17 +20945,17 @@ __purge_syntagmes_nominaux__
         <<- ~1:2>> *
 
     [ce|ton|son] *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|V0)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
     [le|la|les|leur|certains|certaines] *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     l’ *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y|V0)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
@@ -23055,6 +23076,7 @@ TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisa
 TEST: ces hommes, n’en doutez pas, auraient {{put}} trouver la solution.
 TEST: à celui qui aurait {{déclarer}} une telle horreur
 TEST: nous avons vu des avions voler haut dans le ciel.
+TEST: c’est le pouvoir en place qui les a envoyés exercer leur métier
 
 
 
