@@ -384,11 +384,11 @@ def _calcRulesStats (lRules):
 
 def displayStats (lParagraphRules, lSentenceRules):
     "display rules numbers"
-    print("  {:>18} {:>18} {:>18} {:>18}".format("DISAMBIGUATOR", "TEXT PROCESSOR", "GRAMMAR CHECKING", "REGEX"))
+    print("               {:>18} {:>18} {:>18} {:>18}".format("DISAMBIGUATOR", "TEXT PROCESSOR", "GRAMMAR CHECKING", "REGEX"))
     d, nRule = _calcRulesStats(lParagraphRules)
-    print("§ {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
+    print("    paragraph: {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
     d, nRule = _calcRulesStats(lSentenceRules)
-    print("s {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
+    print("    sentence:  {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
 
 
 def mergeRulesByOption (lRules):
