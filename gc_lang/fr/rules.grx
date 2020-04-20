@@ -2097,6 +2097,11 @@ __tag_sujets__
         <<- not value(<1, "|de|d’|par|") />> _2p_
 
 
+__tag_verbes__
+    en  @:V.*:(?:Y|[123][sp]|P)
+        <<- />> _en_
+
+
 __tag_prop_sub__
     dont
         <<- />> _dont_|_propsub_
@@ -7466,7 +7471,7 @@ __conf_après_avoir__
     [à|a] [>prêt|>pré|près] [a|à] [voire|voir]
     [à|a] [>prêt|>pré|près] avoir
     après [a|à] [voire|voir]
-        <<- /conf/ ->> après avoir          # Confusion générale.
+        <<- /conf/ ->> après avoir                      # Confusion générale.
 
 TEST: {{a pré a voire}} monté les marches
 TEST: après avoir réussi son examen
@@ -7480,6 +7485,53 @@ __conf_acquit_acquis__
 
 TEST: par {{acquis}} de conscience
 TEST: tout ce qu’on fait par acquit de conscience
+
+
+# accès / axé
+__conf_accès_axé__
+    un axé
+        <<- /conf/ not value(<1, "|l’|d’|") and not tag(<1, "_en_") --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    [ton|son] axé
+        <<- /conf/ morph(<1, ":V", "*") and not tag(<1, "_en_") --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    [l’|cet|mon|notre|votre|chaque|quel] axé
+        <<- /conf/ --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    leur axé
+        <<- /conf/ not value(<1, "|le|du|") --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    [les|des|ces|mes|tes|ses|nos|vos|aux|quels|quelques]  axés
+        <<- /conf/ --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    leurs axés
+        <<- /conf/ not value(<1, "|les|des|") --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+    plusieurs axés
+        <<- /conf/ morph(<1, ":V", "*") and not tag(<1, "_en_") --1>> accès
+        # Confusion : “axé” est le participe passé du verbe “axer”. Pour évoquer une voie permettant d’accéder à un lieu ou quelque chose, écrivez “accès”.|https://fr.wiktionary.org/wiki/acc%C3%A8s
+
+TEST: un {{axé}} à la bibliothèque
+TEST: l’{{axé}} au cinéma est par là.
+TEST: c’est supect, vérifiez son {{axé}} à ces données.
+TEST: il faut surveiller leur {{axé}}
+TEST: fermons les {{axés}} du forum.
+TEST: leurs {{axés}} sont à présent fermés.
+TEST: révoque son {{axé}} à ces données.
+TEST: il y a plusieurs {{axés}} au parking.
+TEST: j’en désire un axé sur la résolution rapide des problèmes.
+TEST: l’ingénieur du son axé sur ses effets spéciaux.
+TEST: il en suffit d’un axé sur notre activité pour être repéré.
+TEST: le leur axé sur l’intelligence artificielle
+TEST: l’un axé sur son business
+TEST: les leurs axés sur leur les jeux vidéo.
+TEST: j’en connais plusieurs axés sur leur boulot avant toute autre chose.
 
 
 # acétique / ascétique
@@ -7569,13 +7621,13 @@ __conf_aller_allée__
     [allé+ses] >retour
         <<- /conf/ ->> aller-retour|allers-retours                      # Confusion. Un aller-retour, des allers-retours. Une allée est une voie de passage.|https://fr.wiktionary.org/wiki/aller-retour
 
-    [les|ces|mes|tes|ses|nos|vos|leurs|quelques] allés
-        <<- /conf/ --1>> allers|allées                                  # Confusion. Écrivez “allers” pour évoquer un voyage. Écrivez “allées” pour évoquer une voie de passage.
-
-    [l’|cet|mon|ton|son|notre|votre|leur|chaque] allé
+    [l’|cet|mon|ton|son|notre|votre|leur|chaque|quel] allé
         <<- /conf/ --1>> aller|allée                                    # Confusion. Écrivez “aller” pour évoquer un voyage. Écrivez “allée” pour évoquer une voie de passage.
 
-    [>nettoyer|>parcourir|>traverser]  [l’|cet|mon|ton|son|notre|votre|leur]  aller
+    [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs] allés
+        <<- /conf/ --1>> allers|allées                                  # Confusion. Écrivez “allers” pour évoquer un voyage. Écrivez “allées” pour évoquer une voie de passage.
+
+    [>nettoyer|>parcourir|>traverser]  [l’|cet|mon|ton|son|notre|votre|leur|quel|chaque]  aller
         <<- /conf/ --1>> allée                                          # Confusion. Un aller est un voyage. Une allée est voie de passage.
 
 TEST: il descendait l’{{allé}}
@@ -7598,20 +7650,23 @@ TEST: Ce sont des clichés {{au dépend}} d’un grand chef. Tout ça pour faire
 
 # arrivée / arrivé
 __conf_arrivée_arrivé__
-    [mon|notre|votre|une|cet]               arrivé
-    [des|les|nos|vos|ces|mes|tes|ses|aux]   arrivés
-    [l’|d’]                                 [arrivé|arrivés]
-        <<- /conf/ --1>> =\-1.replace("é", "ée").replace("É", "ÉE")             # Confusion. Une arrivée est un nom féminin.
+    [mon|notre|votre|une|cet|quel|chaque]                 arrivé
+    [des|les|ces|mes|tes|ses|nos|vos|aux|quels|quelques]  arrivés
+    [l’|d’]                                               [arrivé|arrivés]
+        <<- /conf/ --1>> =\-1.replace("é", "ée").replace("É", "ÉE")                                 # Confusion. Une arrivée est un nom féminin.
 
     [ton|son] arrivé
-        <<- /conf/ not value(<1, "|du|") --1>> arrivée                          # Confusion. Une arrivée est un nom féminin.
+        <<- /conf/ not value(<1, "|du|") --1>> arrivée                                              # Confusion. Une arrivée est un nom féminin.
 
     leur arrivé
-        <<- /conf/ not value(<1, "|le|") --1>> arrivée                          # Confusion. Une arrivée est un nom féminin.
+        <<- /conf/ not value(<1, "|le|du|") --1>> arrivée                                           # Confusion. Une arrivée est un nom féminin.
 
     leurs arrivés
         <<- /conf/ not value(<1, "|les|des|")
-        --1>> arrivées                                                          # Confusion. Une arrivée est un nom féminin.
+        --1>> arrivées                                                                              # Confusion. Une arrivée est un nom féminin.
+
+    plusieurs arrivés
+        <<- /conf/ morph(<1, ":V", "*") and not tag(<1, "_en_") --1>> arrivées                      # Confusion. Une arrivée est un nom féminin.
 
 TEST: l’{{arrivé}} est pour bientôt.
 TEST: Son {{arrivé}} m’a fait plaisir.
@@ -7619,6 +7674,7 @@ TEST: Leurs {{arrivés}} m’ont fait plaisir.
 TEST: {{Cette}} {{arrivé}} était de trop.
 TEST: leur {{arrivé}} coïncide avec les événements
 TEST: son {{arrivé}} a tout changé.
+TEST: il y aura plusieurs {{arrivés}} demain.
 TEST: Vous connaissez le nouvel arrivé ?
 TEST: les nouvellement arrivés
 TEST: utilise les leurs arrivés cette semaine
@@ -8416,6 +8472,22 @@ TEST: usage débridé des armes dites létales
 TEST: Vous dîtes “idiotes”, je dis “originales”.
 
 
+# données / donnés
+__conf_données_donnés__
+    [les|des|ces|mes|tes|ses|nos|vos|aux|quels|quelques] donnés
+        <<- /conf/ --1>> données                                            # Confusion. Les données (somme d’informations) sont un nom féminin.|https://fr.wiktionary.org/wiki/donn%C3%A9es
+
+    leurs donnés
+        <<- /conf/ not value(<1, "|les|des|") --1>> données                 # Confusion. Les données (somme d’informations) sont un nom féminin.|https://fr.wiktionary.org/wiki/donn%C3%A9es
+
+TEST: il faut retrouver ces {{donnés}} à tout prix
+TEST: leurs {{donnés}} sont là.
+TEST: les données sont toutes là
+TEST: il faut plusieurs données
+TEST: en faut plusieurs donnés par leurs auteurs
+TEST: plusieurs donnés à leur vrai propriétaire
+
+
 # dont / don
 __conf_dont_don__
     [celui|celle|ceux|celles] don
@@ -8892,24 +8964,39 @@ TEST: Un procès à huis clos.
 
 # issue / issu
 __conf_issue_issu__
-    l’ issu
-        <<- /conf/ --1>> issue                                                  # Confusion. Le nom “issue” est féminin.
+    issu [de|d’] secours
+        <<- /conf/ -1>> issue                                                                       # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
+
+    [l’|cet|mon|notre|votre|quel|chaque] issu
+        <<- /conf/ --1>> issue                                                                      # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
+
+    [ton|son] issu
+        <<- /conf/ morph(<1, ":V", "*") and not tag(<1, "_en_") --1>> issue                         # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
 
     leur issu
-        <<- /conf/ not value(<1, "|le|") --1>> issue                            # Confusion. Le nom “issue” est féminin.
+        <<- /conf/ not value(<1, "|le|du|") --1>> issue                                             # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
 
-    [les|des|ces|mes|tes|ces|nos|vos] issus
-        <<- /conf/ --1>> issues                                                 # Confusion. Le nom “issue” est féminin.
+    [les|des|ces|mes|tes|ces|nos|vos|aux|quels|quelques] issus
+        <<- /conf/ --1>> issues                                                                     # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
 
     leurs issus
-        <<- /conf/ not value(<1, "|les|des|") --1>> issues                      # Confusion. Le nom “issue” est féminin.
+        <<- /conf/ not value(<1, "|les|des|") --1>> issues                                          # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
 
+    plusieurs issus
+        <<- /conf/ morph(<1, ":V", "*") and not tag(<1, "_en_") --1>> issue                         # Confusion. Le nom “issue” est féminin.|https://fr.wiktionary.org/wiki/issue
+
+TEST: {{issu}} de secours
 TEST: à l’{{issu}} de la partie.
-TEST: où sont les {{issus}} de secours
+TEST: où sont les {{issus}} ?
 TEST: leur {{issu}} n’est pas ce qu’ils croient.
 TEST: leurs {{issus}} sont à présent dans la zone rouge.
+TEST: il existe ton {{issu}} par-derrière la maison
+TEST: quels {{issus}} avons-nous ?
+TEST: je connais plusieurs {{issus}} à cette situation, mais aucune favorable pour vous.
+TEST: le son issu de ces basses est trop fort
 TEST: ne fais rien avec le leur issu des pires raclures de ce monde
 TEST: les leurs issus des meilleures écoles.
+TEST: j’en connais plusieurs issus des beaux quartiers.
 
 
 # jeune / jeûne
@@ -9044,22 +9131,45 @@ TEST: la {{plu-part}}
 
 
 __conf_lancer_lancé__
-    lancé [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>javelot|>hache|>marteau|>nain|poids|rayon]
-        <<- /conf/ not morph(<1, ":V0a") -1>> lancer            # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+    lancé [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>fusée|>javelot|>hache|>marteau|>nain|poids|rayon]
+        <<- /conf/ morph(<1, ":D|<start>|,") -1>> lancer        # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
 
-    lancés [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>javelot|>hache|>marteau|>nain|poids|rayon]
-        <<- /conf/ not morph(<1, ":V0a") -1>> lancers           # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+    lancés [de|d’] [>balle|>ballon|>dé|>disque|>fléchette|>fusée|>javelot|>hache|>marteau|>nain|poids|rayon]
+        <<- /conf/ morph(<1, ":D|<start>|,") -1>> lancers       # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
 
-    [le|ce|mon|ton|son|notre|votre|leur|quel] lancé
+    [le|ce|mon|ton|son|chaque|quel|au] lancé
         <<- /conf/ --1>> lancer                                 # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
 
-    [des|les|mes|tes|ses|nos|vos|leurs|quelques|quels] lancés
+    [notre|votre] lancé
+        <<- /conf/ --1>> lancer|lancée                          # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    leur lancé
+        <<- /conf/ not value(<1, "|le|du|") --1>> lancer|lancée # Confusion. L’action de lancer s’écrit “lancer”. Un lancer de javelot, de fléchette, de dé, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    [des|les|mes|tes|ses|nos|vos|quelques|quels|aux] lancés
         <<- /conf/ --1>> lancers                                # Confusion. L’action de lancer s’écrit “lancer”. Des lancers de javelots, de fléchettes, de dés, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
 
-TEST: un beau {{lancé}} de marteau
+    leurs lancés
+        <<- /conf/ not value(<1, "|les|des|") --1>> lancers     # Confusion. L’action de lancer s’écrit “lancer”. Des lancers de javelots, de fléchettes, de dés, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    plusieurs lancés
+        <<- /conf/ morph(<1, ":V") and not tag(<1, "_en_")
+        --1>> lancers                                           # Confusion. L’action de lancer s’écrit “lancer”. Des lancers de javelots, de fléchettes, de dés, etc.|https://fr.wiktionary.org/wiki/lancer#Nom_commun
+
+    [>continuer|>poursuivre] ?sur¿ [notre|votre|leur|leurs] [lancer+s|lancé+s]
+        <<- /conf/ --1>> lancée         # Confusion probable. Un lancer est une action de projeter quelque chose. Mais l’élan résultant de cette action s’appelle la “lancée”.|https://fr.wiktionary.org/wiki/lanc%C3%A9e
+
+TEST: un {{lancé}} de marteau
 TEST: {{lancés}} de dés
 TEST: ce {{lancé}} est puissant
 TEST: quels {{lancés}} magnifiques !
+TEST: sur leur {{lancé}}
+TEST: notre {{lancé}} n’est pas aussi… parfait que voulu…
+TEST: leur {{lancé}} est magnifique.
+TEST: leurs {{lancés}} sont magnifiques
+TEST: il y aura plusieurs {{lancés}}
+TEST: ils continuent sur leur {{lancé}}
+TEST: elles continuent sur leur {{lancer}}
 TEST: il y en eut plusieurs lancés à travers la vitre.
 TEST: quelques-uns lancés à travers l’espace se perdirent dans la nuit
 TEST: j’en vis un lancé par la fenêtre.
@@ -12321,6 +12431,7 @@ __purge_locutions__
     au bout du [compte|rouleau]
     au bout d’ un moment
     au cas par cas
+    au chômage partiel
     au commencement
     ?bien¿ au contraire
     au coude à coude
@@ -12734,6 +12845,7 @@ __purge_locutions__
     en cas [de|d’] nécessité ?[absolue|impérieuse]¿
     en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
     en chair et en os
+    en chômage partiel
     en chute libre
     en comparution immédiate
     en ?parfaite¿ connaissance [de|d’] cause
@@ -14038,6 +14150,7 @@ __substantifs_multi_mots__
     >invité d’ honneur
     >invité surprise
     >issue de secours
+    >jeu [de|d’] >rôle
     >journal [de|d’] bord
     >juge d’ instruction
     >langue [de|d’] bois
@@ -14173,6 +14286,7 @@ __substantifs_multi_mots__
     >sac [de|d’] [couchage|sport|voyage]
     >salle à manger
     >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
+    >salon [de|d’] coiffure
     >sclérose en plaques
     [secret+s] défense
     >sel [de|d’] [aluminium|ammonium|mer]
@@ -18022,7 +18136,7 @@ __conf_air_aire_ère__
     >libre comme l’ [ère|aire]
         <<- /conf/ --1>> air        # Confusion. Une ère est une époque. L’aire est une surface. Pour parler de l’atmosphère, écrivez “air”.|https://fr.wiktionary.org/wiki/air
 
-    >foutre en l’ [ère|air]
+    >foutre en l’ [ère|aire]
         <<- /conf/ --1>> air        # Confusion. Locution “foutre en l’air”.|https://fr.wiktionary.org/wiki/foutre_en_l%E2%80%99air
 
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
