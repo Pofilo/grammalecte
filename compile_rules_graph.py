@@ -546,7 +546,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
 
     # processing rules
     print("  processing graph rules...")
-    initProcessPoolExecutor()
+    initProcessPoolExecutor(len(dAllGraph))
     fStartTimer = time.time()
     # build graph
     lResult = []
