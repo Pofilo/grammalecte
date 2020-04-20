@@ -44,7 +44,7 @@ const aTkzPatterns = {
             [/^\d+(?:ers?\b|res?\b|è[rm]es?\b|i[èe][mr]es?\b|de?s?\b|nde?s?\b|ès?\b|es?\b|ᵉʳˢ?|ʳᵉˢ?|ᵈᵉ?ˢ?|ⁿᵈᵉ?ˢ?|ᵉˢ?)/, 'WORD_ORDINAL'],
             [/^\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[&%‰€$+±=*/<>⩾⩽#|×¥£§¢¬÷@-]/, 'SIGN'],
-            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬀ-ﬆᴀ-ᶿᵉʳˢⁿᵈ_]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬀ-ﬆᴀ-ᶿᵉʳˢⁿᵈ_]+)*/, 'WORD']
+            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬀ-ﬆᴀ-ᶿ\u0300-\u036fᵉʳˢⁿᵈ_]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬀ-ﬆᴀ-ᶿ\u0300-\u036fᵉʳˢⁿᵈ_]+)*/, 'WORD']
         ]
 };
 
@@ -74,7 +74,7 @@ class Tokenizer {
                     try {
                         if ((m = zRegex.exec(sText)) !== null) {
                             iToken += 1;
-                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length };
+                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length };  // m[0].normalize("NFC") not usefull at the moment
                             iCut = m[0].length;
                             break;
                         }
