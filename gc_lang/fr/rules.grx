@@ -13262,7 +13262,7 @@ __purge_locutions__
     sans nul doute
     sans perdre [de|d’] temps
     sans pour autant y [parvenir|réussir|réfléchir|songer|penser]
-    sans pour autant y faire attention
+    sans pour autant y [faire|prêter] attention
     sans pour autant y prendre [garde|goût|gout]
     sans [me|te|lui|nous|vous|leur|y] prêter attention
     sans [que|qu’] je [le|l’] [sache|susse]
@@ -13273,10 +13273,11 @@ __purge_locutions__
     sans [que|qu’] [ils|elles|iels] [le|l’] [sachent|sussent]
     sans queue ni tête
     sans raison apparente
+    sans tergiverser
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
-    sans y [parvenir|réussir|réfléchir|songer|penser]
+    sans y [croire|parvenir|réussir|réfléchir|songer|penser]
     sans y [réfléchir|songer|penser] à [deux|2] fois
-    sans y faire attention
+    sans y [faire|prêter] attention
     sans y prendre [garde|goût|gout|ombrage]
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     secondo
@@ -14927,8 +14928,10 @@ __purge_ponctuations__
 
 
 __purge_locutions_potentielles__
-    à ce [jour|moment] @¬:A.*:[me]:[si]
-    à ce [jour|moment] [<end>|,|)]
+    à ce [jour|moment|stade] @¬:A.*:[me]:[si]
+    à ce [jour|moment|stade] [<end>|,|)]
+    à cet instant @¬:A.*:[me]:[si]
+    à cet instant [<end>|,|)]
         <<- ~1:3>> *
 
     à [mon|ton|son|notre|votre|leur] sens @¬:A.*:[me]:[si]
@@ -19978,7 +19981,7 @@ __conf_tache_tâche__
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    >tâche  [>indélébile|>rouge|>vert|>noir|>bleu|>jaune|>gris|>blanc|>brun|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire|>cuivré]
+    >tâche  [>difforme|>indélébile|>rouge|>vert|>noir|>bleu|>jaune|>gris|>blanc|>brun|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire|>cuivré]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
@@ -20014,9 +20017,9 @@ TEST: une simple tâche d’étiquetage
 
 
 __conf_tâche_tache__
-    tache [accomplie|dévalorisante|difforme|épuisante|exécutée|exténuante|fatigante|ingrate|menée|ménagère|valorisante]
-    taches [accomplies|dévalorisantes|difformes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|menées|ménagères|valorisantes]
-    >tache >insoluble
+    tache [accomplie|administrative|conceptuelle|dévalorisante|épuisante|exécutée|exténuante|fatigante|ingrate|intellectuelle|manuelle|menée|ménagère|valorisante]
+    taches [accomplies|administratives|conceptuelles|dévalorisantes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|intellectuelles|manuelles|menées|ménagères|valorisantes]
+    >tache [>chronophage|>complexe|>domestique|>insoluble]
     >tache consistant à
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
