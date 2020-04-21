@@ -2055,7 +2055,7 @@ __tag_sujets__
         <<- />> _1s_
 
     [moi|moi-même] [seul|seule]
-        <<- not value(<1, "|de|d’|par|") />> _1s_
+        <<- not morph(<1, ":R") />> _1s_
 
     tu
     t’  $:2s
@@ -2064,7 +2064,7 @@ __tag_sujets__
         <<- />> _2s_
 
     [toi|toi-même] [seul|seule]
-        <<- not value(<1, "|de|d’|par|") />> _2s_
+        <<- not morph(<1, ":R") />> _2s_
 
     nous ?[seul|seuls|seules]¿ ?,¿ qui
     nous-même qui
@@ -2079,7 +2079,7 @@ __tag_sujets__
     nous-mêmes
     nous [seul|seuls|seules]
     nous autres
-        <<- not value(<1, "|de|d’|par|") />> _1p_
+        <<- not morph(<1, ":R") />> _1p_
 
     vous ?[seul|seuls|seules]¿ ?,¿ qui
     vous-même qui
@@ -2094,7 +2094,7 @@ __tag_sujets__
     vous-mêmes
     vous [seul|seule|seuls|seules]
     vous autres
-        <<- not value(<1, "|de|d’|par|") />> _2p_
+        <<- not morph(<1, ":R") />> _2p_
 
 
 __tag_verbes__
@@ -2102,28 +2102,31 @@ __tag_verbes__
         <<- />> _en_
 
 
-__tag_prop_sub__
-    dont
-        <<- />> _dont_|_propsub_
-
-    ce [que|qu’]
-        <<- />> _ceque_|_propsub_
-
-    [que|qu’]
-        <<- />> _que_|_propsub_
-
-    qui
-        <<- />> _qui_|_propsub_
-
-    [lequel|laquelle|lesquels|lesquelles]
-        <<- morph(<1, ":R") />> _prepquel_|_propsub_
-
+__tag_prop__
     à [qui|quoi]
     auquel
     auxquels
     auxquelles
     à laquelle
         <<- />> _àCOI_|_propsub_
+
+    [lequel|laquelle|lesquels|lesquelles]
+        <<- morph(<1, ":R") />> _prepquel_|_propsub_
+
+    ce [que|qu’]
+        <<- />> _ceque_|_propsub_
+
+    comme
+        <<- />> _comme_
+
+    dont
+        <<- />> _dont_|_propsub_
+
+    [que|qu’]
+        <<- />> _que_|_propsub_
+
+    qui
+        <<- />> _qui_|_propsub_
 
 
 __tag_ni__
@@ -4797,7 +4800,7 @@ TEST: Tape-toi Patrick.
 
 __virg_après_verbe_COD__
     [le|la|l’|les]  $:Y  $:M
-        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "_que_")
+        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
         -2>> \2,                                                # Une virgule est probablement souhaitable.
 
     [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
@@ -4814,6 +4817,7 @@ TEST: Cependant les promesses n’engagent que ceux qui les croient, comme s’�
 TEST: Avancez comme sait le faire Patrick.
 TEST: plus délirant encore que ne l’imaginait Marie.
 TEST: moins corrompu que ne pouvait le croire Marie.
+TEST: comme vient de le dire Ruth
 
 
 
@@ -7269,8 +7273,9 @@ __conf_a_à_substantifs__
     >arc a >poulie
     >arme a >feu
     >armoire a [>glace|>pharmacie]
-    >attaque a main armée
+    >attaque a >main [armée+s]
     >avion a [>hélice|réaction]
+    >bac a >légume
     [>boîte|>boite] a >lettre
     >bombe a [eau|fragmentation|retardement]
     >brosse a [>dent|reluire]
@@ -7480,7 +7485,7 @@ TEST: après avoir réussi son examen
 # par acquit de conscience
 __conf_acquit_acquis__
     par acquis [de|d’] >conscience
-        <<- /conf/ -2>> acquit                          # Confusion. On écrit « par acquit de conscience ».
+        <<- /conf/ -2>> acquit                          # Confusion. Locution « par acquit de conscience ».|https://fr.wiktionary.org/wiki/par_acquit_de_conscience
         <<- ~>> *
 
 TEST: par {{acquis}} de conscience
@@ -10755,6 +10760,9 @@ TEST: ta gueule, connard.
 
 # temps / tant / tan
 __conf_tant_temps_tan_1__
+    combien de [>tant|tan]
+        <<- /conf/ --1>> temps                              # Confusion. Pour ce qui est temporel, écrivez “temps”.
+
     en [tant|>tan] [de|d’] [guerre|paix|crise|doute|pluie]
         <<- /conf/ -2>> temps                               # Confusion. Écrivez « en temps de » si vous évoquez une période de temps.
 
@@ -10782,6 +10790,7 @@ __conf_tant_temps_tan_1__
     >tan [pis|pi]
         <<- /conf/ ->> tant pis                             # Confusion. Locution “tant pis”.|https://fr.wiktionary.org/wiki/tant_pis
 
+TEST: Combien de {{tan}} ça va durer ?
 TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à l’adversité.
 TEST: ils vont {{de tan en tan}} au restaurant
 TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.
@@ -11374,13 +11383,14 @@ TEST: des jardins à l’anglaise.
 # les langues
 __maj_langues__
     [>parler|cours|>leçon|>apprendre|>étudier|>traduire|>enseigner|>professeure|>enseignante|>dictionnaire|>méthode] [le|de|du|l’|d’|que|qu’] [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Corse|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
-        <<- /maj/ -3:>> =\3.lower()                                                                 # Si vous parlez de la langue, pas de majuscule.
+        <<- /maj/ not \3.isupper() -3:>> =\3.lower()                                                # Si vous parlez de la langue, pas de majuscule.
 
     en [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
-        <<- /maj/ -2:>> =\2.lower()                                                                 # Si vous parlez de la langue, pas de majuscule.
+        <<- /maj/ not \2.isupper() -2:>> =\2.lower()                                                # Si vous parlez de la langue, pas de majuscule.
 
 TEST: il ne parle qu’{{Allemand}}.
 TEST: ta traduction en {{Russe}} est superbe.
+TEST: COURS EN FRANÇAIS
 
 
 # Moyen Âge
@@ -13461,44 +13471,44 @@ __purge_x_par_après_x__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]   [de|du|d’|des]
-    à [bonne|faible|grande] distance                                                                                                            [de|du|d’|des]
-    à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                   [de|du|d’|des]
-    à l’ autre bout                                                                                                                             [de|du|d’|des]
-    à la [hauteur|portée|proximité|recherche|suite]                                                                                             [de|du|d’|des]
-    à la grande surprise                                                                                                                        [de|du|d’|des]
-    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                        [de|du|d’|des]
-    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                 [de|du|d’|des]
-    à [base|force|raison]                                                                                                                       [de|d’]
-    à grand renfort                                                                                                                             [de|d’]
-    à grands coups                                                                                                                              [de|d’]
-    au [bout|courant|cours|détriment|fond|gré|lieu|large|long|milieu|nord|profit|ras|sein|sommet|sortir|sud|sujet|vu]                           [de|du|d’|des]
-    au beau milieu                                                                                                                              [de|du|d’|des]
-    au fin fond                                                                                                                                 [de|du|d’|des]
-    au grand dam                                                                                                                                [de|du|d’|des]
-    au plus [près|profond]                                                                                                                      [de|du|d’|des]
-    au fur et à mesure                                                                                                                          [de|du|d’|des]
-    au vu et au su                                                                                                                              [de|du|d’|des]
-    au nez et à la barbe                                                                                                                        [de|du|d’|des]
-    au sortir                                                                                                                                   [de|du|d’|des]
-    aux [abords|dépens]                                                                                                                         [de|du|d’|des]
-    compte tenu                                                                                                                                 [de|du|d’|des]
-    d’ un bout à l’ autre                                                                                                                       [de|du|d’|des]
-    dans l’ attente                                                                                                                             [de|du|d’|des]
-    dans la ligne de mire                                                                                                                       [de|du|d’|des]
-    des [quatre|4] coins                                                                                                                        [de|du|d’|des]
-    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|présence|provenance|quête|raison|sus|termes|travers|vertu]    [de|du|d’|des]
-    en dépit de la proximité                                                                                                                    [de|du|d’|des]
-    en flagrant délit                                                                                                                           [de|d’]
-    en lieu et place                                                                                                                            [de|du|d’|des]
-    en matière                                                                                                                                  [de|d’]
-    en l’ [absence|honneur]                                                                                                                     [de|du|d’|des]
-    en plein milieu                                                                                                                             [de|du|d’|des]
-    le long                                                                                                                                     [de|du|d’|des]
-    par le biais                                                                                                                                [de|du|d’|des]
-    par l’ entremise                                                                                                                            [de|du|d’|des]
-    par manque                                                                                                                                  [de|d’]
-    sous la houlette                                                                                                                            [de|du|d’|des]
+    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|disposition|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]   [de|du|d’|des]
+    à [bonne|faible|grande] distance                                                                                                                        [de|du|d’|des]
+    à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                               [de|du|d’|des]
+    à l’ autre bout                                                                                                                                         [de|du|d’|des]
+    à la [hauteur|portée|proximité|recherche|suite]                                                                                                         [de|du|d’|des]
+    à la grande surprise                                                                                                                                    [de|du|d’|des]
+    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                                    [de|du|d’|des]
+    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                             [de|du|d’|des]
+    à [base|force|raison]                                                                                                                                   [de|d’]
+    à grand renfort                                                                                                                                         [de|d’]
+    à grands coups                                                                                                                                          [de|d’]
+    au [bout|courant|cours|détriment|fond|gré|lieu|large|long|milieu|nord|profit|ras|sein|secours|sommet|sortir|sud|sujet|vu]                               [de|du|d’|des]
+    au beau milieu                                                                                                                                          [de|du|d’|des]
+    au fin fond                                                                                                                                             [de|du|d’|des]
+    au grand dam                                                                                                                                            [de|du|d’|des]
+    au plus [près|profond]                                                                                                                                  [de|du|d’|des]
+    au fur et à mesure                                                                                                                                      [de|du|d’|des]
+    au vu et au su                                                                                                                                          [de|du|d’|des]
+    au nez et à la barbe                                                                                                                                    [de|du|d’|des]
+    au sortir                                                                                                                                               [de|du|d’|des]
+    aux [abords|dépens]                                                                                                                                     [de|du|d’|des]
+    compte tenu                                                                                                                                             [de|du|d’|des]
+    d’ un bout à l’ autre                                                                                                                                   [de|du|d’|des]
+    dans l’ attente                                                                                                                                         [de|du|d’|des]
+    dans la ligne de mire                                                                                                                                   [de|du|d’|des]
+    des [quatre|4] coins                                                                                                                                    [de|du|d’|des]
+    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|présence|provenance|quête|raison|sus|termes|travers|vertu]        [de|du|d’|des]
+    en dépit de la proximité                                                                                                                                [de|du|d’|des]
+    en flagrant délit                                                                                                                                       [de|d’]
+    en lieu et place                                                                                                                                        [de|du|d’|des]
+    en matière                                                                                                                                              [de|d’]
+    en l’ [absence|attente|honneur]                                                                                                                         [de|du|d’|des]
+    en plein milieu                                                                                                                                         [de|du|d’|des]
+    le long                                                                                                                                                 [de|du|d’|des]
+    par le biais                                                                                                                                            [de|du|d’|des]
+    par l’ entremise                                                                                                                                        [de|du|d’|des]
+    par manque                                                                                                                                              [de|d’]
+    sous la houlette                                                                                                                                        [de|du|d’|des]
         <<- ~1:-2>> ␣
         <<- =>> define(\1, [":G:R:LR"])
 
@@ -13746,7 +13756,7 @@ __purge_conditionnelle__
     comme [moi|toi]
         <<- morph(<1, ":[NA]", ":V0") ~>> *
 
-    comme [lui|elle|ça|cela]
+    comme [lui|elle|ça|cela|iel]
     comme [celui-ci|celui-là|celle-ci|celle-là]
     comme le [mien|tien|sien|nôtre|vôtre|leur]
     comme la [mienne|tienne|sienne|nôtre|vôtre|leur]
@@ -13758,10 +13768,13 @@ __purge_conditionnelle__
     comme vous
         <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|2p)") ~>> *
 
-    comme [eux|elles]
-    comme [celui-ci|celui-là|celle-ci|celle-là]
+    comme [eux|elles|iels]
+    comme [ceux-ci|ceux-là|celles-ci|celles-là]
     comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
         <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|3p)") ~>> *
+
+    corps et âme
+        <<- not morph(<1, ":D") ~>> *
 
     droit au but
     droit dans les yeux
@@ -13965,6 +13978,7 @@ __substantifs_multi_mots__
     >atteinte aux bonnes mœurs
     >avion à [>hélice|réaction]
     ayants droit
+    >bac à légumes
     >bain [de|d’] sang
     >banc [de|d’] touche
     >bandit [de|d’] grand chemin
@@ -14261,6 +14275,7 @@ __substantifs_multi_mots__
     >presse à >scandale
     preuve ?suffisante¿ du contraire
     preuves ?suffisantes¿ du contraire
+    >prise [de|d’] conscience
     >pure comme [le|du] cristal
     prix [de|d’] revient
     quelqu’un d’ autre
@@ -14278,6 +14293,7 @@ __substantifs_multi_mots__
     >responsable qualité
     [>resto|>restau] u
     >retour à la case départ
+    >retour à la normale
     >revue [de|d’] presse
     >rivière à sec
     >robe [de|d’] [chambre|soirée]
@@ -14309,6 +14325,7 @@ __substantifs_multi_mots__
     >sujet [de|d’] prédilection
     >suspension [de|d’] séance
     >système d’ exploitation
+    >système [de|d’] santé
     >système D
     >tableau [de|d’] chasse
     >table à repasser
@@ -15113,6 +15130,13 @@ __purge_locutions_potentielles__
     le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps [<end>|,|)]
         <<- ~1:6>> *
 
+    pour cette raison même
+        <<- ~>> *
+
+    pour cette raison @:¬:A.*:[fe]:[si]
+    pour cette raison [<end>|,|)]
+        <<- ~1:3>> *
+
     pour de bon  @:¬:[NA].*:m:s
     pour de bon  [<end>|,|)]
         <<- ~1:3>> *
@@ -15123,7 +15147,7 @@ __purge_locutions_potentielles__
 
     semblait-il
     semble-t-il
-        <<- not value(<1, "|ça|cela|ceci|me|te|lui|nous|vous|leur|") ~>> *
+        <<- not value(<1, "|ça|cela|ceci|me|m’|te|t’|lui|nous|vous|leur|ne|n’|") ~>> *
 
     tête la première
         <<- /conf/ not morph(<1, ":D") and not morph(>1, ":[NA].*:[fe]:[si]") ~>> *
@@ -16303,7 +16327,7 @@ TEST: aux {{personne}}
 
 
 __gn_det_epi_plur_2m__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult|$:B]  *WORD  *WORD
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  *WORD
         <<- /gn/ not value(<1, "|et|ou|de|d’|au|aux|") and not \3.startswith("seul") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
@@ -16326,12 +16350,27 @@ TEST: ces {{beaux}} {{institutions}}
 TEST: nos petites {{fille}}
 TEST: de plusieurs {{grands}} {{avocates}}
 TEST: de vos défauts {{terrible}}, je connais presque tout.
-TEST: sept valeurs {{aléatoire}}
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
 TEST: Pour maintenir le potentiel de membrane qui lui permet de communiquer avec ses voisins sous forme d’influx nerveux, un neurone a besoin d’énergie.
 TEST: ces religieux inflexibles envers les femmes mais compatissants envers les tyrans qui soutiennent leur religion.
 TEST: le bruit de nos pas étouffé par l’épais tapis.
+
+
+__gn_nombre_plur_2m__
+    $:B  *WORD  *WORD
+        <<- /gn/ not morph(<1, ">(?:et|ou)/|:R") and not \3.startswith("seul") >>>
+        <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
+            and not apposition(\2, \3)
+        -3>> =switchGender(\3, True)                                                                # Accord de genre erroné entre « \2 » et « \3 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           # Accord de genre erroné avec « \3 ».
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
+
+TEST: deux sombres {{idiot}}
+TEST: sept valeurs {{aléatoire}}
+TEST: huit {{grandes}} {{claviers}}
+TEST: vivre une situation hors du commun à deux a aussi pesé dans la balance.
 
 
 __gn_des_2m__
@@ -17905,7 +17944,7 @@ __conf_à_a_après_verbes__
 
     >appartenir a
     >appartenir en propre a
-    >avoir vocation a
+    >avoir [tendance|vocation] a
     >donner [sens|suite] a
     enclin a
     en être [réduit+ses] a
@@ -17913,6 +17952,7 @@ __conf_à_a_après_verbes__
     >laisser libre cours a
     >parvenir a
     >prêter attention a
+    [m’|t’|s’|nous|vous] en >remettre a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") and not value(>1, "|été|")
         --1>> à                                                             # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -17921,12 +17961,15 @@ __conf_à_a_après_verbes__
     >commencer a
     >condamner a
     >dire [adieu|merde] a
-    >faire confiance a
+    >donner a
+    >donner du grain à moudre a
+    >faire [barrage|barrière|confiance] a
     >faire faux bond a
     >mentir a
     >plaire a
     >préparer a
     >prêter serment a
+    >remettre a
     >rendre service a
     >réussir a
     >viser a
@@ -18629,17 +18672,21 @@ TEST: Elles avançaient côte à côte.
 # cou / coup / coût
 __conf_coup_cout_cou2__
     >rouer de [>cou|>cout|>coût]
-        <<- /conf/ --1>> coups              # Confusion. Le coût indique ce que ça coûte. Un cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+        <<- /conf/ --1>> coups              # Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
 
     >tordre le [coup|coût|cout]
         <<- /conf/ -3>> cou                 # Confusion. Le coût indique ce que ça coûte. Un coup, c’est quelque chose qui frappe. La partie séparant la tête du corps s’écrit “cou”.
 
     >rendre [>cou|>coût|>cout] pour [>cou|>coût|>cout]
-        <<- /conf/ -2:0>> coup pour coup    # Confusion. Le coût indique ce que ça coûte. Un cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+        <<- /conf/ -2:0>> coup pour coup    # Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+
+    >prévoir le cou
+        <<- /conf/ --1>> coup|coût|cout     # Confusion. Le cou est la partie séparant la tête du corps. Le coût indique ce que ça coûte. Pour ce qui frappe, écrivez “coup”.
 
 TEST: il a été roué de {{cou}}
 TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
 TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
+TEST: j’avais prévu le {{cou}}
 
 
 # cuire / cuir
@@ -22997,7 +23044,21 @@ TEST: ayant prise sur les événements, elle ne voyait aucune raison de s’alar
 
 
 __ppas_pronom_avoir__
-    [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  ?[lui|leur|y]¿  >avoir  *WORD
+    il  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+        <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
+            and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+    il  ?[ne|n’]¿  y  >avoir  *WORD
+        <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
+            and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|N|Q.*:m:[si])")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+    [je|j’|tu|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  ?[lui|leur|y]¿  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
             and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
@@ -23018,6 +23079,7 @@ TEST: J’ai {{lut}} son journal.                                               
 TEST: Si j’avais {{sut}}.                                                           ->> su
 TEST: Il a {{prit}} le train.                                                       ->> pris
 TEST: Il a {{donner}} sa vie pour elle.                                             ->> donné
+TEST: Il y a {{consacrait}} son temps                                               ->> consacré
 TEST: Ils leur ont {{données}} un cadeau.                                           ->> donné
 TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions                  ->> perdu
 TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.                      ->> perdu
@@ -23030,6 +23092,8 @@ TEST: elle sait que j’ai {{agis}} comme il le fallait                         
 TEST: que j’ai {{prit}} le temps de le lui expliquer                                ->> pris
 TEST: pourquoi je n’y ai pas {{pensais}} plus tôt ?                                 ->> pensé
 TEST: Ils avaient barre sur lui.
+TEST: il y a risque de brûlures
+TEST: il y a faute, il y a erreur
 
 
 __ppas_nous_vous_avoir__
@@ -24610,6 +24674,13 @@ __purge_proposition_subordonnée__
     [que|qu’]   $:M et $:M              ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:V0.*:3p    @:Q¬:G   @:[123][sp]
     [que|qu’]   $:M et $:M              ?[ne|n’]¿   [lui|leur|y]                    en                          @:V0.*:3p    @:Q¬:G   @:[123][sp]
         <<- morph(<1, ":N", ":V") ~1:-2>> *
+
+
+__purge_substantifs_comme_lui_elle__
+    <start>  les  *WORD  comme  [moi|toi|nous|vous|lui|elle|eux|elles|celui-là|celui-ci|celle-là|celle-ci|ceux-là|ceux-ci|celles-là|celles-ci]
+    <start>  un   *WORD  comme  [moi|toi|nous|vous|lui|celui-là|celui-ci|ceux-là|ceux-ci]
+    <start>  une  *WORD  comme  [moi|toi|nous|vous|elle|elles|celle-là|celle-ci|celles-là|celles-ci]
+        <<- ~-2:0>> *
 
 
 __tag_verbe_infinitif_sujet__
