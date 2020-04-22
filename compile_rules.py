@@ -150,7 +150,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         return ["@@@@", s[4:], sLineId]
 
     #### OPTIONS
-    sOption = False         # False or [a-z0-9]+ name
+    sOption = ""            # empty string or [a-z0-9]+ name
     nPriority = 4           # Default is 4, value must be between 0 and 9
     tGroups = None          # code for groups positioning (only useful for JavaScript)
     cCaseMode = 'i'         # i: case insensitive,  s: case sensitive,  u: uppercasing allowed
@@ -161,7 +161,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         cWordLimitLeft = m.group('borders_and_case')[0]
         cCaseMode = m.group('borders_and_case')[1]
         cWordLimitRight = m.group('borders_and_case')[2]
-        sOption = m.group('option')[1:]  if m.group('option')  else False
+        sOption = m.group('option')[1:]  if m.group('option')  else ""
         sRuleId =  m.group('ruleid')[1:-1]
         if sRuleId in aRULESET:
             print(f"# Error. Several rules have the same id: {sRuleId}")
@@ -412,8 +412,7 @@ def createRulesAsString (lRules):
     "create rules as a string of arrays (to be bundled in a JSON string)"
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
-        sOption = "False"  if not sOption  else  f'"{sOption}"'
-        sArray += f'  [{sOption}, [\n'
+        sArray += f'  ["{sOption}", [\n'
         for aRule in aRuleGroup:
             sArray += f'    {aRule},\n'
         sArray += "  ]],\n"

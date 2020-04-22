@@ -136,21 +136,18 @@ def writeRulesToJSArray (lRules):
     "create rules as a string of arrays (to be bundled in a JSON string)"
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
+        sArray += f'  ["{sOption}", [\n'
         if sOption != "@@@@":
-            sOption = "false"  if not sOption  else  f'"{sOption}"'
-            sArray += f'  [{sOption}, [\n'
             for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
                 sCaseSensitive = "true" if bCaseInsensitive  else "false"
                 sActions = json.dumps(lActions, ensure_ascii=False)
                 sGroups = json.dumps(aGroups, ensure_ascii=False)
                 sNLBRegex = json.dumps(aNegLookBehindRegex, ensure_ascii=False)
                 sArray += f'    [{sRegex}, {sCaseSensitive}, "{sLineId}", "{sRuleId}", {nPriority}, {sActions}, {sGroups}, {sNLBRegex}],\n'
-            sArray += "  ]],\n"
         else:
-            sArray += f'  ["{sOption}", [\n'
-            for sGraphName, sLineId in aRuleGroup:
-                sArray += f'    ["{sGraphName}", "{sLineId}"],\n'
-            sArray += "  ]],\n"
+            for aRule in aRuleGroup:
+                sArray += f'    {aRule},\n'
+        sArray += "  ]],\n"
     sArray += "]"
     return sArray
 
