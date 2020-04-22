@@ -137,21 +137,19 @@ def writeRulesToJSArray (lRules):
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
         if sOption != "@@@@":
-            sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
+            sOption = "false"  if not sOption  else  f'"{sOption}"'
+            sArray += f'  [{sOption}, [\n'
             for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
-                sArray += '    [' + sRegex + ", "
-                sArray += "true, " if bCaseInsensitive  else "false, "
-                sArray += '"' + sLineId + '", '
-                sArray += '"' + sRuleId + '", '
-                sArray += str(nPriority) + ", "
-                sArray += json.dumps(lActions, ensure_ascii=False) + ", "
-                sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
-                sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
+                sCaseSensitive = "true" if bCaseInsensitive  else "false"
+                sActions = json.dumps(lActions, ensure_ascii=False)
+                sGroups = json.dumps(aGroups, ensure_ascii=False)
+                sNLBRegex = json.dumps(aNegLookBehindRegex, ensure_ascii=False)
+                sArray += f'    [{sRegex}, {sCaseSensitive}, "{sLineId}", "{sRuleId}", {nPriority}, {sActions}, {sGroups}, {sNLBRegex}],\n'
             sArray += "  ]],\n"
         else:
-            sArray += '  ["' + sOption + '", [\n'
+            sArray += f'  ["{sOption}", [\n'
             for sGraphName, sLineId in aRuleGroup:
-                sArray += '    ["' + sGraphName + '", "' + sLineId + '"],\n'
+                sArray += f'    ["{sGraphName}", "{sLineId}"],\n'
             sArray += "  ]],\n"
     sArray += "]"
     return sArray
