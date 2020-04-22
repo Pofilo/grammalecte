@@ -139,7 +139,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     "returns rule as list [option name, regex, bCaseInsensitive, identifier, list of actions]"
     global dJSREGEXES
 
-    sLineId = "#" + str(nIdLine) + ("p" if bParagraph else "s")
+    sLineId = f"#{nIdLine}" + ("p" if bParagraph else "s")
     sRuleId = sLineId
 
     #### GRAPH CALL
@@ -164,7 +164,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sOption = m.group('option')[1:]  if m.group('option')  else False
         sRuleId =  m.group('ruleid')[1:-1]
         if sRuleId in aRULESET:
-            print("# Error. Several rules have the same id: " + sRuleId)
+            print(f"# Error. Several rules have the same id: {sRuleId}")
             exit()
         aRULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
@@ -172,13 +172,13 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
             nPriority = int(m.group('priority')[1:])
         s = s[m.end(0):]
     else:
-        print("# Warning. Rule wrongly shaped at line: " + sLineId)
+        print(f"# Warning. Rule wrongly shaped at line: {sLineId}")
         exit()
 
     #### REGEX TRIGGER
     i = s.find(" <<-")
     if i == -1:
-        print("# Error: no condition at line " + sLineId)
+        print(f"# Error: no condition at line {sLineId}")
         return None
     sRegex = s[:i].strip()
     s = s[i+4:]
@@ -194,7 +194,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         dJSREGEXES[sLineId] = m.group(0)
         sRegex = sRegex[:m.start()].strip()
     if "<js>" in sRegex or "</js>" in sRegex:
-        print("# Error: JavaScript regex not delimited at line " + sLineId)
+        print(f"# Error: JavaScript regex not delimited at line {sLineId}")
         return None
 
     # quotes ?
@@ -209,10 +209,10 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     nGroup = countGroupInRegex(sRegex)
     if nGroup > 0:
         if not tGroups:
-            print("# Warning: groups positioning code for JavaScript should be defined at line " + sLineId)
+            print(f"# Warning: groups positioning code for JavaScript should be defined at line {sLineId}")
         else:
             if nGroup != len(tGroups):
-                print("# Error: groups positioning code irrelevant at line " + sLineId)
+                print(f"# Error: groups positioning code irrelevant at line {sLineId}")
 
     ## word limit
     if cWordLimitLeft == '[' and not sRegex.startswith(("^", '’', "'", ",")):
@@ -233,18 +233,18 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sRegex = sRegex.replace("(?i)", "")
         sRegex = uppercase(sRegex, sLang)
     else:
-        print("# Unknown case mode [" + cCaseMode + "] at line " + sLineId)
+        print(f"# Unknown case mode [{cCaseMode}] at line {sLineId}")
 
     ## check regex
     try:
         re.compile(sRegex)
     except re.error:
-        print("# Regex error at line ", nIdLine)
+        print(f"# Regex error at line {sLineId}")
         print(sRegex)
         return None
     ## groups in non grouping parenthesis
     for _ in re.finditer(r"\(\?:[^)]*\([\[\w -]", sRegex):
-        print("# Warning: groups inside non grouping parenthesis in regex at line " + sLineId)
+        print(f"# Warning: groups inside non grouping parenthesis in regex at line {sLineId}")
 
     #### PARSE ACTIONS
     lActions = []
@@ -264,14 +264,14 @@ def checkReferenceNumbers (sText, sActionId, nToken):
     "check if token references in <sText> greater than <nToken> (debugging)"
     for x in re.finditer(r"\\(\d+)", sText):
         if int(x.group(1)) > nToken:
-            print("# Error in token index at line " + sActionId + " ("+str(nToken)+" tokens only)")
+            print(f"# Error in token index at line {sActionId} ({nToken} tokens only)")
             print(sText)
 
 
 def checkIfThereIsCode (sText, sActionId):
     "check if there is code in <sText> (debugging)"
     if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
-        print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
+        print(f"# Warning at line {sActionId}:  This message looks like code. Line should probably begin with =")
         print(sText)
 
 
@@ -279,7 +279,7 @@ def createAction (sIdAction, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
     if not m:
-        print("# No action at line " + sIdAction)
+        print(f"# No action at line {sIdAction}")
         return None
 
     #### CONDITION
@@ -297,7 +297,7 @@ def createAction (sIdAction, sAction, nGroup):
     #### iGroup / positioning
     iGroup = int(m.group(2)) if m.group(2) else 0
     if iGroup > nGroup:
-        print("# Selected group > group number in regex at line " + sIdAction)
+        print(f"# Selected group > group number in regex at line {sIdAction}")
 
     #### ACTION
     sAction = sAction[m.end():].strip()
@@ -308,7 +308,7 @@ def createAction (sIdAction, sAction, nGroup):
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
-            print(sMsg + " Action id: " + sIdAction)
+            print(f"# No message. Action id: {sIdAction}")
         else:
             sMsg = sAction[iMsg+3:].strip()
             sAction = sAction[:iMsg].strip()
@@ -337,7 +337,7 @@ def createAction (sIdAction, sAction, nGroup):
         return [sCondition, cAction, ""]
 
     if not sAction:
-        print("# Error in action at line " + sIdAction + ":  This action is empty.")
+        print(f"# Error in action at line {sIdAction}:  This action is empty.")
         return None
 
     if cAction == "-":
@@ -348,7 +348,7 @@ def createAction (sIdAction, sAction, nGroup):
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print("# Error in action at line " + sIdAction + ":  the message is empty.")
+            print(f"# Error in action at line {sIdAction}:  the message is empty.")
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
     if cAction == "~":
         ## text processor
@@ -363,12 +363,12 @@ def createAction (sIdAction, sAction, nGroup):
         if sAction[0:1] == "=":
             sAction = sAction[1:]
         if "define" in sAction and not re.search(r"define\(dTokenPos, *m\.start.*, \[.*\] *\)", sAction):
-            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
+            print(f"# Error in action at line {sIdAction}: second argument for define must be a list of strings")
             print(sAction)
         lFUNCTIONS.append(("_d_"+sIdAction, sAction))
         sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]
-    print("# Unknown action at line " + sIdAction)
+    print(f"# Unknown action at line {sIdAction}")
     return None
 
 
@@ -468,9 +468,9 @@ def printBookmark (nLevel, sComment, nLine):
     print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
 
 
-def make (spLang, sLang, bUseCache=False):
+def make (spLang, sLang, bUseCache=None):
     "compile rules, returns a dictionary of values"
-    # for clarity purpose, don’t create any file here
+    # for clarity purpose, don’t create any file here (except cache)
 
     dCacheVars = None
 
@@ -488,14 +488,16 @@ def make (spLang, sLang, bUseCache=False):
     try:
         sFileContent = open(spLang + "/rules.grx", 'r', encoding="utf-8").read()
     except OSError:
-        print("Error. Rules file in project [" + sLang + "] not found.")
+        print(f"# Error. Rules file in project <{sLang}> not found.")
         exit()
 
+    # calculate hash of loaded file
     xHasher = hashlib.new("sha3_512")
     xHasher.update(sFileContent.encode("utf-8"))
     sFileHash = xHasher.hexdigest()
 
-    if dCacheVars and sFileHash == dCacheVars.get("sFileHash", ""):
+    if dCacheVars and bUseCache != False and sFileHash == dCacheVars.get("sFileHash", ""):
+        # if <bUseCache> is None or True, we can use the cache
         print("> cache hash identical to file hash, use cache")
         print("  build made at: " + sBuildDate)
         return dCacheVars
@@ -523,7 +525,7 @@ def make (spLang, sLang, bUseCache=False):
             if m:
                 dDEFINITIONS["{"+m.group(1)+"}"] = m.group(2)
             else:
-                print("Error in definition: ", end="")
+                print("# Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("DECL:"):
             # declensions
@@ -628,13 +630,13 @@ def make (spLang, sLang, bUseCache=False):
         elif sFuncName.startswith("_d_"): # disambiguator
             sParams = "sSentence, m, dTokenPos"
         else:
-            print("# Unknown function type in [" + sFuncName + "]")
+            print(f"# Unknown function type in <{sFuncName}>")
             continue
         # Python
-        sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
-        sPyCallables += "    return " + sReturn + "\n"
+        sPyCallables += f"def {sFuncName} ({sParams}):\n"
+        sPyCallables += f"    return {sReturn}\n"
         # JavaScript
-        sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
+        sJSCallables += f"    {sFuncName}: function ({sParams}) {{\n"
         sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         sJSCallables += "    },\n"
 

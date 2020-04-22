@@ -34,9 +34,9 @@ def getConfig (sLang):
     xConfig = configparser.ConfigParser()
     xConfig.optionxform = str
     try:
-        xConfig.read_file(open("gc_lang/" + sLang + "/config.ini", "r", encoding="utf-8"))
+        xConfig.read_file(open(f"gc_lang/{sLang}/config.ini", "r", encoding="utf-8"))
     except FileNotFoundError:
-        print("# Error. Can’t read config file [" + sLang + "]")
+        print(f"# Error. Can’t read config file <{sLang}>")
         exit()
     return xConfig
 
@@ -45,33 +45,32 @@ def createOptionsLabelProperties (dOptLbl):
     "create content for .properties files (LibreOffice)"
     sContent = ""
     for sOpt, tLabel in dOptLbl.items():
-        sContent += sOpt + "=" + tLabel[0] + "\n"
+        sContent += f"{sOpt}={tLabel[0]}\n"
         if tLabel[1]:
-            sContent += "hlp_" + sOpt + "=" + tLabel[1] + "\n"
+            sContent += f"hlp_{sOpt}={tLabel[1]}\n"
     return sContent
 
 
 def createDialogOptionsXDL (dVars):
     "create bundled dialog options file .xdl (LibreOffice)"
-    sFixedline = '<dlg:fixedline dlg:id="{0}" dlg:tab-index="{1}" dlg:top="{2}" dlg:left="5" dlg:width="{3}" dlg:height="10" dlg:value="&amp;{0}" />\n'
-    sCheckbox = '<dlg:checkbox dlg:id="{0}" dlg:tab-index="{1}" dlg:top="{2}" dlg:left="{3}" dlg:width="{4}" dlg:height="10" dlg:value="&amp;{0}" dlg:checked="{5}" {6} />\n'
-    iTabIndex = 1
+    iTab = 1
     nPosY = 5
     nWidth = 240
     sContent = ""
-    dOpt = dVars["dOptPython"]
+    dOpt = dVars["dOptWriter"]
     dOptLabel = dVars["dOptLabel"][dVars["lang"]]
     for sGroup, lGroupOptions in dVars["lStructOpt"]:
-        sContent += sFixedline.format(sGroup, iTabIndex, nPosY, nWidth)
-        iTabIndex += 1
+        sContent += f'<dlg:fixedline dlg:id="{sGroup}" dlg:tab-index="{iTab}" dlg:top="{nPosY}" dlg:left="5" dlg:width="{nWidth}" dlg:height="10" dlg:value="&amp;{sGroup}" />\n'
+        iTab += 1
         for lLineOptions in lGroupOptions:
             nElemWidth = nWidth // len(lLineOptions)
             nPosY += 10
             nPosX = 10
             for sOpt in lLineOptions:
-                sHelp = 'dlg:help-text="&amp;hlp_%s"'%sOpt  if dOptLabel[sOpt][1]  else ""
-                sContent += sCheckbox.format(sOpt, iTabIndex, nPosY, nPosX, nElemWidth, "true" if dOpt[sOpt] else "false", sHelp)
-                iTabIndex += 1
+                sHelp = f'dlg:help-text="&amp;hlp_{sOpt}"'  if dOptLabel[sOpt][1]  else ""
+                sChecked = "true" if dOpt[sOpt] else "false"
+                sContent += f'<dlg:checkbox dlg:id="{sOpt}" dlg:tab-index="{iTab}" dlg:top="{nPosY}" dlg:left="{nPosX}" dlg:width="{nElemWidth}" dlg:height="10" dlg:value="&amp;{sOpt}" dlg:checked="{sChecked}" {sHelp} />\n'
+                iTab += 1
                 nPosX += nElemWidth
         nPosY += 10
     return sContent
@@ -80,7 +79,7 @@ def createDialogOptionsXDL (dVars):
 def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     "create extension for Writer"
     print("Building extension for Writer")
-    spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.oxt'
+    spfZip = f"_build/{dVars['name']}-{dVars['lang']}-v{dVars['version']}.oxt"
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     # Package and parser
@@ -118,7 +117,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip.writestr("dialog/OptionsDialog.xcu", helpers.fileFile("gc_core/py/oxt/OptionsDialog.xcu", dVars))
     hZip.writestr("dialog/" + dVars['lang'] + "_en.default", "")
     for sLangLbl, dOptLbl in dVars['dOptLabel'].items():
-        hZip.writestr("dialog/" + dVars['lang'] + "_" + sLangLbl + ".properties", createOptionsLabelProperties(dOptLbl))
+        hZip.writestr(f"dialog/{dVars['lang']}_{sLangLbl}.properties", createOptionsLabelProperties(dOptLbl))
 
     ## ADDONS OXT
     print("+ OXT: ", end="")
@@ -149,22 +148,9 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
             print("# Error: path and filename of unopkg not set in config.ini")
 
 
-def createServerOptions (sLang, dOptData):
-    "create file options for Grammalecte server"
-    with open("grammalecte-server-options."+sLang+".ini", "w", encoding="utf-8", newline="\n") as hDst:
-        hDst.write("# Server options. Lang: " + sLang + "\n\n[gc_options]\n")
-        for sSection, lOpt in dOptData["lStructOpt"]:
-            hDst.write("\n########## " + dOptData["dOptLabel"][sLang].get(sSection, sSection + "[no label found]")[0] + " ##########\n")
-            for lLineOpt in lOpt:
-                for sOpt in lLineOpt:
-                    hDst.write("# " + dOptData["dOptLabel"][sLang].get(sOpt, "[no label found]")[0] + "\n")
-                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptServer"].get(sOpt, None) else "0") + "\n")
-        hDst.write("html = 1\n")
-
-
 def createPackageZip (dVars, spLangPack):
     "create server zip"
-    spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
+    spfZip = f"_build/{dVars['name']}-{dVars['lang']}-v{dVars['version']}.zip"
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     copyGrammalectePyPackageInZipFile(hZip, spLangPack)
     for spf in ["grammalecte-cli.py", "grammalecte-server.py", \
@@ -328,8 +314,8 @@ def copyGraphspellDictionaries (dVars, bJavaScript=False, bCommunityDict=False, 
     if bPersonalDict:
         lDict.append(("personal", dVars['dic_personal_filename']))
     for sType, sFileName in lDict:
-        spfPyDic = "graphspell/_dictionaries/" + sFileName + ".bdic"
-        spfJSDic = "graphspell-js/_dictionaries/" + sFileName + ".json"
+        spfPyDic = f"graphspell/_dictionaries/{sFileName}.bdic"
+        spfJSDic = f"graphspell-js/_dictionaries/{sFileName}.json"
         if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
             buildDictionary(dVars, sType, bJavaScript)
         print(spfPyDic)
@@ -376,6 +362,7 @@ def main ():
     xParser = argparse.ArgumentParser()
     xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
     xParser.add_argument("-uc", "--use_cache", help="use data cache instead of rebuilding rules", action="store_true")
+    xParser.add_argument("-frb", "--force_rebuild", help="force rebuilding rules", action="store_true")
     xParser.add_argument("-b", "--build_data", help="launch build_data.py (part 1 and 2)", action="store_true")
     xParser.add_argument("-bb", "--build_data_before", help="launch build_data.py (only part 1: before dictionary building)", action="store_true")
     xParser.add_argument("-ba", "--build_data_after", help="launch build_data.py (only part 2: before dictionary building)", action="store_true")
@@ -438,7 +425,12 @@ def main ():
             copyGraphspellDictionaries(dVars, xArgs.javascript, xArgs.add_community_dictionary, xArgs.add_personal_dictionary)
 
             # make
-            sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, xArgs.use_cache)
+            bUseCache = None            # we may rebuild if it’s necessary
+            if xArgs.use_cache:
+                bUseCache = True        # we use the cache if it exists
+            if xArgs.force_rebuild:
+                bUseCache = False       # we rebuild
+            sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, bUseCache)
 
             # tests
             if xArgs.tests or xArgs.perf or xArgs.perf_memo:
@@ -447,7 +439,7 @@ def main ():
                     tests = importlib.import_module("grammalecte."+sLang+".tests")
                     print(tests.__file__)
                 except ImportError:
-                    print("# Error. Import failed:" + "grammalecte."+sLang+".tests")
+                    print(f"# Error. Import failed: grammalecte.{sLang}.tests")
                     traceback.print_exc()
                 else:
                     if xArgs.tests:

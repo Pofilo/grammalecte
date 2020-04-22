@@ -101,7 +101,6 @@ class GraphBuilder:
         self.dActions = {}
         self.dFuncName = {}
         self.dFunctions = {}
-        self.dURL = {}
 
     def _genTokenLines (self, sTokenLine):
         "tokenize a string and return a list of lines of tokens"
@@ -324,7 +323,7 @@ class GraphBuilder:
             if iMsg == -1:
                 sMsg = "# Error. Error message not found."
                 sURL = ""
-                print("\n" + sMsg + " at: ", sLineId, sActionId)
+                print("\n# Error. No message at: ", sLineId, sActionId)
             else:
                 sMsg = sAction[iMsg+3:].strip()
                 sAction = sAction[:iMsg].strip()
@@ -478,7 +477,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
         sLine = sLine.rstrip()
         if "\t" in sLine:
             # tabulation not allowed
-            print("Error. Tabulation at line: ", iLine)
+            print("# Error. Tabulation at line: ", iLine)
             exit()
         elif sLine.startswith("@@@@GRAPH: "):
             # rules graph call
@@ -487,12 +486,12 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
                 sGraphName = m.group(1)
                 sGraphCode = m.group(2)
                 if sGraphName in dAllGraph or sGraphCode in dGraphCode:
-                    print(f"Error at line {iLine}. Graph name <{sGraphName}> or graph code <{sGraphCode}> already exists.")
+                    print(f"# Error at line {iLine}. Graph name <{sGraphName}> or graph code <{sGraphCode}> already exists.")
                     exit()
                 dAllGraph[sGraphName] = []
                 dGraphCode[sGraphName] = sGraphCode
             else:
-                print("Error. Graph name not found at line", iLine)
+                print("# Error. Graph name not found at line", iLine)
                 exit()
         elif sLine.startswith("__") and sLine.endswith("__"):
             # new rule group
@@ -500,13 +499,13 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             if m:
                 sRuleName = m.group(1)
                 if sRuleName in aRuleName:
-                    print(f"Error at line {iLine}. Rule name <{sRuleName}> already exists.")
+                    print(f"# Error at line {iLine}. Rule name <{sRuleName}> already exists.")
                     exit()
                 aRuleName.add(sRuleName)
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
-                print("Syntax error in rule group: ", sLine, " -- line:", iLine)
+                print("# Syntax error in rule group: ", sLine, " -- line:", iLine)
                 exit()
         elif re.match("    \\S", sLine):
             # tokens line
@@ -535,11 +534,11 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             if not lTokenLine:
                 continue
             if bActionBlock or not lActions:
-                print("Error. No action found at line:", iLine)
+                print("# Error. No action found at line:", iLine)
                 print(bActionBlock, lActions)
                 exit()
             if not sGraphName:
-                print("Error. All rules must belong to a named graph. Line: ", iLine)
+                print("# Error. All rules must belong to a named graph. Line: ", iLine)
                 exit()
             for j, sTokenLine in lTokenLine:
                 dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, iActionBlock, list(lActions), nPriority))
@@ -547,7 +546,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             lActions.clear()
             iActionBlock += 1
         else:
-            print("Unknown line at:", iLine)
+            print("# Unknown line at:", iLine)
             print(sLine)
 
     # processing rules
