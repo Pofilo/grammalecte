@@ -10,6 +10,21 @@ import zipfile
 from string import Template
 
 
+def convertDictToString (dDict, nDepth=1, nIndent=2):
+    "returns <dDict> as a indented string"
+    sResult = "{\n"
+    sIndent = " " * nIndent
+    for key, val in dDict.items():
+        sKey = f"'{key}'"  if type(key) is str  else str(key)
+        if nDepth > 0 and type(val) is dict:
+            sVal = convertDictToString(val, nDepth-1, nIndent+nIndent)
+        else:
+            sVal = f"'{val}'"  if type(val) is str  else str(val)
+        sResult += f'{sIndent}{sKey}: {sVal},\n'
+    sResult = sResult + sIndent[:-2] + "}"
+    return sResult
+
+
 class CD:
     "Context manager for changing the current working directory"
     def __init__ (self, newPath):

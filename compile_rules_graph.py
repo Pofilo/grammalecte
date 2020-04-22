@@ -10,6 +10,7 @@ import concurrent.futures
 
 import darg
 import compile_rules_js_convert as jsconv
+import helpers
 
 
 #### PROCESS POOL EXECUTOR ####
@@ -577,7 +578,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
         sPyCallables += sPy
         sJSCallables += sJS
     # create a dictionary of URL
-    dTempURL = {}
+    dTempURL = { "": 0 }
     i = 1
     for sKey, lValue in dAllActions.items():
         if lValue[3] == "-":
@@ -589,18 +590,18 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             else:
                 lValue[-1] = 0
     dURL = { v: k  for k, v in dTempURL.items() } # reversing key and values
-    dURL[0] = ""
     # end
     print("  Total: ", nRule, "rules, ", len(dAllActions), "actions")
     print("  Build time: {:.2f} s".format(time.time() - fStartTimer))
 
     return {
         # the graphs describe paths of tokens to actions which eventually execute callables
-        "rules_graphs": str(dAllGraph),
+        "rules_graphs": str(dAllGraph), # helpers.convertDictToString(dAllGraph)
+        "rules_actions": helpers.convertDictToString(dAllActions), # str(dAllActions)
+        "rules_graph_URL": helpers.convertDictToString(dURL), # str(dURL)
         "rules_graphsJS": str(dAllGraph),
-        "rules_actions": str(dAllActions),
         "rules_actionsJS": jsconv.pyActionsToString(dAllActions),
-        "rules_graph_URL": str(dURL),
+        "rules_graph_URLJS": str(dURL),
         "graph_callables": sPyCallables,
         "graph_callablesJS": sJSCallables
     }

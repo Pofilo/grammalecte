@@ -14,7 +14,7 @@ var gc_rules_graph = {
 
     dRule: ${rules_actionsJS},
 
-    dURL: ${rules_graph_URL}
+    dURL: ${rules_graph_URLJS}
 };
 
 
