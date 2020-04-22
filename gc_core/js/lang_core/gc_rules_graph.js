@@ -12,11 +12,14 @@ ${string}
 var gc_rules_graph = {
     dAllGraph: ${rules_graphsJS},
 
-    dRule: ${rules_actionsJS}
+    dRule: ${rules_actionsJS},
+
+    dURL: ${rules_graph_URL}
 };
 
 
 if (typeof(exports) !== 'undefined') {
     exports.dAllGraph = gc_rules_graph.dAllGraph;
     exports.dRule = gc_rules_graph.dRule;
+    exports.dURL = gc_rules_graph.dURL;
 }

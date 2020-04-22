@@ -7,3 +7,5 @@ Grammar checker graph rules
 dAllGraph = ${rules_graphs}
 
 dRule = ${rules_actions}
+
+dURL = ${rules_graph_URL}

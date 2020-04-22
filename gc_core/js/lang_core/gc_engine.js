@@ -11,7 +11,7 @@ ${regex}
 ${map}
 
 
-if(typeof(process) !== 'undefined') {
+if (typeof(process) !== 'undefined') {
     var gc_options = require("./gc_options.js");
     var gc_rules = require("./gc_rules.js");
     var gc_rules_graph = require("./gc_rules_graph.js");
@@ -671,7 +671,7 @@ class TextParser {
                         console.log("   >TRY: " + sRuleId + " " + sLineId);
                     }
                     let [_, sOption, sFuncCond, cActionType, sWhat, ...eAct] = gc_rules_graph.dRule[sRuleId];
-                    // Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
+                    // Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL ]
                     // TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     // Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     // Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
@@ -682,14 +682,15 @@ class TextParser {
                         if (bCondMemo) {
                             if (cActionType == "-") {
                                 // grammar error
-                                let [iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL] = eAct;
+                                let [iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL] = eAct;
                                 let nTokenErrorStart = (iTokenStart > 0) ? nTokenOffset + iTokenStart : nLastToken + iTokenStart;
                                 if (!this.lToken[nTokenErrorStart].hasOwnProperty("bImmune")) {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lToken[nTokenErrorStart]["nStart"] : this.lToken[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
                                     if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
-                                        this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext));
+                                        this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty,
+                                                                                                 sMessage, gc_rules_graph.dURL[iURL], bShowRuleId, sOption, bContext));
                                         this.dErrorPriority.set(nErrorStart, nPriority);
                                         this.dSentenceError.set(nErrorStart, this.dError.get(nErrorStart));
                                         if (bDebug) {

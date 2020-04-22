@@ -872,9 +872,9 @@ TEST: Chacun peut l’entendre d’une manière différente et donc on se demand
 
 
 __<s>/virg(virgule_point_fin_dialogue)__
-    ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "             # Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
+    ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "                                # Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
 __<s>/virg(virgule_fin_dialogue)__
-    (, »,? )[a-zéà]  @@0 <<- -1>> " », | » "                                            # Virgule mal placée ou superflue.
+    (, »,? )[a-zéà]  @@0 <<- -1>> " », | » "                                # Virgule mal placée ou superflue.
 
 TEST: « Ça suffit{{. » }}dit-elle.
 TEST: « J’en ai plus qu’assez{{, » }}dis-je.
@@ -8123,7 +8123,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 # cou / coup / coût
 __conf_coup_cout_cou1__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -8624,7 +8624,7 @@ TEST: c’est emballé, c’est pesé.
 # étant donné que
 __conf_étant_donné_que__
     étant [donner|donnait|donnais] [que|qu’]
-        <<- /conf/ -2>> donné                               # Confusion probable. Locution “étant donné que”.
+        <<- /conf/ -2>> donné                               # Confusion probable. Locution “étant donné que”.|https://fr.wiktionary.org/wiki/%C3%A9tant_donn%C3%A9_que
 
 TEST: étant {{donnait}} qu’il ne sait pas de quoi il parle, ignorons-le.
 
@@ -8666,6 +8666,9 @@ __conf_fin_faim__
     [à|a] >seul faim [de|d’]
         <<- /conf/ -3>> fin                                     # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
+    jusqu’ à la faim
+        <<- /conf/ --1>> fin                                    # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
+
     >faim de non-recevoir
         <<- /conf/ -1>> =\1.replace("a", "").replace("A", "")   # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
@@ -8673,6 +8676,7 @@ TEST: Elle manifestait son désaccord par une grève de la {{fin}}.
 TEST: ces enfants avaient une {{fin}} de loup
 TEST: Œuvrez à des {{faims}} funestes.
 TEST: il s’est donné bien des peines à seule {{faim}} de monter en grade
+TEST: Jusqu’à la {{faim}} il n’aura rien deviné de la vérité
 TEST: Même {{faim}} de non-recevoir.
 
 
@@ -9452,6 +9456,7 @@ __conf_où_ou__
     d’ ou
     mais ou
     ni ou
+    c’ en [est|était|sera|serait] ou
         <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     ou et [comment|que|qui|quand|pourquoi|quel|quels|quelle|quelles]
@@ -9497,6 +9502,7 @@ TEST: depuis le jour {{ou}} il a été blessé.                        ->> où
 TEST: nous sommes dans une situation {{ou}} il faut avancer         ->> où
 TEST: j’irai là {{ou}} le vent me portera                           ->> où
 TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
+TEST: c’en est où ?
 
 
 # pale / pâle
@@ -14060,7 +14066,7 @@ __substantifs_multi_mots__
     >convention [récepteur|générateur]
     >coque [de|d’] noix
     >corbeille à >pain
-    >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|épée|estoc|État|foudre|fil|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
+    >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|épée|estoc|État|foudre|fil|filet|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
     >coup [de|d’] baguette ?magique¿
     >coup d’ épée dans l’ eau
     >coup d’ un soir
@@ -14321,7 +14327,7 @@ __substantifs_multi_mots__
     >soldat d’ élite
     >sonnette d’ alarme
     >sortie [de|d’] secours
-    >soue à >cochonne
+    >soue à >cochon
     >sujet [de|d’] prédilection
     >suspension [de|d’] séance
     >système d’ exploitation
@@ -14339,7 +14345,7 @@ __substantifs_multi_mots__
     tenants et aboutissants
     >ténor du barreau
     >tête à claques
-    >tête [de|d’] [linotte|déterré|déterrée|déterrés|déterrées|mule]
+    >tête [de|d’] [linotte|déterré+ses|mule]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
