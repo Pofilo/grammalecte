@@ -585,7 +585,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
                 if lValue[-1] not in dTempURL:
                     dTempURL[lValue[-1]] = i
                     i += 1
-                lValue[-1] = i
+                lValue[-1] = dTempURL[lValue[-1]]
             else:
                 lValue[-1] = 0
     dURL = { v: k  for k, v in dTempURL.items() } # reversing key and values
