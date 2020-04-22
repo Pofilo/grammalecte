@@ -408,6 +408,19 @@ def mergeRulesByOption (lRules):
     return lFinal
 
 
+def createRulesAsString (lRules):
+    "create rules as a string of arrays (to be bundled in a JSON string)"
+    sArray = "[\n"
+    for sOption, aRuleGroup in lRules:
+        sOption = "False"  if not sOption  else  f'"{sOption}"'
+        sArray += f'  [{sOption}, [\n'
+        for aRule in aRuleGroup:
+            sArray += f'    {aRule},\n'
+        sArray += "  ]],\n"
+    sArray += "]"
+    return sArray
+
+
 def prepareOptions (lOptionLines):
     "returns a dictionary with data about options"
     sLang = ""
@@ -649,8 +662,8 @@ def make (spLang, sLang, bUseCache=None):
         "callablesJS": sJSCallables,
         "gctests": sGCTests,
         "gctestsJS": sGCTestsJS,
-        "paragraph_rules": mergeRulesByOption(lParagraphRules),
-        "sentence_rules": mergeRulesByOption(lSentenceRules),
+        "paragraph_rules": createRulesAsString(mergeRulesByOption(lParagraphRules)),
+        "sentence_rules": createRulesAsString(mergeRulesByOption(lSentenceRules)),
         "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
         "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS))
     }
