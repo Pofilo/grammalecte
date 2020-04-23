@@ -4835,7 +4835,7 @@ TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
 __typo_À_début_phrase!7__
     <start>  A  @:[GNAY]¬:(?:Q|3s)
-        <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|")
+        <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|giorno|")
         -2>> À                                                                                      # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 
     <start>  A  bientôt  [<end>|,|)]
@@ -12276,17 +12276,22 @@ TODO: comme
 
 
 __purge_locutions_latines__
-    [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
+    [a|à]       [contrario|cappella|fortiori|giorno|minima|priori|postériori|posteriori]
         <<- ~>> *
         <<- !1>>
 
-    ab          [absurdo|initio]
-    ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
+    ab          [absurdo|initio|ovo]
+    ad          [hoc|hominem|infinitum|libitum|limina|nauseam|nutum|valorem|patres]
+    ad          majorem dei gloriam
     ad          vitam æternam
+    alea        jacta est
     de          [facto|jure|profondis]
-    ex          [nihilo|cathedra|absurdo|abrupto]
+    et          [cætera|cetera]
+    ex          [abrupto|absurdo|cathedra|nihilo|professo]
+    grosso      modo
+    hic         et nunc
     id          est
-    in          [abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo]
+    in          [abstracto|extenso|extremis|fine|memoriam|petto|situ|utero|vitro|vivo]
     ipso        facto
     mutatis     mutandis
         <<- ~>> *
@@ -12298,8 +12303,8 @@ __purge_locutions__
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    à [autrui|bâbord|califourchon|chacun|cheval|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|genoux|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
-    à [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
+    à [autrui|bâbord|brûle-pourpoint|califourchon|chacun|cheval|cloche-pied|confesse|contrecœur|contre-cœur|contre-pied|contre-sens|contretemps|>demi-mot|demi-voix|dessein|foison|grand-peine|genoux|gogo|jamais|jeun|loisir|merveille|moitié|nouveau|outrance|peine|perpète|perpette|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
+    à [mi-chemin|mi-côte|mi-jambe+s|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     à air comprimé
     à angle droit
     à armes égales
@@ -12387,7 +12392,7 @@ __purge_locutions__
     à huis clos
     à intervalles [irréguliers|réguliers]
     à juste [raison|titre]
-    à l’ [accoutumée|amiable|arrache|arrachée|avance|avenant|aveuglette|emporte-pièce|évidence|étouffée|improviste|inverse|occasion|unanimité|unisson]
+    à l’ [accoutumée|amiable|arrache|arrachée|avance|avenant|aveuglette|emporte-pièce|envi|évidence|étouffée|improviste|inverse|occasion|unanimité|unisson]
     à l’ air libre
     à l’ avenir ?[incertain|prometteur]¿
     à l’ échelon [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
@@ -12404,11 +12409,13 @@ __purge_locutions__
     à l’ exclusion de toute autre chose
     à l’ œil nu
     à l’ [un|une] des leurs
-    à la [bourre|con|coule|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
+    à la [bourre|con|coule|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|va-vite|volée]
+    à la belle étoile
     à la bonne franquette
     à la limite du supportable
     à la lumière de tout [ceci|cela|ça]
     à la mords-moi le nœud
+    à la nuit tombante
     à la petite semaine
     à la pointe du progrès ?[algorithmique|biologique|cybernétique|écologique|industriel|informatique|numérique|scientifique|social|spatial|technique|technologique]¿
     à la première occasion
@@ -12477,6 +12484,7 @@ __purge_locutions__
     à première vue
     à prix [cassé|modique|cassés|modiques]
     à proprement parler
+    à quatre pattes
     à qui de droit
     à qui mieux mieux
     à qui que ce soit
@@ -12506,7 +12514,7 @@ __purge_locutions__
     à tort ou à raison
     à tort et à travers
     à tour de  [bras|rôle]
-    à tout [âge|crin|instant|jamais|moment|prix]
+    à tout [âge|coup|crin|instant|jamais|moment|prix]
     à tout bout de champ
     à tout le [moins|monde]
     à tout point de vue
@@ -12600,7 +12608,7 @@ __purge_locutions__
     au même titre que n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
     au pas de [charge|course]
     au plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
-    au plus [près|pressé|vite|tôt|tard]
+    au plus [près|pressé|vite|tôt|tard|vite]
     au plus haut [degré|point]
     au plus [tard|tôt] [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
     au premier abord
@@ -12683,6 +12691,7 @@ __purge_locutions__
     comme de juste
     comme bon [me|te|lui|leur|nous|vous] semble
     comme au bon vieux temps
+    comme ci ?,¿ comme ça
     comme cul et chemise
     comme [frappé+ses] par la foudre
     comme gage [de|d’] bonne foi
@@ -12780,18 +12789,18 @@ __purge_locutions__
     d’ une [minute|seconde] à l’ autre
     d’ utilité publique
     de-ci ?,¿ de-là
-    [de|d’] ?[assez|si|très]¿ [faible|grande|médiocre|moindre|petite] [taille|envergure|stature|valeur]
-    [de|d’] ?[assez|si|très]¿ haute [lignée|lutte|naissance|stature|taille|valeur|volée]
-    [de|d’] ?[assez|si|très]¿ basse [condition|extraction|lignée|naissance]
-    [de|d’] ?[assez|si|très]¿ bon [aloi|cœur|goût|gout|gré|matin|poil|sens|ton]
-    [de|d’] ?[assez|si|très]¿ mauvais [aloi|cœur|goût|gout|gré|poil]
-    [de|d’] ?[assez|si|très]¿ bonne [compagnie|facture|famille|foi|grâce|heure|humeur|qualité]
-    [de|d’] ?[assez|si|très]¿ haut [rang|vol]
-    [de|d’] ?[assez|si|très]¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
-    [de|d’] ?[assez|si|très]¿ longue [date|haleine]
-    [de|d’] ?[assez|si|très]¿ [courte|longue] durée
+    [de|d’] ?[assez|si|très|trop]¿ [faible|grande|médiocre|moindre|petite] [taille|envergure|stature|valeur]
+    [de|d’] ?[assez|si|très|trop]¿ haute [lignée|lutte|naissance|stature|taille|valeur|volée]
+    [de|d’] ?[assez|si|très|trop]¿ basse [condition|extraction|lignée|naissance]
+    [de|d’] ?[assez|si|très|trop]¿ bon [aloi|cœur|goût|gout|gré|matin|poil|sens|ton]
+    [de|d’] ?[assez|si|très|trop]¿ mauvais [aloi|cœur|goût|gout|gré|poil]
+    [de|d’] ?[assez|si|très|trop]¿ bonne [compagnie|facture|famille|foi|grâce|heure|humeur|qualité]
+    [de|d’] ?[assez|si|très|trop]¿ haut [rang|vol]
+    [de|d’] ?[assez|si|très|trop]¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
+    [de|d’] ?[assez|si|très|trop]¿ longue [date|haleine]
+    [de|d’] ?[assez|si|très|trop]¿ [courte|longue] durée
     [de|d’] *NUM %
-    [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|préférence|rechange|routine|surcroît|surcroit|visu]
+    [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|plain-pied|préférence|rechange|routine|surcroît|surcroit|traviole|visu]
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
@@ -12813,7 +12822,7 @@ __purge_locutions__
     [de|d’] fil en aiguille
     [de|d’] fond en comble
     [de|d’] fort [loin|près]
-    [de|d’] ?[assez|si|très]¿ [fraîche|fraiche] date
+    [de|d’] ?[assez|si|très|trop]¿ [fraîche|fraiche] date
     [de|d’] [gaieté|gaîté|gaité] de cœur
     [de|d’] gauche à droite
     [de|d’] gauche comme de droite
@@ -12837,21 +12846,21 @@ __purge_locutions__
     [de|d’] mieux en mieux
     [de|d’] millénaire en millénaire
     [de|d’] moindre [envergure|valeur]
-    [de|d’] mois en mois
     [de|d’] nature [étrangère|inconnue|indéterminée|insolite]
-    [de|d’] ?[assez|si|très]¿ nombreuses années plus [tôt|tard]
-    [de|d’] ?[assez|si|très]¿ nombreuses fois
+    [de|d’] ?[assez|si|très|trop]¿ nombreuses années plus [tôt|tard]
+    [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
     [de|d’] nos jours
     [de|d’] notoriété publique
     [de|d’] nulle part
     [de|d’] pire en pire
-    [de|d’] près
+    [de|d’] ?[assez|si|très|trop]¿ près
     [de|d’] près ou de loin
     [de|d’] par le monde ?entier¿
     [de|d’] part en part
     [de|d’] part et d’ autre
     [de|d’] ?presque¿ partout
     [de|d’] pied ferme
+    [de|d’] pis en pis
     [de|d’] place en place
     [de|d’] plein [droit|fouet]
     [de|d’] plus [belle|près]
@@ -12921,17 +12930,16 @@ __purge_locutions__
     depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis belle lurette
     depuis bien longtemps
-    depuis [de|d’] ?[assez|si|très]¿ longues années
+    depuis [de|d’] ?[assez|si|très|trop]¿ longues années
     depuis des lustres
     depuis la nuit des temps
     depuis la [première|dernière|~ième$] fois
     depuis les années ~^\d{2,5}$
-    depuis ?[assez|si|très]¿ longtemps
+    depuis ?[assez|si|très|trop]¿ longtemps
     depuis lors
-    depuis ?[assez|si|très]¿ peu de temps
+    depuis ?[assez|si|très|trop]¿ peu de temps
     depuis quelque temps
     depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
-    depuis si longtemps
     depuis toujours
     depuis tout ce temps
     depuis un bail
@@ -12946,6 +12954,7 @@ __purge_locutions__
     Dieu [m’|t’|l’|nous|vous|les] en [garde|préserve]
     Dieu [m’|t’|lui|nous|vous|leur] en soit témoin
     Dieu seul le sait
+    dos à dos
     du ~^[xXvViI]+[eᵉ]$ siècle
     du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
     du bout des lèvres
@@ -12959,14 +12968,14 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité]
+    en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
     en réalité ?[augmentée|virtuelle]¿
     en aucun cas
     en aucune [circonstance|façon|manière]
-    en ?[assez|si|très]¿ bas âge
-    en ?[assez|si|très]¿ bon état ?général¿
-    en ?[assez|si|très]¿ bon état de [fonctionnement|marche]
-    en ?[assez|si|très]¿ bonne [compagnie|place|posture|voie]
+    en ?[assez|si|très|trop]¿ bas âge
+    en ?[assez|si|très|trop]¿ bon état ?général¿
+    en ?[assez|si|très|trop]¿ bon état de [fonctionnement|marche]
+    en ?[assez|si|très|trop]¿ bonne [compagnie|place|posture|voie]
     en bonne et due forme
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
@@ -13000,40 +13009,39 @@ __purge_locutions__
     en état [de|d’] choc ?circulatoire¿
     en ?[excellent|mauvais|parfait]¿ état [de|d’] marche
     en état d’ ébriété ?avancée¿
-    en ?[assez|si|très]¿ excellent état ?général¿
-    en ?[assez|si|très]¿ fâcheuse posture
+    en ?[assez|si|très|trop]¿ excellent état ?général¿
+    en ?[assez|si|très|trop]¿ fâcheuse posture
     en file indienne
     en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
     en forte [baisse|hausse]
     en gage [de|d’] bonne foi
     en garde à vue ?prolongée¿
-    en ?[assez|si|très]¿ grand nombre
-    en ?[assez|si|très]¿ grande [difficulté|majorité|partie|pompe]
-    en ?[assez|si|très]¿ haut lieu
-    en ?[assez|si|très]¿ haute [estime|mer]
+    en ?[assez|si|très|trop]¿ grand nombre
+    en ?[assez|si|très|trop]¿ grande [difficulté|majorité|partie|pompe]
+    en ?[assez|si|très|trop]¿ haut lieu
+    en ?[assez|si|très|trop]¿ haute [estime|mer]
     en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
     en main propre
     en mains propres
-    en ?[assez|si|très]¿ mauvais état
-    en ?[assez|si|très]¿ mauvaise [posture|santé]
+    en ?[assez|si|très|trop]¿ mauvais état
+    en ?[assez|si|très|trop]¿ mauvaise [posture|santé]
     en même temps
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
-    en moyenne
     en nombre suffisant
     en nombre plus que suffisant
     en ordre dispersé
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
-    en ?[assez|si|très]¿ petit nombre
+    en ?[assez|si|très|trop]¿ petit nombre
     en place publique
     en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|nuit|poire|tronche]
     en perte [de|d’] vitesse
-    en ?[assez|si|très]¿ peu [de|d’] temps
-    en ?[assez|si|très]¿ [piteux|piètre] état
+    en ?[assez|si|très|trop]¿ peu [de|d’] temps
+    en ?[assez|si|très|trop]¿ [piteux|piètre] état
     en point [de|d’] [mire|orgue]
     en porte-à-faux
     en position [de|d’] [force|faiblesse]
@@ -13069,6 +13077,7 @@ __purge_locutions__
     en terre étrangère
     en toile [de|d’] fond
     en totalité ou en partie
+    en tout cas
     en tous les cas
     en tous les sens
     en tout bien tout honneur
@@ -13089,6 +13098,7 @@ __purge_locutions__
     en vigueur
     en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
     en voie [de|d’] développement
+    en vrac
     en y réfléchissant bien
     en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
     en [mon|ton|son|leur|notre|votre] âme et conscience
@@ -13120,7 +13130,6 @@ __purge_locutions__
     face à face
     >fusil à plomb
     $:B fois [de|d’] suite
-    grosso modo
     guère
     ?d’¿ [hier|avant-hier] ?[matin|soir|après-midi]¿
     ?d’¿ hors [de|d’] [contrôle|portée|atteinte]
@@ -13133,8 +13142,8 @@ __purge_locutions__
     ?d’¿ ici même
     ?d’¿ ici-bas
     ?d’¿ il y a belle lurette
-    ?d’¿ il y a ?[assez|si|très]¿ longtemps
-    ?d’¿ il y a ?[assez|si|très]¿ peu [de|d’] temps
+    ?d’¿ il y a ?[assez|si|très|trop]¿ longtemps
+    ?d’¿ il y a ?[assez|si|très|trop]¿ peu [de|d’] temps
     ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a moins [de|d’] [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
@@ -13236,7 +13245,7 @@ __purge_locutions__
     oui [ou|et] non
     outre mesure
     quant à présent
-    par [à-coups|ailleurs|avance|chance|conséquent|curiosité|contre|défaut|définition|endroits|essence|excellence|exemple|hasard|ici|inadvertance|là|moments|nature|principe|terre]
+    par [à-coups|ailleurs|avance|chance|conséquent|curiosité|contre|défaut|définition|endroits|essence|excellence|exemple|hasard|ici|inadvertance|là|mégarde|moments|nature|principe|terre]
     par acquit [de|d’] conscience
     par [beau|mauvais] temps
     par bien des [aspects|côtés]
@@ -13287,7 +13296,6 @@ __purge_locutions__
     peu à peu
     peut-être
     pile poil
-    >pistolet à plomb
     plein [nord|sud|ouest]
     plein [de|d’] fois
     plus [près|loin|tôt|tard]
@@ -13324,6 +13332,7 @@ __purge_locutions__
     pour [de|d’] bon
     pour faire bonne mesure
     pour faire simple
+    pour la plupart
     pour la [première|seconde|dernière|~ième$] fois
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
@@ -13357,7 +13366,7 @@ __purge_locutions__
     quel qu’ en soit [le|l’] [moyen|prix|danger]
     quel qu’ en soit [le|l’] risque ?financier¿
     quelle qu’ en soit la [cause|raison]
-    quelque [part|temps]
+    quelque [part|peu|temps]
     quelquefois
     quelques fois
     quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] auparavant
@@ -13365,6 +13374,7 @@ __purge_locutions__
     qui plus est
     quoi qu’ il [arrive|arrivât|advienne|advînt]
     quoi qu’ il en [coûte|coûtât|coute|coutât]
+    ric et rac
     sans ?grand¿ succès
     sans [déconner|tarder]
     sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
@@ -13416,10 +13426,11 @@ __purge_locutions__
     secondo
     selon toute vraisemblance
     sens dessus dessous
+    sens devant derrière
     >seul à >seul
     s’ il le [faut|fallait|fallut|faudra|faudrait]
     s’ il l’ [a|avait|eut|aura|aurait] fallu
-    si [bas|haut|longtemps|nécessaire|possible|soudain]
+    si [bas|haut|longtemps|nécessaire|peu|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous|iel|iels]
     si besoin est
     si le besoin s’en [fait|faisait] sentir
@@ -13492,6 +13503,8 @@ __purge_locutions__
     un instant plus [tôt|tard]
     un [millier|million|milliard] [de|d’] fois
     un moment plus [tôt|tard]
+    un petit peu
+    un peu
     un peu mieux
     un peu moins bien
     un peu partout
@@ -13500,8 +13513,8 @@ __purge_locutions__
     un quart d’ heure plus [tôt|tard]
     trois quarts d’ heure plus [tôt|tard]
     un tant soit peu
-    une à une
-    une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième|centième|millième] fois
+    un tout petit peu
+    une ?[autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième|centième|millième]¿ fois
     une bonne fois pour toutes
     une dernière fois
     une fois [de|d’] plus
@@ -30248,7 +30261,7 @@ TEST: Arrivé à cette distance de deux pieds et demi (je suppose maintenant le 
 TEST: Il aurait pu dès lors, en lâchant la chaîne, en assurant bien ses pieds contre le mur et en s’élançant vivement, tomber dans la chambre, et attirer violemment le volet avec lui de manière à le fermer, – en supposant, toutefois, la fenêtre ouverte en ce moment-là.
 TEST: » Remarquez bien, je vous prie, que j’ai parlé d’une énergie très-peu commune, nécessaire pour réussir dans une entreprise aussi difficile, aussi hasardeuse.
 TEST: Mon but est de vous prouver d’abord que la chose a pu se faire, – en second lieu et principalement, d’attirer votre attention sur le caractère très-extraordinaire, presque surnaturel, de l’agilité nécessaire pour l’accomplir.
-TEST: » Vous direz sans doute, en vous servant de la langue judiciaire, que, pour donner ma preuve à fortiori, je devrais plutôt sous-évaluer l’énergie nécessaire dans ce cas que réclamer son exacte estimation.
+TEST: » Vous direz sans doute, en vous servant de la langue judiciaire, que, pour donner ma preuve à fortiori|giorno, je devrais plutôt sous-évaluer l’énergie nécessaire dans ce cas que réclamer son exacte estimation.
 TEST: C’est peut-être la pratique des tribunaux, mais cela ne rentre pas dans les us de la raison. Mon objet final, c’est la vérité.
 TEST: Mon but actuel, c’est de vous induire à rapprocher cette énergie tout à fait insolite de cette voix si particulière, de cette voix aiguë (ou âpre), de cette voix saccadée, dont la nationalité n’a pu être constatée par l’accord de deux témoins, et dans laquelle personne n’a saisi de mots articulés, de syllabisation.
 TEST: À ces mots, une conception vague et embryonnaire de la pensée de Dupin passa dans mon esprit.
