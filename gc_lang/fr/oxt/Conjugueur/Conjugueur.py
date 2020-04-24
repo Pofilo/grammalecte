@@ -12,6 +12,28 @@ import helpers
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
 from com.sun.star.awt import XTopWindowListener
+from com.sun.star.datatransfer import XTransferable
+
+
+class ClipBoardObject (unohelper.Base, XTransferable):
+
+    def __init__ (self):
+        self.sText = ""
+
+    # XTransferable
+    def getTransferData (self, xFlavor):
+        if xFlavor.MimeType == "text/plain;charset=utf-16":
+            return self.sText
+        return
+
+    def getTransferDataFlavors (self):
+        xFlavor = uno.createUnoStruct("com.sun.star.datatransfer.DataFlavor")
+        xFlavor.MimeType = "text/plain;charset=utf-16"
+        xFlavor.HumanPresentableName = "Unicode-Text"
+        return (xFlavor,)
+
+    def isDataFlavorSupported (self, xFlavor):
+        return xFlavor.MimeType == "text/plain;charset=utf-16"
 
 
 class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecutor):
@@ -20,6 +42,8 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
         self.xDialog = None
+        self.xClipboard = None
+        self.xClipboardObject = None
         self.lDropDown = ["être", "avoir", "aller", "vouloir", "pouvoir", "devoir", "acquérir", "connaître", "dire", "faire", \
                           "mettre", "partir", "prendre", "répondre", "savoir", "sentir", "tenir", "vaincre", "venir", "voir", \
                           "appeler", "envoyer", "commencer", "manger", "trouver", "accomplir", "agir", "finir", "haïr", "réussir"]
@@ -205,6 +229,8 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.condb5 = self._addWidget('condb5', 'FixedText', nX2, nY7b+49, nWidth, nHeightCj, Label = "")
         self.condb6 = self._addWidget('condb6', 'FixedText', nX2, nY7b+56, nWidth, nHeightCj, Label = "")
 
+        self.copybutton = self._addWidget('copybutton', 'Button', nX1, nY7+68, 10, 10, Label = ">", TextColor = 0x000088, HelpText="Presse-papiers")
+
         # dialog height
         self.xDialog.Height = 350
         xWindowSize = helpers.getWindowSize()
@@ -230,6 +256,8 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xContainer.getControl('otco').setActionCommand('Change')
         self.xContainer.getControl('ofem').addActionListener(self)
         self.xContainer.getControl('ofem').setActionCommand('Change')
+        self.xContainer.getControl('copybutton').addActionListener(self)
+        self.xContainer.getControl('copybutton').setActionCommand('CopyData')
         self.xContainer.addTopWindowListener(self) # listener with XTopWindowListener methods
         #self.xContainer.execute()  # Modal dialog
 
@@ -252,6 +280,8 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
             elif xActionEvent.ActionCommand == 'Change':
                 if self.oVerb:
                     self._displayResults()
+            elif xActionEvent.ActionCommand == 'CopyData':
+                self.stringToClipboard(self.sTextForClipboard)
             else:
                 print(str(xActionEvent))
         except:
@@ -279,6 +309,15 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
     def windowDeactivated (self, xEvent):
         return
 
+    # Clipboard
+    # see: https://forum.openoffice.org/en/forum/viewtopic.php?f=21&t=93562
+    def stringToClipboard (self, sText):
+        if not self.xClipboard:
+            self.xClipboard = self.xSvMgr.createInstance("com.sun.star.datatransfer.clipboard.SystemClipboard")
+            self.xClipboardObject = ClipBoardObject()
+        self.xClipboardObject.sText = sText
+        self.xClipboard.setContents(self.xClipboardObject, None)
+
     # XJobExecutor
     def trigger (self, args):
         try:
@@ -286,6 +325,7 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
             xDialog.run(args)
         except:
             traceback.print_exc()
+
 
     def _newVerb (self):
         self.oneg.State = False
@@ -419,6 +459,7 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
             self.simp6.Label = dConjTable["simp6"]
             # refresh
             self.xContainer.setVisible(True)
+            self.sTextForClipboard = "\n".join( [ s for s in dConjTable.values() ] )
         except:
             traceback.print_exc()
 
