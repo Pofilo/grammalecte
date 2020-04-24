@@ -2,7 +2,7 @@
 
 ## Using the Grammalecte API for the web
 
-**With Grammalecte 1.8+.** (beta stage)
+**With Grammalecte 1.9+.** (beta stage)
 
 If Grammalecte is installed by the user on his browser (like Firefox or Chrome), you can call
 several methods for a better integration of grammar checking for your website. This is mostly usefull
