@@ -9460,11 +9460,13 @@ __conf_où_ou__
     <start>  Ou  @:3[sp]¬:Y
         <<- /conf/ -2>> Où                                  # Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
-    au moment ou
-    jusqu’ ou
-    par ou
+    à l’ instant [exact|précis] ou
+    au moment ?[exact|précis]¿ ou
     d’ ou
+    jusqu’ ou
     mais ou
+    par ou
+    n’importe ou
     ni ou
     c’ en [est|était|sera|serait] ou
         <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
@@ -9511,6 +9513,7 @@ TEST: depuis la seconde {{ou}} tu as parlé                          ->> où
 TEST: depuis le jour {{ou}} il a été blessé.                        ->> où
 TEST: nous sommes dans une situation {{ou}} il faut avancer         ->> où
 TEST: j’irai là {{ou}} le vent me portera                           ->> où
+TEST: il fait ça n’importe {{ou}}                                   ->> où
 TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
 TEST: c’en est où ?
 
@@ -12285,7 +12288,7 @@ __purge_locutions_latines__
     ad          majorem dei gloriam
     ad          vitam æternam
     alea        jacta est
-    de          [facto|jure|profondis]
+    de          [facto|jure|plano|profondis]
     et          [cætera|cetera]
     ex          [abrupto|absurdo|cathedra|nihilo|professo]
     grosso      modo
@@ -12294,7 +12297,18 @@ __purge_locutions_latines__
     in          [abstracto|extenso|extremis|fine|memoriam|petto|situ|utero|vitro|vivo]
     ipso        facto
     mutatis     mutandis
+    ne          varietur
+    pro         domo
+    recto       tono
         <<- ~>> *
+
+    in anima vili
+    in cauda venenum
+    in vino verita
+    sursum corda
+    sic transit gloria mundi
+        <<- ~>> ␣
+        <<- ~>> define(\1, [":LP"])
 
 
 __purge_locutions__
@@ -12536,6 +12550,7 @@ __purge_locutions__
     à un moment ou à un autre
     à une   heure  [décente|tardive]
     à cette heure matinale
+    à une heure indue
     à usage [interne|unique]
     à visage [découvert|humain]
     à vitesse grand V
@@ -12680,7 +12695,7 @@ __purge_locutions__
     certes
     ?[de|d’]¿ ces derniers temps
     cette [fois|fois-là|fois-ci]
-    chaque fois
+    ?à¿ chaque fois
     ci-dessous
     ci-dessus
     chose promise ?,¿ chose due
@@ -12693,6 +12708,7 @@ __purge_locutions__
     comme au bon vieux temps
     comme ci ?,¿ comme ça
     comme cul et chemise
+    comme d’ [habitude|hab]
     comme [frappé+ses] par la foudre
     comme gage [de|d’] bonne foi
     comme n’importe où ?ailleurs¿
@@ -12812,6 +12828,7 @@ __purge_locutions__
     [de|d’] ce point de vue
     [de|d’] cette sorte
     [de|d’] cet acabit
+    [de|d’] côté
     [de|d’] courte [durée|vue]
     [de|d’] dernière minute
     [de|d’] demain ?[matin|soir|après-midi]¿
@@ -12863,7 +12880,10 @@ __purge_locutions__
     [de|d’] pis en pis
     [de|d’] place en place
     [de|d’] plein [droit|fouet]
-    [de|d’] plus [belle|près]
+    [de|d’] plus près
+    [de|d’] plus belle ?[façon|manière]¿
+    [de|d’] plus en plus
+    [de|d’] point en point
     [de|d’] premier [choix|ordre|plan]
     [de|d’] première [catégorie|main|nécessité]
     [de|d’] prime abord
@@ -13122,6 +13142,8 @@ __purge_locutions__
     et ainsi [de|d’] suite
     et pas qu’ un peu
     et tutti quanti
+    et vice versa
+    et vice-versa
     été comme hiver
     euh
     excepté le [mien|tien|sien|nôtre|vôtre|leur]
@@ -13150,8 +13172,9 @@ __purge_locutions__
     ?d’¿ il y a quelque temps
     ?d’¿ il n’y a pas ?si¿ longtemps
     illico ?presto¿
+    intra-muros
     ?[de|d’]¿ jadis
-    j’ en passe et des [meilleurs|meilleures]
+    j’ en [passe|passais] et des [meilleurs|meilleures]
     jour pour jour
     jusqu’ [alors|ici|aujourd’hui|Noël|Pâques]
     jusqu’ au bout des ongles
@@ -13190,10 +13213,12 @@ __purge_locutions__
     ?[de|d’]¿ là-dessus
     ?[de|d’]¿ là-devant
     ?[de|d’]¿ là non plus
+    la derrière fois
     la fleur au fusil
     la main dans la main
     la mort dans l’ âme
     la plupart du temps
+    la prochaine fois
     la queue entre les jambes
     le cas échéant
     le moins du monde
@@ -13206,7 +13231,7 @@ __purge_locutions__
     les [uns|unes] près des autres
     les [uns|unes] par rapport à l’ autre
     les [uns|unes] par rapport aux autres
-    l’ [un|une] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
+    l’ [un|une] [après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
     l’ [un|une] près de l’ autre
     l’ [un|une] par rapport à l’ autre
     ?de¿ loin
@@ -13219,17 +13244,19 @@ __purge_locutions__
     maintes fois
     malgré [ça|cela|ceci|tout]
     manu militari
+    mezza voce
     mieux [vaut|valait] tard que jamais
     moins [près|loin|tôt|tard]
     moins que [nécessaire|prévu]
     moins [près|loin|tôt|tard|longtemps] que d’ habitude
     moitié *WORD ?,¿ moitié *WORD
-    mot pour mot
+    mot [à|pour] mot
     mouais
     naguère
     ne [lui|leur|m’|t’|nous|vous] en déplaise
     néanmoins
     nez à nez
+    n’importe où
     ni [de|d’] près ?,¿ ni [de|d’] loin
     ni plus ?,¿ ni moins
     ni vu ?,¿ ni connu
@@ -13237,7 +13264,7 @@ __purge_locutions__
     non sans raison
     non loin [de|d’] [ici|là]
     non sans mal
-    nulle part
+    ¿[de|d’|vers]¿ nulle part
     ô combien
     oh
     ou quelque chose d’ approchant
@@ -13338,7 +13365,7 @@ __purge_locutions__
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
     pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour la suite
-    pour [le|l’] [moment|moins]
+    pour [le|l’] [mieux|moment|moins]
     pour [le|l’] meilleur et pour [le|l’] pire
     pour l’ [essentiel|instant|heure]
     pour quelque [part|temps]
@@ -13448,11 +13475,14 @@ __purge_locutions__
     sous coupe réglée
     sous haute [surveillance|tension]
     souvent
+    souventes fois
     stricto sensu
     sur [mon|ton|son|notre|votre|leur] [trente-et-un|31]
     sur [mon|ton|son|notre|votre|leur] trente et un
     sur ce ,
     sur ce plan-là
+    sur ces entrefaites
+    sur l’ heure
     sur la défensive
     sur la forme comme sur le fond
     sur la même longueur d’ onde
@@ -13520,6 +13550,7 @@ __purge_locutions__
     une fois [de|d’] plus
     une fois n’ est pas coutume
     une fois pour toutes
+    une prochaine fois
     urbi et orbi
     vaille que vaille
     ventre à terre
@@ -13606,46 +13637,51 @@ __purge_x_par_après_x__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|disposition|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]   [de|du|d’|des]
-    à [bonne|faible|grande] distance                                                                                                                        [de|du|d’|des]
-    à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                               [de|du|d’|des]
-    à l’ autre bout                                                                                                                                         [de|du|d’|des]
-    à la [hauteur|portée|proximité|recherche|suite]                                                                                                         [de|du|d’|des]
-    à la grande surprise                                                                                                                                    [de|du|d’|des]
-    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                                    [de|du|d’|des]
-    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                             [de|du|d’|des]
-    à [base|force|raison]                                                                                                                                   [de|d’]
-    à grand renfort                                                                                                                                         [de|d’]
-    à grands coups                                                                                                                                          [de|d’]
-    au [bout|courant|côté|cours|début|détriment|fond|gré|lieu|large|long|milieu|nord|profit|ras|sein|secours|sommet|sortir|sud|sujet|vu]                    [de|du|d’|des]
-    au beau milieu                                                                                                                                          [de|du|d’|des]
-    au fin fond                                                                                                                                             [de|du|d’|des]
-    au grand dam                                                                                                                                            [de|du|d’|des]
-    au plus [près|profond]                                                                                                                                  [de|du|d’|des]
-    au fur et à mesure                                                                                                                                      [de|du|d’|des]
-    au vu et au su                                                                                                                                          [de|du|d’|des]
-    au nez et à la barbe                                                                                                                                    [de|du|d’|des]
-    au sortir                                                                                                                                               [de|du|d’|des]
-    aux [abords|côtés|dépens]                                                                                                                               [de|du|d’|des]
-    aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]                                                              [de|d’]
-    aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards] [de|d’] [milliers|millions|milliards|trillions|trilliards]   [de|d’]
-    compte tenu                                                                                                                                             [de|du|d’|des]
-    d’ un bout à l’ autre                                                                                                                                   [de|du|d’|des]
-    dans l’ attente                                                                                                                                         [de|du|d’|des]
-    dans la ligne de mire                                                                                                                                   [de|du|d’|des]
-    des [quatre|4] coins                                                                                                                                    [de|du|d’|des]
-    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|marge|présence|provenance|quête|raison|sus|termes|travers|vertu]  [de|du|d’|des]
-    en dépit de la proximité                                                                                                                                [de|du|d’|des]
-    en flagrant délit                                                                                                                                       [de|d’]
-    en lieu et place                                                                                                                                        [de|du|d’|des]
-    en matière                                                                                                                                              [de|d’]
-    en l’ [absence|attente|honneur]                                                                                                                         [de|du|d’|des]
-    en plein milieu                                                                                                                                         [de|du|d’|des]
-    le long                                                                                                                                                 [de|du|d’|des]
-    par le biais                                                                                                                                            [de|du|d’|des]
-    par l’ entremise                                                                                                                                        [de|du|d’|des]
-    par manque                                                                                                                                              [de|d’]
-    sous la houlette                                                                                                                                        [de|du|d’|des]
+    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|disposition|droite|flanc]                           [de|du|d’|des]
+    à [gauche|hauteur|partir|portée|proximité|propos|rebours|titre]                                                     [de|du|d’|des]
+    à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
+    à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre]                                   [de|du|d’|des]
+    à l’ [insu|instar|intérieur|opposé|orée|ouest]                                                                      [de|du|d’|des]
+    à l’ autre bout                                                                                                     [de|du|d’|des]
+    à la [hauteur|portée|proximité|recherche|suite]                                                                     [de|du|d’|des]
+    à la grande surprise                                                                                                [de|du|d’|des]
+    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                [de|du|d’|des]
+    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                         [de|du|d’|des]
+    à [base|force|raison]                                                                                               [de|d’]
+    à grand renfort                                                                                                     [de|d’]
+    à grands coups                                                                                                      [de|d’]
+    au [bout|courant|côté|cours|début|détriment|fond|gré|lieu|large|long|milieu|nord]                                   [de|du|d’|des]
+    au [profit|ras|sein|secours|sommet|sortir|sud|sujet|vu]                                                             [de|du|d’|des]
+    au beau milieu                                                                                                      [de|du|d’|des]
+    au fin fond                                                                                                         [de|du|d’|des]
+    au grand dam                                                                                                        [de|du|d’|des]
+    au plus [près|profond]                                                                                              [de|du|d’|des]
+    au fur et à mesure                                                                                                  [de|du|d’|des]
+    au vu et au su                                                                                                      [de|du|d’|des]
+    au nez et à la barbe                                                                                                [de|du|d’|des]
+    au sortir                                                                                                           [de|du|d’|des]
+    aux [abords|côtés|dépens]                                                                                           [de|du|d’|des]
+    aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]                      [de|d’]
+    aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]
+        || [de|d’] [milliers|millions|milliards|trillions|trilliards]                                                   [de|d’]
+    compte tenu                                                                                                         [de|du|d’|des]
+    d’ un bout à l’ autre                                                                                               [de|du|d’|des]
+    dans l’ attente                                                                                                     [de|du|d’|des]
+    dans la ligne de mire                                                                                               [de|du|d’|des]
+    des [quatre|4] coins                                                                                                [de|du|d’|des]
+    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|marge]                        [de|du|d’|des]
+    en [présence|provenance|quête|raison|sus|termes|travers|vertu]                                                      [de|du|d’|des]
+    en dépit de la proximité                                                                                            [de|du|d’|des]
+    en flagrant délit                                                                                                   [de|d’]
+    en lieu et place                                                                                                    [de|du|d’|des]
+    en matière                                                                                                          [de|d’]
+    en l’ [absence|attente|honneur]                                                                                     [de|du|d’|des]
+    en plein milieu                                                                                                     [de|du|d’|des]
+    le long                                                                                                             [de|du|d’|des]
+    par le biais                                                                                                        [de|du|d’|des]
+    par l’ entremise                                                                                                    [de|du|d’|des]
+    par manque                                                                                                          [de|d’]
+    sous la houlette                                                                                                    [de|du|d’|des]
         <<- ~1:-2>> ␣
         <<- =>> define(\1, [":G:R:LR"])
 
@@ -14132,6 +14168,7 @@ __substantifs_multi_mots__
     >bombe à rayonnement renforcé
     >bonnet [de|d’] nuit
     >bon à rien
+    [bonne+s|>bonniche] à tout faire
     >boucle d’ >oreille
     bras d’ honneur
     bras [de|d’] fer
@@ -14151,6 +14188,10 @@ __substantifs_multi_mots__
     >cellule [de|d’] détention provisoire
     >centre d’ éducation [populaire|surveillée]
     >centre [de|d’] rétention ?[préventive|administrative]¿
+    >certificat [de|d’] conformité
+    >certificat [de|d’] bonne conduite
+    >certificat [de|d’] études [primaires|secondaires|supérieures|spécialisées|musicales|théâtrales|bibliques|théologiques]
+    >certificat [de|d’] scolarité ?[maternelle|primaire|secondaire]¿
     >chair à [pâté|>canon]
     >chair [de|d’] poule
     >chambre à [coucher|gaz]
@@ -14170,6 +14211,7 @@ __substantifs_multi_mots__
     >chemise sans >manche
     >chèque en blanc
     >chèque sans provision
+    >cheval [de|d’] Troie
     >chili con carne
     >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
@@ -14186,6 +14228,7 @@ __substantifs_multi_mots__
     >clause [de|d’] non concurrence
     >code d’ accès
     >code [de|d’] ?bonne¿ conduite
+    >code [de|d’] la route
     >colosse aux pieds d’ argile
     >commis d’ office
     >compagne [de|d’] route
@@ -14224,6 +14267,7 @@ __substantifs_multi_mots__
     >descente aux [enfers|flambeaux]
     dieu tout-puissant
     [>dîner|>diner] aux chandelles
+    [>dîner|>diner] [de|d’] gala
     >don en nature
     >donneur [de|d’] >leçon
     >dossier d’ inscription ?[administrative|scolaire]¿
@@ -14234,6 +14278,7 @@ __substantifs_multi_mots__
     >écart [de|d’] conduite
     >économie [de|d’] >bout [de|d’] >chandelle
     >économie [de|d’] guerre
+    >écran [de|d’] fumée
     >éditeur [de|d’] presse
     >effet [de|d’] bord
     >élément à charge
@@ -14416,7 +14461,7 @@ __substantifs_multi_mots__
     >police [de|d’] [caractères|écriture]
     >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
-    >pompe à [chaleur|essence|fric]
+    >pompe à [chaleur|essence|fric|>incendie]
     >port [de|d’] plaisance
     >porte [de|d’] [entrée|service|garage|sortie]
     >porte d’ entrée
@@ -14555,13 +14600,13 @@ __substantifs_multi_mots__
     >digne [de|d’] ce nom
     >droit comme un i
     >fort en gueule
-    >fou de rage ?[contenue|retenue]¿
+    >fou [de|d’] rage ?[contenue|retenue]¿
     >élu à la majarité absolue
     >haut comme [trois|3] pommes
     >haut en couleur
     [libéré+ses] sur parole
     >lent à la détente
-    >mort de trouille
+    >mort [de|d’] trouille
     >nu comme un ver
     >nu comme des vers
     >nul et non >avenu
@@ -14574,6 +14619,7 @@ __substantifs_multi_mots__
     >sourd comme un pot
     >têtu comme une [bourrique|mule]
     >têtu comme un [âne|bourriquot|mulet]
+    [tiré+ses] à [quatre|4] épingles
         <<- ~2:0>> *
 
     flambant >neuf
@@ -26443,7 +26489,7 @@ TEST: j’{{aie}} faim
 __vmode_que_indicatif__
     [après|dès]  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
     [après|dès]  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « \2 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « \1 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
 
     à  mesure    [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
     à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
