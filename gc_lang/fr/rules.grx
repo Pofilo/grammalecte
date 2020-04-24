@@ -11258,6 +11258,25 @@ TEST: {{ni vus ni connus}}, on va s’en occuper.
 TEST: ni vu ni connu, j’t’embrouille.
 
 
+#### X fois par jour/an/semaine/etc.
+__sgpl_x_fois_par_période__
+    fois par [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|semestres|trimestres|ans|années|décennies|siècles|millénaires]
+        <<- /sgpl/ -3>> =suggSing(\3)                                   # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
+
+TEST: vingt fois par {{ans}}, à peu près.
+TEST: 12 fois par {{jours}}, ça suffit.
+TEST: Deux fois par mois…
+
+
+#### lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche / matin, soir
+__sgpl_jour_matin_soir__
+    [>lundi|>mardi|>mercredi|>jeudi|>vendredi|>samedi|>dimanche] [matins|soirs|après-midis]
+        <<- /sgpl/ -2>> =\2[:-1]                                        # Ici, comme adverbe, ces mots sont invariables. Exemple : les mardis soir (les mardi au soir).
+
+TEST: Tous les lundis {{soirs}}.
+TEST: Les mardis soir.
+
+
 
 !!
 !!
@@ -12478,6 +12497,7 @@ __purge_locutions_temporelles_usuelles__
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
     des fois
     encore une fois
+    $:B fois
     $:B fois [de|d’] suite
     la derrière fois
     la prochaine fois
@@ -14221,6 +14241,7 @@ __substantifs_multi_mots__
     >acte d’ état ?civil¿
     >administrateur >système
     >âge d’ or
+    >agence d’ interim
     >agence [de|d’] >voyage
     >agité du bocal
     >aide [de|d’] camp
@@ -14395,7 +14416,7 @@ __substantifs_multi_mots__
     faits et gestes
     farces et attrapes
     >fard à [joues|paupières]
-    >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage]
+    >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage|pouvoir]
     >femme d’ âge mûr
     >femme à poigne
     >femme à tout faire
@@ -14445,7 +14466,7 @@ __substantifs_multi_mots__
     >heure [sup|sup’]
     >histoire à dormir debout
     >histoire avec un [grand|petit] h
-    >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille]
+    >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|pouvoir]
     >homme d’ âge mûr
     >homme à poigne
     >homme à tout faire
@@ -15878,7 +15899,7 @@ TEST: responsable de l’Ordre des pharmaciens dans la région Grand Est
 TEST: D’autres nombreuses actions sont également bien sûr impératives.
 TEST: il y a fort à parier qu’on sera encore oublié…
 TEST: 40 % de chiffre d’affaires en moins par rapport à l’année dernière.
-
+TEST: Berlin fait neuf fois la superficie de Paris et est deux fois moins peuplée que la capitale française
 
 
 @@@@
@@ -17790,25 +17811,6 @@ TEST: ils constituent un groupe de {{passionné}}.
 TEST: C’est un putain de troupeau de {{mouton}} !
 TEST: où est mon trousseau de {{clé}} ?
 TEST: un trousseau de {{mariages}}
-
-
-#### X fois par jour/an/semaine/etc.
-__sgpl_x_fois_par_période__
-    fois par [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|semestres|trimestres|ans|années|décennies|siècles|millénaires]
-        <<- /sgpl/ -3>> =suggSing(\3)                                   # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
-
-TEST: vingt fois par {{ans}}, à peu près.
-TEST: 12 fois par {{jours}}, ça suffit.
-TEST: Deux fois par mois…
-
-
-#### lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche / matin, soir
-__sgpl_jour_matin_soir__
-    [>lundi|>mardi|>mercredi|>jeudi|>vendredi|>samedi|>dimanche] [matins|soirs|après-midis]
-        <<- /sgpl/ -2>> =\2[:-1]                                        # Ici, comme adverbe, ces mots sont invariables. Exemple : les mardis soir (les mardi au soir).
-
-TEST: Tous les lundis {{soirs}}.
-TEST: Les mardis soir.
 
 
 #### Locutions
@@ -20876,43 +20878,151 @@ TEST: Sommes-nous désespérés à ce point ?
 TEST: Vous d’habitude si réservée.
 
 
-__infi_devoir_pouvoir_savoir_vouloir__
-    >devoir  ~..(?:ée?s?|ez)$
+__infi_devoir!5__
+    >devoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ée?s?|ez)$
+    >devoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
+    >devoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
+    >devoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
 
-    >pouvoir ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
-        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
+    >devoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
+    >devoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
+    >devoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
+    >devoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N")) and not tag_before(\1, "_ceque_")
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
 
-    >savoir ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
-        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
-
-    >vouloir ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
-        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
-
-    de  [devoir|pouvoir|savoir|vouloir]  ~(?:ée?s?|ez|ai[ts]?)$
+    de  devoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
+    de  devoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ais)$
+    de  devoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ais)$
+    de  devoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ais)$
         <<- /infi/ morph(\-1, ":V", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
 
-TEST: il devait {{utilisé}} son temps à bon escient.
-TEST: tu dois {{mangé}}
-TEST: on va devoir {{mangé}} tout ça.
-TEST: Il doit pouvoir {{détectez}} ces erreurs.
-TEST: je ne veux pas {{repérez}} les points de convergence.
-TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.
-TEST: Il faut savoir {{arrêté}} les frais.
+TEST: il devait {{utilisé}} son temps à bon escient.                                ->> utiliser
+TEST: tu dois {{mangé}}                                                             ->> manger
+TEST: on va devoir {{mangé}} tout ça.                                               ->> manger
+TEST: elles doivent y {{arrivaient}}.                                               ->> arriver
+TEST: ça me fait mal de devoir leur {{pardonné}}                                    ->> pardonner
+TEST: le devoir imposé par la hiérarchie
 TEST: Le devoir transcendé par l’amour de son pays.
 TEST: un devoir corrigé par plusieurs professeurs.
 TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
+
+
+__infi_pouvoir!5__
+    >pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ée?s?|ez)$
+    >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
+    >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
+    >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
+
+    >pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
+    >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
+    >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
+    >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
+        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
+
+    [de|d’]  pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
+    [de|d’]  pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ais)$
+    [de|d’]  pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ais)$
+    [de|d’]  pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ais)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
+
+TEST: vous pouvez les {{détectez}}.                                                     ->> détecter
+TEST: ils peuvent nous {{marchaient}} sur les pieds                                     ->> marcher
+TEST: Il doit pouvoir {{détectez}} ces erreurs.                                         ->> détecter
+TEST: elle rêve de pouvoir les {{brisés}} à mains nues                                  ->> briser
+TEST: un homme de pouvoir débordé par ses obligations.
+TEST: faire seulement ce que tu pouvais ne satisfaisait pas tes patrons.
+
+
+__infi_savoir!5__
+    >savoir  ~..(?:ée?s?|ez)$
+    >savoir  ~..(?:ée?s?|ez)$
+    >savoir  ~..(?:ée?s?|ez)$
+    >savoir  ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
+
+    >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez)$
+    >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez)$
+    >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez)$
+    >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
+
+    >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ai(?:s|t|ent))$
+    >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ai(?:s|t|ent))$
+    >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ai(?:s|t|ent))$
+    >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ai(?:s|t|ent))$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
+
+    [de|d’]  savoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
+    [de|d’]  savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ais)$
+    [de|d’]  savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ais)$
+    [de|d’]  savoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ais)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
+
+TEST: Il faut savoir {{arrêté}} les frais.                                              ->> arrêter
+TEST: le moment venu elle saurait les {{humiliés}} devant tout le monde                 ->> humilier
+TEST: tu sauras les {{arrêtait}} avec ça, non ?                                         ->> arrêter
+TEST: c’est important de savoir {{refusé}} une offre qui a l’air alléchante             ->> refuser
 TEST: un certain nombre de savoirs spécialisés
 TEST: je le savais désiré par de nombreuses personnes.
 TEST: il les savait commandités par ses ennemis.
+TEST: le savoir fabriqué dans les universités n’est guère reconnu.
 
 
-__infi_devoir_pouvoir_savoir_vouloir_interrogatif__
+__infi_vouloir!5__
+    >vouloir  ~..(?:ée?s?|ez)$
+    >vouloir  ~..(?:ée?s?|ez)$
+    >vouloir  ~..(?:ée?s?|ez)$
+    >vouloir  ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
+
+    >vouloir  [le|la|l’|les|leur]  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":[MN]") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
+
+    >vouloir  [ne|n’]    [le|la|l’|les|leur]                                       ~..(?:ée?s?|ez)$
+    >vouloir  ?[ne|n’]¿  [en|me|m’|te|t’|se|s’|nous|vous|lui|y]                    ~..(?:ée?s?|ez)$
+    >vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez)$
+    >vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez)$
+    >vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
+
+    >vouloir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ai(?:s|t|ent))$
+    >vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ai(?:s|t|ent))$
+    >vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ai(?:s|t|ent))$
+    >vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ai(?:s|t|ent))$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
+
+    de  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
+    de  vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ai[ts]?)$
+    de  vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ai[ts]?)$
+    de  vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
+
+TEST: je ne veux pas {{repérez}} les points de convergence.                         ->> repérer
+TEST: vous voulez nous {{attaquez}}, allez-y                                        ->> attaquer
+TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.                           ->> essayer
+TEST: il voulait les {{repérait}}                                                   ->> repérer
+TEST: elle voudrait le {{pensé}}                                                    ->> penser
+TEST: ils voulaient les damnés prêts à se battre comme des lions
+
+
+__infi_devoir_pouvoir_savoir_vouloir_interrogatif!5__
     /VCint  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
@@ -20927,17 +21037,17 @@ __infi_devoir_pouvoir_savoir_vouloir_interrogatif__
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
 
-TEST: Peuvent-elles s’{{installaient}} ici ?
-TEST: Peut-il {{chassé}} ces intrus ?
-TEST: ne veux-tu pas les {{gardés}} ?
-TEST: sait-elle seulement lui en {{donné}} ?
-TEST: Ne veux-tu pas {{gardé}} ton boulot ?
-TEST: je veux {{changé}}
-TEST: je ne veux pas {{mangé}}
-TEST: je sais {{mangé}}
-TEST: je ne voulais pas {{marché}}
-TEST: Elles ont voulu {{mangé}} de la viande.
-TEST: en voulant {{changé}}
+TEST: Peuvent-elles s’{{installaient}} ici ?            ->> installer
+TEST: Peut-il {{chassé}} ces intrus ?                   ->> chasser
+TEST: ne veux-tu pas les {{gardés}} ?                   ->> garder
+TEST: sait-elle seulement lui en {{donné}} ?            ->> donner
+TEST: Ne veux-tu pas {{gardé}} ton boulot ?             ->> garder
+TEST: je veux {{changé}}                                ->> changer
+TEST: je ne veux pas {{mangé}}                          ->> manger
+TEST: je sais {{mangé}}                                 ->> manger
+TEST: je ne voulais pas {{marché}}                      ->> marcher
+TEST: Elles ont voulu {{mangé}} de la viande.           ->> manger
+TEST: en voulant {{changé}}                             ->> changer
 
 
 __infi_commencer_finir_par__
@@ -24414,7 +24524,7 @@ TEST: Regardes-tu la {{commette}} ?                             ->> comète
 TEST: Gérons-nous l’{{accueille}} ?                             ->> accueil
 TEST: Connaissent-ils leur {{assied}}                           ->> acier
 TEST: Écrit-elle les {{fixions}} ?                              ->> fictions
-TEST: Sait-elle le {{choie}} qu’il a fait ?                     ->> choix
+TEST: Avouera-t-elle le {{choie}} qu’il a fait ?                ->> choix
 TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
 
 
