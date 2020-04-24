@@ -310,7 +310,14 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
             self.xProgressBar.ProgressValue += 1
             i += 1
             nTotOccur += nOccur
-            if sWord.lower().endswith(("-je", "-tu", "-il", "-elle", "-on", "-nous", "-vous", "-ils", "-elles", "-iel", "-iels")):
+            sWord = sWord.lower()
+            if sWord.endswith(("-le-moi", "-le-toi", "-le-nous", "-le-vous", "le-lui", "-le-leur", \
+                               "-la-moi", "-la-toi", "-la-nous", "-la-vous", "la-lui", "-la-leur", \
+                               "-les-moi", "-les-toi", "-les-nous", "-les-vous", "les-lui", "-les-leur", \
+                               "-m’en", "-t’en", "-lui-en", "-nous-en", "vous-en", "-leur-en")):
+                nTotOccur += nOccur + nOccur
+            elif sWord.endswith(("-je", "-tu", "-il", "-elle", "-on", "-nous", "-vous", "-ils", "-elles", "-iel", "-iels", "-le", \
+                                 "-la", "-les", "-moi", "-toi", "-leur", "-en", "-y")):
                 nTotOccur += nOccur
         self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
         self.xNumWord.Label = str(i)
