@@ -269,7 +269,7 @@ DEF: w4             \w\w\w\w+
 # GRAPH
 DEF: mois           [>janvier|>février|>mars|>avril|>mai|>juin|>juillet|>août|>aout|>septembre|>octobre|>novembre|>décembre|>vendémiaire|>brumaire|>frimaire|>nivôse|>pluviôse|>ventôse|>germinal|>floréal|>prairial|>messidor|>thermidor|>fructidor]
 DEF: mi_mois        [>mi-janvier|>mi-février|>mi-mars|>mi-avril|>mi-mai|>mi-juin|>mi-juillet|>mi-août|>mi-aout|>mi-septembre|>mi-octobre|>mi-novembre|>mi-décembre|mi-vendémiaire|mi-brumaire|mi-frimaire|mi-nivôse|mi-pluviôse|mi-ventôse|mi-germinal|mi-floréal|mi-prairial|mi-messidor|mi-thermidor|mi-fructidor]
-DEF: pronom_obj     [moi|toi|soi|lui|elle|nous|vous|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]
+DEF: pronom_obj     [moi|toi|soi|lui|elle|nous|vous|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel|iel-même|iels|iels-mêmes]
 
 
 !!
@@ -7085,9 +7085,9 @@ __conf_à_a_locutions__
     a l’ ordre du jour
     a l’ œil nu
     a l’ en croire
-    a l’ un d’ entre eux
+    a l’ un d’ entre
     a l’ un des leurs
-    a l’ une d’ entre elles
+    a l’ une d’ entre
     a l’ une des leurs
     a la [con|dérive|dérobée|diable|fois|mords-moi-le-nœud|papa|rescousse|sauvette|va-vite|volée]
     a la bonne franquette
@@ -8166,6 +8166,9 @@ __conf_cour_cours_court_courre__
     >couper  ?@:[WX]¿  [cour|cours|courre|courres|courts]
         <<- /conf/ --1>> court                              && “Couper court” qui signifie écourter. Noms : une cour, un cours… Adjectif : court.
 
+    >avoir ?@:[WX]¿  [cour|court|courts|courre|courres]
+        <<- /conf/ --1>> cours                              && Confusion. « Avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
+
     [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court|courts|courre|courres]
         <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
 
@@ -8182,6 +8185,7 @@ TEST: il faut donner libre {{cour}} à ses envies.
 TEST: Nous allons bientôt être à {{cours}} d’argent.
 TEST: le rendement {{à cours terme}} est excellent.
 TEST: à {{cours}} d’argent
+TEST: le portage a encore {{cour}}
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
@@ -11964,6 +11968,12 @@ __purge_années__
     au cours [de|d’] l’             an ?[dernier|passé|prochain|~^\d{2,5}$]¿
     au cours [de|d’] l’             année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
     au cours des                    années ~^\d{2,5}$
+    dans l’                         an ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    dans l’                         année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
+    dans les                        années ~^\d{2,5}$
+    dans le courant de l’           an ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    dans le courant de l’           année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
+    dans le courant des             années ~^\d{2,5}$
     [dès|depuis|de|d’] l’           an ?[dernier|passé|prochain|~^\d{2,5}$]¿
     [dès|depuis|de|d’] l’           année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
     [dès|depuis] [les|ces]          années ~^\d{2,5}$
@@ -11981,9 +11991,9 @@ __purge_années__
     [avant|après] le                [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
     [avant|après] le                [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
     [avant|après] le                [début|milieu] des années ~^\d{2,5}$
-    [dès|depuis] le                 [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis] le                 [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    [dès|depuis] le                 [début|milieu] des années ~^\d{2,5}$
+    [dans|dès|depuis] le            [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    [dans|dès|depuis] le            [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
+    [dans|dès|depuis] le            [début|milieu] des années ~^\d{2,5}$
     par rapport au                  [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
     par rapport au                  [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
     par rapport au                  [début|milieu] des années ~^\d{2,5}$
@@ -11998,9 +12008,9 @@ __purge_années__
     [avant|après] la                fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     [avant|après] la                fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
     [avant|après] la                fin des années ~^\d{2,5}$
-    [dès|depuis|de|d’] la           fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
-    [dès|depuis|de|d’] la           fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    [dès|depuis|de|d’] la           fin des années ~^\d{2,5}$
+    [dans|dès|depuis|de|d’] la      fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
+    [dans|dès|depuis|de|d’] la      fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
+    [dans|dès|depuis|de|d’] la      fin des années ~^\d{2,5}$
     par rapport à la                fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     par rapport à la                fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
     par rapport à la                fin des années ~^\d{2,5}$
@@ -12022,6 +12032,7 @@ __purge_saisons__
     à l’ orée [de|d’]       l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     au cours [de|d’]        l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     [avant|après]           l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    dans le courant de      l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     jusqu’ à                l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     par rapport à           l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     à [compter|partir] du   printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
@@ -12029,6 +12040,7 @@ __purge_saisons__
     à l’ orée du            printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     au cours du             printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     [avant|après] le        printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    dans le courant du      printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     jusqu’ au               printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     par rapport au          printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
         <<- ~>> *
@@ -12063,6 +12075,14 @@ __purge_saisons__
     [avant|après]           la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     jusqu’ à                la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
     par rapport à           la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps ~^[0-9]{2,5}$
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps de l’ [an|année] ~^[0-9]{2,5}$
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] d’ [été|automne|hiver]
+    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] printemps
         <<- ~>> *
 
 
@@ -12178,47 +12198,91 @@ __purge_horaires_et_durée__
     vingt-quatre  heures    [sur|/]  vingt-quatre
         <<- ~>> *
 
-    ?jusqu’¿ à                   ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿
-    ?jusqu’¿ à                   ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [du|ce]  [matin|soir]
-    ?jusqu’¿ à                   ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   de  l’ après-midi
-    ?jusqu’¿ à                   ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   cet  après-midi
-    ?jusqu’¿ à                   ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [demain|hier]  ?[matin|soir|après-midi]¿
-    à [partir|compter] de        ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿
-    à [partir|compter] de        ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [du|ce]  [matin|soir]
-    à [partir|compter] de        ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   de  l’ après-midi
-    à [partir|compter] de        ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   cet  après-midi
-    à [partir|compter] de        ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [demain|hier]  ?[matin|soir|après-midi]¿
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [du|ce]  [matin|soir]
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   de  l’ après-midi
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   cet  après-midi
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [demain|hier]  ?[matin|soir|après-midi]¿
+    ?jusqu’¿ à                   ~^\d\d?$  h
+    à [partir|compter] de        ~^\d\d?$  h
+    [avant|après|de|dès|depuis]  ~^\d\d?$  h
+    ?jusqu’¿ à                   *HOUR
+    à [partir|compter] de        *HOUR
+    [avant|après|de|dès|depuis]  *HOUR
+    ?jusqu’¿ à                   une        heure
+    à [partir|compter] de        une        heure
+    [avant|après|de|dès|depuis]  une        heure
+    ?jusqu’¿ à                   $:B        heures
+    à [partir|compter] de        $:B        heures
+    [avant|après|de|dès|depuis]  $:B        heures
         <<- ~>> *
 
-    ?jusqu’¿ à                   *HOUR  ?[tapantes|pétantes]¿
-    ?jusqu’¿ à                   *HOUR  ?[tapantes|pétantes]¿  [du|ce]  [matin|soir]
-    ?jusqu’¿ à                   *HOUR  ?[tapantes|pétantes]¿  de  l’ après-midi
-    ?jusqu’¿ à                   *HOUR  ?[tapantes|pétantes]¿  cet  après-midi
-    ?jusqu’¿ à                   *HOUR  ?[tapantes|pétantes]¿  [demain|hier]  ?[matin|soir|après-midi]¿
-    à [partir|compter] de        *HOUR  ?[tapantes|pétantes]¿
-    à [partir|compter] de        *HOUR  ?[tapantes|pétantes]¿  [du|ce]  [matin|soir]
-    à [partir|compter] de        *HOUR  ?[tapantes|pétantes]¿  de  l’ après-midi
-    à [partir|compter] de        *HOUR  ?[tapantes|pétantes]¿  cet  après-midi
-    à [partir|compter] de        *HOUR  ?[tapantes|pétantes]¿  [demain|hier]  ?[matin|soir|après-midi]¿
-    [avant|après|de|dès|depuis]  *HOUR  ?[tapantes|pétantes]¿
-    [avant|après|de|dès|depuis]  *HOUR  ?[tapantes|pétantes]¿  [du|ce]  [matin|soir]
-    [avant|après|de|dès|depuis]  *HOUR  ?[tapantes|pétantes]¿  de  l’ après-midi
-    [avant|après|de|dès|depuis]  *HOUR  ?[tapantes|pétantes]¿  cet  après-midi
-    [avant|après|de|dès|depuis]  *HOUR  ?[tapantes|pétantes]¿  [demain|hier]  ?[matin|soir|après-midi]¿
+    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿
+    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   [du|ce]  [matin|soir]
+    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   de  l’ après-midi
+    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   cet  après-midi
+    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   [demain|hier|après-demain|avant-hier]  ?[matin|soir|après-midi]¿
+    *HOUR  ?[tapantes|pétantes|pile]¿
+    *HOUR  ?[tapantes|pétantes|pile]¿  [du|ce]  [matin|soir]
+    *HOUR  ?[tapantes|pétantes|pile]¿  de  l’ après-midi
+    *HOUR  ?[tapantes|pétantes|pile]¿  cet  après-midi
+    *HOUR  ?[tapantes|pétantes|pile]¿  [demain|hier|après-demain|avant-hier]  ?[matin|soir|après-midi]¿
+    >heure moins le quart
+    >heure ?,¿ $:B minutes
+    >heure ?,¿ $:B minutes ?,¿ $:B secondes
+        <<- ~2:0>> *
+
+    à la fin de [la|l’]             [après-midi|matinée|nuit|soirée]
+    au [début|milieu] de [la|l’]    [après-midi|matinée|nuit|soirée]
+    en [début|milieu|fin] [de|d’]   [après-midi|matinée|soirée]
         <<- ~>> *
 
-    à la fin de [la|l’] [après-midi|matinée|soirée]
-    au début de [la|l’] [après-midi|matinée|soirée]
-    en [début|fin] [de|d’] [matinée|après-midi|soirée]
+
+__purge_locutions_avec_temps__
+    à longueur [de|d’] temps
+    après un bon bout de temps
+    après un certain temps
+    au bout d’ un certain temps
+    au fil du temps
+    comme au bon vieux temps
+    dans peu de temps
+    dans très peu de temps
+    dans un [premier|second|troisième|quatrième] temps
+    depuis peu
+    depuis ?[assez|si|très|trop]¿ peu de temps
+    depuis la nuit des temps
+    depuis quelque temps
+    depuis tout ce temps
+    d’ ici peu de temps
+    ?[de|d’]¿ ces derniers temps
+    ?d’¿ il y a ?[assez|si|très|trop]¿ peu [de|d’] temps
+    ?d’¿ il y a quelque temps
+    [de|d’] tout temps
+    [de|d’] temps à autre
+    [de|d’] temps en temps
+    en ?[assez|si|très|trop]¿ peu [de|d’] temps
+    en ce temps-là
+    en d’ autres temps
+    en d’ autres temps et d’ autres lieux
+    en même temps
+    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour le dire
+    en temps [de|d’] [guerre|paix]  ?[économique|religieuse]¿
+    en temps [normal|opportun|ordinaire|utile|voulu]
+    en temps et en heure
+    en un rien [de|d’] temps
+    jusqu’ à la fin des temps
+    la plupart du temps
+    le [moins|plus] [de|d’] temps possible
+    par les temps qui courent
+    par temps [de|d’] pluie
+    pendant ce temps-là
+    pendant quelque temps
+    pendant qu’ il ?en¿ est ?encore¿ temps
+    peu [de|d’] temps auparavant
+    pour quelque temps
+    quelque temps
+    tout le temps
         <<- ~>> *
 
 
 __purge_locutions_temporelles_usuelles__
+    $:B [secondes|minutes|heures] plus [tôt|tard|auparavant]
+    $:B [jours|semaines|mois|ans|années|décennies|siècles|millénaires] plus [tôt|tard|auparavant]
     à ?[si|très|trop]¿ courte portée
     à [midi|minuit]  ?pile¿
     à cet instant ?[exact|précis]¿
@@ -12233,9 +12297,9 @@ __purge_locutions_temporelles_usuelles__
     à chaque [instant|moment]
     à durée [déterminée|indéterminée|limitée]
     à intervalles [irréguliers|réguliers]
-    à longueur [de|d’] [temps|journée|année]
     à l’ heure actuelle
     à l’ heure qu’ il est
+    à longueur [de|d’] [journée|année]
     à n’importe quelle heure du jour et de la nuit
     à partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
     à partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
@@ -12249,35 +12313,28 @@ __purge_locutions_temporelles_usuelles__
     à un moment ou à un autre
     à une heure [décente|indue|tardive]
     ?[bien|si|assez]¿ longtemps
-    après demain
-    après-demain
+    ?[d’|dès|jusqu’|pour|après|avant]¿ après demain
+    ?[d’|dès|jusqu’|pour|après|avant]¿ après-demain
     après [des|plusieurs|quelques|*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] de bons et loyaux services
     après cette date ?fatidique¿
-    après un bon bout de temps
-    après un certain temps
-    au bout d’ un certain temps
     au bout d’ un moment
     au commencement
     au début
     au [dernier|même|bon|mauvais] [moment|instant]
     au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
     au cours de la [dernière|prochaine] [seconde|minute|heure|journée|semaine|année]
-    au cours de la [seconde|minute|heure|journée|semaine|année] [dernière|prochaine]
-    au cours de la [seconde|minute|journée|semaine] ?passée¿
-    au cours de l’ [heure|année] ?passée¿
-    au cours de l’ an  ?passé¿
-    au cours de l’ an [dernier|prochain]
-    au cours des ?$:B¿ [derniers|prochains] [jours|mois|ans|siècles|millénaires]
-    au cours des ?$:B¿ [dernières|prochaines] [secondes|minutes|heures|journées|semaines|années]
-    au cours des [jours|mois|ans|siècles|millénaires] ?passés¿
-    au cours des [secondes|minutes|heures|journées|semaines|années] ?passées¿
-    au cours du [dernier|prochain] [mois|siècle|millénaire]
-    au cours du [mois|siècle|millénaire] ?passé¿
-    au cours du [mois|siècle|millénaire] [dernier|prochain]
+    au cours de la [seconde|minute|journée|semaine] [dernière|passée|précédente|prochaine]
+    au cours de l’ [heure|année] ?[dernière|passée|précédente|prochaine]¿
+    au cours de l’ an ?[dernier|passé|précédent|prochain]¿
+    au cours des ?$:B¿ [derniers|précédents|prochains] [jours|mois|ans|siècles|millénaires]
+    au cours des ?$:B¿ [dernières|précédentes|prochaines] [secondes|minutes|heures|journées|semaines|années]
+    au cours des [jours|mois|ans|siècles|millénaires] ?[derniers|passés|précédents|prochains]¿
+    au cours des [secondes|minutes|heures|journées|semaines|années] ?[dernières|passées|précédentes|prochaines]¿
+    au cours du [dernier|précédent|prochain] [mois|siècle|millénaire]
+    au cours du [mois|siècle|millénaire] ?[dernier|passé|précédent|prochain]¿
     au fil des [ans|années] à venir
-    au fil des années ?[passées]¿
-    au fil des ans ?[passés]¿
-    au fil du temps
+    au fil des années ?[dernières|passées|précédentes|prochaines]¿
+    au fil des ans ?[derniers|passés|précédents|prochains]¿
     au fur et à mesure
     au jour et à l’ heure dits
     au jour j
@@ -12287,36 +12344,24 @@ __purge_locutions_temporelles_usuelles__
     au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
     avant demain ?[matin|soir|après-midi]¿
     avant longtemps
-    comme au bon vieux temps
     comme autrefois
     comme avant
     comme d’ [habitude|hab]
     comme toujours
     dans [ma|ta|sa|notre|votre|leur] prime jeunesse
     dans ces moments-là
-    dans le courant de l’ [automne|été|hiver] ?~^[0-9]{2,5}$¿
-    dans le courant du printemps ?~^[0-9]{2,5}$¿
     dans les [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] à venir
-    dans les années ~^\d{2,5}$
-    dans peu de temps
-    dans très peu de temps
-    dans un [premier|second] temps
     depuis $:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis ?[assez|si|très|trop]¿ longtemps
-    depuis ?[assez|si|très|trop]¿ peu de temps
     depuis [de|d’] ?[assez|si|très|trop]¿ longues années
     depuis belle lurette
     depuis bien longtemps
     depuis des lustres
     depuis la [première|dernière|~ième$] fois
-    depuis la nuit des temps
-    depuis les années ~^\d{2,5}$
     depuis lors
-    depuis quelque temps
     depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     depuis toujours
-    depuis tout ce temps
     depuis un bail
     des [années|mois|siècles|millénaires|décennies|semaines] plus [tôt|tard]
     dorénavant
@@ -12330,19 +12375,15 @@ __purge_locutions_temporelles_usuelles__
     dès à présent
     déjà
     désormais
-    d’ année en année
     d’ antan
     d’ après-guerre
     d’ aujourd’hui
     d’ autrefois
     d’ habitude
-    d’ heure en heure
     d’ ici ?[là|peu]¿
-    d’ ici peu de temps
     d’ ici quelques [secondes|minutes|heures|jours|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     d’ instant en instant
     d’ une [minute|seconde] à l’ autre
-    ?[de|d’]¿ ces derniers temps
     ?[de|d’]¿ jadis
     ?[de|d’]¿ maintenant
     ?d’¿ [hier|avant-hier] ?[matin|soir|après-midi]¿
@@ -12352,11 +12393,9 @@ __purge_locutions_temporelles_usuelles__
     ?d’¿ avant Jésus-Christ
     ?d’¿ il n’y a pas ?si¿ longtemps
     ?d’¿ il y a ?[assez|si|très|trop]¿ longtemps
-    ?d’¿ il y a ?[assez|si|très|trop]¿ peu [de|d’] temps
     ?d’¿ il y a [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a belle lurette
     ?d’¿ il y a moins [de|d’] [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    ?d’¿ il y a quelque temps
     ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?[de|d’]¿ [demain|après-demain] ?[matin|soir|après-midi]¿
     [de|d’] ?[assez|si|très|trop]¿ [courte|longue] durée
@@ -12370,29 +12409,21 @@ __purge_locutions_temporelles_usuelles__
     [de|d’] nos jours
     [de|d’] si bon matin
     [de|d’] si bonne heure
-    [de|d’] siècle en siècle
-    [de|d’] tout temps
     [de|d’] tout à l’ heure
     [de|d’] toute éternité
-    [de|d’] temps à autre
-    [de|d’] temps en temps
-    en ?[assez|si|très|trop]¿ peu [de|d’] temps
     en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en ce [moment|temps-là]
+    en ce moment ?[particulier]¿
     en cet instant
+    en d’ autres circonstances
     en début [de|d’] [journée|matinée|soirée|après-midi]
-    en d’ autres [circonstances|temps]
-    en d’ autres temps et d’ autres lieux
+    en l’ absence de preuve suffisante
+    en l’ absence de preuve suffisante du contraire
+    en l’ absence de preuves suffisantes
+    en l’ absence de preuves suffisantes du contraire
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
-    en même temps
-    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour le dire
-    en temps [de|d’] [guerre|paix]  ?[économique|religieuse]¿
-    en temps [normal|opportun|ordinaire|utile|voulu]
-    en temps et en heure
     en un claquement de doigts
     en un clin d’ œil
-    en un rien [de|d’] temps
     été comme hiver
     jour pour jour
     jusqu’ [alors|ici|aujourd’hui|Noël|Pâques]
@@ -12409,7 +12440,6 @@ __purge_locutions_temporelles_usuelles__
     jusqu’ à ce que vous en sachiez plus
     jusqu’ à la dernière [minute|seconde]
     jusqu’ à la fin [de|d’] [mes|tes|ses|nos|vos|leurs] jours
-    jusqu’ à la fin des temps
     jusqu’ à la tombée [de|d’] la nuit
     jusqu’ à maintenant
     jusqu’ à nouvel ordre
@@ -12417,40 +12447,26 @@ __purge_locutions_temporelles_usuelles__
     jusqu’ à plus ample informé
     jusqu’ à présent
     jusqu’ à récemment
-    la plupart du temps
-    le [moins|plus] [de|d’] [temps|monde] possible
+    le [moins|plus] [de|d’] [gens|monde] possible
     le [moins|plus] [tôt|tard|souvent] ?possible¿
     le [moment|jour] venu
     moins [près|loin|tôt|tard|longtemps] que d’ habitude
+    moins [près|loin|tôt|tard|longtemps] que [prévu|nécessaire]
     par instants
     par la suite
     par le passé
-    par les temps qui courent
-    par temps [de|d’] pluie
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps ~^[0-9]{2,5}$
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps de l’ [an|année] ~^[0-9]{2,5}$
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] d’ [été|automne|hiver]
-    par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] printemps
     parfois
     pendant ?[bien|si|assez|très]¿ longtemps
-    pendant ce temps-là
     pendant de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]
     pendant de nombreux [jours|mois|trimestres|semestres|ans|siècles|millénaires]
     pendant des [secondes|minutes|heures|jours|semaines|mois|années|siècles|millénaires|décennies]
     pendant plusieurs [secondes|minutes|heures|jours|semaines|mois|années|siècles|millénaires|décennies]
-    pendant quelque temps
-    pendant qu’ il ?en¿ est ?encore¿ temps
-    peu [de|d’] temps auparavant
     plus [près|loin|tôt|tard|longtemps]
     plus [près|loin|tôt|tard|longtemps] que [prévu|nécessaire]
     plus [près|loin|tôt|tard|longtemps] que d’ habitude
     plus jamais
     plus que d’ habitude
-    pour quelque temps
     quant à présent
-    quelque temps
     quelquefois
     quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] [après|avant|auparavant]
     quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] plus [tard|tôt]
@@ -12465,7 +12481,6 @@ __purge_locutions_temporelles_usuelles__
     tard
     toujours
     tout [de|d’] [suite|go]
-    tout le temps
     tout à coup
     tout à l’ heure
     toute affaire cessante
@@ -12689,7 +12704,7 @@ __purge_prépositions_qqn__
     entre [nous|vous|eux|elles] ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix]¿
         <<- ~>> *
 
-    ni   [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous] ?,¿
+    ni [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous] ?,¿
         || ni [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous]
         <<- ~>> *
 
@@ -12710,6 +12725,14 @@ __purge_prépositions_qqn__
     de          chez
     par         chez
         <<- ~1:-2>> *
+
+    à partir [de|d’]  {pronom_obj}
+    au-dessus [de|d’] {pronom_obj}
+    au-dedans [de|d’] {pronom_obj}
+    en dessous [de|d’] {pronom_obj}
+    ?tout¿ au fond [de|d’] {pronom_obj}
+    ?tout¿ autour [de|d’] {pronom_obj}
+        <<- ~>> *
 
 TODO: comme
 
@@ -12836,12 +12859,13 @@ __purge_locutions__
     à l’ état pur
     à l’ exclusion de toute autre chose
     à l’ ordre du jour
-    à l’ un d’ entre eux
-    à l’ une d’ entre elles
+    à l’ un d’ entre [nous|vous|eux|iels]
+    à l’ une d’ entre [nous|vous|elles|iels]
     à l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
     à l’ exclusion de toute autre chose
     à l’ œil nu
     à l’ [un|une] des leurs
+    à l’ [un|une] comme à l’ autre
     à la [bourre|con|coule|dérobée|diable|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|va-vite|volée]
     à la belle étoile
     à la bonne franquette
@@ -12850,6 +12874,7 @@ __purge_locutions__
     à la mords-moi le nœud
     à la nuit tombante
     à la petite semaine
+    à la pointe de l’ épée
     à la pointe du progrès ?[algorithmique|biologique|cybernétique|écologique|industriel|informatique|numérique|scientifique|social|spatial|technique|technologique]¿
     à la queue leu leu
     à la surprise générale
@@ -12882,15 +12907,16 @@ __purge_locutions__
     à parler [franc|franchement|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
-    à partir [de|d’]  {pronom_obj}
     à partir [de|d’]  rien
     à pas de [géant|loup|tortue|velours]
+    à pas feutrés
     à personne en danger
     à perte de vue
     à petit feu
     à ?[si|très|trop]¿ petite [dose|échelle]
     à ?[si|très|trop]¿ peu de choses près
     à ?[si|très|trop]¿ peu de [distance|frais]
+    à peine
     à peu près
     à pied d’ œuvre
     à pieds joints
@@ -12983,6 +13009,7 @@ __purge_locutions__
     au doigt mouillé
     au doigt et à l’ [œil|oeil]
     au débotté
+    au fil de l’ épée
     au grand [complet|jamais]
     au hasard
     au jugé
@@ -13007,15 +13034,12 @@ __purge_locutions__
     au sens littéral du terme
     au surplus
     au-delà du descriptible
-    au-dessus [de|d’] {pronom_obj}
     ?tout¿ aussi
     auparavant
     aussitôt
-    ?tout¿ au fond [de|d’] {pronom_obj}
     aux [abois|aguets|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
     autant que [nécessaire|possible|prévu]
     autant que faire se peut
-    autour [de|d’] {pronom_obj}
     autrement dit
     avant tout le monde
     avant toute chose
@@ -13106,7 +13130,7 @@ __purge_locutions__
     d’ emblée
     d’ empoigne
     d’ en [bas|dessous|face|haut]
-    d’ entre [nous|vous|eux|elles]
+    d’ entre [eux|elles]
     d’ entrée de jeu
     d’ est en ouest
     d’ extrême [droite|gauche]
@@ -13252,6 +13276,7 @@ __purge_locutions__
     Dieu seul le sait
     dos à dos
     du bout des lèvres
+    du coin de l’ [œil|oeil]
     du fond du cœur
     du haut en bas
     du même [acabit|coup|ordre|tonneau]
@@ -13570,6 +13595,7 @@ __purge_locutions__
     quelque [part|peu]
     qui plus est
     quoi qu’ il [arrive|arrivât|advienne|advînt]
+    quoi qu’ il soit [arrivé|advenu]
     quoi qu’ il en [coûte|coûtât|coute|coutât]
     ric et rac
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
@@ -13808,6 +13834,7 @@ __gestion_mots_grammaticaux__
     en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|marge]                        [de|du|d’|des]
     en [présence|provenance|quête|raison|sus|termes|travers|vertu]                                                      [de|du|d’|des]
     en dépit de la proximité                                                                                            [de|du|d’|des]
+    en forme                                                                                                            [de|d’]
     en flagrant délit                                                                                                   [de|d’]
     en lieu et place                                                                                                    [de|du|d’|des]
     en matière                                                                                                          [de|d’]
@@ -13818,6 +13845,7 @@ __gestion_mots_grammaticaux__
     par l’ entremise                                                                                                    [de|du|d’|des]
     par manque                                                                                                          [de|d’]
     sous la houlette                                                                                                    [de|du|d’|des]
+    sous forme                                                                                                          [de|d’]
         <<- ~1:-2>> ␣
         <<- =>> define(\1, [":G:R:LR"])
 
@@ -13924,6 +13952,7 @@ __gestion_mots_grammaticaux__
 
     personne  d’ autre [que|qu’]  [moi|moi-même|toi|toi-même|lui|lui-même|elle|elle-même|elles|elles-mêmes|nous|nous-même|nous-mêmes|vous|vous-même|vous-mêmes|eux-mêmes|iel|iels|iel-même|iels-mêmes]
         <<- ~2:0>> *
+        <<- =>> exclude(\1, ":N")
 
     pour ou contre
         <<- ~2:0>> *
@@ -14084,6 +14113,9 @@ __purge_conditionnelle__
 
     corps et âme
         <<- not morph(<1, ":D") ~>> *
+
+    [de|d’] concert
+        <<- morph(<1, ":V[123]") ~>> *
 
     droit au but
     droit dans les yeux
@@ -14293,6 +14325,7 @@ __substantifs_multi_mots__
     >banc [de|d’] touche
     >bandit [de|d’] grand chemin
     >bandit [de|d’] grands chemins
+    >barrage [de|d’] police
     bas résille
     >benne à >ordure
     [>beauté|>beau] à couper le souffle
@@ -14503,12 +14536,13 @@ __substantifs_multi_mots__
     >invité d’ honneur
     >invité surprise
     >issue de secours
+    >jeu d’ échecs
     >jeu [de|d’] >rôle
     >journal [de|d’] bord
     >juge d’ instruction
     >langue [de|d’] bois
     >lame [de|d’] fond
-    >lampe à [huile|pétrole]
+    >lampe à [huile|incandescence|pétrole]
     >lampe [de|d’] chevet
     >langue [de|d’] bois
     >lavage [de|d’] cerveau
@@ -15293,6 +15327,11 @@ __purge_ponctuations__
         <<- ~1>> *
 
 
+__purge_quoique__
+    quoique  @:A¬:[GM]
+        <<- ~1>> *
+
+
 __purge_locutions_potentielles__
     à ce [jour|moment|stade] @¬:A.*:[me]:[si]
     à ce [jour|moment|stade] [<end>|,|)]
@@ -15605,7 +15644,7 @@ __purge_vite__
 __purge_locutions_verbales__
     >avoir [foule|vent]
     >aller bon train
-    >aller de l’ avant
+    >aller [de|d’] l’ avant
     >armer jusqu’ aux dents
     >arriver à [destination|échéance]
     >arriver à point nommé
@@ -15632,7 +15671,7 @@ __purge_locutions_verbales__
     >faire bonne figure
     >faire chou blanc
     >faire copain copain
-    >faire de [mon|ton|son|notre|votre|leur] mieux
+    >faire [de|d’] [mon|ton|son|notre|votre|leur] mieux
     >faire faux bond
     >faire figure d’ exception
     >faire front commun
@@ -15652,7 +15691,7 @@ __purge_locutions_verbales__
     >fausser compagnie
     >fermer à [clé|clef]
     >ficher S
-    >finir en eau de boudin
+    >finir en eau [de|d’] boudin
     >foutre en l’ air
     >gagner d’ avance
     >garder contenance
@@ -15669,17 +15708,19 @@ __purge_locutions_verbales__
     [>mettre|>remettre] à l’ [écart|épreuve]
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] bon ordre
-    [>mettre|>remettre] de côté
+    [>mettre|>remettre] [de|d’] côté
     [>mettre|>remettre] en [avant|branle|bouche|demeure|évidence|garde|jeu|lumière|marche|mouvement|œuvre|place|route|scène|terre]
-    >monter de toutes pièces
+    >monter [de|d’] toutes pièces
+    >mourir [de|d’] [ma|ta|sa|notre|votre|leur] belle mort
     >mourir jeune
-    [>naître|>naitre] de la dernière pluie
+    [>naître|>naitre] [de|d’] la dernière pluie
     [>naître|>naitre] sous x
     >naviguer à vue
-    >obtenir gain de cause
+    >obtenir gain [de|d’] cause
     >parler affaires
     >partir en vrille
     >passer à tabac
+    >passer du coq à l’ âne
     >percer à jour
     >perdre [connaissance|conscience|patience|raison]
     >perdre d’ avance
@@ -15689,7 +15730,7 @@ __purge_locutions_verbales__
     >porter plainte
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
-    >prendre ?[ça|cela|ceci]¿ au pied de la lettre
+    >prendre ?[ça|cela|ceci]¿ au pied [de|d’] la lettre
     >prendre bonne note
     >prendre [congé|conscience|contact|ombrage|note|peur|position|possession|racine|soin|vie]
     >prendre d’ assaut
@@ -15713,7 +15754,7 @@ __purge_locutions_verbales__
     >revenir à la case départ
     >saigner à blanc
     >souffler mot
-    >suivre ?[ça|cela|ceci]¿ de près
+    >suivre ?[ça|cela|ceci]¿ [de|d’] près
     >tenir à [carreau|cœur]
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
     >tenir [compte|compagnie]
@@ -18275,6 +18316,7 @@ __conf_à_a_après_verbes__
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
+    >avoir trait a
     >appartenir a
     >appartenir en propre a
     >avoir [tendance|vocation] a
@@ -18319,6 +18361,9 @@ __conf_à_a_après_verbes__
     [/VCint|/VCimp]  a
         <<- /conf/ not value(\1, "|rendez-vous|") --1>> à                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
+    >passer du coq a l’ âne
+        <<- /conf/ -4>> à                                                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
 TEST: en proie {{a}} toutes sortes d’illusions
 TEST: ce contrat arrive {{a}} échéance.
 TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
@@ -18334,6 +18379,7 @@ TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
 TEST: N’y a-t-il pas {{a}} la table du saucisson ?
 TEST: cet homme mange bien {{a}} la maison ?
 TEST: tombé {{a}} terre, il crut ne jamais pouvoir se relever.
+TEST: il passe sans cesse du coq {{a}} l’âne
 TEST: Ce que je mange a un goût de surgelé.
 TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
 TEST: Un rendez-vous a bousculé ses plans
@@ -18348,12 +18394,13 @@ TEST: le projet auquel ils ont mis fin a toutes les chances d’être repris par
 
 
 __conf_pronom_à_l_air__
-    [tout|ça|ceci|cela]  à  l’  air  @:[AR]|>libre/
+    [tout|ça|ceci|cela|elle|tu]  à  l’  air  @:[AR]|>libre/
         <<- /conf/ morph(<1, ":Cs|<start>|>,") -2>> a               && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
 
 TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
 TEST: Tout {{à}} l’air complètement foutu…
 TEST: Ça {{à}} l’air génial.
+TEST: elle {{à}} l’air heureuse.
 TEST: Tout à la benne.
 
 
@@ -18819,14 +18866,22 @@ __conf_compte_conte_comte__
     >laisser pour [comte+s|>conte]
         <<- /conf/ --1>> compte         && Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
+    [>demander|>rendre] des [contes|comtes]
+        <<- /conf/ --1>> comptes        && Confusion. Écrivez “compte”.|https://fr.wiktionary.org/wiki/compte
+
+    >faire les [contes|comtes]
+        <<- /conf/ --1>> comptes        && Confusion. Pour ce qui est comptable, écrivez “compte”.|https://fr.wiktionary.org/wiki/compte
+
     >rendre ?bon¿ [comte|comtes|>conte|comptes]
         <<- /conf/ --1>> compte         && Confusion. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
 
-    >tenir [comte|comtes|>conte|comptes]
+    >tenir [comte+s|>conte|comptes]
         <<- /conf/ --1>> compte         && Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
 
 TEST: il faut rendre {{comte}} de la sitation désastreuse dans laquelle nous sommes tombés.
 TEST: il faut tenir {{comtes}} des aléas de la météo.
+TEST: nous allons demander des {{contes}} à ces gens-là.
+TEST: qui fera les {{comtes}} ?
 TEST: faudra rendre bon {{conte}} de vos actes
 
 
@@ -20301,10 +20356,10 @@ __conf_salle_sale__
     >sale d’ [>accouchement|>arcade|>attente|>audience|>eau|>escalade|>échographie|>embarquement|>exposition|>hospitalisation|>observation|>opération|>urgence]
     >sale [de|des|du] [>bain|>bal|>banquet|>billard|>bloc|>cinéma|>classe|>colle|>commandement|>concert|>conférence|>conseil|>consultation|cours|>culture|>danse|>départ|>fête|>formation|>garde|>gym|>gymnastique|>infirmier|>lecture|>machine|>malade|>mammographie|>marché|>mariage|>musculation|>musique|>ordinateur|>presse|>prière|>prof|>professeur|>projection|>radio|>radiographie|>réanimation|>réception|>rédaction|>rééducation|>restaurant|>réunion|>réveil|>séjour|>shoot|>soin|>spectacle|>sport|>stockage|>théâtre|>tir|>toilette|>torture|>trading|>travail|>vente|fitness|>jeu|>repos|>urgence]
     >sale à manger
-        <<- /conf/ -1>> =\1.replace("ale", "alle")                  && Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez “salle”.
+        <<- /conf/ -1>> =\1.replace("ale", "alle")                  && Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez “salle”.|https://fr.wiktionary.org/wiki/salle
 
     >être  >salle
-        <<- /conf/ -2>> =\2.replace("alle", "ale")                  && Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.
+        <<- /conf/ -2>> =\2.replace("alle", "ale")                  && Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.|https://fr.wiktionary.org/wiki/sale
 
 TEST: dans la {{sale}} des professeurs
 TEST: une {{sale}} d’arcade
@@ -20316,7 +20371,7 @@ TEST: pour le service en salle
 __conf_sens_dessus_dessous__
     sans dessus dessous
     sans-dessus-dessous
-        <<- /conf/ ->> sens dessus dessous                          && Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/sens_dessus_dessous
+        <<- /conf/ ->> sens dessus dessous                          && Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/tache
 
 TEST: Tout est {{sans dessus dessous}}.
 
@@ -20333,10 +20388,10 @@ TEST: Évidemment, cela va {{s’en}} dire.
 # sceptique / septique
 __conf_sceptique_septique__
     [>fosse|>installation|>choc|>chirurgie|>maladie|>plaie|>blessure|>embolie|>arthrite|>isolement|>pneumoentérite|>pneumo-entérite] >sceptique
-        <<- /conf/ -2>> =\2.replace("scep","sep")                               && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
+        <<- /conf/ -2>> =\2.replace("scep","sep")                               && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/septique
 
     [>être|>demeurer|>rester|>devenir]  >septique
-        <<- /conf/ not morph(<1, ">plaie/") -2>> =\2.replace("sep", "scep")     && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
+        <<- /conf/ not morph(<1, ">plaie/") -2>> =\2.replace("sep", "scep")     && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/sceptique
 
 TEST: cette fosse {{sceptique}} est pleine.
 TEST: Je suis {{septique}} !
@@ -20376,23 +20431,23 @@ TEST: cela ne va pas de {{soit}}.
 __conf_tache_tâche__
     >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision|tri|.+(?:tion|ment|age))/
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
-        && Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+        && Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
     >tâche  [>difforme|>indélébile|>rouge|>vert|>noir|>bleu|>jaune|>gris|>blanc|>brun|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire|>cuivré]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
-        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
     >tâche sur $:D [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
-        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
     >tâcher  $:D  [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
-        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tacher
 
     [>nettoyer|>laver|>essuyer|>gratter]  $:D  >tâche
         <<- /conf/ --1>> =\-1.replace("â", "a").replace("Â", "A")
-        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+        && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
 TEST: une {{tâche}} de chocolat                                             ->> tache
 TEST: une {{tâche}} vraiment indélébile
@@ -20419,13 +20474,17 @@ __conf_tâche_tache__
     >tache [>chronophage|>complexe|>domestique|>insoluble]
     >tache consistant à
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
-        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
     [>abstenir|>accepter|>accomplir|>achever|>affecter|>effectuer|>entreprendre|>exécuter|>faciliter|>finir|>interrompre|>partager|>refaire|>refuser|>simplifier|>terminer]  $:D  >tache
     à la tache
     [à|a] la hauteur de la tache
         <<- /conf/ --1>> =\3.replace("a", "â").replace("A", "Â")
-        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
+
+    >faciliter la tache
+        <<- /conf/ --1>> tâche
+        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
     >tacher  [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
     >tacher  [de|d’]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  $:Y
@@ -20433,7 +20492,7 @@ __conf_tâche_tache__
     >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           $:Y
     >tacher  [de|d’]  [lui|leur]      en                        $:Y
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
-        && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
+        && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.|https://fr.wiktionary.org/wiki/t%C3%A2cher
 
     [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
     [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
@@ -20454,7 +20513,7 @@ __conf_tâche_tache__
     [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
     [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    @:(?:Y|V1.*:Q)
         <<- /conf/ morph(\2, ":D", ":R") -3>> =\3.replace("ach", "âch").replace("ACH", "ÂCH")
-        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+        && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
 TEST: Quelle {{tache}} ingrate.
 TEST: Une {{tache}} valorisante.
@@ -20467,6 +20526,7 @@ TEST: se tuer à la {{tache}}
 TEST: leur {{tache}} consiste à obéir et à fermer leur gueule
 TEST: ma {{tache}} est d’accomplir ce que personne d’autre ne peut faire.
 TEST: votre {{tache}} se résume à obéir à tout ce qu’on vous dit.
+TEST: tu ne me facilites vraiment pas la {{tache}}
 TEST: une tâche dévalorisante.
 TEST: peiner à la tâche.
 
