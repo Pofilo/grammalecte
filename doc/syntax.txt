@@ -73,7 +73,7 @@ On the second pass, you can write regex rules and token rules. All tokens rules 
 
     __LCR/option(rulename)!priority__
         pattern
-            <<- condition ->> error_suggestions             # message_error|URL
+            <<- condition ->> error_suggestions         && message_error|URL
             <<- condition ~>> text_rewriting
             <<- condition =>> commands_for_disambiguation
             ...
@@ -132,7 +132,7 @@ with the hyphen:
 
     __[s](rulename)__
         foo bar
-            <<- ->> foo-bar     # Missing hyphen.
+            <<- ->> foo-bar     && Missing hyphen.
             <<- ~>> foo-bar
 
 
@@ -143,13 +143,13 @@ You should use 4 spaces.
 
 Examples:
 
-    __<s>(rulename)__ pattern <<- condition ->> replacement # message
+    __<s>(rulename)__ pattern <<- condition ->> replacement  && message
 
     __<s>(rulename)__
         pattern
             <<- condition ->> replacement
-            # message
-            <<- condition ->> suggestion # message
+            && message
+            <<- condition ->> suggestion  && message
             <<- condition ~>> text_rewriting
             <<- =>> disambiguation
 
@@ -158,7 +158,7 @@ Examples:
 
 Example: Recognize double or more spaces and suggests a single space:
 
-    __<s>(rulename)__  "  +" <<- ->> " "      # Remove extra space(s).
+    __<s>(rulename)__  "  +" <<- ->> " "      && Remove extra space(s).
 
 Characters `"` protect spaces in the pattern and in the replacement text.
 
@@ -170,15 +170,15 @@ parenthesis in pattern to get groups with back references.
 
 Example. Suggest a word with correct quotation marks:
 
-    \"(\w+)\" <<- ->> “\1”      # Correct quotation marks.
+    \"(\w+)\" <<- ->> “\1”      && Correct quotation marks.
 
 Example. Suggest the missing space after the signs `!`, `?` or `.`:
 
-    \b([?!.])([A-Z]+) <<- ->> \1 \2     # Missing space?
+    \b([?!.])([A-Z]+) <<- ->> \1 \2     && Missing space?
 
 Example. Back reference in messages.
 
-    (fooo) bar <<- ->> foo      # “\1” should be:
+    (fooo) bar <<- ->> foo      && “\1” should be:
 
 
 ### Group positioning codes for JavaScript:
@@ -206,11 +206,11 @@ Examples:
 
 Repeating pattern matching of a single rule continues after the previous matching, so instead of general multiword patterns, like
 
-    (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
+    (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 && foo
 
 use
 
-    (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
+    (\w+) <<- some_check(\1, word(1)) ->> \1, && foo
 
 
 ## TOKEN RULES ##
@@ -293,7 +293,7 @@ With regex rules, you can call pattern subgroups via `\1`, `\2`… `\0` is the f
 Example:
 
     these (\w+)
-        <<- \1 == "man" -1>> men        # Man is a singular noun.
+        <<- \1 == "man" -1>> men        && Man is a singular noun.
 
 You can also apply functions to subgroups like: `\1.startswith("a")` or `\3.islower()` or `re.search("pattern", \2)`.
 
@@ -302,7 +302,7 @@ With token rules, you can also call each token with their reference, like `\1`, 
 Example:
 
     foo [really|often|sometimes] bar
-        <<- ->> \1 \-1                  # We say “foo bar”.
+        <<- ->> \1 \-1                  && We say “foo bar”.
 
 
 ### Functions for regex rules
@@ -395,7 +395,7 @@ Note: the analysis is done on the preprocessed text.
 
 >   Contains the current country locale of the checked paragraph.
 
-    colour <<- sCountry == "US" ->> color   # Use American English spelling.
+    colour <<- sCountry == "US" ->> color   && Use American English spelling.
 
 `sContext`
 
@@ -430,7 +430,7 @@ group. Actually,  `->>`  is similar to  `-0>>`.
 
 Example:
 
-    (ying) and yang <<- -1>> yin # Did you mean:
+    (ying) and yang <<- -1>> yin   && Did you mean:
 
     __[s]__ (Mr.) [A-Z]\w+ <<- ~1>> Mr
 
@@ -439,11 +439,11 @@ Example:
 
 Rule A:
 
-    ying and yang       <<- ->>     yin and yang        # Did you mean:
+    ying and yang       <<- ->>     yin and yang        && Did you mean:
 
 Rule B:
 
-    (ying) and yang     <<- -1>>    yin                 # Did you mean:
+    (ying) and yang     <<- -1>>    yin                 && Did you mean:
 
 With the rule A, the full pattern is underlined:
 
@@ -466,7 +466,7 @@ Use `|` in the replacement text to add multiple suggestions:
 
 Example. Foo, FOO, Bar and BAR suggestions for the input word "foo".
 
-    foo <<- ->> Foo|FOO|Bar|BAR         # Did you mean:
+    foo <<- ->> Foo|FOO|Bar|BAR         && Did you mean:
 
 #### No suggestion
 
@@ -475,7 +475,7 @@ use a single character _ in the suggestion field.
 
 Example. No suggestion.
 
-    foobar <<- ->> _                    # Message
+    foobar <<- ->> _                    && Message
 
 #### Longer explanations with URLs
 
@@ -483,7 +483,7 @@ Warning messages can contain optional URL for longer explanations.
 
     your’s
         <<- ->> yours
-            # Possessive pronoun:|http://en.wikipedia.org/wiki/Possessive_pronoun
+            && Possessive pronoun:|http://en.wikipedia.org/wiki/Possessive_pronoun
 
 #### Expressions in suggestion or replacement
 
@@ -491,7 +491,7 @@ Suggestions started by an equal sign are Python string expressions extended with
 
 Example:
 
-    <<- ->> ='"' + \1.upper() + '"'      # With uppercase letters and quotation marks
+    <<- ->> ='"' + \1.upper() + '"'      && With uppercase letters and quotation marks
     <<- ~>> =\1.upper()
 
 
@@ -572,7 +572,7 @@ These grammar mistakes can be detected with one simple rule:
 
     these +(\w+) +are +(\w+s)
         <<- morph(\1, "noun") and morph(\2, "plural")
-        -2>> _              # Adjectives are invariable.
+        -2>> _              && Adjectives are invariable.
 
 Instead of replacing text with whitespaces, you can replace text with @.
 
@@ -673,7 +673,7 @@ Example:
     DEF: uppercase_token    ~^[A-Z]+$
     DEF: month_token        [January|February|March|April|May|June|July|August|September|October|November|december]
 
-    ({word_3_letters}) (\w+) <<- condition ->> suggestion     # message|URL
+    ({word_3_letters}) (\w+) <<- condition ->> suggestion     && message|URL
 
     {uppercase_token} {month_token}
-        <<- condition ->> message                             # message|URL
+        <<- condition ->> message                             && message|URL

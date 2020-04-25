@@ -16,9 +16,11 @@ contexts:
     # Comments begin with a '#' and finish at the end of the line
     - match: '^#.*'
       scope: comment
+    - match: '^    ##.*'
+      scope: comment.within
 
     # Error message
-    - match: '(?<= )# '
+    - match: '(?<= )&& '
       scope: string.message
       push:
         - meta_scope: string.message
@@ -61,7 +63,7 @@ contexts:
     - match: '\b(?:spell|morph|morphVC|stem|tag|value|space_after|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|define_from|select|exclude|analyse\w*|tag_\w+|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
       scope: entity.name.function
 
-    - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
+    - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:alpha|upper|lower|digit|title))\b'
       scope: support.function
 
     - match: '\becho\b'

@@ -304,13 +304,13 @@ def createAction (sIdAction, sAction, nGroup):
     cAction = m.group(1)
     if cAction == "-":
         ## error
-        iMsg = sAction.find(" # ")
+        iMsg = sAction.find(" && ")
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
             print(f"# No message. Action id: {sIdAction}")
         else:
-            sMsg = sAction[iMsg+3:].strip()
+            sMsg = sAction[iMsg+4:].strip()
             sAction = sAction[:iMsg].strip()
             sURL = ""
             mURL = re.search("[|] *(https?://.*)", sMsg)
@@ -528,7 +528,7 @@ def make (spLang, sLang, bUseCache=None):
             # arbitrary end
             printBookmark(0, "BREAK BY #END", i)
             break
-        elif sLine.startswith("#"):
+        elif sLine.startswith(("#", "    ##")):
             # comment
             pass
         elif sLine.startswith("DEF:"):

@@ -320,13 +320,14 @@ class GraphBuilder:
 
         if cAction == "-":
             ## error
-            iMsg = sAction.find(" # ")
+            iMsg = sAction.find(" && ")
             if iMsg == -1:
                 sMsg = "# Error. Error message not found."
                 sURL = ""
                 print("\n# Error. No message at: ", sLineId, sActionId)
+                exit()
             else:
-                sMsg = sAction[iMsg+3:].strip()
+                sMsg = sAction[iMsg+4:].strip()
                 sAction = sAction[:iMsg].strip()
                 sURL = ""
                 mURL = re.search("[|] *(https?://.*)", sMsg)
@@ -520,7 +521,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             lActions.append([iLine, sLine[12:].strip()])
             if not re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
                 bActionBlock = True
-        elif sLine.startswith("        # "):
+        elif sLine.startswith("        && "):
             # action message
             iPrevLine, sPrevLine = lActions[-1]
             lActions[-1] = [iPrevLine, sPrevLine + sLine]
@@ -549,6 +550,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
         else:
             print("# Unknown line at:", iLine)
             print(sLine)
+            exit()
 
     # processing rules
     print("  processing graph rules...")
