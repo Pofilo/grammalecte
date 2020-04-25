@@ -10556,8 +10556,9 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 __conf_soi_soit_soie__
     [chez|sur|avec|pour] [soit|sois]
     don de [soit|sois]
-    estime de [soit|sois]
-        <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.
+    estime de [soit|sois|>soie]
+    >repli sur [soit|sois|>soie]
+        <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         # Confusion probable.
 
     [ça|cela|ceci] >aller ?$:W¿ de soit
         <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.|https://fr.wiktionary.org/wiki/aller_de_soi
@@ -13264,8 +13265,10 @@ __purge_locutions__
     en bonne et due forme
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
-    en cas [de|d’] [besoin|doute|urgence]
+    en cas [de|d’] besoin ?[absolu|impérieux]¿
+    en cas [de|d’] doute ?[légitime|suffisant]¿
     en cas [de|d’] nécessité ?[absolue|impérieuse]¿
+    en cas d’ urgence ?[absolue|impérieuse]¿
     en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
     en chair et en os
     en chômage partiel
@@ -13370,7 +13373,7 @@ __purge_locutions__
     en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
     en voie [de|d’] développement
     en vrac
-    en y réfléchissant bien
+    en y [réfléchissant|songeant] bien
     en [mon|ton|son|leur|notre|votre] âme et conscience
     en [mon|ton|son|leur|notre|votre] for intérieur
     en [mon|ton|son|leur|notre|votre] nom propre
@@ -13412,7 +13415,7 @@ __purge_locutions__
     jusqu’ au bout des ongles
     jusqu’ à bac
     jusqu’ à plus soif
-    jusqu’ à preuve du contraire
+    jusqu’ à >preuve du contraire
     jusque-là
     ?[de|d’]¿ là
     ?[de|d’]¿ là-bas
@@ -13564,6 +13567,7 @@ __purge_locutions__
     quoi qu’ il [arrive|arrivât|advienne|advînt]
     quoi qu’ il en [coûte|coûtât|coute|coutât]
     ric et rac
+    sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     sans ?grand¿ succès
     sans [déconner|tarder]
     sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
@@ -13583,6 +13587,7 @@ __purge_locutions__
     sans [me|m’|te|t’|se|s’|nous|vous] douter de rien
     sans faire [de|d’] vagues
     sans foi ?,¿ ni loi
+    sans grand résultat
     sans [le|l’] faire exprès
     sans [le|l’] vouloir
     sans l’ aide [de|d’] personne
@@ -13603,6 +13608,7 @@ __purge_locutions__
     sans queue ni tête
     sans précédent
     sans raison apparente
+    sans résultat probant
     sans [croiser|rencontrer|voir] personne
     sans [croiser|rencontrer|voir] âme qui vive
     sans tergiverser
@@ -13610,7 +13616,6 @@ __purge_locutions__
     sans y [croire|parvenir|réussir|réfléchir|songer|penser]
     sans y [faire|prêter] attention
     sans y prendre [garde|goût|gout|ombrage]
-    sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     secondo
     selon toute vraisemblance
     sens dessus dessous
@@ -13666,6 +13671,7 @@ __purge_locutions__
     toutes choses égales par ailleurs
     toutes griffes dehors
     toutes proportions gardées
+    toutes voiles dehors
     trait pour trait
     très ?[bas|haut|bien|mal]¿
     un à un
@@ -14452,6 +14458,7 @@ __substantifs_multi_mots__
     >figure de proue
     >fleuve à sec
     >flocon [de|d’] neige ?électronique¿
+    >foire d’ >empoigne
     fonds d’ investissement
     >fontaine à eau
     >force d’ assaut
@@ -18238,6 +18245,7 @@ __conf_à_a_après_verbes__
     [>brûler|>bruler] a vif
     >charger a blanc
     >chauffer a blanc
+    >chuter a terre
     >fermer a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
@@ -18254,7 +18262,7 @@ __conf_à_a_après_verbes__
     >sentir a l’ aise
     >tenir a [carreau|cœur|distance]
     >tirer a blanc
-    >tomber a [pic|point]
+    >tomber a [pic|point|terre]
     >tirer a blanc
     >tourner a l’ aigre
     >vendre a >perte
@@ -18273,7 +18281,9 @@ __conf_à_a_après_verbes__
     >mettre fin a
     >parvenir a
     >prêter attention a
-    [m’|t’|s’|nous|vous] en >remettre a
+    [m’|t’|s’] en >remettre a
+    nous nous en >remettre a
+    vous vous en >remettre a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") and not value(>1, "|été|")
         --1>> à                                                             # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -18318,6 +18328,7 @@ TEST: dans tous les cas de figure il pense souvent {{a}} sa fille.
 TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
 TEST: N’y a-t-il pas {{a}} la table du saucisson ?
 TEST: cet homme mange bien {{a}} la maison ?
+TEST: tombé {{a}} terre, il crut ne jamais pouvoir se relever.
 TEST: Ce que je mange a un goût de surgelé.
 TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
 TEST: Un rendez-vous a bousculé ses plans
@@ -18352,13 +18363,6 @@ TEST: Elle {{à}} chaud.
 TEST: Elle {{à}} froid.
 TEST: cet homme {{à}} faim
 TEST: Votre réaction à froid ?
-
-
-__conf_tomber_à_terre__
-    [>tomber|>chuter] a terre
-        <<- /conf/ -2>> à                       # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-
-TEST: tombé {{a}} terre, il crut ne jamais pouvoir se relever.
 
 
 __conf_faire_bande_à_part__
@@ -18831,9 +18835,20 @@ __conf_compter_conter_comté__
     >compter fleurette
         <<- /conf/ -1>> =\1.replace("omp", "on").replace("OMP", "ON")   # Confusion. Locution “conter fleurette”.|https://fr.wiktionary.org/wiki/conter_fleurette
 
+    >comté sur les doigts [de|d’] [la|ma|ta|sa|notre|votre|leur] main
+    >comté sur les doigts d’une ?seule¿ main
+        <<- /conf/ -1>> compter         # Confusion. Un comté est le domaine d’un comte. Pour énumérer quelque chose, employez le verbe “compter”.|https://fr.wiktionary.org/wiki/compter
+
+    [>comte|>conter] ?[ça|ceci|cela]¿ sur les doigts [de|d’] [la|ma|ta|sa|notre|votre|leur] main
+    [>comte|>conter] ?[ça|ceci|cela]¿ sur les doigts d’une ?seule¿ main
+        <<- /conf/ -1>> =\1.replace("omt", "ompt").replace("OMT", "OMPT").replace("ont", "ompt").replace("ONT", "OMPT")
+        # Confusion. Un comté est le domaine d’un comte. Pour énumérer quelque chose, employez le verbe “compter”.|https://fr.wiktionary.org/wiki/compter
+
 TEST: je ne m’en laisse {{comté}} que par ma femme
 TEST: ne pas vous en laisser {{compter}}
 TEST: c’est vous qui {{comptez}} fleurette à ma fille ?
+TEST: elle put {{conter}} ça sur les doigts de sa main
+TEST: {{comté}} sur les doigts de la main comme un enfant
 
 
 # courant / courent
