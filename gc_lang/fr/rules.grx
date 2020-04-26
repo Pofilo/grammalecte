@@ -8128,7 +8128,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 # cou / coup / coût
 __conf_coup_cout_cou1__
     [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
-    [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
+    [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
         <<- /conf/ -1>> coup|coups      && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
@@ -9468,6 +9468,7 @@ __conf_où_ou__
     au moment ?[exact|précis]¿ ou
     d’ ou
     jusqu’ ou
+    [les|ces] fois ou
     mais ou
     par ou
     n’importe ou
@@ -12283,7 +12284,6 @@ __purge_locutions_avec_temps__
 __purge_locutions_temporelles_usuelles__
     $:B [secondes|minutes|heures] plus [tôt|tard|auparavant]
     $:B [jours|semaines|mois|ans|années|décennies|siècles|millénaires] plus [tôt|tard|auparavant]
-    à ?[si|très|trop]¿ courte portée
     à [midi|minuit]  ?pile¿
     à cet instant ?[exact|précis]¿
     à cette [date|occasion] ?fatidique¿
@@ -12322,6 +12322,7 @@ __purge_locutions_temporelles_usuelles__
     au début
     au [dernier|même|bon|mauvais] [moment|instant]
     au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
+    au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
     au cours de la [dernière|prochaine] [seconde|minute|heure|journée|semaine|année]
     au cours de la [seconde|minute|journée|semaine] [dernière|passée|précédente|prochaine]
     au cours de l’ [heure|année] ?[dernière|passée|précédente|prochaine]¿
@@ -12341,7 +12342,6 @@ __purge_locutions_temporelles_usuelles__
     au jour le jour
     au milieu de la nuit
     au plus [tard|tôt] [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
-    au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
     avant demain ?[matin|soir|après-midi]¿
     avant longtemps
     comme autrefois
@@ -12417,10 +12417,6 @@ __purge_locutions_temporelles_usuelles__
     en cet instant
     en d’ autres circonstances
     en début [de|d’] [journée|matinée|soirée|après-midi]
-    en l’ absence de preuve suffisante
-    en l’ absence de preuve suffisante du contraire
-    en l’ absence de preuves suffisantes
-    en l’ absence de preuves suffisantes du contraire
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
     en un claquement de doigts
     en un clin d’ œil
@@ -12429,7 +12425,8 @@ __purge_locutions_temporelles_usuelles__
     jusqu’ [alors|ici|aujourd’hui|Noël|Pâques]
     jusqu’ au nouvel an
     jusqu’ à [demain|hier] ?[matin|soir|après-midi]¿
-    jusqu’ à [mon|ton|son|notre|votre|leur] dernier souffle
+    jusqu’ à [ma|sa|ta|notre|votre|leur] mort
+    jusqu’ à [mon|ton|son|notre|votre|leur] dernier [souffle|soupir]
     jusqu’ à [mon|ton|son|notre|votre|leur] dernier souffle [de|d’] vie
     jusqu’ à aujourd’hui
     jusqu’ à ce que [ils|elles|iels] en sachent plus
@@ -12439,6 +12436,7 @@ __purge_locutions_temporelles_usuelles__
     jusqu’ à ce que tu en saches plus
     jusqu’ à ce que vous en sachiez plus
     jusqu’ à la dernière [minute|seconde]
+    jusqu’ à la fin
     jusqu’ à la fin [de|d’] [mes|tes|ses|nos|vos|leurs] jours
     jusqu’ à la tombée [de|d’] la nuit
     jusqu’ à maintenant
@@ -12665,7 +12663,7 @@ __purge_début_phrase__
         <<- ~2:0>> *
 
 
-__purge_prépositions_qqn__
+__purge_prépositions_pronoms__
     [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:6>> *
 
@@ -12709,7 +12707,7 @@ __purge_prépositions_qqn__
         <<- ~>> *
 
     parmi [nous|vous] ?autres¿
-    parmi [eux|elles]
+    parmi [eux|elles|iels]
         <<- ~>> *
 
     par-devers [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous]
@@ -12726,12 +12724,13 @@ __purge_prépositions_qqn__
     par         chez
         <<- ~1:-2>> *
 
-    à partir [de|d’]  {pronom_obj}
-    au-dessus [de|d’] {pronom_obj}
-    au-dedans [de|d’] {pronom_obj}
-    en dessous [de|d’] {pronom_obj}
-    ?tout¿ au fond [de|d’] {pronom_obj}
-    ?tout¿ autour [de|d’] {pronom_obj}
+    à part                  {pronom_obj}
+    à partir [de|d’]        {pronom_obj}
+    au-dessus [de|d’]       {pronom_obj}
+    au-dedans [de|d’]       {pronom_obj}
+    en dessous [de|d’]      {pronom_obj}
+    ?tout¿ au fond [de|d’]  {pronom_obj}
+    ?tout¿ autour [de|d’]   {pronom_obj}
         <<- ~>> *
 
 TODO: comme
@@ -12789,6 +12788,7 @@ __purge_locutions__
     à belles dents
     à bien des égards
     à bien pire
+    à ?[si|très|trop]¿ courte portée
     à ?[si|très|trop]¿ bon [compte|escient|droit]
     à bout de [bras|souffle|force|forces|nerf|nerfs]
     à bout [portant|touchant]
@@ -13335,6 +13335,10 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ grande [difficulté|majorité|partie|pompe]
     en ?[assez|si|très|trop]¿ haut lieu
     en ?[assez|si|très|trop]¿ haute [estime|mer]
+    en l’ absence de preuve suffisante
+    en l’ absence de preuve suffisante du contraire
+    en l’ absence de preuves suffisantes
+    en l’ absence de preuves suffisantes du contraire
     en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
@@ -13803,7 +13807,7 @@ __gestion_mots_grammaticaux__
     à [gauche|hauteur|partir|portée|proximité|propos|rebours|titre]                                                     [de|du|d’|des]
     à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre]                                   [de|du|d’|des]
-    à l’ [insu|instar|intérieur|opposé|orée|ouest]                                                                      [de|du|d’|des]
+    à l’ [insu|instar|intérieur|inverse|opposé|orée|ouest]                                                              [de|du|d’|des]
     à l’ autre bout                                                                                                     [de|du|d’|des]
     à la [hauteur|portée|proximité|recherche|suite]                                                                     [de|du|d’|des]
     à la grande surprise                                                                                                [de|du|d’|des]
@@ -13816,7 +13820,7 @@ __gestion_mots_grammaticaux__
     au [profit|ras|sein|secours|sommet|sortir|sud|sujet|vu]                                                             [de|du|d’|des]
     au beau milieu                                                                                                      [de|du|d’|des]
     au fin fond                                                                                                         [de|du|d’|des]
-    au grand dam                                                                                                        [de|du|d’|des]
+    au grand [dam|désespoir]                                                                                            [de|du|d’|des]
     au plus [près|profond]                                                                                              [de|du|d’|des]
     au fur et à mesure                                                                                                  [de|du|d’|des]
     au vu et au su                                                                                                      [de|du|d’|des]
@@ -13844,6 +13848,7 @@ __gestion_mots_grammaticaux__
     par le biais                                                                                                        [de|du|d’|des]
     par l’ entremise                                                                                                    [de|du|d’|des]
     par manque                                                                                                          [de|d’]
+    par habitude                                                                                                        [de|du|d’|des]
     sous la houlette                                                                                                    [de|du|d’|des]
     sous forme                                                                                                          [de|d’]
         <<- ~1:-2>> ␣
@@ -14511,6 +14516,7 @@ __substantifs_multi_mots__
     >garde à vue
     >garde du corps
     gaz à >effet [de|d’] serre
+    >geste >barrière
     >gilet [de|d’] sauvetage
     >gouvernement d’ union nationale
     >grain [de|d’] [blé|maïs|sable]
@@ -14520,6 +14526,7 @@ __substantifs_multi_mots__
     >hall d’ entrée
     >harcèlement [de|d’] rue
     >heure [sup|sup’]
+    heures [de|d’] pointe
     >histoire à dormir debout
     >histoire avec un [grand|petit] h
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|pouvoir]
@@ -14566,7 +14573,7 @@ __substantifs_multi_mots__
     >maillot [de|d’] bain
     >main d’ œuvre
     >maison à colombages
-    >maison [de|d’] [passe|retraite]
+    >maison [de|d’] [campagne|passe|retraite]
     >mal [de|d’] [tête|ventre|mer]
     >mandat [de|d’] [arrêt|dépôt]
     >marchand [de|d’] tapis
@@ -15732,7 +15739,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre ?[ça|cela|ceci]¿ au pied [de|d’] la lettre
     >prendre bonne note
-    >prendre [congé|conscience|contact|ombrage|note|peur|position|possession|racine|soin|vie]
+    >prendre [acte|congé|conscience|contact|ombrage|note|part|peur|position|possession|racine|soin|vie]
     >prendre d’ assaut
     >prendre [de|d’] [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en charge
@@ -15969,6 +15976,7 @@ TEST: il y a fort à parier qu’on sera encore oublié…
 TEST: 40 % de chiffre d’affaires en moins par rapport à l’année dernière.
 TEST: Berlin fait neuf fois la superficie de Paris et est deux fois moins peuplée que la capitale française
 TEST: Le risque de décès était deux fois plus élevé chez les malades ayant reçu de l’hydroxychloroquine que chez ceux n’en ayant pas reçu, une différence qui s’estompait avec l’ajout d’azithromycine. Cette combinaison ne changeait cependant rien à la probabilité d’être placé sous respirateur.
+TEST: dans les épidémies, le facteur temps compte beaucoup
 
 
 @@@@
@@ -18314,7 +18322,7 @@ __conf_à_a_après_verbes__
     >vendre a >perte
     >venir a bout
     [>venir|>revenir] a point
-        <<- /conf/ -2>> à               && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                                                   && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     >avoir trait a
     >appartenir a
@@ -18327,6 +18335,7 @@ __conf_à_a_après_verbes__
     >laisser libre cours a
     >mettre fin a
     >parvenir a
+    >prendre part a
     >prêter attention a
     [m’|t’|s’] en >remettre a
     nous nous en >remettre a
@@ -20323,6 +20332,15 @@ __conf_rebooter_rebouter__
 
 TEST: {{Reboute}} l’ordinateur.
 TEST: On {{reboute}} Windows et ça devrait aller.
+
+
+# rebrousser chemin
+__conf_rebrousser_chemin__
+    [>retrousser|>détrousser] chemin
+        <<- /conf/ -1>> =\1.replace("etr", "ebr").replace("ETR", "EBR").replace("dét", "reb").replace("Dét", "Reb").replace("DÉT", "REB")
+        && Confusion probable. Locution “rebrousser chemin”.|https://fr.wiktionary.org/wiki/rebrousser_chemin
+
+TEST: elle {{retrousse}} chemin
 
 
 # rester en contact
@@ -26196,14 +26214,14 @@ TEST: elles vont toutes aller faire un tour
 
 
 __conj_det_plur_nom__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3) -3>> =suggVerb(\3, ":3p") && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
         -3>> =suggVerb(\3, ":3p", suggPlur)                             && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -26222,7 +26240,7 @@ TEST: Tu penses que quelqu’un qui frappe sa femme et ses enfants est un bon p�
 
 
 __conj_det_plur_nom_confusion__
-    les  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
+    les  @:[NA].*:[pi]¬:V0  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
@@ -26292,6 +26310,7 @@ TEST: L’un comme l’autre devaient y renoncer.
 TEST: Les écrivaines Marie Darrieussecq et Annie Ernaux
 TEST: Les femmes candidates à ce poste doivent se présenter cet après-midi.
 TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
+TEST: il les a sélectionnés, les a améliorées pour accroître leur rendement
 
 
 __conj_des_nom__
