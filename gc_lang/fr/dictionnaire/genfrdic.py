@@ -1192,7 +1192,7 @@ class Flexion:
 
     _dTagReplacement = {
         # POS
-        "nom": ":N", "adj": ":A", "adv": ":W", "negadv": ":X", "mg": ":G", "nb": ":B",
+        "nom": ":N", "adj": ":A", "adv": ":W", "negadv": ":X", "mg": ":G", "nb": ":B", "nbro": ":Br",
         "loc.nom": ":Ñ", "loc.adj": ":Â", "loc.adv": ":Ŵ", "loc.verb": ":Ṽ",
         "interj": ":J", "loc.interj": ":Ĵ", "titr": ":T",
         "mas": ":m", "fem": ":f", "epi": ":e", "sg": ":s", "pl": ":p", "inv": ":i",
