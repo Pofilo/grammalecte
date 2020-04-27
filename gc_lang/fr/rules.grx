@@ -4567,7 +4567,7 @@ __tu_nombres__
         <<- /tu/ ->> \1-\2                                                                          && Trait(s) d’union manquant(s).
 
     quatre [vingt|vingts]
-        <<- /tu/ not morph(>1, ":B") ->> \1-\2                                                      && Il manque un trait d’union.
+        <<- /tu/ not morph(>1, ":B:e:p") ->> \1-\2                                                  && Il manque un trait d’union.
 
     quatre [vingt|vingts] [un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
     quatre [vingt|vingts] [>unième|>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième|>dixième|>onzième|>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
@@ -8330,7 +8330,7 @@ __conf_dès_des_dés__
         -1>> dès && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM ans
-    [dés|des] $:B ans
+    [dés|des] $:B:e:p ans
     [dés|des] un an
         <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|délai|échéance|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
             and not before("% +$")
@@ -8340,7 +8340,7 @@ __conf_dès_des_dés__
         <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|") and \2 != "35"
         -1>> dès                                                                                    && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    [dés|des] $:B heures
+    [dés|des] $:B:e:p heures
     [dés|des] une heure
         <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
@@ -9976,7 +9976,7 @@ __conf_près_prêt_pré__
     à la [virgule|nanoseconde|milliseconde|seconde|minute] [>prêt|>pré]
         <<- /conf/ --1>> près                                               && Confusion probable. Locution “à la \3 près”.
 
-    à [quelques|plusieurs|$:B] [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière|nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] [>prêt|>pré]
+    à [quelques|plusieurs|$:B:e:p] [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière|nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] [>prêt|>pré]
     à un [degré|pourcent|nanomètre|millimètre|centimètre|décimètre|mètre|kilomètre|parsec|jour|mois|siècle|millénaire] [>prêt|>pré]
     à une [exception|nuance|variation|année-lumière|nanoseconde|milliseconde|seconde|minute|heure|semaine|année|décennie] [>prêt|>pré]
         <<- /conf/ --1>> près                                               && Confusion probable. Locution “à \2 \3 près”.
@@ -9992,7 +9992,7 @@ __conf_près_prêt_pré__
         <<- /conf/ -3>> près                                                && Confusion. Locution “ni de près, ni de loin”.|https://fr.wiktionary.org/wiki/de_pr%C3%A8s
 
     depuis [>prêt|>pré] [de|d’] *NUM *WORD
-    depuis [>prêt|>pré] [de|d’] $:B  *WORD
+    depuis [>prêt|>pré] [de|d’] $:B:e:p  *WORD
         <<- /conf/ -2>> près                                && Confusion. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
 
 TEST: depuis {{prêt}} de 15 ans
@@ -11411,7 +11411,7 @@ __maj_gentilés__
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          && S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \1.islower() and not \1.startswith("canadienne") and
             ( value(<1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|")
-            or ( morph(<1, ":B") and not morph(<2, ">numéro/") )
+            or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:f:[si]") )
             or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
             or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
@@ -12255,9 +12255,9 @@ __purge_horaires_et_durée__
     ?jusqu’¿ à                   une        heure
     à [partir|compter] de        une        heure
     [avant|après|de|dès|depuis]  une        heure
-    ?jusqu’¿ à                   $:B        heures
-    à [partir|compter] de        $:B        heures
-    [avant|après|de|dès|depuis]  $:B        heures
+    ?jusqu’¿ à                   $:B:e:p    heures
+    à [partir|compter] de        $:B:e:p    heures
+    [avant|après|de|dès|depuis]  $:B:e:p    heures
         <<- ~>> *
 
     ?jusqu’¿ à                   *NUM  heures
@@ -12295,8 +12295,8 @@ __purge_horaires_et_durée__
     *HOUR  ?[tapantes|pétantes|pile]¿  cet  après-midi
     *HOUR  ?[tapantes|pétantes|pile]¿  [demain|hier|après-demain|avant-hier]  ?[matin|soir|après-midi]¿
     >heure moins le quart
-    >heure ?,¿ $:B minutes
-    >heure ?,¿ $:B minutes ?,¿ $:B secondes
+    >heure ?,¿ $:B:e:p minutes
+    >heure ?,¿ $:B:e:p minutes ?,¿ $:B:e:p secondes
     [midi|minuit] pile
     [midi|minuit] moins le quart
         <<- ~2:0>> *
@@ -12339,61 +12339,61 @@ __locutions_temporelles_communes__
 
     ## locutions épicènes
     au bout de [plusieurs|quelques]                 {unit_mesure_plur}
-    $:B                                             {unit_mesure_plur} auparavant
-    $:B                                             {unit_mesure_plur} plus [tôt|tard]
+    $:B:e:p                                         {unit_mesure_plur} auparavant
+    $:B:e:p                                         {unit_mesure_plur} plus [tôt|tard]
     à quelques                                      {unit_mesure_plur} près
-    après [des|plusieurs|quelques|*NUM|$:B]         {unit_mesure_plur} de bons et loyaux services
+    après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur} de bons et loyaux services
     au fil des                                      {unit_mesure_plur} à venir
     dans les                                        {unit_mesure_plur} à venir
-    depuis $:B                                      {unit_mesure_plur}
+    depuis $:B:e:p                                  {unit_mesure_plur}
     depuis *NUM                                     {unit_mesure_plur}
     depuis quelques                                 {unit_mesure_plur}
     des                                             {unit_mesure_plur} plus [tôt|tard]
     des                                             {unit_mesure_plur} à venir
     d’ ici quelques                                 {unit_mesure_plur}
-    ?d’¿ il y a [*NUM|$:B]                          {unit_mesure_plur}
-    ?d’¿ il y a [moins|plus] [de|d’] [*NUM|$:B]     {unit_mesure_plur}
+    ?d’¿ il y a [*NUM|$:B:e:p]                      {unit_mesure_plur}
+    ?d’¿ il y a [moins|plus] [de|d’] [*NUM|$:B:e:p] {unit_mesure_plur}
     ?d’¿ il y a quelques                            {unit_mesure_plur}
     en *NUM                                         {unit_mesure_plur}
-    pendant [des|plusieurs|quelques|*NUM|$:B]       {unit_mesure_plur}
+    pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur}
     quelques                                        {unit_mesure_plur} [après|avant|auparavant]
     quelques                                        {unit_mesure_plur} plus [tard|tôt]
-    un peu [moins|plus] de [$:B|*NUM]               {unit_mesure_plur} auparavant
+    un peu [moins|plus] de [$:B:e:p|*NUM]           {unit_mesure_plur} auparavant
         <<- ~>> *
 
     ## locutions genrées
-    au cours des            ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    au cours des            ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    au fil des              ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    au fil des              ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    dans les                ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    dans les                ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    dans le courant des     ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    dans le courant des     ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    depuis les              ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    depuis les              ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    des                     ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    des                     ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    par rapport aux         ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    par rapport aux         ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    pendant les             ?$:B¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
-    pendant les             ?$:B¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
-    au cours des            ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    au cours des            ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    au fil des              ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    au fil des              ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    dans les                ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    dans les                ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    dans le courant des     ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    dans le courant des     ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    depuis les              ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    depuis les              ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    des                     ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    des                     ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    par rapport aux         ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    par rapport aux         ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
-    pendant les             ?$:B¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
-    pendant les             ?$:B¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    au cours des            ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    au cours des            ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    au fil des              ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    au fil des              ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    dans les                ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    dans les                ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    dans le courant des     ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    dans le courant des     ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    depuis les              ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    depuis les              ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    des                     ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    des                     ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    par rapport aux         ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    par rapport aux         ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    pendant les             ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains]
+    pendant les             ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines]
+    au cours des            ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    au cours des            ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    au fil des              ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    au fil des              ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    dans les                ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    dans les                ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    dans le courant des     ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    dans le courant des     ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    depuis les              ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    depuis les              ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    des                     ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    des                     ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    par rapport aux         ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    par rapport aux         ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
+    pendant les             ?$:B:e:p¿ [derniers|précédents|prochains]       {unit_mesure_plur_mas}
+    pendant les             ?$:B:e:p¿ [dernières|précédentes|prochaines]    {unit_mesure_plur_fem}
     depuis [de|d’]          ?[assez|si|très|trop]¿ longs {unit_mesure_plur_mas}
     depuis [de|d’]          ?[assez|si|très|trop]¿ longues {unit_mesure_plur_fem}
     pendant de nombreux     {unit_mesure_plur_mas}
@@ -12880,7 +12880,7 @@ __purge_locutions__
     , fait remarquable ,
     , entre autres ?choses¿ ,
     à *NUM  %
-    à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
+    à ?seulement¿ [*NUM|$:B:e:p|quelques|plusieurs] [millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|brûle-pourpoint|califourchon|chacun|cheval|cloche-pied|confesse|contrecœur|contre-cœur|contre-pied|contre-sens|contretemps|>demi-mot|demi-voix|dessein|foison|grand-peine|genoux|gogo|jamais|jeun|loisir|merveille|moitié|nouveau|outrance|peine|perpète|perpette|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
     à [mi-chemin|mi-côte|mi-jambe+s|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     à air comprimé
@@ -12927,7 +12927,7 @@ __purge_locutions__
     à dormir debout
     à dose homéopathique
     à *NUM reprises
-    à $:B reprises
+    à $:B:e:p reprises
     à [plusieurs|quelques|maintes] reprises
     à [de|d’]  [nombreuses|multiples|innombrables]  reprises
     à double [titre|tranchant]
@@ -14157,11 +14157,11 @@ __simplification_des_nombres__
 
 
 __purge_des_nombres__
-    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  $:B   @:[NA].*:[pi]¬:(?:G|3p)
+    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  $:B:e @:[NA].*:[pi]¬:(?:G|3p)
     [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  *NUM  @:[NA].*:[pi]¬:(?:G|3p)
         <<- ~2:3>> *
 
-    [à|de|d’]  $:B  pour  cent
+    [à|de|d’]  $:B:e  pour  cent
         <<- ~>> *
 
     [à|de|d’]  une  heure  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
@@ -14401,8 +14401,8 @@ __substantifs_multi_mots__
     abus [de|d’] position dominante
     abus [de|d’] pouvoir
     >accusé [de|d’] reception
-    >acte [I|II|III|IV|V|VI|VII|VII|IX|X|XI|XII|XIII|XIV|XV|XVI|XVII|XIII|XIX|XX]
-    >acte [I|II|III|IV|V|VI|VII|VII|IX|X|XI|XII|XIII|XIV|XV|XVI|XVII|XIII|XIX|XX|*NUM|$:B] ?,¿ scène [*NUM|$:B]
+    >acte [*NUM|$:B]
+    >acte [*NUM|$:B] ?,¿ scène [*NUM|$:B]
     >acte [de|d’] [baptême|caution|cautionnement|cession|contrition|licitation|mariage|naissance|notoriété|propriété|quittance|reconnaissance|répudiation|vente]
     >acte d’ [achat|engagement]
     >acte [de|d’] gestion ?courante¿
@@ -14446,7 +14446,7 @@ __substantifs_multi_mots__
     >benne à >ordure
     [>beauté|>beau] à couper le souffle
     >bête à [manger|bouffer] du foin
-    >billet [de|d’] [*NUM|$:B] [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >billet [de|d’] [*NUM|$:B:e:p] [euros|dollars|centimes|cents|livres|shillings]
     [>bisphénol|>bisphenol] A
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à [gants|outils|sardines]
@@ -14702,7 +14702,7 @@ __substantifs_multi_mots__
     >mère au foyer
     >metteur en scène
     >mineur [de|d’] moins [de|d’] *NUM ans
-    >mineur [de|d’] moins [de|d’] $:B ans
+    >mineur [de|d’] moins [de|d’] $:B:e:p ans
     >miroir aux alouettes
     >mise en danger de la vie d’ autrui
     >mode [de|d’] [emploi|paiement|scrutin|vie]
@@ -14866,7 +14866,7 @@ __substantifs_multi_mots__
     vernis à ongles
     >ver [de|d’] terre
     >verre à pied
-    >virage à [*NUM|:B] degrés
+    >virage à [*NUM|$:B:e:p] degrés
     >voie [de|d’] [recours|perdition]
     >vol à l’ étalage
     >vol à la [sauvette|tire]
@@ -14927,8 +14927,8 @@ __substantifs_multi_mots__
     [>homme|>femme] d’ >affaire à succès
         <<- ~-2:0>> *
 
-    [>bébé|fils|>fille|>enfant|>neveu|>nièce|>frère|>sœur] [de|d’] $:B [mois|ans]
-    [>grand-père|>grand-mère|>père|>mère|>papa|>maman|>oncle|>tante|>frère|>sœur|beau-frère|belle-sœur|>nièce|>neveu|>cousin] [de|d’] $:B ans
+    [>bébé|fils|>fille|>enfant|>neveu|>nièce|>frère|>sœur] [de|d’] $:B:e:p [mois|ans]
+    [>grand-père|>grand-mère|>père|>mère|>papa|>maman|>oncle|>tante|>frère|>sœur|beau-frère|belle-sœur|>nièce|>neveu|>cousin] [de|d’] $:B:e:p ans
         <<- ~2:0>> *
 
     >calibre . *NUM ?[acp|auto|brenneke|browning|british|colt|court|H&K|magnum|mauser|otan|remington|parabellum|russian|S&W|sig|soviet|special|wcf|wsm|winchester]¿
@@ -15253,8 +15253,8 @@ __purge_après_avoir__
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
         <<- ~2:-2>> *
 
     n’  >avoir  que  $:Q
@@ -15307,8 +15307,8 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
         <<- morphVC(\1, ":V0a") ~2:-2>> *
 
 
@@ -17604,14 +17604,14 @@ __conf_lieux_lieues_lieus__
     [>lieue|lieus] [>aménager|>abandonner|>insolite|>éloigner|>réserver|>sacrer|>connaître|>méconnaître|>privilégier|>priver]
         <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              && Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|$:B]  [lieux|lieus]
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|$:B:e:p]  [lieux|lieus]
         <<- /conf/ --1>> lieues                                 && Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
         <<- /conf/ space_after(\2, 1, 4) --1>> lieues           && Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     *NUM >lieu sous [la|les] >mer
-    $:B  >lieu sous [la|les] >mer
+    $:B:e:p  >lieu sous [la|les] >mer
         <<- /conf/ -2>> lieues                                  && Confusion. Pour désigner une distance, écrivez “lieue(s)”.|http://fr.wiktionary.org/wiki/lieue
 
     [lieux|>lieue] [>jaune|>noir|>mordre]
@@ -19241,7 +19241,7 @@ TEST: le bruit de nos pas étouffé par l’épais tapis.
 
 
 __gn_nombre_plur_2m__
-    $:B  *WORD  *WORD
+    $:B:e:p  *WORD  *WORD
         <<- /gn/ not morph(<1, ">(?:et|ou)/|:R") and not \3.startswith("seul") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
@@ -19588,7 +19588,7 @@ __gn_quelque_adverbe__
     quelques  *NUM
         <<- /gn/ -1>> quelque                                                               && Devant un nombre, « quelque » est un adverbe, donc invariable.
 
-    quelques  $:B
+    quelques  $:B:e:p
         <<- /gn/ \2 != "cents" -1>> quelque                                                 && Devant un nombre, « quelque » est un adverbe, donc invariable.
 
 TEST: Elle a eu {{quelques}} 300 réponses à sa petite-annonce.
@@ -20272,11 +20272,11 @@ TEST: par {{trente-neufs}} degrés.
 # cent
 __sgpl_nombre_cents__
     [deux|trois|quatre|cinq|six|sept|huit|neuf]  cent
-        <<- /sgpl/ not morph(>1, ":B|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
+        <<- /sgpl/ not morph(>1, ":B:e:p|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
         -2>> cents                          && Mettre “cent” au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|http://fr.wiktionary.org/wiki/cent
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf|mille]  cents
-        <<- /sgpl/ morph(>1, ":B|>une?")
+        <<- /sgpl/ morph(>1, ":B:e:p|>une?")
         -2>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
 
     cents  @:[NA].*:[pi]¬:G
@@ -20295,7 +20295,7 @@ TEST: par {{cents}} idées différentes.
 # mille
 __sgpl_mille__
     milles
-        <<- /sgpl/ morph(>1, ":(?:B|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
+        <<- /sgpl/ morph(>1, ":(?:B:e:p|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
         ->> mille                           && “Mille” est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
 
 TEST: Plus de {{milles}} personnes sont venues.
@@ -26508,11 +26508,11 @@ TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 
 __conj_que_où_comment_verbe_sujet_sing__
     [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
-        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
         -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
-        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
             and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)"))
         -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -26529,6 +26529,8 @@ TEST: Que deviennent la vitesse, le courant, ainsi que le rendement ?
 TEST: Le complexe argilo-humique est mieux hydraté que ne pourraient l’être les micelles d’argile ou humiques
 TEST: C’est ce qu’avancent l’épidémiologiste britannique et sa consœur
 TEST: il en va de l’image d’une capitale que peuplent l’égoïsme, la cupidité, les logements vides, la chasse aux pauvres et à l’étranger, les divertissements frivoles.
+TEST: où se rejoignent l’avenue Junot et la rue Caulaincourt
+TEST: où viennent les amis et…
 
 
 __conj_lxquel_verbe_sujet_sing__
