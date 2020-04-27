@@ -8513,12 +8513,13 @@ __conf_dont_don__
         -3>> dont                                               && Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
 
     ce  don  @:(?:Os|M)             ?n’¿        >avoir  ?@[:WX]¿    besoin
-    ce  don  je                     ?[ne|n’]¿   me      >souvenir
-    ce  don  tu                     ?[ne|n’]¿   te      >souvenir
-    ce  don  nous                   ?[ne|n’]¿   nous    >souvenir
-    ce  don  vous                   ?[ne|n’]¿   vous    >souvenir
-    ce  don  [il|elle|on|iel|$:M]   ?[ne|n’]¿   se      >souvenir
-    ce  don  [ils|elles|iels]       ?[ne|n’]¿   se      >souvenir
+    ce  don  @:(?:Os|M)             ?n’¿        ?[me|te|lui|nous|vous|leur]¿ >parler
+    ce  don  je                     ?[ne|n’]¿   me      [>rappeler|>souvenir]
+    ce  don  tu                     ?[ne|n’]¿   te      [>rappeler|>souvenir]
+    ce  don  nous                   ?[ne|n’]¿   nous    [>rappeler|>souvenir]
+    ce  don  vous                   ?[ne|n’]¿   vous    [>rappeler|>souvenir]
+    ce  don  [il|elle|on|iel|$:M]   ?[ne|n’]¿   se      [>rappeler|>souvenir]
+    ce  don  [ils|elles|iels]       ?[ne|n’]¿   se      [>rappeler|>souvenir]
         <<- /conf/ not value(>1, "|de|d’|des|du|") and not value(>2, "|de|d’|des|du|")
         -2>> dont                                               && Confusion probable. Un don est ce qui est donné. Pour le pronom relatif, écrivez “dont”.|https://fr.wiktionary.org/wiki/dont
 
@@ -9482,7 +9483,8 @@ __conf_où_ou__
         <<- /conf/ -1>> où                                  && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     vers ou
-        <<- /conf/ not morph(<1, ":D") -2>> où              && Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
+        <<- /conf/ not morph(<1, ":D") and not value(>1, "|depuis|à|")
+        -2>> où                                             && Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
     [au|le|des] cas ou
         <<- /conf/ -3>> où                                  && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
@@ -12234,7 +12236,6 @@ __purge_dates_mois__
         <<- ~>> *
 
 
-
 __purge_horaires_et_durée__
     24      [heures|h]      [sur|/]  24
     7       [jours|j]       [sur|/]  7
@@ -12300,7 +12301,7 @@ __purge_horaires_et_durée__
     [midi|minuit] moins le quart
         <<- ~2:0>> *
 
-    à cette heure ?[tardive|matinale]¿
+    à cette heure ?[tardive|indue|matinale]¿
     à cette heure de la [journée|nuit]
     à cette heure du jour
     à l’ heure actuelle
@@ -12318,6 +12319,7 @@ __purge_horaires_et_durée__
     au cours de la [seconde|minute] ?[dernière|passée|précédente|prochaine]¿
     [de|d’] si bonne heure
     [de|d’] tout à l’ heure
+    l’ heure venue
     jusqu’ à pas d’ heure
     sur l’ heure
     tout à l’ heure
@@ -12825,7 +12827,7 @@ __purge_prépositions_pronoms__
 
     à bonne distance [de|d’]    {pronom_obj}
     à part                      {pronom_obj}
-    à partir [de|d’]            {pronom_obj}
+    à [cause|partir] [de|d’]    {pronom_obj}
     au-dessus [de|d’]           {pronom_obj}
     au-dedans [de|d’]           {pronom_obj}
     en dessous [de|d’]          {pronom_obj}
@@ -19245,12 +19247,13 @@ __gn_nombre_plur_2m__
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné entre « \2 » et « \3 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           && Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":V0") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
 TEST: deux sombres {{idiot}}
 TEST: sept valeurs {{aléatoire}}
 TEST: huit {{grandes}} {{claviers}}
+TEST: X a perdu mon estime et ma considération.
 TEST: vivre une situation hors du commun à deux a aussi pesé dans la balance.
 
 
