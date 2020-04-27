@@ -7153,7 +7153,7 @@ __conf_à_a_locutions__
     a point nommé
     a portée [de|d’] main
     a première vue
-    a prix [cassé|cassés|>modique]
+    a prix [cassé+s|coûtant|coutant|>modique]
     a proprement parler
     a qui [de|d’] droit
     a qui mieux mieux
@@ -9468,7 +9468,6 @@ __conf_où_ou__
     au moment ?[exact|précis]¿ ou
     d’ ou
     jusqu’ ou
-    [les|ces] fois ou
     mais ou
     par ou
     n’importe ou
@@ -9519,6 +9518,7 @@ TEST: depuis le jour {{ou}} il a été blessé.                        ->> où
 TEST: nous sommes dans une situation {{ou}} il faut avancer         ->> où
 TEST: j’irai là {{ou}} le vent me portera                           ->> où
 TEST: il fait ça n’importe {{ou}}                                   ->> où
+TEST: toutes les fois {{ou}} nous avons couvert votre cul           ->> où
 TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
 TEST: c’en est où ?
 
@@ -10012,12 +10012,16 @@ TEST: collait au millimètre près à la réalité
 
 
 # prix / pris
-__conf_prix_pris__
+__conf_prix_pris!7__
     [à|a] n’importe [quel+s] pris
-    quel est [le|mon|ton|son|notre|votre|leur|leurs] pris
+    quel [est|était|fut|serait|sera] [le|mon|ton|son|notre|votre|leur|leurs] pris
     à [quel+s] pris
         <<- /conf/ --1>> prix                                               && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
+    [à|a] pris [coûtant|coutant]
+        <<- /conf/ ->> à prix coûtant                                       && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
+
+    prix à la gorge
     prix dans [la|une|cette] [tourmente|tempête|tornade]
     prix dans [la|une|cette] coulée de [boue|lave]
     prix dans l’ [orage|ouragan]
@@ -10031,6 +10035,7 @@ __conf_prix_pris__
 TEST: réussir à n’importe quel {{pris}}.
 TEST: quel est leur {{pris}} ?
 TEST: {{prix}} par surprise,
+TEST: vendre {{à pris coûtant}}
 
 
 # puits / puis
@@ -10066,9 +10071,6 @@ TEST: Beaucoup d’abord, ensuite plusieurs puis quelques-uns seulement.
 TEST: Il faut discrètement en creuser plusieurs puis arrêter aussitôt.
 TEST: Il vient tel quel puis semble avoir des doutes.
 TEST: avec un puis plusieurs autres.
-
-
-
 
 
 # quand / quant / qu’en
@@ -11783,56 +11785,56 @@ TEST: __neg__ il {{a}} qu’à venir demain                ->> n’a
 !!
 
 __infi_ne_pas_jamais_etc__
-    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
-    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
+    ne ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])|>que/
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         && Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
+    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         && Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
     ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop|assez|mal]
@@ -11880,12 +11882,16 @@ __infi_de_bon_ton_de__
 TEST: il est souvent de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.
 
 
-__imp_ne_infinitif_negadv__
+__imp_ne_infinitif_negadv!3__
     [<start>|,|(]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
         <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              && Confusion probable : “\3” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
 
+    qui  [ne|n’]  @:V1.*:Y  [pas|plus|jamais|aucun|aucune]
+        <<- /imp/ not morph(<1, ":R") -3>> =suggVerb(\3, ":2s")                                     && Confusion probable : “\3” est un verbe à l’infinitif.
+
 TEST: Non, ne {{manger}} pas ça.                                    ->> mangez
 TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
+TEST: Qui ne {{créer}} aucune valeur ajoutée
 
 
 !!
@@ -11953,68 +11959,102 @@ TEST: avec qui la transformer ?
 !!!
 !!!
 
-__purge_années__
-    à [compter|partir] [de|d’] l’   an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] [de|d’] l’   année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    à [compter|partir] des          années ~^\d{2,5}$
-    ?jusqu’¿ à l’ orée de l’        an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ à l’ orée de l’        année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    ?jusqu’¿ à l’ orée des          années ~^\d{2,5}$
-    ?jusqu’¿ à l’                   an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ à l’                   année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    ?jusqu’¿ aux                    années ~^\d{2,5}$
-    [avant|après] l’                an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] l’                année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    [avant|après] les               années ~^\d{2,5}$
-    au cours [de|d’] l’             an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours [de|d’] l’             année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    au cours des                    années ~^\d{2,5}$
-    dans l’                         an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    dans l’                         année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    dans les                        années ~^\d{2,5}$
-    dans le courant de l’           an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    dans le courant de l’           année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    dans le courant des             années ~^\d{2,5}$
-    [dès|depuis|de|d’] l’           an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis|de|d’] l’           année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    [dès|depuis] [les|ces]          années ~^\d{2,5}$
-    par rapport à l’                an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à l’                année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    par rapport aux                 années ~^\d{2,5}$
+
+__purge_siècles_millénaires__
+    à [compter|partir] du       [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    à [compter|partir] du       ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    ?jusqu’¿ à l’ orée du       [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    ?jusqu’¿ à l’ orée du       ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    ?jusqu’¿ au                 [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    ?jusqu’¿ au                 ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    [avant|après] le            [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    [avant|après] le            ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    au cours du                 [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    au cours du                 ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    dans le                     [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    dans le                     ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    dans le courant du          [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    dans le courant du          ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    [dès|depuis] le             [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    [dès|depuis] le             ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    du                          [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    du                          ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
+    par rapport à l’            [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] [siècle|millénaire]
+    par rapport à l’            ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ [siècle|millénaire]
         <<- ~>> *
 
-    à [compter|partir] du           [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] du           [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    à [compter|partir] du           [début|milieu] des années ~^\d{2,5}$
-    ?jusqu’¿ au                     [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ au                     [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    ?jusqu’¿ au                     [début|milieu] des années ~^\d{2,5}$
-    [avant|après] le                [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le                [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    [avant|après] le                [début|milieu] des années ~^\d{2,5}$
-    [dans|dès|depuis] le            [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dans|dès|depuis] le            [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    [dans|dès|depuis] le            [début|milieu] des années ~^\d{2,5}$
-    par rapport au                  [début|milieu] de l’ an ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au                  [début|milieu] de l’ année ?[dernière|passée|prochaine|~^\d{2,5}$]¿
-    par rapport au                  [début|milieu] des années ~^\d{2,5}$
+    ?d’¿ av ?.¿ J.-C.
+    ?d’¿ avant J.-C.
+    ?d’¿ avant Jésus-Christ
+    ?d’¿ avant notre ère ?[industrielle|technologique]¿
+        <<- ~>> *
+
+    au cours de notre ère ?[industrielle|technologique]¿
+        <<- ~>> *
+
+
+__purge_années__
+    à [compter|partir] [de|d’] l’   an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’] l’   année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    à [compter|partir] des          années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    ?jusqu’¿ à l’ orée de l’        an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’ orée de l’        année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’ orée des          années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    ?jusqu’¿ à l’                   an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à l’                   année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ aux                    années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    [avant|après] l’                an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] l’                année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    [avant|après] les               années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    au cours [de|d’] l’             an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours [de|d’] l’             année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    au cours des                    années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    dans l’                         an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    dans l’                         année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    dans les                        années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    dans le courant de l’           an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    dans le courant de l’           année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    dans le courant des             années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    [dès|depuis|de|d’] l’           an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’] l’           année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    [dès|depuis] [les|ces]          années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    par rapport à l’                an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à l’                année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    par rapport aux                 années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+        <<- ~>> *
+
+    à [compter|partir] du           [début|milieu] de l’ an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du           [début|milieu] de l’ année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    à [compter|partir] du           [début|milieu] des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    ?jusqu’¿ au                     [début|milieu] de l’ an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au                     [début|milieu] de l’ année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    ?jusqu’¿ au                     [début|milieu] des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    [avant|après] le                [début|milieu] de l’ an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le                [début|milieu] de l’ année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    [avant|après] le                [début|milieu] des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    [dans|dès|depuis] le            [début|milieu] de l’ an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dans|dès|depuis] le            [début|milieu] de l’ année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    [dans|dès|depuis] le            [début|milieu] des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
+    par rapport au                  [début|milieu] de l’ an ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au                  [début|milieu] de l’ année ?[dernière|passée|précédente|prochaine|~^\d{2,5}$]¿
+    par rapport au                  [début|milieu] des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
         <<- ~>> *
 
     à [compter|partir] [de|d’] la   fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     à [compter|partir] [de|d’] la   fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    à [compter|partir] [de|d’] la   fin des années ~^\d{2,5}$
+    à [compter|partir] [de|d’] la   fin des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
     ?jusqu’¿ à la                   fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     ?jusqu’¿ à la                   fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    ?jusqu’¿ à la                   fin des années ~^\d{2,5}$
+    ?jusqu’¿ à la                   fin des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
     [avant|après] la                fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     [avant|après] la                fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    [avant|après] la                fin des années ~^\d{2,5}$
+    [avant|après] la                fin des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
     [dans|dès|depuis|de|d’] la      fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     [dans|dès|depuis|de|d’] la      fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    [dans|dès|depuis|de|d’] la      fin des années ~^\d{2,5}$
+    [dans|dès|depuis|de|d’] la      fin des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
     par rapport à la                fin de l’ an ?[dernier|passé|~^\d{2,5}$]¿
     par rapport à la                fin de l’ année ?[dernière|passée|~^\d{2,5}$]¿
-    par rapport à la                fin des années ~^\d{2,5}$
+    par rapport à la                fin des années [dernières|passées|précédentes|prochaines|~^\d{2,5}$]
         <<- ~>> *
 
     en  l’  an  ~^\d{2,5}$
@@ -12028,54 +12068,54 @@ __purge_années__
 
 
 __purge_saisons__
-    à [compter|partir] de   l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [à|dès|depuis|de]       l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée [de|d’]       l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours [de|d’]        l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    dans le courant de      l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ à                l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à           l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] du   printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [au|du]                 printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée du            printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du             printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le        printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    dans le courant du      printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ au               printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] de   l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [à|dès|depuis|de]       l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée [de|d’]       l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours [de|d’]        l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    dans le courant de      l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ à                l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à           l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [au|du]                 printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée du            printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du             printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le        printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    dans le courant du      printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ au               printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    à [compter|partir] du   [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [au|du]                 [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée du            [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du             [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le        [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ au               [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] du   [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [au|du]                 [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée du            [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du             [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le        [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ au               [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          [début|milieu] du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [au|du]                 [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée du            [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du             [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le        [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ au               [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          [début|milieu] [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [au|du]                 [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée du            [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du             [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le        [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ au               [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          [début|milieu] du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    à [compter|partir] de   la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [à|dès|depuis|de]       la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée [de|d’]       la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours [de|d’]        la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ à                la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à           la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] de   la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [à|dès|depuis|de]       la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée [de|d’]       la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours [de|d’]        la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ à                la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à           la fin du printemps  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] de   la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [à|dès|depuis|de]       la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée [de|d’]       la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours [de|d’]        la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ à                la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à           la fin [de|d’] l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] de   la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [à|dès|depuis|de]       la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée [de|d’]       la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours [de|d’]        la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ à                la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à           la fin du printemps  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
     par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
@@ -12088,95 +12128,95 @@ __purge_saisons__
 
 
 __purge_semestre_trimestre__
-    à [compter|partir] du   ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [au|du]                 ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée du            ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du             ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    depuis le               ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ au               ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [au|du]                 ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée du            ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du             ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    depuis le               ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ au               ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    à [compter|partir] du   [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [au|du]                 [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée du            [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du             [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    depuis le               [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ au               [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [au|du]                 [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée du            [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du             [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    depuis le               [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ au               [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          [début|milieu] du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    à [compter|partir] de   la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [à|dès|depuis|de|d’]    la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à l’ orée [de|d’]       la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours [de|d’]        la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    jusqu’ à                la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à           la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] de   la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [à|dès|depuis|de|d’]    la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à l’ orée [de|d’]       la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours [de|d’]        la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    jusqu’ à                la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à           la fin du ?[premier|deuxième|troisième|quatrième]¿ [semestre|trimestre]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
 
 __purge_dates_mois__
-    à [compter|partir] du   [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis] le         [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [le|du]                 [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]           [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ au             [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir] du   [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le         [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [le|du]                 [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]           [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au             [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    au cours         [de|d’]    {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    au cours du mois [de|d’]    {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    au cours         [de|d’]    {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    au cours du mois [de|d’]    {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    à l’ orée du mois [de|d’]   {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    à [compter|partir] [de|d’]  {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ [en|à]             {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après]               {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis|de|d’]          {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au              {mois}  ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à l’ orée du mois [de|d’]   {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    à [compter|partir] [de|d’]  {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ [en|à]             {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après]               {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’]          {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au              {mois}  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
     ?[à|avant|après|de|d’|depuis]¿ [début|milieu|fin] {mois} ?~^\d{2,5}$¿
         <<- not morph(<1, ":D") ~>> *
 
-    à [compter|partir]          [début|milieu|fin] {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ [en|à]             [début|milieu|fin] {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis|de|d’]          [début|milieu|fin] {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à               [début|milieu|fin] {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    à [compter|partir]          [début|milieu|fin] {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ [en|à]             [début|milieu|fin] {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis|de|d’]          [début|milieu|fin] {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à               [début|milieu|fin] {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    ?jusqu’¿ au         [début|milieu]                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ au         [début|milieu] [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ au         [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le    [début|milieu]                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le    [début|milieu] [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] le    [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis] le     [début|milieu]                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis] le     [début|milieu] [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [dès|depuis] le     [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    du                  [début|milieu]                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    du                  [début|milieu] [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    du                  [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au      [début|milieu]                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au      [début|milieu] [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport au      [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au         [début|milieu]                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au         [début|milieu] [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ au         [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le    [début|milieu]                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le    [début|milieu] [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le    [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le     [début|milieu]                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le     [début|milieu] [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [dès|depuis] le     [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    du                  [début|milieu]                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    du                  [début|milieu] [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    du                  [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au      [début|milieu]                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au      [début|milieu] [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport au      [début|milieu] du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    ?jusqu’¿ à la           fin                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ à la           fin [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    ?jusqu’¿ à la           fin du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] la        fin                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] la        fin [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [avant|après] la        fin du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [de|d’|dès|depuis] la   fin                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [de|d’|dès|depuis] la   fin [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    [de|d’|dès|depuis] la   fin du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à la        fin                   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à la        fin [de|d’]           {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
-    par rapport à la        fin du mois [de|d’]   {mois} ?[dernier|passé|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à la           fin                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à la           fin [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    ?jusqu’¿ à la           fin du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] la        fin                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] la        fin [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] la        fin du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la   fin                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la   fin [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [de|d’|dès|depuis] la   fin du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à la        fin                   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à la        fin [de|d’]           {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    par rapport à la        fin du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
     en ce début {mois} ~^\d{2,5}$
@@ -12192,6 +12232,7 @@ __purge_dates_mois__
         <<- ~>> *
 
 
+
 __purge_horaires_et_durée__
     24      [heures|h]      [sur|/]  24
     7       [jours|j]       [sur|/]  7
@@ -12199,9 +12240,12 @@ __purge_horaires_et_durée__
     vingt-quatre  heures    [sur|/]  vingt-quatre
         <<- ~>> *
 
-    ?jusqu’¿ à                   ~^\d\d?$  h
-    à [partir|compter] de        ~^\d\d?$  h
-    [avant|après|de|dès|depuis]  ~^\d\d?$  h
+    ?jusqu’¿ à                   *NUM  h
+    à [partir|compter] de        *NUM  h
+    [avant|après|de|dès|depuis]  *NUM  h
+    ?jusqu’¿ à                   [1|01]  heure
+    à [partir|compter] de        [1|01]  heure
+    [avant|après|de|dès|depuis]  [1|01]  heure
     ?jusqu’¿ à                   *HOUR
     à [partir|compter] de        *HOUR
     [avant|après|de|dès|depuis]  *HOUR
@@ -12211,6 +12255,16 @@ __purge_horaires_et_durée__
     ?jusqu’¿ à                   $:B        heures
     à [partir|compter] de        $:B        heures
     [avant|après|de|dès|depuis]  $:B        heures
+        <<- ~>> *
+
+    ?jusqu’¿ à                   *NUM  heures
+    à [partir|compter] de        *NUM  heures
+    [avant|après|de|dès|depuis]  *NUM  heures
+        <<- \-2.isdigit() and \-2 != "1" and \-2 != "01" ~>> *
+
+    ?jusqu’¿ à                   [midi|minuit]
+    à [partir|compter] de        [midi|minuit]
+    [avant|après|de|dès|depuis]  [midi|minuit]
         <<- ~>> *
 
     ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿
@@ -12226,11 +12280,100 @@ __purge_horaires_et_durée__
     >heure moins le quart
     >heure ?,¿ $:B minutes
     >heure ?,¿ $:B minutes ?,¿ $:B secondes
+    [midi|minuit] pile
+    [midi|minuit] moins le quart
         <<- ~2:0>> *
 
     à la fin de [la|l’]             [après-midi|matinée|nuit|soirée]
     au [début|milieu] de [la|l’]    [après-midi|matinée|nuit|soirée]
     en [début|milieu|fin] [de|d’]   [après-midi|matinée|soirée]
+        <<- ~>> *
+
+    à cette heure ?[tardive|matinale]¿
+    à cette heure de la [journée|nuit]
+    à cette heure du jour
+    à l’ heure actuelle
+    à l’ heure qu’ il est
+    à n’importe quelle heure du jour et de la nuit
+    à toute heure
+    à toute heure de la nuit
+    à toute heure de la nuit et du jour
+    à toute heure du jour
+    à toute heure du jour et de la nuit
+    à une heure [décente|indue|tardive]
+    au jour et à l’ heure dits
+    au cours de la [dernière|précédente|prochaine] [seconde|minute|heure]
+    au cours de l’ heure ?[dernière|passée|précédente|prochaine]¿
+    au cours de la [seconde|minute] ?[dernière|passée|précédente|prochaine]¿
+    [de|d’] si bonne heure
+    [de|d’] tout à l’ heure
+    jusqu’ à pas d’ heure
+    sur l’ heure
+    tout à l’ heure
+    trois quarts d’ heure plus [tôt|tard]
+    un quart d’ heure plus [tôt|tard]
+        <<- ~>> *
+
+
+__locutions_temporelles_communes__
+    d’ un [jour|mois|trinestre|semestre|an|siècle|millénaire] à l’ autre
+    d’ une [nanoseconde|milliseconde|seconde|minute|seconde|heure|journée|semaine|année|décennie] à l’ autre
+        <<- ~>> *
+
+    ## locutions épicènes
+    $:B [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] auparavant
+    $:B [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] plus [tôt|tard]
+    à quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] près
+    après [des|plusieurs|quelques|*NUM|$:B] [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] de bons et loyaux services
+    au fil des [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] à venir
+    dans les [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] à venir
+    depuis $:B [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    depuis *NUM [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    depuis quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    des [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] plus [tôt|tard]
+    d’ ici quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    ?d’¿ il y a [*NUM|$:B] [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    ?d’¿ il y a [moins|plus] [de|d’] [*NUM|$:B] [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    ?d’¿ il y a quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    en *NUM [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    pendant des [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    pendant plusieurs [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires]
+    quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] [après|avant|auparavant]
+    quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] plus [tard|tôt]
+    un peu [moins|plus] de [$:B|*NUM] [nanosecondes|millisecondes|secondes|minutes|heures|jours|journées|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires] auparavant
+        <<- ~>> *
+
+    ## locutions genrées
+    au cours des ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires] [dernières|passées|précédentes|prochaines]
+    au cours des ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies] [dernières|passées|précédentes|prochaines]
+    au cours des ?$:B¿ [derniers|précédents|prochains] [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    au cours des ?$:B¿ [dernières|précédentes|prochaines] [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    au fil des           [jours|mois|trimestres|semestres|ans|siècles|millénaires] ?[derniers|passés|précédents|prochains]¿
+    au fil des           [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies] ?[dernières|passées|précédentes|prochaines]¿
+    dans les             ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires]   [derniers|passés|précédents|prochains]
+    dans les             ?$:B¿ [derniers|précédents|prochains]   [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    dans les             ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]   [dernières|passées|précédentes|prochaines]
+    dans les             ?$:B¿ [dernières|précédentes|prochaines]   [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    dans le courant des  ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires]   [derniers|passés|précédents|prochains]
+    dans le courant des  ?$:B¿ [derniers|précédents|prochains]   [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    dans le courant des  ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]   [dernières|passées|précédentes|prochaines]
+    dans le courant des  ?$:B¿ [dernières|précédentes|prochaines]   [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    depuis [de|d’]       ?[assez|si|très|trop]¿ longs [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    depuis [de|d’]       ?[assez|si|très|trop]¿ longues [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    depuis les           ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires]   [derniers|passés|précédents|prochains]
+    depuis les           ?$:B¿ [derniers|précédents|prochains]   [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    depuis les           ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]   [dernières|passées|précédentes|prochaines]
+    depuis les           ?$:B¿ [dernières|précédentes|prochaines]   [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    des                  ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires]   [derniers|passés|précédents|prochains]
+    des                  ?$:B¿ [derniers|précédents|prochains]   [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    des                  ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]   [dernières|passées|précédentes|prochaines]
+    des                  ?$:B¿ [dernières|précédentes|prochaines]   [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    par rapport aux      ?$:B¿ [jours|mois|trimestres|semestres|ans|siècles|millénaires]   [derniers|passés|précédents|prochains]
+    par rapport aux      ?$:B¿ [derniers|précédents|prochains]   [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    par rapport aux      ?$:B¿ [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]   [dernières|passées|précédentes|prochaines]
+    par rapport aux      ?$:B¿ [dernières|précédentes|prochaines]   [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
+    pendant de nombreux [jours|mois|trimestres|semestres|ans|siècles|millénaires]
+    pendant de nombreuses [nanosecondes|millisecondes|secondes|minutes|heures|journées|semaines|années|décennies]
         <<- ~>> *
 
 
@@ -12282,62 +12425,27 @@ __purge_locutions_avec_temps__
 
 
 __purge_locutions_temporelles_usuelles__
-    $:B [secondes|minutes|heures] plus [tôt|tard|auparavant]
-    $:B [jours|semaines|mois|ans|années|décennies|siècles|millénaires] plus [tôt|tard|auparavant]
-    à [midi|minuit]  ?pile¿
     à cet instant ?[exact|précis]¿
     à cette [date|occasion] ?fatidique¿
-    à cette heure
-    à cette heure [tardive|matinale]
-    à cette heure de la [journée|nuit]
-    à cette heure du jour
-    à cette heure matinale
+    à longueur [de|d’] [journée|année]
     à cette époque
     à cette époque de l’ année
     à chaque [instant|moment]
     à durée [déterminée|indéterminée|limitée]
     à intervalles [irréguliers|réguliers]
-    à l’ heure actuelle
-    à l’ heure qu’ il est
-    à longueur [de|d’] [journée|année]
-    à n’importe quelle heure du jour et de la nuit
     à partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
     à partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
-    à quelques [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] près
-    à toute heure
-    à toute heure de la nuit
-    à toute heure de la nuit et du jour
-    à toute heure du jour
-    à toute heure du jour et de la nuit
     à un moment donné
     à un moment ou à un autre
-    à une heure [décente|indue|tardive]
     ?[bien|si|assez]¿ longtemps
     ?[d’|dès|jusqu’|pour|après|avant]¿ après demain
     ?[d’|dès|jusqu’|pour|après|avant]¿ après-demain
-    après [des|plusieurs|quelques|*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] de bons et loyaux services
     après cette date ?fatidique¿
     au bout d’ un moment
     au commencement
     au début
     au [dernier|même|bon|mauvais] [moment|instant]
-    au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
-    au ~^[xXvViI]+(?:[eᵉ]|i?[èe]me)$ siècle
-    au cours de la [dernière|prochaine] [seconde|minute|heure|journée|semaine|année]
-    au cours de la [seconde|minute|journée|semaine] [dernière|passée|précédente|prochaine]
-    au cours de l’ [heure|année] ?[dernière|passée|précédente|prochaine]¿
-    au cours de l’ an ?[dernier|passé|précédent|prochain]¿
-    au cours des ?$:B¿ [derniers|précédents|prochains] [jours|mois|ans|siècles|millénaires]
-    au cours des ?$:B¿ [dernières|précédentes|prochaines] [secondes|minutes|heures|journées|semaines|années]
-    au cours des [jours|mois|ans|siècles|millénaires] ?[derniers|passés|précédents|prochains]¿
-    au cours des [secondes|minutes|heures|journées|semaines|années] ?[dernières|passées|précédentes|prochaines]¿
-    au cours du [dernier|précédent|prochain] [mois|siècle|millénaire]
-    au cours du [mois|siècle|millénaire] ?[dernier|passé|précédent|prochain]¿
-    au fil des [ans|années] à venir
-    au fil des années ?[dernières|passées|précédentes|prochaines]¿
-    au fil des ans ?[derniers|passés|précédents|prochains]¿
     au fur et à mesure
-    au jour et à l’ heure dits
     au jour j
     au jour le jour
     au milieu de la nuit
@@ -12350,25 +12458,16 @@ __purge_locutions_temporelles_usuelles__
     comme toujours
     dans [ma|ta|sa|notre|votre|leur] prime jeunesse
     dans ces moments-là
-    dans les [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] à venir
-    depuis $:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis ?[assez|si|très|trop]¿ longtemps
-    depuis [de|d’] ?[assez|si|très|trop]¿ longues années
     depuis belle lurette
     depuis bien longtemps
     depuis des lustres
-    depuis la [première|dernière|~ième$] fois
     depuis lors
-    depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     depuis toujours
     depuis un bail
-    des [années|mois|siècles|millénaires|décennies|semaines] plus [tôt|tard]
     dorénavant
-    du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
     du début à la fin
     du jour au lendemain
-    du ~^[xXvViI]+[eᵉ]$ siècle
     dès [demain|hier] ?[soir|matin|après-midi]¿
     dès [longtemps|maintenant|lors|aujourd’hui]
     dès que possible
@@ -12381,22 +12480,14 @@ __purge_locutions_temporelles_usuelles__
     d’ autrefois
     d’ habitude
     d’ ici ?[là|peu]¿
-    d’ ici quelques [secondes|minutes|heures|jours|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     d’ instant en instant
-    d’ une [minute|seconde] à l’ autre
     ?[de|d’]¿ jadis
     ?[de|d’]¿ maintenant
     ?d’¿ [hier|avant-hier] ?[matin|soir|après-midi]¿
     ?d’¿ aujourd’hui
-    ?d’¿ av. J.-C.
-    ?d’¿ avant J.-C.
-    ?d’¿ avant Jésus-Christ
     ?d’¿ il n’y a pas ?si¿ longtemps
     ?d’¿ il y a ?[assez|si|très|trop]¿ longtemps
-    ?d’¿ il y a [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a belle lurette
-    ?d’¿ il y a moins [de|d’] [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?[de|d’]¿ [demain|après-demain] ?[matin|soir|après-midi]¿
     [de|d’] ?[assez|si|très|trop]¿ [courte|longue] durée
     [de|d’] ?[assez|si|très|trop]¿ bon matin
@@ -12408,11 +12499,7 @@ __purge_locutions_temporelles_usuelles__
     [de|d’] jour comme de nuit
     [de|d’] nos jours
     [de|d’] si bon matin
-    [de|d’] si bonne heure
-    [de|d’] tout à l’ heure
     [de|d’] toute éternité
-    en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
-    en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
     en ce moment ?[particulier]¿
     en cet instant
     en d’ autres circonstances
@@ -12441,7 +12528,6 @@ __purge_locutions_temporelles_usuelles__
     jusqu’ à la tombée [de|d’] la nuit
     jusqu’ à maintenant
     jusqu’ à nouvel ordre
-    jusqu’ à pas d’ heure
     jusqu’ à plus ample informé
     jusqu’ à présent
     jusqu’ à récemment
@@ -12455,10 +12541,6 @@ __purge_locutions_temporelles_usuelles__
     par le passé
     parfois
     pendant ?[bien|si|assez|très]¿ longtemps
-    pendant de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]
-    pendant de nombreux [jours|mois|trimestres|semestres|ans|siècles|millénaires]
-    pendant des [secondes|minutes|heures|jours|semaines|mois|années|siècles|millénaires|décennies]
-    pendant plusieurs [secondes|minutes|heures|jours|semaines|mois|années|siècles|millénaires|décennies]
     plus [près|loin|tôt|tard|longtemps]
     plus [près|loin|tôt|tard|longtemps] que [prévu|nécessaire]
     plus [près|loin|tôt|tard|longtemps] que d’ habitude
@@ -12466,33 +12548,26 @@ __purge_locutions_temporelles_usuelles__
     plus que d’ habitude
     quant à présent
     quelquefois
-    quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] [après|avant|auparavant]
-    quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] plus [tard|tôt]
     quelques fois
     sine die
     soudain
     souvent
     sur ces entrefaites
-    sur l’ heure
     sur-le-champ
     séance tenante
     tard
     toujours
     tout [de|d’] [suite|go]
     tout à coup
-    tout à l’ heure
     toute affaire cessante
     toutefois
     toutes affaires cessantes
-    trois quarts d’ heure plus [tôt|tard]
     tôt
     tôt ou tard
     un instant plus [tôt|tard]
     un jour ou l’autre
     un moment plus [tôt|tard]
     un peu [moins|plus] [tôt|tard] que prévu
-    un peu [moins|plus] de [$:B|*NUM] [secondes|minutes|heures|jours|mois|trimestres|semestres|années|décennies|siècles|millénaires] auparavant
-    un quart d’ heure plus [tôt|tard]
     [voici|voilà] belle lurette
         <<- ~>> *
 
@@ -12523,6 +12598,7 @@ __purge_locutions_temporelles_usuelles__
     ?à¿ chaque fois
     ?à¿ d’ autres fois
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
+    depuis la [première|dernière|~ième$] fois
     des fois
     encore une fois
     $:B fois
@@ -12724,13 +12800,18 @@ __purge_prépositions_pronoms__
     par         chez
         <<- ~1:-2>> *
 
-    à part                  {pronom_obj}
-    à partir [de|d’]        {pronom_obj}
-    au-dessus [de|d’]       {pronom_obj}
-    au-dedans [de|d’]       {pronom_obj}
-    en dessous [de|d’]      {pronom_obj}
-    ?tout¿ au fond [de|d’]  {pronom_obj}
-    ?tout¿ autour [de|d’]   {pronom_obj}
+    à bonne distance [de|d’]    {pronom_obj}
+    à part                      {pronom_obj}
+    à partir [de|d’]            {pronom_obj}
+    au-dessus [de|d’]           {pronom_obj}
+    au-dedans [de|d’]           {pronom_obj}
+    en dessous [de|d’]          {pronom_obj}
+    ?tout¿ au fond [de|d’]      {pronom_obj}
+    ?tout¿ autour [de|d’]       {pronom_obj}
+    avec ou sans                {pronom_obj}
+    en paix avec                {pronom_obj}
+    pour ou contre              {pronom_obj}
+    ?tout¿ près [de|d’]         {pronom_obj}
         <<- ~>> *
 
 TODO: comme
@@ -12931,7 +13012,7 @@ __purge_locutions__
     à point nommé
     à portée de [main|tir|voix]
     à première vue
-    à prix [cassé|modique|cassés|modiques]
+    à prix [coûtant|coutant|cassé+s|>modique]
     à [ma|ta|sa|notre|votre|leur] propre initiative
     à proprement parler
     à quatre pattes
@@ -13220,6 +13301,7 @@ __purge_locutions__
     [de|d’] part en part
     [de|d’] part et d’ autre
     [de|d’] ?presque¿ partout
+    [de|d’] peu d’ importance
     [de|d’] pied ferme
     [de|d’] pis en pis
     [de|d’] place en place
@@ -13358,6 +13440,7 @@ __purge_locutions__
     en pleine [face|gueule|figure|forme|nuit|poire|tronche]
     en perte [de|d’] vitesse
     en ?[assez|si|très|trop]¿ [piteux|piètre] état
+    en ?[assez|si|très|trop]¿ [piteux|piètre] état [de|d’] conservation
     en point [de|d’] [mire|orgue]
     en porte-à-faux
     en position [de|d’] [force|faiblesse]
@@ -19592,9 +19675,13 @@ __conf_goûte_goutte__
     >passer entre les [goûte+s|goute+s]
         <<- /conf/ --1>> gouttes                    && Confusion. Une particule de fluide s’écrit “goutte”.|https://fr.wiktionary.org/wiki/goutte
 
+    [à|a] [grosse+s] [goute+s|goûte+s]
+        <<- /conf/ ->> à grosses gouttes            && Confusion. Locution adverbiale “à grosses gouttes”.
+
 TEST: Une {{goûte}} de pluie
 TEST: tu sais, les {{goutes}} de pluie, ça mouille.
 TEST: ouf, on est passé entre les {{goûtes}}…
+TEST: il suait {{à grosse goute}}                               ->> à grosses gouttes
 TEST: Des gouttes de pluie.
 
 
@@ -19984,7 +20071,7 @@ TEST: Elles sont hors de {{paires}}.
 
 # pâle / pale
 __conf_pâle_pale2!6__
-    >faire ?[pas|jamais|guère]¿ porter pale
+    >faire porter pale
     [>être|>rester|>demeurer|>devenir]  >pale
     [>air|>lumière|>lueur|>teint|coloris|>couleur|>peau|>visage|>bleu|>rouge|>fuschia|>jaune|>vert|gris|>orange|>violet|>pourpre]  >pale
         <<- /conf/ --1>> =\-1.replace("a", "â").replace("A", "Â")
@@ -20257,10 +20344,11 @@ TEST: elle suit ça de {{prêt}}
 
 # pris / prix
 __conf_pris_prix__
-    >avoir prix
+    [>avoir|>être] prix
         <<- /conf/ --1>> pris                                   && Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
 
 TEST: elle ne l’a pas {{prix}}, par dépit.
+TEST: ils ont été {{prix}}.
 
 
 # pu / pus
