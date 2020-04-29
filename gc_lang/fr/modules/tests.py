@@ -108,7 +108,7 @@ class TestPhonet (unittest.TestCase):
     def setUpClass (cls):
         cls.lSet = [
             ["ce", "se"],
-            ["ces", "ses", "sais", "sait"],
+            ["ces", "saie", "saies", "ses", "sais", "sait"],
             ["cet", "cette", "sept", "set", "sets"],
             ["dé", "dés", "dès", "dais", "des"],
             ["don", "dons", "dont"],
