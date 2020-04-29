@@ -124,7 +124,6 @@ class TestPhonet (unittest.TestCase):
             ["or", "ors", "hors"],
             ["hou", "houe", "houes", "ou", "où", "houx"],
             ["peu", "peux", "peut"],
-            ["ses", "ces", "sais", "sait"],
             ["son", "sons", "sont"],
             ["tes", "tais", "tait", "taie", "taies", "thé", "thés"],
             ["toi", "toit", "toits"],
