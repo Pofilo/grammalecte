@@ -16,6 +16,8 @@ from graphspell.echo import echo
 from graphspell.str_transform import defineSuffixCode
 import graphspell.tokenizer as tkz
 
+import gc_lang.fr.modules.conj as conj
+
 
 oDict = None
 
@@ -285,36 +287,46 @@ def makePhonetTable (sp, bJS=False):
     print("> Correspondances phonétiques ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
 
-    import gc_lang.fr.modules.conj as conj
-
     loadDictionary()
 
     # set of homophonic words
     lSet = []
     for sLine in readFile(sp+"/data/phonet_simil.txt"):
         lWord = sLine.split()
-        aMore = set()
         for sWord in lWord:
             if sWord.endswith("er") and conj.isVerb(sWord):
-                aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
-        lWord.extend(list(aMore))
-        lSet.append(sorted(set(lWord)))
+                lWord.extend(conj.getConjSimilInfiV1(sWord))
+        lSet.append(set(lWord))
 
     # dictionary of words
     dWord = {}
+    aMultiSetWord = set()
+    lNewSet = []
+    nAppend = 0
     for i, aSet in enumerate(lSet):
         for sWord in aSet:
             if oDict.lookup(sWord):
-                dWord[sWord] = i  # warning, what if word in several sets?
+                if sWord not in dWord:
+                    dWord[sWord] = i
+                else:
+                    # word in several set
+                    aMultiSetWord.add(sWord)
+                    iSet = dWord[sWord]
+                    lNewSet.append(lSet[iSet].union(aSet))
+                    dWord[sWord] = len(lSet) + nAppend
+                    nAppend += 1
             else:
-                echo("Mot inconnu : " + sWord)
+                echo(f"  Mot inconnu : <{sWord}>")
+    lSet.extend(lNewSet)
+    print("  Mots appartenant à plusieurs ensembles: ", ", ".join(aMultiSetWord))
+
     # dictionary of morphologies
     dMorph = {}
     for sWord in dWord:
         dMorph[sWord] = oDict.getMorph(sWord)
 
     # write file for Python
-    sCode = "# generated data (do not edit)\n\n" + \
+    sCode = "# generated data built in build_data.py (do not edit)\n\n" + \
             "dWord = " + str(dWord) + "\n\n" + \
             "lSet = " + str(lSet) + "\n\n" + \
             "dMorph = " + str(dMorph) + "\n"
@@ -367,6 +379,6 @@ def before (spLaunch, dVars, bJS=False):
 def after (spLaunch, dVars, bJS=False):
     print("========== Build French data ==========")
     makeMfsp(spLaunch, bJS)
-    makeConj(spLaunch, bJS)
     makePhonetTable(spLaunch, bJS)
+    makeConj(spLaunch, bJS)
     makeLocutions(spLaunch, bJS)
