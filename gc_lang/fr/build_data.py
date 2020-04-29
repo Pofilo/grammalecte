@@ -318,6 +318,7 @@ def makePhonetTable (sp, bJS=False):
             else:
                 echo(f"  Mot inconnu : <{sWord}>")
     lSet.extend(lNewSet)
+    lSet = [ sorted(aSet) for aSet in lSet ]
     print("  Mots appartenant à plusieurs ensembles: ", ", ".join(aMultiSetWord))
 
     # dictionary of morphologies
