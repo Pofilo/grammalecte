@@ -1981,6 +1981,10 @@ __da_groupe_nominal__
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
 
+    les  ~.es$
+        <<- not value(<1, "|tu|ne|n’|me|m’|te|t’|se|s’|nous|vous|") and morph(\2, ":V1.*Ip.*:2s") and not tag_before(\1, "_2s_") and not value(>1, "|tu|pas|jamais|")
+        =>> exclude(\2, ":V")
+
     [un|une]  *WORD
         <<- not value(<1, "|l’|quelqu’|quelqu|") and not value(\2, "|a|fut|fût|est|fait|") and not morph(\2, ":P") =>> exclude(\2, ":V")
 
@@ -1990,7 +1994,7 @@ __da_groupe_nominal__
     de  [la|l’]  $:¬:Y
         <<- not value(<1, "|semblant|") =>> exclude(\3, ":V")
 
-    [/VCint|/VCimp] [le|la|l’|leur|les]
+    [/VCint|/VCimp]  [le|la|l’|leur|les]  $:¬:Y
         <<- =>> select(\2, ":D")
 
     de [>tel|ce|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|plein|pleine]  *WORD
@@ -4348,7 +4352,7 @@ __tu_substantifs__
         <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    && Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
 
     >tête [à|a] >tête
-        <<- /tu/ morph(<1, ":D") ->> tête-à-tête                && Il manque les traits d’union.
+        <<- /tu/ morph(<1, ">en/|:D") ->> tête-à-tête           && Il manque les traits d’union.
 
     trompe l’ [œil|oeil]
         <<- /tu/ morph(<1, ":D") ->> trompe-l’œil               && Il manque un trait d’union.
@@ -6700,7 +6704,7 @@ TEST: {{à le}} {{donnée}}
 TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
 
 
-    à  *WORD
+    à  ?$:W¿  *WORD
         <<- /conf/ \2.islower() and not value(\2, "|coté|sont|") >>>
         <<- /conf/ morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a             && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
@@ -7997,11 +8001,13 @@ TEST: quel beau {{cœur}} musical.
 
 # coli / colis
 __conf_colis_coli__
+    dans $:D coli
     à l’ intérieur [du|des] coli
     à l’ intérieur de [mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|ces] coli
         <<- /conf/ --1>> colis                                  && Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
 
 TEST: Regarde ce qu’il y a à l’intérieur du {{coli}}
+TEST: regarde dans le {{coli}}
 
 
 # collet monté
@@ -10812,8 +10818,10 @@ __conf_tant_temps_tan_1__
     en [même|mêmes] [tant|>tan]
         <<- /conf/ ->> en même temps                        && Confusion. Pour ce qui est temporel, écrivez “temps”.
 
-    en [temps|>tan] [que|qu’] >tel
-        <<- /conf/ -2>> tant                                && Confusion. Locution “en tant que tel”.
+    en [temps|>tan] [que|qu’]
+        <<- not (value(\2, "|temps|") and value(<1, "|temps|")) >>>
+        <<- /conf/ value(>1, "|tel|tels|telle|telles|") -2>> tant       && Confusion. Locution « en tant que tel ».|https://fr.wiktionary.org/wiki/en_tant_que_tel
+        <<- /conf/ __else__ -2>> tant                                   && Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
 
     en [>tan|tant] et en >heure
         <<- /conf/ -2>> temps                               && Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
@@ -10831,6 +10839,7 @@ TEST: en {{tan}} que telle, cette méthode n’est pas parfaite, mais avec de l�
 TEST: depuis la nuit des {{tans}}
 TEST: ce sera fait en {{tant}} et en heure
 TEST: {{tan pi}} pour lui
+TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
 TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranéen
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
@@ -10838,10 +10847,10 @@ TEST: elle est allée en tant de lieux qu’il est difficile de suivre son traje
 # teint / tain / thym
 __conf_tain_teint_thym__
     [>glace|>miroir|>verre] sans [tains|>teint|>thym]
-        <<- /conf/ -3>> tain                                        && Confusion.|http://fr.wiktionary.org/wiki/glace_sans_tain
+        <<- /conf/ -3>> tain                                        && Confusion. Locution nominale : “glace/miroir/verre sans tain”.|https://fr.wiktionary.org/wiki/miroir_sans_tain
 
     >fond de [>tain|teints|>thym]
-        <<- /conf/ -3>> teint                                       && Confusion.|https://fr.wiktionary.org/wiki/fond_de_teint
+        <<- /conf/ -3>> teint                                       && Confusion. Locution nominale : “fond de teint”.|https://fr.wiktionary.org/wiki/fond_de_teint
 
 TEST: Elle l’a observé par un miroir sans {{teint}}.
 TEST: Elle a acheté un nouveau fond de {{tain}}.
@@ -10856,28 +10865,47 @@ TEST: une {{taule}} en acier
 
 # tête / tète
 __conf_tête_tète!6__
-    [tète+s] [baissé+ses]
-    [tète+s] [haute+s|basse+s]
-    [tète+s] de [mule|linotte]
+    [tète+s] [haute+s|basse+s|baissé+ses|rasé+ses|tondu+ses]
+    [tète+s] d’ [>affiche|>ampoule|>enterrement|>enclume|>épingle|>œuf]
+    [tète+s] [de|d’] [>con|>mule|>linotte|>liste|list|>nœud|>pont|>mort]
         <<- /conf/ -1>> =\1.replace("è", "ê").replace("È", "Ê")     && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-    >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète+s]
-    [mal|maux] de [tète+s]
+    à la [tète+s]
+    [>cogner|>frapper|>hocher] ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète+s]
+    >mal [de|d’] [tète+s]
     ni queue ni [tète+s]
     >tenir ?@:[WX]¿ [tète+s]
-        <<- /conf/ --1>> =\-1.replace("è", "ê").replace("È", "Ê")   && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+    par [tète+s]
+    sans [tète+s]
+        <<- /conf/ --1>> tête                                       && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-    [tète+s] [à|a] [tète+s]
+    !! tête à tête ¡¡
+    [tète+s|tête+s] [à|a] [tète+s|tête+s]
     tète-à-tète
     tètes-à-tètes
     tète-a-tète
     tètes-a-tètes
         <<- /conf/ ->> tête-à-tête                                  && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-TEST: Avancer {{tète}} haute
-TEST: Cesse de nous tenir {{tète}}                                  ->> tête
-TEST: impossible, avec mes maux de {{tète}}                         ->> tête
-TEST: un {{tète-a-tète}}                                            ->> tête-à-tête
+    !! >tête contre >tête ¡¡
+    [tète+s|>tête] contre [tète+s|>tête]
+        <<- /conf/ ->> tête contre tête                             && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+    !! tête par tête ¡¡
+    [tète+s|tête+s] [par|pare+s|>part] [tète+s|tête+s]
+        <<- /conf/ ->> tête par tête                                && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+TEST: Avancer {{tète}} haute                                                        ->> tête
+TEST: Cesse de nous tenir {{tète}}                                                  ->> tête
+TEST: impossible, avec mes maux de {{tète}}                                         ->> tête
+TEST: un homme sans {{tète}}                                                        ->> tête
+TEST: elle reste en {{tète}} de liste                                               ->> tête
+TEST: un {{tète-a-tète}}                                                            ->> tête-à-tête
+TEST: nous nous regardiong, {{tète contre tète}}                                    ->> tête contre tête
+TEST: décapitons-les, {{tète pare tète}}                                            ->> tête par tête
+TEST: on les aura, tête par tête…
+TEST: révons, tête contre tête, à notre avenir
+TEST: nous nous embrassâmes tous les uns les autres, têtes contre têtes
 
 
 # confusion toit / toi
@@ -13582,6 +13610,7 @@ __purge_locutions__
     les [uns|unes] près des autres
     les [uns|unes] par rapport à l’ autre
     les [uns|unes] par rapport aux autres
+    l’ air de rien
     l’ [un|une] [après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
     l’ [un|une] près de l’ autre
     l’ [un|une] par rapport à l’ autre
@@ -14516,6 +14545,7 @@ __substantifs_multi_mots__
     >code d’ accès
     >code [de|d’] ?bonne¿ conduite
     >code [de|d’] la route
+    >collègue [de|d’] bureau
     >colosse aux pieds d’ argile
     >commis d’ office
     >compagne [de|d’] route
@@ -14700,6 +14730,7 @@ __substantifs_multi_mots__
     >matière à réflexion
     >médecin [de|d’] [famille|garde]
     >mère au foyer
+    >mesure >barrière
     >metteur en scène
     >mineur [de|d’] moins [de|d’] *NUM ans
     >mineur [de|d’] moins [de|d’] $:B:e:p ans
@@ -14830,6 +14861,7 @@ __substantifs_multi_mots__
     tenants et aboutissants
     >ténor du barreau
     >tête à claques
+    >tête d’ enterrement
     >tête [de|d’] [linotte|déterré+ses|mule]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
@@ -16428,6 +16460,14 @@ __conf_air_aire_ère__
     l’ [aire|ère] du temps
         <<- /conf/ -2>> air         && Confusion probable. Locution “l’air du temps”.|https://fr.wiktionary.org/wiki/%C3%AAtre_dans_l%E2%80%99air_du_temps
 
+    l’ aire de rien
+        <<- /conf/ not morph(>1, ":Y") ->> l’air de rien
+        && Confusion. L’aire est une surface. Si vous voulez évoquer une attitude masquant les véritables intentions, écrivez “l’air de rien”.|https://fr.wiktionary.org/wiki/l%E2%80%99air_de_rien
+
+    l’ ère de rien
+        <<- /conf/ not morph(>1, ":Y") ->> l’air de rien|l’ère du rien|l’ère du vide|l’ère du néant
+        && Confusion. L’ère est une période de temps. Si vous voulez évoquer une attitude masquant les véritables intentions, écrivez “l’air de rien”. Si vous voulez parler d’une époque où règne la vacuité, écrivez “l’ère du rien”, “l’ère du néant” ou avec tout autre synonyme.|https://fr.wiktionary.org/wiki/l%E2%80%99air_de_rien
+
     >avoir  ?[tout|$:W]¿  l’ [aire|ère]  [de|d’]
         <<- /conf/ --2>> air        && Confusion probable. La locution “avoir l’air de” signifie “sembler”, “paraître”…|https://fr.wiktionary.org/wiki/avoir_l%E2%80%99air
 
@@ -16451,6 +16491,8 @@ TEST: il en a tout l’{{ère}}
 TEST: on s’arrêtera sur l’{{air}} d’autoroute
 TEST: baptême de l’{{aire}}
 TEST: il va se foutre en l’{{ère}} si ça continue comme ça.
+TEST: {{l’ère de rien}}
+TEST: il avança aussi discrètement que possible {{l’aire de rien}}.
 
 
 # auspice / hospice
@@ -16724,7 +16766,7 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # coli / colis
 __conf_colis_coli2__
-    [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre|dans] $:D coli
+    [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre] $:D coli
         <<- /conf/ --1>> colis                          && Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
 
     coli [>délivrer|>égarer|>envoyer|>livrer|>oublier|>suspecte|>piéger|>neutraliser]
@@ -18435,9 +18477,6 @@ TEST: C’est la {{taule}} galvanisée.
 
 # tant / temps (2e partie)
 __conf_tant_temps_tan__
-    en [temps|>tan] [que|qu’]
-        <<- /conf/ -2>> tant                                        && Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
-
     il >être [tant|>tan] [de|d’] [ne|me|m’|te|t’|se|s’|en|y]
     il >être [tant|>tan] [de|d’] [la|le|les] [lui|leur]
     il >être [tant|>tan] [de|d’] [nous|vous] [la|le|les|l’]
@@ -18445,12 +18484,12 @@ __conf_tant_temps_tan__
     il >être [tant|>tan] [de|d’] $:Y
         <<- /conf/ -3>> temps                                       && Confusion. Si vous voulez dire “c’est le moment de”, écrivez “temps”.|https://fr.wiktionary.org/wiki/il_est_temps
 
+    >faire la pluie et le beau [tant|>tan]
     [>avoir|>prendre|<start>|,|(] du bon [tant|>tan]
     c’ >être [le|l’] bon ?vieux¿ [tant|>tan]
     au bon vieux [tant|>tan]
         <<- /conf/ --1>> temps                                      && Confusion. Pour parler d’un période heureuse, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
-TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
 TEST: il est bien évidemment {{tant}} d’en finir avec ça.
 TEST: c’était le bon {{tan}}
 TEST: elle sait prendre du bon {{tant}}
@@ -26848,8 +26887,8 @@ __vmode_qqch_que_subjonctif__
     [<start>|,|(]  bien                             [que|qu’]   @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
         <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \4)                          && Après « \2 que », le verbe s’emploie au subjonctif.
 
-    [<start>|,|(]   si          bien                [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|I[qf]|V0)
-        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                && Après “\2 \3 que”, ce verbe devrait être au subjonctif.
+#    [<start>|,|(]   si          bien                [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|I[qf]|V0)
+#        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                && Après “\2 \3 que”, ce verbe devrait être au subjonctif.
 
     [<start>|,|(]  encore                           [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If)
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                && Après « \2 que », le verbe s’emploie au subjonctif.
@@ -26882,7 +26921,6 @@ TEST: non qu’il {{prend}} son temps
 TEST: si tant est que nous {{prenons}} notre temps
 TEST: moyennant qu’elle {{vient}} demain
 TEST: en attendant qu’il {{devient}} plus raisonnable
-TEST: si bien qu’il {{devient}} irritable
 TEST: {{où}} qu’il {{est}}, on le trouvera
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
@@ -26917,6 +26955,7 @@ TEST: Quoique je dise.
 TEST: Quoique je te dise.
 TEST: Ça signifie qu’il est parti ou qu’il est mort.
 TEST: Ça ne signifie qu’une seule chose : soit qu’il est con, soit qu’il est totalement con.
+TEST: Si bien que l’on se dit : « Ce mode de vie où je travaille moins en ayant beaucoup plus de disponibilités sensibles, n’est-ce pas le bon équilibre à trouver ? »
 
 
 # indicatif nécessaire
