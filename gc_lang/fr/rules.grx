@@ -2311,6 +2311,9 @@ __inte_verbes_composés_interrogatifs__
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":1[sśŝ]", False, True)    && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- />> -je|VCint
 
+    aie-je
+        <<- /conj/ ->> ai-je                                                                        && Forme interrogative. N’employez pas le subjonctif présent.
+
     ~\w-[tT]u$
         <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", None, True)            && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":2s", False, True)        && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
@@ -2363,6 +2366,7 @@ __inte_verbes_composés_interrogatifs__
         <<- />> -iels|VCint
 
 TEST: {{Vas-je}}                                            ->> Vais-je
+TEST: mais {{aie-je}} seulement le choix ?                   ->> ai-je
 TEST: {{bluff-je}}
 TEST: {{Prit-je}}                                           ->> Pris-je
 TEST: {{prix-je}} le temps d’y parvenir ? Oui.
@@ -7187,7 +7191,7 @@ __conf_à_a_locutions__
     a tout le [moins|monde]
     a tout point [de|d’] vue
     a tout un chacun
-    a toute [allure|berzingue|bride|épreuve|force|heure|vitesse|volée]
+    a toute [allure|berzingue|bride|épreuve|force|heure|vapeur|vitesse|volée]
     a toutes jambes
     a toutes fins utiles
     a tribord
@@ -10873,11 +10877,15 @@ __conf_tête_tète!6__
     à la [tète+s]
     [>cogner|>frapper|>hocher] ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète+s]
     >mal [de|d’] [tète+s]
-    ni queue ni [tète+s]
+    ni [queue|que] ?,¿ ni [tète+s]
     >tenir ?@:[WX]¿ [tète+s]
     par [tète+s]
     sans [tète+s]
         <<- /conf/ --1>> tête                                       && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+    !! >faire qu’ à sa tête ¡¡
+    >faire ?[que|qu’]¿ [a|à] [sa|ça] [tête+s|tète+s]
+        <<- /conf/ --3:0>> à sa tête                                && Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
     !! tête à tête ¡¡
     [tète+s|tête+s] [à|a] [tète+s|tête+s]
@@ -10903,6 +10911,7 @@ TEST: elle reste en {{tète}} de liste                                          
 TEST: un {{tète-a-tète}}                                                            ->> tête-à-tête
 TEST: nous nous regardiong, {{tète contre tète}}                                    ->> tête contre tête
 TEST: décapitons-les, {{tète pare tète}}                                            ->> tête par tête
+TEST: elle n’en fait qu’{{à ça tète}}                                               ->> à sa tête
 TEST: on les aura, tête par tête…
 TEST: révons, tête contre tête, à notre avenir
 TEST: nous nous embrassâmes tous les uns les autres, têtes contre têtes
@@ -13111,7 +13120,7 @@ __purge_locutions__
     à tout le [moins|monde]
     à tout point de vue
     à tout un chacun
-    à toute [allure|berzingue|bride|épreuve|force|vitesse|volée]
+    à toute [allure|berzingue|bride|épreuve|force|vapeur|vitesse|volée]
     à tous crins
     à tous points de vue
     à toutes fins utiles
@@ -15492,6 +15501,7 @@ __purge_ponctuations__
 __purge_quoique__
     quoique  @:A¬:[GM]
         <<- ~1>> *
+        <<- /2>> _exctx_
 
 
 __purge_locutions_potentielles__
@@ -15805,6 +15815,7 @@ __purge_vite__
 
 __purge_locutions_verbales__
     >avoir [foule|vent]
+    >avoir ni queue ?,¿ ni tête
     >aller bon train
     >aller [de|d’] l’ avant
     >armer jusqu’ aux dents
@@ -15843,6 +15854,7 @@ __purge_locutions_verbales__
     >faire long feu
     >faire [machine|marche] arrière
     >faire main basse
+    >faire ni chaud ?,¿ ni froid
     >faire partie ?intégrante¿
     >faire profil bas
     >faire [bonne|fausse] route
@@ -24120,7 +24132,7 @@ TEST: les avaient-ils {{détectez}} ?
 
 __ppas_adj_accord_je_tu__
     <start>  *WORD  ?,¿  [je|j’|tu|iel]
-        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]")
+        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]") and not tag(\2, "_exctx_")
         -2>> =suggSing(\2)                                                      && Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
 
 TEST: {{Découragés}}, je suis parti.
@@ -24128,7 +24140,7 @@ TEST: {{Découragés}}, je suis parti.
 
 __ppas_adj_accord_il__
     <start>  *WORD  ?,¿  il
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|")  and not tag(\2, "_exctx_")
             and morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
         -2>> =suggMasSing(\2)                                                   && Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
@@ -24141,7 +24153,7 @@ TEST: Étudiante, il s’agissait de s’inventer des parents riches.
 
 __ppas_adj_accord_elle__
     <start>  *WORD  ?,¿  elle
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|P|f:[si])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and not tag(\2, "_exctx_") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|P|f:[si])")
         -2>> =suggFemSing(\2)                                                   && Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
 
 TEST: — {{Déçu}}, elle s’en est allée.
@@ -24150,7 +24162,7 @@ TEST: Parlant de réussite, elle se donne bonne conscience en y rajoutant de la 
 
 __ppas_adj_accord_ils__
     <start>  *WORD  ?,¿  ils
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|P|m:[pi])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and not tag(\2, "_exctx_") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|P|m:[pi])")
         -2>> =suggMasPlur(\2)                                                   && Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
 
 TEST: Vraiment {{soucieuse}}, ils sont.
@@ -24163,10 +24175,12 @@ TEST: Bref, ils veulent des services publics là où ces derniers font de plus e
 
 __ppas_adj_accord_elles__
     <start>  *WORD  ?,¿  elles
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|P|f:[pi])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and not tag(\2, "_exctx_") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|P|f:[pi])")
         -2>> =suggFemPlur(\2)                                                   && Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
 
 TEST: Absolument {{heureux}}, elles exultèrent de joie.
+TEST: quoique heureuse, ils la crurent tourmentée.
+
 
 
 !!
@@ -24945,9 +24959,9 @@ __ppas_être_confusion__
         <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "_que_") --1>> =suggVerbPpas(\-1)     && Après le verbe “être”, il faut un participe passé.
 
     >être  ~..er$
-        <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
+        <<- /ppas/ not tag(\2, "_upron_") and morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
             and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
         -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être à l’infinitif.
 
     >être  ~..ez$
@@ -24956,12 +24970,12 @@ __ppas_être_confusion__
 
     >être  ~.it$
         <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
         -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
 
     >être  ~.ut$
         <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
         -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
 
 TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
@@ -25387,14 +25401,14 @@ __tag_verbe_infinitif_sujet__
     [<start>|,|(]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
     [<start>|,|(]  [ne|n’]  $:Y
     [<start>|,|(]  $:Y
-        <<- /2>> suj_vinfi
+        <<- /2>> _sujinfi_
 
 
 __tag_usage_pronominal__
     [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
     nous nous            ?[le|la|l’|les|en|y]¿  $:V¬:G
     vous vous            ?[le|la|l’|les|en|y]¿  $:V¬:G
-        <<- /-1>> upron
+        <<- /-1>> _upron_
 
 
 __énumérations_substantifs__
@@ -26788,6 +26802,27 @@ TEST: si le patron {{aurait}} pensé la chose, on l’aurait su.                
 TEST: si les femmes {{auraient}} parlé, je l’aurais su.                             ->> avaient
 
 
+
+# Quand/lorsque/puisque/pourquoi + indicatif
+__vmode_quand_lorsque_indicatif__
+    [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+
+TEST: quand elle {{rencontrât}} son créateur
+TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
+
+    [<start>|,|(]  pourquoi  @:(?:Os|M)  @:V.*:S¬:[GI]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « pourquoi », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+
+TEST: quand elle {{rencontrât}} son créateur
+TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
+TEST: pourquoi Mélanie {{vienne}} à cette réception
+TEST: quel homme eût abandonné un empire pour une promesse ?
+TEST: qui eût abandonné un empire pour une promesse ?
+TEST: quels amis ils eussent trompés pour si peu ?
+
+
 # Dès que + indicatif
 __vmode_dès_que__
     dès  [que|qu’]  @:(?:Os|M)  @:S¬:[IG]
@@ -26797,6 +26832,37 @@ __vmode_dès_que__
 #TEST: dès que je le {{verrais}}
 TEST: dès qu’il le {{voie}}
 TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’il en aurait l’occasion
+
+
+# indicatif nécessaire
+__vmode_sujet_indicatif__
+    <start>  [je|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Ce verbe ne devrait pas être au subjonctif.
+
+    <start>  j’  @:S¬:[GIK]|V0a.*:Sq:1s
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", "je")                                              && Ce verbe ne devrait pas être au subjonctif.
+
+TEST: Il {{ait}} parti.
+TEST: Il en {{conclue}} qu’il a eu raison.
+TEST: j’en {{aie}} marre
+TEST: j’{{aie}} faim
+
+
+# Après/dès que + indicatif
+__vmode_que_indicatif__
+    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    && Après « \1 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
+
+    à  mesure    [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":I", \4)                    && Après « à mesure que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+
+TEST: Après qu’il {{ait}} allé
+TEST: Après que Paul {{ait}} mangé son repas.
+TEST: Après qu’il {{soit}} parti, il plut.
+TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.
+TEST: à mesure qu’il {{devienne}} fort
 
 
 # verbe que + subjonctif
@@ -26814,7 +26880,7 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 que”, ce verbe devrait être au subjonctif.
 
     >étonner   [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\1, "upron") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “s’étonner que”, le verbe doit être au subjonctif.
+        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “s’étonner que”, le verbe doit être au subjonctif.
 
     >faire  attention  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]|>faire/
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “faire attention à ce que”, le verbe doit être au subjonctif.
@@ -26826,11 +26892,11 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ not value(<1, "|la|") --1>> =suggVerbMode(\-1, ":S", \-2)                       && Après “veiller à ce que”, le verbe doit être au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ not tag(\1, "upron") and not tag(\1, "neg") and morph(\1, ":V", ":N")
+        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
         --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “\1 que”, ce verbe devrait être au subjonctif.
 
     [il|ça|cela]  [peut|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "upron") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
 TEST: Il suffit qu’il {{court}} plus
 TEST: j’attends que tu {{viens}}.
@@ -26908,7 +26974,7 @@ __vmode_qqch_que_subjonctif__
         <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
 
     peu         [est|était] fallu                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "upron") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
 
 TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
 TEST: quoi qu’il en {{conclut}}
@@ -26965,47 +27031,6 @@ TEST: Quoique je te dise.
 TEST: Ça signifie qu’il est parti ou qu’il est mort.
 TEST: Ça ne signifie qu’une seule chose : soit qu’il est con, soit qu’il est totalement con.
 TEST: Si bien que l’on se dit : « Ce mode de vie où je travaille moins en ayant beaucoup plus de disponibilités sensibles, n’est-ce pas le bon équilibre à trouver ? »
-
-
-# indicatif nécessaire
-__vmode_sujet_indicatif__
-    <start>  [je|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Ce verbe ne devrait pas être au subjonctif.
-
-    <start>  j’  @:S¬:[GIK]|V0a.*:Sq:1s
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", "je")                                              && Ce verbe ne devrait pas être au subjonctif.
-
-TEST: Il {{ait}} parti.
-TEST: Il en {{conclue}} qu’il a eu raison.
-TEST: j’en {{aie}} marre
-TEST: j’{{aie}} faim
-
-
-# Après/dès que + indicatif
-__vmode_que_indicatif__
-    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    && Après « \1 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
-
-    à  mesure    [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":I", \4)                    && Après « à mesure que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
-
-TEST: Après qu’il {{ait}} allé
-TEST: Après que Paul {{ait}} mangé son repas.
-TEST: Après qu’il {{soit}} parti, il plut.
-TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.
-TEST: à mesure qu’il {{devienne}} fort
-
-
-# Quand/lorsque + indicatif
-__vmode_quand_lorsque_indicatif__
-    [quand|lorsque|lorsqu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    [quand|lorsque|lorsqu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
-
-TEST: quand elle {{rencontrât}} son créateur
-TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
 
 
