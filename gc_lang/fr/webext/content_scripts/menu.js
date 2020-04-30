@@ -92,7 +92,7 @@ class GrammalecteButton {
     insertIntoPage () {
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         if (this.bShadow) {
-            this.xShadowHost = oGrammalecte.createNode("div", { id: "grammalecte_menu_main_button_shadow", style: "width:0; height:0;" });
+            this.xShadowHost = oGrammalecte.createNode("div", { id: "grammalecte_menu_main_button_shadow_host", style: "width:0; height:0;" });
             this.xShadowRoot = this.xShadowHost.attachShadow({ mode: "open" });
             oGrammalecte.createStyle("content_scripts/menu.css", null, this.xShadowRoot);
             this.xShadowRoot.appendChild(this.xButton);
