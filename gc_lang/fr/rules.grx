@@ -511,9 +511,9 @@ __<i>(p_URL)__
     (?:ht|f)tps?://[\w./?&!%=+*"'@$#-]+ <<- ~>> __URL__
 __<i](p_URL2)__
     ((?:{w_1}[.])*)({w_2})([.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|jp|zh|ru|us|nl|xyz)) @@0,**,$
-    <<- ~1>> *
-    <<- ~2>> =\2.capitalize()
-    <<- ~3>> *
+        <<- ~1>> *
+        <<- ~2>> =\2.capitalize()
+        <<- ~3>> *
 
 # Numéro de chapitre
 __<i>(p_chapitre)__
@@ -546,11 +546,11 @@ __<s>(p_sigle1)__
     ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
 __[s>(p_sigle2)__
     [a-zA-Z][.][a-zA-Z][.](?:[a-zA-Z][.])*
-    <<- not re.search("(?i)^(?:i\\.e\\.|s\\.[tv]\\.p\\.|e\\.g\\.|a\\.k\\.a\\.|c\\.q\\.f\\.d\\.|b\\.a\\.|n\\.b\\.)$", \0) >>>
-    <<- \0.__len__() == 4 ->> =\0.replace(".", "").upper() + "|" + \0[0:2] + " " + \0[2:4]
-    && Sigle. Il est recommandé d’ôter les points pour les sigles. (S’il s’agit d’un prénom et d’un nom, mettez un espace.)|https://fr.wikipedia.org/wiki/Sigle#Typographie
-    <<- __else__ ->> =\0.replace(".", "").upper()                                                   && Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
-    <<- \0 != "b.a." ~>> =\0.replace(".", "_")
+        <<- not re.search("(?i)^(?:i\\.e\\.|s\\.[tv]\\.p\\.|e\\.g\\.|a\\.k\\.a\\.|c\\.q\\.f\\.d\\.|b\\.a\\.|n\\.b\\.)$", \0) >>>
+        <<- \0.__len__() == 4 ->> =\0.replace(".", "").upper() + "|" + \0[0:2] + " " + \0[2:4]
+        && Sigle. Il est recommandé d’ôter les points pour les sigles. (S’il s’agit d’un prénom et d’un nom, mettez un espace.)|https://fr.wikipedia.org/wiki/Sigle#Typographie
+        <<- __else__ ->> =\0.replace(".", "").upper()                                               && Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
+        <<- \0 != "b.a." ~>> =\0.replace(".", "_")
 __[s>(p_sigle3)__
     J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
 
@@ -594,15 +594,15 @@ __[s](p_points_suspension_entre_crochets)__
     \[…\] <<- ~>> *
 __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
-    <<- \1.isdigit() ~>> *
-    <<- __else__ and morph(\1, ":G") ~>> =" " + \1 + " "
-    <<- __else__ and \1.isalpha() ~>> " _"
+        <<- \1.isdigit() ~>> *
+        <<- __else__ and morph(\1, ":G") ~>> =" " + \1 + " "
+        <<- __else__ and \1.isalpha() ~>> " _"
 
 # parenthèses
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
-    <<- ->> […]                 && Pour indiquer une troncature de texte, on utilise usuellement des crochets.
-    <<- ~>> *
+        <<- ->> […]                 && Pour indiquer une troncature de texte, on utilise usuellement des crochets.
+        <<- ~>> *
 __<i>(p_préfixes_entre_parenthèses)__
     " (\(r[eé]\))\w+"  @@1
         <<- ~1>> *
@@ -637,6 +637,110 @@ TEST: Allons (re)voir ce film
 TEST: La figure 110 représente…
 
 
+
+!!
+!!
+!!!! Apostrophes                                                                                  !!
+!!
+!!
+## Apostrophe typographique
+__[i>/apos(apostrophe_typographique)!8__
+    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`ʼ](?=[\w"«<]) @@0 <<- ->> \1’   && Apostrophe typographique.
+__[i>/apos(apostrophe_typographique_après_t)!8__
+    t['´‘′`ʼ](?!ils?|elles?|on)(?=[\w"«<]) <<- ->> t’                                                        && Apostrophe typographique.
+
+TEST: {{C'}}est l’apostrophe typographique qui manque.                    ->> C’
+TEST: C’est {{l'}}apostrophe typographique qui manque.                    ->> l’
+TEST: {{Aujourd'}}hui, je suis fatigué
+TEST: Je pense {{qu`}}elle se trompe
+TEST: Que {{t'}}arrive-t-il ?
+
+
+__[i>/typo(typo_apostrophe_incorrecte)!8__
+    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`ʼ][’'´‘′`ʼ ]|”|“|"| [’'´‘′`ʼ] ?))[aeéiouhœæyàîèêôû<]  @@0,0
+        <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                 && Apostrophe incorrecte.
+
+TEST: {{C’ }}est rageant.                                                 ->> C’
+TEST: {{Lorsqu’ }}il vient, on s’ennuie.
+TEST: {{l’'}}électricien est parti
+TEST: Je pense {{qu ` }}elle ne viendra pas.
+
+
+## Apostrophes manquantes
+__[i>/typo(typo_apostrophe_manquante)!8__
+    "((lorsqu|puisqu|presqu|quoiqu|jusqu|qu|aujourd|entr) )[aeéiouhyàîèêôû<]"  @@0,0
+        <<- -1>> \2’                                                                                && Il manque vraisemblablement une apostrophe.
+        <<- ~1>> \2’
+# Solution prudente :
+__[i>/typo(typo_apostrophe_manquante_prudence1)!8__
+    ne ([mtsl] )[aeéiouhyàîèêôû<]  @@3
+        <<- -1>> =\1[:-1]+"’"                                                                       && Il manque une apostrophe.
+__[i>/typo(typo_apostrophe_manquante_prudence2)!8__
+    (?:je|tu|ie?ls?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyàîèêôû][\w-]*|<)  @@*,$
+        <<- not option("mapos") and (\2 == "<" or morph(\2, ":V")) -1>> =\1[:-1]+"’"                && Il manque probablement une apostrophe.
+# Solution audacieuse :
+__[s>/typo(typo_apostrophe_manquante_audace1)!8__
+    ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ<]  @@0
+        <<- option("mapos") and not before("(?i)(?:lettre|caractère|glyphe|dimension|variable|fonction|point) *$")
+        -1>> =\1[:-1]+"’"                                                                           && Il manque peut-être une apostrophe.
+# Note : pour les majuscules, la règle se situe lors de la passe suivante.
+
+TEST: __mapos__ {{n }}arrive pas à sa cheville
+TEST: le coup {{qu }}avait donné                                                ->> qu’
+TEST: pendant {{qu }}il avançait d’un pas indolent                              ->> qu’
+TEST: {{jusqu }}à plus soif                                                     ->> jusqu’
+TEST: il ne {{m }}avait jamais fait défaut                                      ->> m’
+TEST: Il {{s }}était dit qu’il ne le ferait pas.                                ->> s’
+TEST: Je {{m }}étais imaginé que je pourrais pas retrouver cet objet.           ->> m’
+TEST: Je {{n }}ai pas retrouvé l’ambiance de mes années de lycée.               ->> n’
+TEST: ne fais rien {{jusqu'}}<b>à demain</b>                                    ->> jusqu’
+TEST: cette fois, {{c'}}<i>est</i> mort                                         ->> c’
+
+
+!!
+!!
+!!!! Guillemets typographiques                                                                    !!
+!!
+!!
+
+__<s>/typo(typo_guillemets_typographiques_doubles_ouvrants)__
+    "(?=\w)
+        <<- not before("[a-zA-Zéïîùàâäôö]$") ->> « |“                                               && Guillemets typographiques ouvrants.
+__<s>/typo(typo_guillemets_typographiques_doubles_fermants)__
+    [\w.?!…,](")(?!\w)  @@*
+        <<- -1>> " »|”"                                                                             && Guillemets typographiques fermants.
+
+TEST: {{"}}Le grand homme.”                                                 ->> « |“
+TEST: “Le grand homme.{{"}}                                                 ->> " »|”"
+
+
+__<s>/typo(typo_guillemets_typographiques_simples_doubles_ouvrants)__
+    (?:^|[ –—-])('')(?=\w)  @@*
+        <<- -1>> « |“                                                                               && Guillemets typographiques ouvrants.
+__<s>/typo(typo_guillemets_typographiques_simples_doubles_fermants)__
+    [\w.?!…,]('')(?![\w'’])  @@*
+        <<- -1>> " »|”"                                                                             && Guillemets typographiques fermants.
+
+TEST: {{''}}Ça{{”}} recommence.                                                 ->> « |“|||
+TEST: Le {{''}}grand{{”}} homme.                                                ->> « |“|||
+TEST: Le {{“}}grand{{''}} homme.                                                ->> " »|”|||"
+
+
+__<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
+    (?:^|[ –—-])(['’])(?=\w)  @@*
+        <<- -1>> “|‘|‹                                                                              && Guillemets typographiques ouvrants.
+__<s>/typo(typo_guillemets_typographiques_simples_fermants)__
+    [\w.?!](')(?:[   ]|$)  @@*
+        <<- -1>> ”|’|›                                                                              && Guillemets typographiques fermants.
+
+TEST: {{'}}Ça’ recommence.                                                  ->> “|‘|‹
+TEST: Le {{'}}grand’ homme.                                                 ->> “|‘|‹
+TEST: Le ‘grand{{'}} homme.                                                 ->> ”|’|›
+TEST: Le grand ‘homme{{'}}                                                  ->> ”|’|›
+TEST: dans les {{’}}beaux quartiers{{’}}
+TEST: J’en ai '''marre''' (syntaxe wiki).
+
+
 !!!
 !!!
 !!! Processeur: balises HTML, LaTeX, Markdown                                                     !!
@@ -664,7 +768,7 @@ __<s>/md(p_md_span_ouvrant)__   " ([*_]+)\w" @@1 <<- ~1>> *
 __<i>/md(p_md_span_fermant)__   "[a-z0-9àéîïôûüù]([*_]+)[,.;:!?) ]" @@1 <<- ~1>> *
 __<s>/md(p_md_titre_début)__    "^#+" <<- ~>> *
 __<s>/md(p_md_titre_fin)__      "#+ *$" <<- ~>> *
-__<s>/md(p_md_liste)__          "^[*+] " <<- ~>> *
+__<s>/md(p_md_liste)__          "^ *[*+] " <<- ~>> *
 __<s>/md(p_md_citation)__       "^>[ >]+ " <<- ~>> *
 
 TEST: __html__  des <b>{{homme}}</b>
@@ -684,25 +788,25 @@ TEST: __md__    ces **{{femme}}**
 
 __[i](eepi_écriture_épicène_tous_toutes)__
     tous?[.(/·•⋅–—-]te[.)/·•⋅–—-]?s
-    <<- option("eepi") ->> tous et toutes|toutes et tous                                            && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> tous et toutes|toutes et tous                                        && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{tou.tes}} sont là.                                              ->> tous et toutes|toutes et tous
 
 
 __[i](eepi_écriture_épicène_ceux_celles)__
     c[./·•⋅–—-]?eux?[./·•⋅–—-]elles
-    <<- option("eepi") ->> ceux et celles|celles et ceux                                            && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> ceux et celles|celles et ceux                                        && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux et celles|celles et ceux
 
 
 __[u](eepi_écriture_épicène_pluriel_eur_divers)__
     ({w_2})eurs?[.(/·•⋅–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·•⋅–—-]?s  @@0,**
-    <<- option("eepi") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                           && Écriture épicène dystypographique et imprononçable.
-    <<- option("eepi") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                       && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                       && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                   && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: travaillons avec les {{instituteur.trice.s}}                          ->> instituteurs et institutrices|institutrices et instituteurs
 TEST: La communauté des {{développeur·se·s}} open source                    ->> développeurs et développeuses|développeuses et développeurs
@@ -710,16 +814,16 @@ TEST: La communauté des {{développeur·se·s}} open source                    
 
 __[u](eepi_écriture_épicène_pluriel_eux_euses)__
     ({w_2})eux[.(/·•⋅–—-](?:[tdsi]?euse|se)[.)/·•⋅–—-]?s  @@0
-    <<- option("eepi") ->> \1eux et \1euses|\1euses et \1eux                                        && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> \1eux et \1euses|\1euses et \1eux                                    && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   ->> nombreux et nombreuses|nombreuses et nombreux
 
 
 __[u](eepi_écriture_épicène_pluriel_aux_ales)__
     ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?a?le[.)/·•⋅–—-]?s  @@0
-    <<- option("eepi") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 && Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                             && Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{locaux·ales}}                                                   ->> locaux et locales|locales et locaux|local·e·s
 TEST: LOCAL·E·S
@@ -728,8 +832,8 @@ TEST: amical·e·s
 
 __[u](eepi_écriture_épicène_pluriel_er_ère)__
     ({w_2})[eè]rs?[.(/·•⋅–—-]i?è?re[.)/·•⋅–—-]?s  @@0
-    <<- option("eepi") ->> \1ers et \1ères|\1ères et \1ers                                          && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> \1ers et \1ères|\1ères et \1ers                                      && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers
 #TEST: les {{artificièr.e.s}}                                            ->> artificiers et artificières|artificières et artificiers
@@ -737,8 +841,8 @@ TEST: les {{conseiller.ière.s}}                                         ->> con
 
 __[u](eepi_écriture_épicène_pluriel_if_ive)__
     ({w_2})ifs?[.(/·•⋅–—-][std]?i?ve[.)/·•⋅–—-]?s  @@0
-    <<- option("eepi") ->> \1ifs et \1ives|\1ives et \1ifs                                          && Écriture épicène dystypographique et imprononçable.
-    <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") ->> \1ifs et \1ives|\1ives et \1ifs                                      && Écriture épicène dystypographique et imprononçable.
+        <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{inclusif.ive.s}}                                                ->> inclusifs et inclusives|inclusives et inclusifs
 TEST: {{offensif.ve.s}}                                                 ->> offensifs et offensives|offensives et offensifs
@@ -746,11 +850,11 @@ TEST: {{offensif.ve.s}}                                                 ->> offe
 
 __[u](eepi_écriture_épicène_pluriel_e)__
     ({w_1}[éuitsrnldf])[-·–—.•⋅(/]([ntlf]?e)[-·–—.•⋅)/]?s  @@0,**
-    <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
-    <<- ~>> =normalizeInclusiveWriting(\0)
-    <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("(?i)·[ntlf]?e·s$", \0) >>>
-    <<- \1.endswith("s") or \1.endswith("S") ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                    && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
-    <<- __else__ ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                              && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+        <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
+        <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("(?i)·[ntlf]?e·s$", \0) >>>
+        <<- \1.endswith("s") or \1.endswith("S") ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+        <<- __else__ ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                          && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
 
 TEST: nous sommes {{déconsidéré-e-s}}.
 TEST: serons-nous toujours {{perdu.e.s}}.
@@ -773,11 +877,11 @@ TEST: Iranien·ne·s
 
 __[i](eepi_écriture_épicène_singulier)__
     ({w_1}[éuitsrnldf])([-·–—.•⋅/][ntl]?e|[(][ntl]?e[)])  @@0,$
-    <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
-        and not ((\0.endswith("-le") or \0.endswith("-Le") or \0.endswith("-LE")) and not (\1.endswith("l") or \1.endswith("L"))) >>>
-    <<- ~>> =normalizeInclusiveWriting(\0)
-    <<- option("eepi") and (\1 == "un" or \1 == "Un" or \1 == "UN") ->> un ou une|une ou un                 && Écriture épicène imprononçable. Préférez écrire lisiblement.
-    <<- __else__ and option("eepi") and not re.search("(?i)·[ntl]?e$", \2) ->> =\1+"·"+\2[1:].rstrip(")")   && Écriture épicène. Utilisez un point médian.
+        <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
+            and not ((\0.endswith("-le") or \0.endswith("-Le") or \0.endswith("-LE")) and not (\1.endswith("l") or \1.endswith("L"))) >>>
+        <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("eepi") and (\1 == "un" or \1 == "Un" or \1 == "UN") ->> un ou une|une ou un                 && Écriture épicène imprononçable. Préférez écrire lisiblement.
+        <<- __else__ and option("eepi") and not re.search("(?i)·[ntl]?e$", \2) ->> =\1+"·"+\2[1:].rstrip(")")   && Écriture épicène. Utilisez un point médian.
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.                      ->> déconsidéré·e
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.               ->> auteur·e
@@ -793,7 +897,7 @@ __[i](typo_écriture_invariable)__
     ({w_3})([-·–—.•⋅/]s|[(]s[)])  @@0,$
         <<- ~>> =normalizeInclusiveWriting(\0)
         <<- option("typo") and option("eepi") and not \0.endswith("·s") and not (\0.endswith("/s") and morph(\1, ";S"))
-        ->> \1·s                    && Écriture invariable. Utilisez un point médian.
+        ->> \1·s                                                                                    && Écriture invariable. Utilisez un point médian.
 
 TEST: la ou les {{fille(s)}}                                            ->> fille·s
 TEST: le ou les patron·s
@@ -810,16 +914,16 @@ TEST: combien de rad/s
 # Majuscules après un point
 __[s]/maj(majuscule_après_point)__
     ({w_2})[.] ([a-zàâéèêîôç]\w*)  @@0,$
-    <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
-        and morph(\1, ":") and morph(\2, ":")
-    -2>> =\2.capitalize()                                                                           && Après un point, une majuscule est généralement requise.
+        <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
+            and morph(\1, ":") and morph(\2, ":")
+        -2>> =\2.capitalize()                                                                       && Après un point, une majuscule est généralement requise.
 
 TEST: Je suis là. {{viens}}.                                              ->> Viens
 TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __<s>/maj(majuscule_début_paragraphe)__
     ^ *([a-zàâéèêîôç](?:[\w-]+[’'`‘]?|[’'`‘]))  @@$
-    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                              && Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+        <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                          && Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 # autre possibilité: avec or (sContext != "Writer" and after("[.] *$"))
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
@@ -835,7 +939,7 @@ TEST: {{qu’}}il est grand, ce batiment. Faut voir si on pourra la détruire av
 
 __[i>/poncfin(poncfin_règle1)__
     ({w_1}) *$  @@0
-    <<- before("\\w+(?:\\.|[   ][!?]) +(?:[A-ZÉÈÎ]\\w+|[ÀÔ])") -1>> \1.|\1 !|\1 ?                   && Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
+        <<- before("\\w+(?:\\.|[   ][!?]) +(?:[A-ZÉÈÎ]\\w+|[ÀÔ])") -1>> \1.|\1 !|\1 ?               && Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
 
 TEST: __poncfin__ Vraiment. Quel {{ennui}}
 TEST: Internet : le nouvel eldorado
@@ -852,16 +956,16 @@ TEST: OMC-FMI : Les nouveaux maîtres du monde
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     && Avant « etc. », il faut mettre une virgule.
 __[i>/virg(virgule_manquante_avant_car)__
     ({w_1})( car)(?= (?:j[e’]|tu|ie?ls?|nous|vous|elles?|on|les?|l[a’]|ces?|des?|cette|[mts](?:on|a|es))\b)  @@0,$
-    <<- not morph(\1, ":[DR]") -2>> , car
-    && Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
+        <<- not morph(\1, ":[DR]") -2>> , car
+        && Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
 __[i>/virg(virgule_manquante_avant_mais)__
     ({w_1})( mais)(?= (?:j[e’]|tu|ie?ls?|nous|vous|elles?|on)\b)  @@0,$
-    <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels)/") -2>> , mais
-    && Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
+        <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels)/") -2>> , mais
+        && Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
 __[i>/virg(virgule_manquante_avant_donc)__
     ({w_1})( donc)(?= (?:j[e’]|tu|ie?ls?|elles?|on)\b)  @@0,$
-    <<- not morph(\1, ":[VG]") -2>> , donc
-    && Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
+        <<- not morph(\1, ":[VG]") -2>> , donc
+        && Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
 
 TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
 TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                   ->> , car
@@ -888,8 +992,8 @@ __<s>/virg(virg_virgule_avant_points_suspension)__
 
 __<s>/virg(virg_virgule_après_point)__
     ({w1})([.],)  @@0,$
-    <<- not re.search("^(?:etc|[A-Z]|fig|hab|litt|circ|coll|ref|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp?)$", \1)
-    -2>> ,|.                                                                && Pas de virgule après un point (sauf éventuellement après une abréviation).
+        <<- not re.search("^(?:etc|[A-Z]|fig|hab|litt|circ|coll|ref|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp?)$", \1)
+        -2>> ,|.                                                            && Pas de virgule après un point (sauf éventuellement après une abréviation).
 
 TEST: ceci, cela{{, …}}                                                   ->> …
 TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|.
@@ -913,11 +1017,11 @@ __<s>/typo(typo_espace_manquant_après2)__
     [?!;%‰‱˚»}]({w_1}|[({[])  @@$  <<- -1>> " \1"                                                 && Il manque un espace.
 __[s>/typo(typo_espace_manquant_après3)__
     {w_1}[.]({w_1}|[({[])  @@$
-    <<- (\1.__len__() > 1 and not \1[0:1].isdigit() and spell(\1)) or after("^’") -1>> " \1"        && Il manque un espace.
+        <<- (\1.__len__() > 1 and not \1[0:1].isdigit() and spell(\1)) or after("^’") -1>> " \1"    && Il manque un espace.
 __[s>/typo(typo_espace_manquant_après4)__
     {w_2}[…]({w_1}|[({[])  @@$
-    <<- \1[0:1].isupper() or \1.__len__() > 5 or not \1.isalpha()
-        or (\1.__len__() > 1 and spell(\1)) -1>> " \1"                                              && Il manque un espace.
+        <<- \1[0:1].isupper() or \1.__len__() > 5 or not \1.isalpha()
+            or (\1.__len__() > 1 and spell(\1)) -1>> " \1"                                          && Il manque un espace.
 
 TEST: J’en ai marre,{{ça}} suffit.                                          ->> " ça"
 TEST: elle est délirante.{{Devine}} ce qu’elle a dit.                       ->> " Devine"
@@ -1018,7 +1122,7 @@ TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. -
 # virgules et points
 __<s>/typo(typo_virgules_points)__
     ,[.,]{2,}
-    <<- ->> =\0.replace(",", ".").replace("...", "…")                                               && Erreur de numérisation ? Virgules au lieu de points ?
+        <<- ->> =\0.replace(",", ".").replace("...", "…")                               && Erreur de numérisation ? Virgules au lieu de points ?
 
 TEST: Ah !{{,.,}} et en quoi consistait le festin ?
 
@@ -1101,104 +1205,6 @@ TEST: __liga__ un {{ﬂ}}ottement                                           ->> 
 TEST: __liga__ une belle {{ﬁ}}gure                                        ->> fi
 
 
-!!
-!!
-!!!! Apostrophes                                                                                  !!
-!!
-!!
-## Apostrophe typographique
-__[i>/apos(apostrophe_typographique)!8__
-    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`ʼ](?=[\w"«]) @@0 <<- ->> \1’    && Apostrophe typographique.
-__[i>/apos(apostrophe_typographique_après_t)!8__
-    t['´‘′`ʼ](?!ils?|elles?|on)(?=[\w"«]) <<- ->> t’                                                         && Apostrophe typographique.
-
-TEST: {{C'}}est l’apostrophe typographique qui manque.                    ->> C’
-TEST: C’est {{l'}}apostrophe typographique qui manque.                    ->> l’
-TEST: {{Aujourd'}}hui, je suis fatigué
-TEST: Je pense {{qu`}}elle se trompe
-TEST: Que {{t'}}arrive-t-il ?
-
-
-__[i>/typo(typo_apostrophe_incorrecte)!8__
-    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`ʼ][’'´‘′`ʼ ]|”|“|"| [’'´‘′`ʼ] ?))[aeéiouhœæyîèêôû]  @@0,0
-    <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                    && Apostrophe incorrecte.
-
-TEST: {{C’ }}est rageant.                                                 ->> C’
-TEST: {{Lorsqu’ }}il vient, on s’ennuie.
-TEST: {{l’'}}électricien est parti
-TEST: Je pense {{qu ` }}elle ne viendra pas.
-
-
-## Apostrophes manquantes
-__[i>/typo(typo_apostrophe_manquante)!8__
-    "(lorsqu|puisqu|presqu|quoiqu|jusqu|qu|aujourd|entr) "  @@0
-    <<- ->> \1’                        && Il manque vraisemblablement une apostrophe.
-    <<- ~>> \1’
-# Solution prudente :
-__[i>/typo(typo_apostrophe_manquante_prudence1)!8__
-    ne ([mtsl] )([aeéiouhyîèêôû][\w-]*)  @@3,$  <<- -1>> =\1[:-1]+"’"                               && Il manque une apostrophe.
-__[i>/typo(typo_apostrophe_manquante_prudence2)!8__
-    (?:je|tu|ie?ls?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyîèêôû][\w-]*)  @@*,$
-    <<- not option("mapos") and morph(\2, ":V") -1>> =\1[:-1]+"’"                                   && Il manque probablement une apostrophe.
-# Solution audacieuse :
-__[s>/typo(typo_apostrophe_manquante_audace1)!8__
-    ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@0
-    <<- option("mapos") and not before("(?i)(?:lettre|caractère|glyphe|dimension|variable|fonction|point) *$")
-    -1>> =\1[:-1]+"’"                                                                               && Il manque peut-être une apostrophe.
-# Note : pour les majuscules, la règle se situe lors de la passe suivante.
-
-TEST: __mapos__ {{n }}arrive pas à sa cheville
-TEST: le coup {{qu }}avait donné                                                ->> qu’
-TEST: pendant {{qu }}il avançait d’un pas indolent                              ->> qu’
-TEST: {{jusqu }}à plus soif                                                     ->> jusqu’
-TEST: il ne {{m }}avait jamais fait défaut                                      ->> m’
-TEST: Il {{s }}était dit qu’il ne le ferait pas.                                ->> s’
-TEST: Je {{m }}étais imaginé que je pourrais pas retrouver cet objet.           ->> m’
-TEST: Je {{n }}ai pas retrouvé l’ambiance de mes années de lycée.               ->> n’
-
-
-!!
-!!
-!!!! Guillemets typographiques                                                                    !!
-!!
-!!
-
-__<s>/typo(typo_guillemets_typographiques_doubles_ouvrants)__
-    "(?=\w)
-    <<- not before("[a-zA-Zéïîùàâäôö]$") ->> « |“                                                   && Guillemets typographiques ouvrants.
-__<s>/typo(typo_guillemets_typographiques_doubles_fermants)__
-    [\w.?!…,](")(?!\w)  @@*
-    <<- -1>> " »|”"                                                                                 && Guillemets typographiques fermants.
-
-TEST: {{"}}Le grand homme.”                                                 ->> « |“
-TEST: “Le grand homme.{{"}}                                                 ->> " »|”"
-
-
-__<s>/typo(typo_guillemets_typographiques_simples_doubles_ouvrants)__
-    (?:^|[ –—-])('')(?=\w)  @@*
-    <<- -1>> « |“                                                                                   && Guillemets typographiques ouvrants.
-__<s>/typo(typo_guillemets_typographiques_simples_doubles_fermants)__
-    [\w.?!…,]('')(?![\w'’])  @@*
-    <<- -1>> " »|”"                                                                                 && Guillemets typographiques fermants.
-
-TEST: {{''}}Ça{{”}} recommence.                                                 ->> « |“|||
-TEST: Le {{''}}grand{{”}} homme.                                                ->> « |“|||
-TEST: Le {{“}}grand{{''}} homme.                                                ->> " »|”|||"
-
-
-__<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
-    (?:^|[ –—-])(['’])(?=\w)  @@*
-    <<- -1>> “|‘|‹                                                                                  && Guillemets typographiques ouvrants.
-__<s>/typo(typo_guillemets_typographiques_simples_fermants)__
-    [\w.?!,](')(?![\w'])  @@*
-    <<- -1>> ”|’|›                                                                                  && Guillemets typographiques fermants.
-
-TEST: {{'}}Ça’ recommence.                                                  ->> “|‘|‹
-TEST: Le {{'}}grand’ homme.                                                 ->> “|‘|‹
-TEST: Le ‘grand{{'}} homme.                                                 ->> ”|’|›
-TEST: dans les {{’}}beaux quartiers{{’}}
-TEST: J’en ai '''marre''' (syntaxe wiki).
-
 
 !!
 !!
@@ -1209,8 +1215,8 @@ TEST: J’en ai '''marre''' (syntaxe wiki).
 ## NF (memo: don’t use flag i)
 __[s]/nf(nf_norme_française)__
     [nN][fF][  -]?(?:c|C|e|E|p|P|q|Q|s|S|x|X|z|Z|[eE][nN](?:[  -][iI][sS][oO]|))[  -]?[0-9]+(?:[/ ‑-][0-9]+|)
-    <<- not re.search("^NF (?:C|E|P|Q|S|X|Z|EN(?: ISO|)) [0-9]+(?:‑[0-9]+|)", \0)
-    ->> =formatNF(\0)                                       && Norme française. Utilisez les espaces et tirets insécables.|http://fr.wikipedia.org/wiki/Liste_de_normes_NF
+        <<- not re.search("^NF (?:C|E|P|Q|S|X|Z|EN(?: ISO|)) [0-9]+(?:‑[0-9]+|)", \0)
+        ->> =formatNF(\0)                                       && Norme française. Utilisez les espaces et tirets insécables.|http://fr.wikipedia.org/wiki/Liste_de_normes_NF
 
 TEST: __nf__ Norme française : {{Nf-EN ISO 3892-23}}
 
@@ -1224,12 +1230,12 @@ TEST: __nf__ Norme française : {{Nf-EN ISO 3892-23}}
 
 __<s>/typo(typo_cohérence_guillemets_chevrons_ouvrants)__
     («)[^»“]+?(”)  @@0,$
-    <<- not before("\\w$") -1>> “                                                                   && Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after("^\\w") -2>> " »"                                                                 && Guillemet fermant différent du guillemet ouvrant («).
+        <<- not before("\\w$") -1>> “                                                               && Guillemet ouvrant différent du guillemet fermant (”).
+        <<- not after("^\\w") -2>> " »"                                                             && Guillemet fermant différent du guillemet ouvrant («).
 __<s>/typo(typo_cohérence_guillemets_chevrons_fermants)__
     (“)[^”«]+?(»)  @@0,$
-    <<- not before("\\w$") -1>> "« "                                                                && Guillemet ouvrant différent du guillemet fermant (»).
-    <<- not after("^\\w") -2>> ”                                                                    && Guillemet fermant différent du guillemet ouvrant (“).
+        <<- not before("\\w$") -1>> "« "                                                            && Guillemet ouvrant différent du guillemet fermant (»).
+        <<- not after("^\\w") -2>> ”                                                                && Guillemet fermant différent du guillemet ouvrant (“).
 
 TEST: C’est {{«}}stupide{{”}}.
 TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
@@ -1237,12 +1243,12 @@ TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
 
 __<s>/typo(typo_cohérence_guillemets_doubles_ouvrants)__
     (“)[^”’“«]+?(’)(?!\w)  @@0,$
-    <<- not before("\\w$") -1>> "‘"                                                                 && Guillemet ouvrant différent du guillemet fermant (’).
-    <<- -2>> ”                                                                                      && Guillemet fermant différent du guillemet ouvrant (“).
+        <<- not before("\\w$") -1>> "‘"                                                             && Guillemet ouvrant différent du guillemet fermant (’).
+        <<- -2>> ”                                                                                  && Guillemet fermant différent du guillemet ouvrant (“).
 __<s>/typo(typo_cohérence_guillemets_doubles_fermants)__
     (‘)[^’“«]+?(”)  @@0,$
-    <<- not before("\\w$") -1>> "“"                                                                 && Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after("^\\w") -2>> ’                                                                    && Guillemet fermant différent du guillemet ouvrant (‘).
+        <<- not before("\\w$") -1>> "“"                                                             && Guillemet ouvrant différent du guillemet fermant (”).
+        <<- not after("^\\w") -2>> ’                                                                && Guillemet fermant différent du guillemet ouvrant (‘).
 
 TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
 TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
@@ -1250,10 +1256,10 @@ TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
 
 __[i]/typo(typo_guillemets_doubles_ouvrants_non_fermés)__
     (“)\w[^”"»]+$  @@0
-    <<- -1>> _                                                                                      && Guillemets fermants introuvables dans la suite du paragraphe.
+        <<- -1>> _                                                                                  && Guillemets fermants introuvables dans la suite du paragraphe.
 __[i]/typo(typo_guillemets_doubles_fermants_non_ouverts)__
     ^[^“„«"]+\w(”)  @@$
-    <<- -1>> _                                                                                      && Guillemets ouvrants introuvables dans ce paragraphe.
+        <<- -1>> _                                                                                  && Guillemets ouvrants introuvables dans ce paragraphe.
 
 TEST: C’était mon affaire{{”}}.
 TEST: C’est {{“}}compliqué.
@@ -1261,10 +1267,10 @@ TEST: C’est {{“}}compliqué.
 
 __[i]/typo(typo_guillemet_simple_ouvrant_non_fermé)__
     (‘)\w\w[^’']+$  @@0
-    <<- before(" $") or isStart() -1>> _                                                            && Guillemet fermant introuvable dans la suite du paragraphe.
+        <<- before(" $") or isStart() -1>> _                                                        && Guillemet fermant introuvable dans la suite du paragraphe.
 __[i]/typo(typo_guillemet_simple_fermant_non_ouvert)__
     ^[^‘']+\w\w(’)  @@$
-    <<- after("^ ") or isEnd() -1>> _                                                               && Guillemet ouvrant introuvable dans ce paragraphe.
+        <<- after("^ ") or isEnd() -1>> _                                                           && Guillemet ouvrant introuvable dans ce paragraphe.
 
 TEST: ce {{‘}}test ne finira jamais.
 TEST: ces actions ne représentent rien{{’}} pour moi.
@@ -1282,20 +1288,20 @@ TEST: « J’en suis “malade”. »
 
 __[s]/unit(unit_nbsp_avant_unités1)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|px|MHz|°C|℃)(?![’'])  @@0,0,$
-    <<- option("num") ->> =formatNumber(\2) + " " + \3          && Avec une unité de mesure, mettez un espace insécable.
-    <<- __else__ ->> "\2 \3"                                    && Avec une unité de mesure, mettez un espace insécable.
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Avec une unité de mesure, mettez un espace insécable.
+        <<- __else__ ->> "\2 \3"                                    && Avec une unité de mesure, mettez un espace insécable.
 
 __[s]/unit(unit_nbsp_avant_unités2)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
-    <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
-    <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-    <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 __[s]/unit(unit_nbsp_avant_unités3)__
     ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
-    <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
-    <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-    <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 TEST: Ça a duré {{3µs}}                                 ->> 3 µs
 TEST: Ça a duré {{3,5 µs}}                              ->> 3,5 µs
@@ -1322,16 +1328,16 @@ TEST: je veux 200 euros.
 
 __[s]/num(num_grand_nombre_soudé)__
     \d\d\d\d+
-    <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
-    <<- \0.__len__() > 4 ->> =formatNumber(\0)                                                      && Formatage des grands nombres.
-    <<- __else__
-        and ((after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])") and not (re.search("^[01]+$", \0) and after("^,[01]+\\b")))
-        or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])"))
-    ->> =formatNumber(\0)                                                                           && Formatage des grands nombres.
+        <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
+        <<- \0.__len__() > 4 ->> =formatNumber(\0)                                                  && Formatage des grands nombres.
+        <<- __else__
+            and ((after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])") and not (re.search("^[01]+$", \0) and after("^,[01]+\\b")))
+            or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])"))
+        ->> =formatNumber(\0)                                                                       && Formatage des grands nombres.
 
 __[s]/num(num_nombre_quatre_chiffres)__
     (?<!,)(\d\d\d\d)[  ]([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*) @@0,$
-    <<- morph(\2, ";S", ":[VCR]") or mbUnit(\2) -1>> =formatNumber(\1)                              && Formatage des grands nombres.
+        <<- morph(\2, ";S", ":[VCR]") or mbUnit(\2) -1>> =formatNumber(\1)                          && Formatage des grands nombres.
 
 TEST: {{12345}}                                 ->> 12 345
 TEST: {{123456}}                                ->> 123 456
@@ -1350,16 +1356,16 @@ TEST: 1111 0011,01 (binaire)
 
 __[s>(num_grand_nombre_avec_points)__
     \d\d?\d?(?:[.]\d\d\d)+(?![0-9])
-    <<- option("num") ->> =\0.replace(".", " ")                                                     && Grands nombres : utilisez des espaces insécables plutôt que des points.
-    <<- ~>> =\0.replace(".", "_")
+        <<- option("num") ->> =\0.replace(".", " ")                                                 && Grands nombres : utilisez des espaces insécables plutôt que des points.
+        <<- ~>> =\0.replace(".", "_")
 
 TEST: il cumule {{200.000.000}} de pertes sèches
 
 
 __[s](num_grand_nombre_avec_espaces)__
     \d\d?\d?(?: \d\d\d)+
-    <<- option("num") ->> =\0.replace(" ", " ")                                                     && Grands nombres : utilisez des espaces insécables.
-    <<- ~>> =\0.replace(" ", "_")
+        <<- option("num") ->> =\0.replace(" ", " ")                                                 && Grands nombres : utilisez des espaces insécables.
+        <<- ~>> =\0.replace(" ", "_")
 
 TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
@@ -1390,9 +1396,9 @@ TEST: 03/07/2019 SANTÉ
 !!
 __[i]/redon1(redondances_paragraphe)__
     ({w_4})[  ,.;!?:].*[  ](\1)  @@0,$
-    <<- not morph(\1, ":(?:G|V0)|>(?:t(?:antôt|emps|rès)|loin|souvent|parfois|quelquefois|côte|petit|même)/") and not \1[0].isupper()
-    -2>> _                                                      && Dans ce paragraphe, répétition de « \1 » (à gauche).
-    <<- __also__ -1>> _                                         && Dans ce paragraphe, répétition de « \1 » (à droite).
+        <<- not morph(\1, ":(?:G|V0)|>(?:t(?:antôt|emps|rès)|loin|souvent|parfois|quelquefois|côte|petit|même)/") and not \1[0].isupper()
+        -2>> _                                                      && Dans ce paragraphe, répétition de « \1 » (à gauche).
+        <<- __also__ -1>> _                                         && Dans ce paragraphe, répétition de « \1 » (à droite).
 
 TEST: __redon1__ Tu es son {{avenir}}. Et lui aussi est ton {{avenir}}.
 TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
@@ -1408,7 +1414,7 @@ TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
 # ?
 __<s]/ocr(ocr_point_interrogation)__
     [  ]7
-    <<- after0("^(?: +[A-ZÉÈÂ(]|…|[.][.]+| *$)") ->> " ?"                                           && Erreur de numérisation ?
+        <<- after0("^(?: +[A-ZÉÈÂ(]|…|[.][.]+| *$)") ->> " ?"                                       && Erreur de numérisation ?
 
 TEST: __ocr__ des chiffrements{{ 7}} Paul n’en sait rien.
 TEST: __ocr__ veux-tu en parler{{ 7}}
@@ -1417,10 +1423,10 @@ TEST: __ocr__ veux-tu en parler{{ 7}}
 # !
 __<s]/ocr(ocr_exclamation1)__
     [  ]I(?![ ’'][aâeéèêëiîïoôuy])
-    <<- ->> " !"                                                                                    && Erreur de numérisation ?
+        <<- ->> " !"                                                                                && Erreur de numérisation ?
 __<s]/ocr(ocr_exclamation2)__
     [  ]1(?= [A-ZÉÈÂÎ])
-    <<- not morph(word(1), ";S") and not morph(word(-1), ":R") ->> " !"                             && Erreur de numérisation ?
+        <<- not morph(word(1), ";S") and not morph(word(-1), ":R") ->> " !"                         && Erreur de numérisation ?
 
 TEST: __ocr__ Oh{{ I}} c’est pas formidable ?
 TEST: __ocr__ Vraiment{{ 1}} Paul n’en savait rien.
@@ -6474,9 +6480,18 @@ TEST: elle {{mangé}}.
 TEST: elle aussi {{mangées}}.
 
 
+__conf_en_tant_que_subst__
+    en  tant  [que|qu’]  @:V¬:[NAG]
+        <<- /conf/ --1>> =suggSimil(\-1, ":[NA]")
+        && Confusion probable. Après « en tant que », il faut un substantif, pas un verbe. Exemples : en tant que femme, en tant que patron, en tant que trentenaire…
+
+TEST: en tant qu’{{abaisse}}
+TEST: en tant que tel
+
+
 __conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
-        <<- /conf/ not tag_before(\1, "_ceque_") and not value(<1, "|ou|") -2>> _                    && Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+        <<- /conf/ not tag_before(\1, "_ceque_") and not value(<1, "|ou|") -2>> _                   && Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: presque {{délaissait}} par tout le monde.
 TEST: Tout le monde ou presque déteste ces gens-là.
@@ -15672,12 +15687,18 @@ __purge_locutions_potentielles__
     en de multiples occasions  [<end>|,|)]
         <<- ~1:4>> *
 
+    <start> en fait
+        <<- ~2:3>> *
+
+    en fait
+        <<- not value(<1, "|je|tu|n’|il|on|elle|iel|") ~>> ␣
+
     en un sens  @¬:A.*:[me]:[si]
     en un sens  [<end>|,|)]
         <<- ~1:3>> *
 
     en sus
-        <<- not value(<1, "|j’|tu|il|elle|on|n’") ~>> *
+        <<- not value(<1, "|j’|tu|il|elle|on|n’|") ~>> *
 
     entre autres choses  @¬:A.*:[fe]:[pi]
     entre autres choses  [<end>|,|)]
@@ -15733,6 +15754,10 @@ __purge_locutions_potentielles__
     pour un temps  @:¬:[NA].*:[me]:[si]
     pour un temps  [<end>|,|)]
         <<- ~1:3>> *
+
+    sans surprise  @:¬:[NA].*:[fe]:[si]
+    sans surprise  [<end>|,|)]
+        <<- ~1:2>> *
 
     semblait-il
     semble-t-il
@@ -16250,6 +16275,7 @@ __conf_à_a_après_verbes__
     >charger a blanc
     >chauffer a blanc
     >chuter a terre
+    >être a bloc
     >fermer a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
@@ -16262,6 +16288,7 @@ __conf_à_a_après_verbes__
     >prendre a la légère
     >prêter a >confusion
     >réduire a néant
+    >rester a >flot
     >saigner a blanc
     >sentir a l’ aise
     >tenir a [carreau|cœur|distance]
@@ -19736,17 +19763,17 @@ TEST: celles venues chanter doivent se rendre là-bas.
 ## Nombres
 __gn_nombre_lettres_1m__
     $:B:e:p  *WORD
-        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
             or \2 in aREGULARPLURAL) and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     neuf  *WORD
-        <<- /gn/ ( morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+        <<- /gn/ ( morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
             or \2 in aREGULARPLURAL
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     mille  *WORD
-        <<- /gn/ not value(\2, "|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
+        <<- /gn/ not value(\2, "|maximum|minimum|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
@@ -19761,6 +19788,8 @@ TEST: un logement neuf bâti par des professionnels.
 TEST: un mille marin.
 TEST: L’article VII mentionné dans la revue
 TEST: Le produit de cinq multiplié par trois.
+TEST: deux divisé par douze
+TEST: il en faut trois minimum, cinq maximum
 
 
 __gn_nombre_chiffres_1m__
@@ -19770,12 +19799,12 @@ __gn_nombre_chiffres_1m__
 
     *NUM  *WORD
         <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
-            and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
+            and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
             or \1 in aREGULARPLURAL )
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
-        <<- /gn/ not value(\2, "|fois|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+        <<- /gn/ not value(\2, "|maximum|minimum|fois|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
             and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
@@ -19801,6 +19830,7 @@ TEST: 1 La Mort
 TEST: L’année 2019 a commencé à le montrer
 TEST: La « première génération » d’ordinateurs des années 1950 a déjà largement cédé la place à une deuxième (transistorisée)
 TEST: Au sein du club des pays les plus prospères, la richesse par habitant est néanmoins 52 fois supérieure à celle des pays à faibles revenus, d’après la Banque mondiale.
+TEST: 1 à 2 comprimés par jour voire 2 à 3 maximum
 
 
 ##  trouver ça/ceci/cela + adj
@@ -20788,13 +20818,17 @@ TEST: J’y vois clair, mec.
 
 
 # vu / vue
-__sgpl_point_de_vue__
+__sgpl_vue_vu__
     >point de [vu|vus|vues]
         <<- /sgpl/ -3>> vue                                         && Dans un “point de vue”, “vue” est toujours au féminin singulier.
+
+    >perdre de [vu|vus|vues]
+        <<- /sgpl/ -3>> vue                                         && Dans un “perdre de vue”, “vue” est toujours au féminin singulier.
 
 TEST: c’est son point de {{vu}} qui prime.
 TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
 TEST: de mon point de {{vues}}
+TEST: elle a perdu de {{vu}} ses anciens amis
 
 
 __sgpl_verbe__
@@ -21507,6 +21541,7 @@ TEST: une faille s’est ouverte sous nos pieds
 TEST: il faut en moyenne 1000 litres d’eau pour produire un kilo de céréales
 TEST: Xi Jinping a réaffirmé en janvier dernier qu’il utiliserait s’il le faut la force militaire
 TEST: Comme il a fallu la mort d’un homme
+TEST: Et il faut en fait, pour les expliquer, tenir compte de trois éléments complémentaires.
 
 
 __infi_faire__
@@ -26635,7 +26670,6 @@ TEST: Ils soutiennent ceux qui {{on}} {{tant}} de raison d’être en colère.
 TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 
 
-
 !!
 !!
 !!!! Inversion verbe sujet                                                                        !!
@@ -26643,19 +26677,63 @@ TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 !!
 
 __conj_que_où_comment_verbe_sujet_sing__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorqu’|auquel|auxquels|auxquelles]
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
         <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
         -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorqu’|auquel|auxquels|auxquelles]
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
         <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
             and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)"))
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    duquel
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not morph(<1, ":[NA]")
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    duquel
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)")) and not morph(<1, ":[NA]")
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    desquels
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not morph(<1, ":[NA]")
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    desquels
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)")) and not morph(<1, ":[NA]")
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    desquelles
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not morph(<1, ":[NA]")
+        -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    desquelles
+        ||  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D")) and not (value(>2, "|et|ou|") and morph(>3, ":D"))
+            and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)")) and not morph(<1, ":[NA]")
         -2>> =suggVerb(\2, ":3s")                                                   && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: les possibilités qu’{{offrent}} le chien
 TEST: les possibilités que {{donnent}} le chien.
 TEST: Où {{vas}} l’homme ?
 TEST: l’histoire dont {{bénéficient}} notre langue.
+TEST: le feu, duquel {{proviennent}} la vie
+TEST: le feu, duquel {{proviennent}} notre existence
+TEST: les hommes, desquels {{arrivent}} la mort
+TEST: les hommes, desquels {{arrivent}} votre dstruction
+TEST: les lois, desquelles {{proviennent}} notre soumission
+TEST: les lois, desquelles {{proviennent}} leur cohésion
 TEST: de la même façon que survivent le swing ou le latin.
 TEST: en proportion des efforts que requièrent son entretien et son exploitation
 TEST: une crainte aussi que renforcent son éloignement et le protocole compliqué
@@ -26678,13 +26756,29 @@ TEST: une muraille contre laquelle {{venaient}} la masse armée et vociférante.
 
 
 __conj_que_où_comment_verbe_sujet_pluriel__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3p|G|W)  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]  *WORD
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorqu’|auquel|auxquels|auxquelles]
+        ||  @:[123][sp]¬:(?:3p|G|W)  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]  *WORD
         <<- /conj/ -2>> =suggVerb(\2, ":3p")                                        && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+    duquel
+        ||  @:[123][sp]¬:(?:3p|G|W)  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]  *WORD
+        <<- /conj/ not morph(<1, ":[NA]") -2>> =suggVerb(\2, ":3p")                 && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+    desquels
+        ||  @:[123][sp]¬:(?:3p|G|W)  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]  *WORD
+        <<- /conj/ not morph(<1, ":[NA]") -2>> =suggVerb(\2, ":3p")                 && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+    desquelles
+        ||  @:[123][sp]¬:(?:3p|G|W)  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]  *WORD
+        <<- /conj/ not morph(<1, ":[NA]") -2>> =suggVerb(\2, ":3p")                 && Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: D’où {{vienne}} les hommes ?
 TEST: Comment {{danse}} les femmes ?
 TEST: les idioties qu’{{aime}} les hommes, j’en ai marre.
 TEST: l’amour dont {{parle}} les femmes
+TEST: duquel {{arrive}} les ennuis
+TEST: les hommes, desquels {{arrive}} nos problèmes
+TEST: les femmes, desquelles {{provient}} ces outils
 
 
 __conj_lxquel_verbe_sujet_pluriel__
@@ -26701,6 +26795,27 @@ __conj_puisse__
 
 TEST: {{puisse}} les hommes enfin comprendre leurs erreurs.                         ->> puissent
 TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.               ->> puisse
+
+
+!!
+!!
+!!!! Verbes sans sujets                                                                           !!
+!!
+!!
+
+__conj_que_où_comment_verbe_sans_sujet!3__
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorqu’|auquel|auxquels|auxquelles|duquel|desquels|desquelles|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
+        <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+        <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+
+TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
+TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
+TEST: nous savons comment {{arriverons}} ces problèmes…
+TEST: combien {{paraissez}} folles ces augmentations
+TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
+TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
+TEST: à des règles aussi absurdes que précises
+
 
 
 !!
@@ -26738,27 +26853,6 @@ TEST: Quels que {{soit}} les salopards qui ont fait ça.
 TEST: Quelles que {{sois}} les chaussures que je mets, elles me font mal aux pieds.
 TEST: {{Quel}} que soient les avantages reçus, ce n’est pas assez.
 TEST: {{Quelle}} que soient nos problèmes, on en parle toujours trop.
-
-
-
-!!
-!!
-!!!! Verbes sans sujets                                                                           !!
-!!
-!!
-
-__conj_que_où_comment_verbe_sans_sujet!3__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
-        <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
-        <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
-
-TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
-TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
-TEST: nous savons comment {{arriverons}} ces problèmes…
-TEST: combien {{paraissez}} folles ces augmentations
-TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
-TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
-TEST: à des règles aussi absurdes que précises
 
 
 
