@@ -7013,7 +7013,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|perte|rallonge|reculons|risque|sec|tâtons|travers|vélo|vif]
+    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|moitié|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|perte|rallonge|reculons|risque|sec|tâtons|travers|vélo|vif]
     a [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     a air comprimé
     a armes égales
@@ -8640,6 +8640,14 @@ TEST: {{emballer c’est peser}}
 TEST: Tu peux emballer, c’est pesé.
 TEST: il faut emballer, c’est pesé
 TEST: c’est emballé, c’est pesé.
+
+
+# et / est
+__conf_et_est1__
+    entre  $:M  est  $:M
+        <<- /conf/ -3>> et                                  && Entre \2 et \4, il faut la conjonction de coordination “et”…
+
+TEST: entre Patrick {{est}} Marcia, ça ne se passe pas bien.    ->> et
 
 
 # étant donné que
@@ -10444,7 +10452,11 @@ __conf_sens_sans_cent_cens__
     [<start>|,|(]  [elle|elles|iel|iels]  sans                     @:V¬:(?:[NYDA]|Oo)|>(?:y|en)
         <<- /conf/ -3>> s’en                                                                        && Confusion probable.
 
+    >effusion [de|d’] [sans|cens|sens|>cent]
+        <<- /conf/ --1>> sang                                                                       && Confusion. Effusion de sang. Pour le fluide sanguin, écrivez “sang”.
+
 TEST: elle {{sang}} était voulu
+TEST: sans effusion de {{sans}}
 TEST: elle sans y penser
 TEST: elle sans vergogne
 TEST: elle sans la condamner
@@ -11935,6 +11947,7 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 TEST: Qui ne {{créer}} aucune valeur ajoutée
 
 
+
 !!
 !!
 !!!! Après celui, celle, ceux, celles                                                             !!
@@ -12357,7 +12370,7 @@ __purge_horaires_et_durée__
     au cours de la [dernière|précédente|prochaine] [seconde|minute|heure]
     au cours de l’ heure ?[dernière|passée|précédente|prochaine]¿
     au cours de la [seconde|minute] ?[dernière|passée|précédente|prochaine]¿
-    [de|d’] si bonne heure
+    [de|d’] ?[assez|si|très|trop]¿ bonne heure
     [de|d’] tout à l’ heure
     l’ heure venue
     jusqu’ à pas d’ heure
@@ -12669,6 +12682,7 @@ __purge_locutions_temporelles_diverses__
     plus [près|loin|tôt|tard|longtemps] que d’ habitude
     plus jamais
     plus que d’ habitude
+    pour le restant [de|d’] [mes|tes|ses|nos|vos|leurs] jours
     quant à présent
     sine die
     soudain
@@ -13210,9 +13224,9 @@ __purge_locutions__
     avec tout le respect que nous [vous|te|leur|lui] devons
     avec tout un chacun
     avec un peu de chance
-    avec un temps d’ avance
+    avec un ?[léger|petit]¿ temps d’ avance
     avec un temps d’ avance ?$:W¿ [considérable|énorme|gigantesque|important|phénoménal]
-    avec un temps [de|d’] retard
+    avec un ?[léger|petit]¿ temps [de|d’] retard
     avec un temps [de|d’] retard ?$:W¿ [considérable|énorme|gigantesque|important|phénoménal]
     beaucoup [plus|moins]
     bel et bien
@@ -13298,7 +13312,7 @@ __purge_locutions__
     d’ [ors|ores] et déjà
     d’ un autre côté
     d’ un [bout|jour] à l’ autre
-    d’ un côté comme [de|d’] l’ autre
+    d’ un côté [comme|et] [de|d’] l’ autre
     d’ un commun accord
     d’ un pas [alerte|mesuré]
     d’ un peu partout
@@ -13423,7 +13437,6 @@ __purge_locutions__
     derrière tout [cela|ceci|ça]
     donc
     des pieds à la tête
-    des uns et des autres
     Dieu [m’|t’|l’|nous|vous|les] en [garde|préserve]
     Dieu [m’|t’|lui|nous|vous|leur] en soit témoin
     Dieu seul le sait
@@ -13466,8 +13479,8 @@ __purge_locutions__
     en dehors [de|d’] ?tout¿ [ça|cela|ceci]
     en dents [de|d’] scie
     en dernier [lieu|recours|ressort]
-    en dépit du bon sens ?élémentaire¿
-    en dépit du bon sens le plus élémentaire
+    en dépit du bon sens ?[commun|élémentaire]¿
+    en dépit du bon sens le plus [commun|élémentaire]
     en désespoir [de|d’] cause
     en détention provisoire
     en direction [de|d’] l’ [est|ouest]
@@ -13570,8 +13583,6 @@ __purge_locutions__
     enfin
     entre chien et loup
     entre [de|d’] [bonnes|mauvaises] mains
-    entre l’ [un|une] et l’ autre
-    entre les uns et les autres
     entre [quatre|quatr’|quat’] [zyeux|yeux]
     entre [quatre-zyeux|quatr’zyeux|quat’zyeux|quatre-yeux|quatr’yeux|quat’yeux]
     ensuite
@@ -13622,15 +13633,7 @@ __purge_locutions__
     le cas échéant
     le moins du monde
     le moment venu
-    les [uns|unes] des autres
-    les [uns|unes] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] les autres
-    les [uns|unes] près des autres
-    les [uns|unes] par rapport à l’ autre
-    les [uns|unes] par rapport aux autres
     l’ air de rien
-    l’ [un|une] [après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
-    l’ [un|une] près de l’ autre
-    l’ [un|une] par rapport à l’ autre
     ?de¿ loin
     loin [de|d’] là
     loin [de|d’] tout [ça|cela|ceci]
@@ -13649,7 +13652,7 @@ __purge_locutions__
     ne [lui|leur|m’|t’|nous|vous] en déplaise
     néanmoins
     nez à nez
-    n’importe où
+    ?[de|d’]¿ n’importe où
     ni [de|d’] près ?,¿ ni [de|d’] loin
     ni plus ?,¿ ni moins
     ni vu ?,¿ ni connu
@@ -13898,6 +13901,36 @@ __purge_prep_pronom_comparaison__
     pour    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   n’importe qui d’ autre
     sous    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   n’importe qui d’ autre
     sur     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    n’importe qui d’ autre
+        <<- ~>> *
+
+__purge_l_un_l_autre_les_uns_les_autres__
+    à l’ un et ?à¿ l’ autre
+    avec l’ un et ?avec¿ l’ autre
+    contre l’ un et ?contre¿ l’ autre
+    de l’ un et ?de¿ l’ autre
+    par l’ un et ?par¿ l’ autre
+    pour l’ un et ?pour¿ l’ autre
+    sous l’ un et ?sous¿ l’ autre
+    sur l’ un et ?sur¿ l’ autre
+    aux [uns|unes] et aux autres
+    avec les [uns|unes] et ?avec¿ les autres
+    contre les [uns|unes] et ?contre¿ les autres
+    des [uns|unes] et des autres
+    par les [uns|unes] et ?par¿ les autres
+    pour les [uns|unes] et ?pour¿ les autres
+    sous les [uns|unes] et ?sous¿ les autres
+    sur les [uns|unes] et ?sur¿ les autres
+    des [uns|unes] et des autres
+    les [uns|unes] des autres
+    les [uns|unes] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] les autres
+    les [uns|unes] près des autres
+    les [uns|unes] par rapport à l’ autre
+    les [uns|unes] par rapport aux autres
+    l’ [un|une] [après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
+    l’ [un|une] près de l’ autre
+    l’ [un|une] par rapport à l’ autre
+    entre l’ [un|une] et l’ autre
+    entre les uns et les autres
         <<- ~>> *
 
 __purge_x_par_après_x__
@@ -15909,7 +15942,7 @@ __purge_locutions_verbales__
     >prendre [acte|congé|conscience|contact|ombrage|note|part|peur|position|possession|racine|soin|vie]
     >prendre d’ assaut
     >prendre [de|d’] [court|vitesse]
-    >prendre ?[ça|cela|ceci]¿ en charge
+    >prendre ?[ça|cela|ceci]¿ en [charge|main]
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
     >prendre pour argent comptant
@@ -18334,7 +18367,6 @@ __conf_aller_sans_dire__
 TEST: Évidemment, cela va {{s’en}} dire.
 
 
-
 # sceptique / septique
 __conf_sceptique_septique__
     [>fosse|>installation|>choc|>chirurgie|>maladie|>plaie|>blessure|>embolie|>arthrite|>isolement|>pneumoentérite|>pneumo-entérite] >sceptique
@@ -18554,7 +18586,7 @@ TEST: Faire {{torr}}
 
 # valu / fallu
 __conf_valu_fallu__
-    il ?n’¿ aurait mieux [fallut|fallu] [que|qu’]
+    il ?n’¿ aurait mieux [fallut|fallu+ses] [que|qu’]
         <<- /conf/ --2>> valu                                           && Confusion. Il aurait mieux valu que…
 
 TEST: est-ce qu’il n’aurait pas mieux {{fallu}} que nous                            ->> valu
@@ -20375,7 +20407,8 @@ TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 
 
 __sgpl_det_groupe_de_1m__
-    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  [>centaine|>millier|>million|>milliard|>dizaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
+    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
+        || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
         <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
         -4>> =suggPlur(\4)                                                                  && Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
@@ -20882,6 +20915,40 @@ TEST: Qui {{voulu}} la paix ?
 TEST: le prix sera pour celui qui {{réussi}}
 TEST: celui qui {{réussi}} aura la vie éternelle
 TEST: celles qui {{demandées}} viendront demain.
+
+
+__conf_conj_suj_verbe_adj__
+    [quand|lorsque|puisque]  [le|ce|cet|du]                                 *WORD  ~..[éeiut]s?$  ,  $:Os
+        <<- /conf/ morph(\3, ":[NA].*:[me]:[si]") and  morph(\4, ":Q.*:[me]:[si]", ":3s")
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+
+    [quand|lorsque|puisque]  [la|cette|ma|ta|sa]                            *WORD  ~..[éeiut]e$   ,  $:Os
+        <<- /conf/ morph(\3, ":[NA].*:[fe]:[si]") and  morph(\4, ":Q.*:[fe]:[si]", ":3s")
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+
+    [quand|lorsque|puisque]  [l’|mon|ton|ton|notre|votre|leur]              *WORD  ~..[éeiut]e?$  ,  $:Os
+        <<- /conf/ morph(\3, ":[NA].*:[si]") and  morph(\4, ":Q.*:[si]", ":3s")
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+
+    [quand|lorsque|puisque]  [les|cet|mes|tes|ses|nos|vos|leurs|quelques]   *WORD  ~..[éeiut]e?s$ ,  $:Os
+        <<- /conf/ morph(\3, ":[NA].*:[pi]") and  morph(\4, ":Q.*:[pi]", ":3s")
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+
+    [quand|lorsque|puisque]  [plusieurs|certains|certaines]                 *WORD  ~..[éeiut]e?s$ ,  $:Os
+        <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3pl") and  morph(\4, ":Q.*:[pi]", ":3s")
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+
+TEST: {{quand}} le facteur {{arrivé}}, il se précipitait à la fenêtre.
+TEST: {{puisque}} la fête {{finie}}, je vais partir.
+TEST: {{lorsque}} l’horloge {{sonnée}}, nous nous levions à la hâte
+TEST: {{quand}} les croissants {{arrivés}}, on se jetait dessus
+TEST: {{lorsque}} certains idiots {{oubliés}}, on riait aux éclats
+TEST: quand le jour venu, il fallut se battre, nous étions prêts.
 
 
 __bs_substantif_de_adj__
@@ -21556,7 +21623,7 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 __infi_verbes__
 # regarder, écouter, ouïr
-    [>aimer|>désirer|>faillir|>entendre|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    [>aimer|>désirer|>faillir|>entendre|>espérer|>oser|>préférer|>souhaiter]  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
@@ -25484,7 +25551,7 @@ TEST: tout est peine perdue.
 
 
 #### et / est
-__conf_et_est__
+__conf_et_est2__
     <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
         ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  @:3p¬:G
         <<- /conf/ -4>> et
@@ -25510,7 +25577,7 @@ __conf_et_est__
         <<- /conf/ morph(\4, ":(?:[123][sp]|P)") and morph(\5, ":[QA]") -8>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
-    <start>  *WORD  est  *WORD  @:3p¬:G
+    <start>  *WORD  est  *WORD  @:[23]p¬:G
         <<- /conf/ (morph(\2, ":M") and morph(\4, ":M")) or (morph(\2, ":Y") and morph(\4, ":Y")) -3>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
@@ -25544,6 +25611,10 @@ __conf_et_est__
         <<- /conf/ morph(\3, ":([123][sp]|P)") and morph(\4, ":Q") -7>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
+    <start>  *WORD  *WORD  est  @:3s¬:[GQ]
+        <<- /conf/ morph(\2, ":M", ":G") and \3.islower() and morph(\3, ":3s", ":G") -4>> et
+        && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
 TEST: la table {{est}} la chaise m’appartiennent.                                   ->> et
 TEST: quelques plats {{est}} plusieurs conserves seront mis à ta disposition.       ->> et
 TEST: les ouvriers commencèrent l’évaluation {{est}} les travaux                    ->> et
@@ -25559,6 +25630,9 @@ TEST: ils méprisent les butors {{est}} les crétins                            
 TEST: les femmes sont parties ce matin {{est}} ce soir                              ->> et
 TEST: elles sont parties ce matin {{est}} ce soir                                   ->> et
 TEST: il avait mangé des moules {{est}} des frites                                  ->> et
+TEST: Marie {{est}} Valérie prenez vos calmants                                     ->> et
+TEST: Windows rame {{est}} plante                                                   ->> et
+TEST: Linux bugue {{est}} n’est pas à jour                                          ->> et
 TEST: ce matin pluvieux l’ambiance est à présent la pire.
 
 
@@ -26235,7 +26309,7 @@ __conj_iels__
 
     iels  qui  @:V¬:(?:3p|P|G|M)
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            && Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ __also__ and morph(\3, ":3s") -1>> iel               && Accord avec “\3”.
+        <<- /conj/ morph(\3, ":3s") -1>> iel                            && Accord avec “\3”.
 
 TEST: {{iels}} {{arrivait}} en retard tous les jours
 TEST: être avec {{iels}} qui {{sombrait}} dans la dépression
@@ -26869,7 +26943,7 @@ TEST: à mesure qu’il {{devienne}} fort
 __vmode_verbe_que_subjonctif__
     [>aimer|>approuver|>craindre|>demander|>déplorer|>défendre|>désirer|>exiger|>falloir|>interdire|>ordonner|>permettre|>préférer|>refuser|>regretter|>souhaiter|>suffire|>vouloir]
         || [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ morph(\1, ":V") --1>> =suggVerbMode(\-1, ":S", \-2)                             && Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ morph(\1, ":V", ":N") --1>> =suggVerbMode(\-1, ":S", \-2)                       && Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >attendre  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ not morph(\1, ":Q") --1>> =suggVerbMode(\-1, ":S", \-2)                         && Après “\1 que”, ce verbe devrait être au subjonctif.
@@ -26880,7 +26954,7 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 que”, ce verbe devrait être au subjonctif.
 
     >étonner   [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “s’étonner que”, le verbe doit être au subjonctif.
+        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “s’étonner que”, le verbe doit être au subjonctif.
 
     >faire  attention  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]|>faire/
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “faire attention à ce que”, le verbe doit être au subjonctif.
@@ -26896,7 +26970,7 @@ __vmode_verbe_que_subjonctif__
         --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “\1 que”, ce verbe devrait être au subjonctif.
 
     [il|ça|cela]  [peut|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
 TEST: Il suffit qu’il {{court}} plus
 TEST: j’attends que tu {{viens}}.
@@ -26925,6 +26999,7 @@ TEST: Je sais bien que tu reviendras.
 TEST: Ne doute pas qu’il viendra demain.
 TEST: C’est cet interdit qu’il faut lever.
 TEST: pas grand-chose à proposer à part faire attention à ce qu’on fait.
+TEST: La crainte que nous nourrissons à l’égard d’une société libre tient à notre méconnaissance des vertus de l’action individuelle
 
 
 __vmode_qqch_que_subjonctif__
