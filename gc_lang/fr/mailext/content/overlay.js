@@ -372,7 +372,7 @@ var oGrammarChecker = {
             xNavBar.setAttribute("currentset", aSet.join(","));
             //xNavBar.currentSet = aSet.join(",");
             Services.xulStore.persist(xNavBar, "currentset");
-            Ci.BrowserToolboxCustomizeDone(true);
+            //Ci.BrowserToolboxCustomizeDone(true);
         }
     },
     clearPreview: function () {
