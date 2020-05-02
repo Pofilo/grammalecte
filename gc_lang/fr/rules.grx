@@ -6926,6 +6926,27 @@ TEST: nous avançons {{à grand pas}}
 TEST: reculons à grands pas, mais discrètement
 
 
+__conf_à_part!6__
+    !! à part [cela|ceci|ça] ¡¡
+    [a|à] [part+s|par|pare+s] [cela|ceci|ça]
+        <<- /conf/ ->> à part \3                                            && Confusion. Locution « à part cela/ceci/ça ».|https://fr.wiktionary.org/wiki/%C3%A0_part_%C3%A7a
+
+    à parts [<end>|,|)|$:D]
+        <<- /conf/ -1:2>> à part                    && Locution « à part », au singulier.
+
+    à [par|pare+s] $:D
+    à [par|pare+s] {pronom_obj}
+        <<- /conf/ -1:2>> à part|a par              && Confusion. Ou bien vous voulez dire « à part » pour « hormis », ou bien vous confondez la préposition “à” avec “a” (forme conjuguée du verbe avoir).
+
+TEST: {{a pare ça}}                             ->> à part ça
+TEST: un homme {{à parts}}                      ->> à part
+TEST: {{à par}} nous                            ->> à part|a par
+TEST: un homme à par
+TEST: à part ça, tout va bien
+TEST: à part ceci, rien ne va
+TEST: à part cela, rien ne va plus
+
+
 __conf_à_parts_égales__
     !! à parts égales ¡¡
     [a|à] [part|parts|par|pare|pares] [égale+s]
@@ -7194,7 +7215,7 @@ __conf_à_a_locutions__
     a >tarif >réduit
     a taux [>fixe|>variable|>zéro|>nulle|nul+s]
     a titre [conservatoire|indicatif|informatif|grâcieux|personnel|posthume]
-    a titre d’ exemple
+    a titre d’
     a tombeau ouvert
     a tort et à travers
     a tort ou à raison
@@ -10833,7 +10854,8 @@ TEST: ta gueule, connard.
 
 # temps / tant / tan
 __conf_tant_temps_tan_1__
-    combien de [>tant|tan]
+    combien [de|d’] [>tant|tan]
+    un bon bout [de|d’] [>tant|tan]
         <<- /conf/ --1>> temps                              && Confusion. Pour ce qui est temporel, écrivez “temps”.
 
     en [tant|>tan] [de|d’] [guerre|paix|crise|doute|pluie]
@@ -10845,22 +10867,22 @@ __conf_tant_temps_tan_1__
     depuis la [nui|nuit] des [>tan|tant]
         <<- /conf/ --1>> temps                              && Confusion. Locution “depuis la nuit des temps”.|http://fr.wiktionary.org/wiki/temps
 
-    [après|avec] [temps|>tan] [de|d’]
-        <<- /conf/ -2>> tant                                && Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|http://fr.wiktionary.org/wiki/tant
-
     [à|a] [>tan|tant] [partiel|partiels|plein|pleins]
         <<- /conf/ -2>> temps                               && Confusion. Pour ce qui est temporel, écrivez “temps”.
 
     en [même|mêmes] [tant|>tan]
         <<- /conf/ ->> en même temps                        && Confusion. Pour ce qui est temporel, écrivez “temps”.
 
+    en [>tan|tant] et en >heure
+        <<- /conf/ -2>> temps                               && Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
+
+    [après|avec] [temps|>tan] [de|d’]
+        <<- /conf/ -2>> tant                                && Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|http://fr.wiktionary.org/wiki/tant
+
     en [temps|>tan] [que|qu’]
         <<- not (value(\2, "|temps|") and value(<1, "|temps|")) >>>
         <<- /conf/ value(>1, "|tel|tels|telle|telles|") -2>> tant       && Confusion. Locution « en tant que tel ».|https://fr.wiktionary.org/wiki/en_tant_que_tel
         <<- /conf/ __else__ -2>> tant                                   && Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
-
-    en [>tan|tant] et en >heure
-        <<- /conf/ -2>> temps                               && Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
 
     >tan [pis|pi]
         <<- /conf/ ->> tant pis                             && Confusion. Locution “tant pis”.|https://fr.wiktionary.org/wiki/tant_pis
@@ -12357,6 +12379,7 @@ __purge_horaires_et_durée__
     en [début|milieu|fin] [de|d’]   [après-midi|matinée|soirée]
         <<- ~>> *
 
+    ## purge de queue
     ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿
     ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   [du|ce]  [matin|soir]
     ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes|pile]¿   de  l’ après-midi
@@ -12400,6 +12423,7 @@ __purge_horaires_et_durée__
     tout à l’ heure
     trois quarts d’ heure plus [tôt|tard]
     un quart d’ heure plus [tôt|tard]
+    vers [midi|minuit]
         <<- ~>> *
 
 
@@ -12410,6 +12434,7 @@ DEF: unit_mesure_plur_fem   [nanosecondes|millisecondes|secondes|minutes|heures|
 __locutions_temporelles_communes__
     d’ un [jour|mois|trinestre|semestre|an|siècle|millénaire] à l’ autre
     d’ une [nanoseconde|milliseconde|seconde|minute|seconde|heure|journée|semaine|année|décennie] à l’ autre
+    [de|d’] dernière [seconde|minute|heure|année]
         <<- ~>> *
 
     ## locutions épicènes
@@ -12857,6 +12882,11 @@ __purge_début_phrase__
 
 
 __purge_prépositions_pronoms__
+    à part [cela|ceci|ça]
+    à [cela|ceci|ça] près
+    [à|par|pour] [cela|ceci|ça]
+        <<- ~>> *
+
     [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:6>> *
 
@@ -12882,10 +12912,10 @@ __purge_prépositions_pronoms__
     [de|d’] [lui|nous|vous] en $:P
         <<- ~1:2>> *
 
-    par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]   [<end>|,|@:[VXG]¬>qui/]
+    par égard pour [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]   [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:4>> *
 
-    en   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]
+    en [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]
         <<- ~>> *
 
     [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]        [<end>|,|@:[VXG]¬>qui/]
@@ -13056,6 +13086,7 @@ __purge_locutions__
     à l’ en croire
     à l’ état pur
     à l’ exclusion de toute autre chose
+    à l’ extrémité [est|ouest|nord|sud]
     à l’ ordre du jour
     à l’ un d’ entre [nous|vous|eux|iels]
     à l’ une d’ entre [nous|vous|elles|iels]
@@ -14306,6 +14337,9 @@ __purge_conditionnelle__
     autre part que chez [moi|toi|soi|lui|elle|nous|vous|eux|elles]
         <<- not value(<1, "|d’|") ~>> *
 
+    avec plus [de|d’] $:N que jamais
+        <<- ~>> *
+
     <start> bien [entendu|sûr]
         <<- ~2:0>> *
 
@@ -14686,6 +14720,7 @@ __substantifs_multi_mots__
     >écran [de|d’] fumée
     >éditeur [de|d’] presse
     >effet [de|d’] bord
+    >effort [de|d’] guerre
     >élément à charge
     >emploi du temps
     >ennui [de|d’] santé
@@ -15779,6 +15814,10 @@ __purge_locutions_potentielles__
     pour un temps  @:¬:[NA].*:[me]:[si]
     pour un temps  [<end>|,|)]
         <<- ~1:3>> *
+
+    sans détour  @:¬:[NA].*:[me]:[si]
+    sans détour  [<end>|,|)]
+        <<- ~1:2>> *
 
     sans surprise  @:¬:[NA].*:[fe]:[si]
     sans surprise  [<end>|,|)]
