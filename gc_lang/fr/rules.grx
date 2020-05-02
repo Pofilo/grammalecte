@@ -8987,24 +8987,29 @@ TEST: Il n’y a que deux {{heurs}} de trajet                 ->> heures
 # hors / or
 __conf_hors_or__
     <start>  hors  ,
-        <<- /conf/ -2>> or
-        && Confusion. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
+        <<- /conf/ -2>> or                              && Confusion. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
     hors [je|j’|tu|il|ils|on|parce|quel|quels|quelle|quelles|pourquoi|qui|que]
-        <<- /conf/ -1>> or,
-        && Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
+        <<- /conf/ -1>> or,                             && Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
+    >or d’ [ici|atteinte]
+    >or [de|d’] [là|doute|page]
+    >or [de|d’] chez [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     >or du commun
-    >or de ?[ma|ta|sa|notre|votre|leur]¿ [compréhension|perception|portée|vue]
-    >or de question [que|qu’]
-        <<- not morph(<1, ":D.*:[me]") -1>> hors
-        && Confusion probable. Si vous voulez dire “en dehors de”, écrivez “hors”.|https://fr.wiktionary.org/wiki/hors
+    >or [de|d’] ?[ma|ta|sa|notre|votre|leur]¿ [compréhension|perception|portée|vue]
+    >or [de|d’] question [que|qu’]
+        <<- not morph(<1, ":D.*:[me]") -1>> hors        && Confusion probable. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
+
+    [<start>|,|(] or [de|d’] {pronom_obj}
+        <<- /conf/ -2>> hors                            && Confusion probable. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
 TEST: {{hors}}, nous y coryons malgré tout ce qu’on peut en dire.
 TEST: {{Hors}} il y a tant à faire depuis que nous sommes arrivés en ces lieux.
 TEST: Des femmes {{or}} du commun
+TEST: {{or}} de lui, il éclata en
 TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
 TEST: Le peuple se sent hors jeu.
+TEST: pillons tout l’or du royaume !
 
 
 # huis / huit
@@ -12363,10 +12368,12 @@ __purge_horaires_et_durée__
     *HOUR  ?[tapantes|pétantes|pile]¿  cet  après-midi
     *HOUR  ?[tapantes|pétantes|pile]¿  [demain|hier|après-demain|avant-hier]  ?[matin|soir|après-midi]¿
     >heure moins le quart
+    >heure et [demie|quart]
     >heure ?,¿ $:B:e:p minutes
     >heure ?,¿ $:B:e:p minutes ?,¿ $:B:e:p secondes
     [midi|minuit] pile
     [midi|minuit] moins le quart
+    [midi|minuit] et [demie|quart]
         <<- ~2:0>> *
 
     à cette heure ?[tardive|indue|matinale]¿
@@ -12521,11 +12528,11 @@ __purge_énumération_temporelle__
         <<- ~>> *
 
 
-__purge_locutions_avec_temps__
+__purge_locutions_temps__
     à longueur [de|d’] temps
-    après un bon bout de temps
-    après un certain temps
-    au bout d’ un certain temps
+    après un ?bon¿ bout de temps ?passé¿
+    après un certain temps ?passé¿
+    au bout d’ un certain temps  ?passé¿
     au fil du temps
     comme au bon vieux temps
     dans peu de temps
@@ -12535,11 +12542,12 @@ __purge_locutions_avec_temps__
     depuis ?[assez|si|très|trop]¿ peu de temps
     depuis la nuit des temps
     depuis quelque temps
-    depuis tout ce temps
+    depuis tout ce temps ?passé¿
     d’ ici peu de temps
     ?[de|d’]¿ ces derniers temps
     ?d’¿ il y a ?[assez|si|très|trop]¿ peu [de|d’] temps
     ?d’¿ il y a quelque temps
+    [de|d’] tous temps
     [de|d’] tout temps
     [de|d’] temps à autre
     [de|d’] temps en temps
@@ -12548,7 +12556,9 @@ __purge_locutions_avec_temps__
     en d’ autres temps
     en d’ autres temps et d’ autres lieux
     en même temps
-    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour le dire
+    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour [le|l’] [dire|prononcer|raconter]
+    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour [le|l’] faire comprendre
+    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour l’ expliquer
     en temps [de|d’] [guerre|paix]  ?[économique|religieuse]¿
     en temps [normal|opportun|ordinaire|utile|voulu]
     en temps et en heure
@@ -12556,6 +12566,8 @@ __purge_locutions_avec_temps__
     jusqu’ à la fin des temps
     la plupart du temps
     le [moins|plus] [de|d’] temps possible
+    le plus clair de [mon|ton|son|notre|votre|leur] temps ?libre¿
+    le plus clair de [mon|ton|son|notre|votre|leur] temps [de|d’] travail
     par les temps qui courent
     par temps [de|d’] pluie
     pendant ce temps-là
@@ -12570,7 +12582,7 @@ __purge_locutions_avec_temps__
 __purge_locutions_instant_moment__
     à ce moment ?[exact|particulier|précis]¿
     à cet instant ?[exact|particulier|précis]¿
-    à chaque [instant|moment]
+    à chaque [instant|moment] ?passé¿
     à un moment donné
     à un moment ou à un autre
     au [dernier|même|bon|mauvais] [moment|instant]
@@ -12631,6 +12643,7 @@ __purge_locutions_temporelles_diverses__
     désormais
     d’ antan
     d’ après-guerre
+    d’ avant-guerre
     d’ aujourd’hui
     d’ autrefois
     d’ habitude
@@ -12718,13 +12731,13 @@ __purge_locutions_temporelles_diverses__
     [voici|voilà] belle lurette
         <<- ~>> *
 
-    ## échéance
+__purge_locutions_échéance__
     à ?[si|très|trop]¿ [brève|courte|longue] échéance
     à moyenne échéance
     à plus ou moins [brève|courte|longue] échéance
         <<- ~>> *
 
-    ## terme
+__purge_locutions_terme__
     à ?[si|très|trop]¿ court terme
     à ?[si|très|trop]¿ long terme
     à moyen terme
@@ -12737,16 +12750,18 @@ __purge_locutions_temporelles_diverses__
     sur le ?[très|trop]¿ [long|moyen|court] terme
         <<- ~>> *
 
-    ## fois
+__purge_locutions_fois__
     à la fois
     à chaque fois
     bien des fois
     cette [fois|fois-là|fois-ci]
     ?à¿ chaque fois
     ?à¿ d’ autres fois
+    d’ innombrables fois
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
     depuis la [première|dernière|~ième$] fois
     des fois
+    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois
     encore une fois
     $:B fois
     $:B fois [de|d’] suite
@@ -12781,7 +12796,7 @@ __purge_locutions_temporelles_diverses__
     une prochaine fois
         <<- ~>> *
 
-    ## circonstance
+__purge_locutions_circonstances__
     en aucune circonstance
     en cette circonstance ?particulière¿
     en cette circonstance-là
@@ -12789,17 +12804,20 @@ __purge_locutions_temporelles_diverses__
     en ces circonstances-là
     en d’ autres circonstances
     en [de|d’] [semblables|telles] circonstances
-    en toute circonstance
-    en [certaines|quelques|toutes|plusieurs] circonstances
+    en toute circonstance ?semblables¿
+    en toutes circonstances ?semblables¿
+    en [certaines|quelques|plusieurs] circonstances
         <<- ~>> *
 
-    ## occasion
+__purge_locutions_occasion__
     à l’ occasion
     à la [dernière|moindre|première|prochaine] occasion
     en cette occasion ?particulière¿
     en cette occasion-là
     en ces occasions ?particulières¿
     en [de|d’] [semblables|telles] occasions
+    en d’ innombrables occasions
+    en maintes occasions
     en toute occasion
     en d’ autres occasions
     en [certaines|quelques|toutes|plusieurs] occasions
@@ -13022,7 +13040,7 @@ __purge_locutions__
     à gorge déployée
     à grande échelle
     à ?[si|très|trop]¿ grands frais
-    à grands traits
+    à grands traits ?[imprécis|rageurs|précis|vagues]¿
     à ?[si|très|trop]¿ haut risque
     à ?[si|très|trop]¿ haute [altitude|voix]
     à ?[si|très|trop]¿ haute et intelligible voix
@@ -13297,6 +13315,7 @@ __purge_locutions__
     dans tout [cela|ça|ceci]
     dans un cas comme dans l’autre
     dans une [certaine|large|moindre] mesure
+    dans une mauvaise passe
     d’ abord
     d’ affilée
     d’ ailleurs
@@ -13778,7 +13797,7 @@ __purge_locutions__
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     sans ?grand¿ succès
     sans [déconner|tarder]
-    sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
+    sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|équivalent|fin|relâche|répit|trêve|vergogne]
     sans [grande|grosse] difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans aucun doute
     sans autre forme [de|d’] procès
@@ -14507,13 +14526,14 @@ __substantifs_multi_mots__
     >âge d’ or
     >agence d’ interim
     >agence [de|d’] >voyage
+    >agent de liaison
     >agité du bocal
     >aide [de|d’] camp
     >aire d’ atterrissage
     >animal [de|d’] compagnie
     >appât du gain ?[facile|rapide]¿
     >appel au secours
-    >appel à l’ aide
+    >appel à l’ aide ?humanitaire¿
     >arc à poulies
     >arme à feu
     >armée [de|d’] l’ air
@@ -14667,13 +14687,15 @@ __substantifs_multi_mots__
     >effet [de|d’] bord
     >élément à charge
     >emploi du temps
+    >ennui [de|d’] santé
     >enterrement [de|d’] vie [de|d’] garçon
     >enterrement [de|d’] vie [de|d’] jeune fille
     >entrée [de|d’] service
     >épée à deux mains
     >épingle à cravate
     >épreuve [de|d’] force
-    >erreur [de|d’] jugement
+    >erreur [de|d’] [calcul|jugement]
+    >erreur d’ appréciation
     >espérance [de|d’] vie
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
     >état d’ extrême urgence
@@ -14816,6 +14838,7 @@ __substantifs_multi_mots__
     >nounou à domicile
     >nourrice à domicile
     >occasion en or ?massif¿
+    >officier [de|d’] liaison
     >oiseau [de|d’] [malheur|nuit|proie]
     >oiseau [de|d’] mauvais augure
     >onde [de|d’] choc
@@ -14862,8 +14885,9 @@ __substantifs_multi_mots__
     preuve ?suffisante¿ du contraire
     preuves ?suffisantes¿ du contraire
     >prise [de|d’] conscience
-    >pure comme [le|du] cristal
+    prix à payer
     prix [de|d’] revient
+    QG [de|d’] campagne
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
     >rapport [de|d’] force
@@ -14872,7 +14896,6 @@ __substantifs_multi_mots__
     >réaction en [chaîne|chaine]
     région Grand Est
     >règlement [de|d’] comptes
-    >sujet [de|d’] préoccupation
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
     >requête en non révocation [de|d’] sursis
@@ -14910,7 +14933,7 @@ __substantifs_multi_mots__
     >sortie [de|d’] secours
     >soue à >cochon
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
-    >sujet [de|d’] prédilection
+    >sujet [de|d’] [prédilection|préoccupation]
     >suspension [de|d’] séance
     >système d’ exploitation
     >système [de|d’] santé
@@ -15005,6 +15028,7 @@ __substantifs_multi_mots__
     >nul et non >avenu
     >noir comme la nuit
     >noir comme une nuit sans lune
+    >pure comme [le|du] cristal
     >rapide à la comprenette
     [réglé+ses] comme du papier à musique
     [remis+es] à plat
@@ -16306,6 +16330,7 @@ __conf_à_a_après_verbes__
     >appartenir en propre a
     >avoir [tendance|vocation] a
     >donner [sens|suite] a
+    >faire [allusion|attention|barrage|confiance|défaut|écran|envie|exception|part|peur|plaisir|signe] a
     enclin a
     en être [réduit+ses] a
     en proie a
@@ -16319,6 +16344,8 @@ __conf_à_a_après_verbes__
     vous vous en >remettre a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") and not value(>1, "|été|")
         --1>> à                                                             && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+
 
     >appeler a
     >avoir du mal a
@@ -17452,8 +17479,10 @@ TEST: il but un {{filtre}}.
 # flanc / flan
 __conf_flanc_flan2__
     >blesser au flan
+    >prêter le flan
     [>attaquer|>contre-attaquer] ?[sur|sous|à|contre]¿ $:D >flan
-        <<- /conf/ --1>> =\-1.replace("n", "nc").replace("N", "NC")         && Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
+        <<- /conf/ --1>> =\-1.replace("n", "nc").replace("N", "NC")
+        && Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.|https://fr.wiktionary.org/wiki/flanc
 
 TEST: Il avait été blessé au {{flan}}.
 TEST: Elle lança une contre-attaque sur son {{flan}}.
@@ -21156,8 +21185,11 @@ __infi_qqch_de__
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il est \3 de”, le verbe devrait être à l’infinitif.
 
-    il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il est hors de question de”, le verbe devrait être à l’infinitif.
+    hors d’ état                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors d’état de”, le verbe devrait être à l’infinitif.
+
+    hors de question                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors de question de”, le verbe devrait être à l’infinitif.
 
     [<start>|,|(] [>capable|>incapable|impossible|inutile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\2 de”, le verbe devrait être à l’infinitif.
@@ -21194,6 +21226,7 @@ TEST: Elle avait hâte de {{dévouée}} sa vie à sa passion
 TEST: il est hors de question de {{menée}} cette attaque ainsi
 TEST: il serait temps de {{poussée}} la logique jusqu’au bout
 TEST: impossible d’{{échappée}} à cette horreur.
+TEST: hors d’état de {{pensée}} à quoi que ce soit
 TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
 TEST: sous peine de nous {{pesée}} lourd sun l’estomac
 TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
@@ -21658,12 +21691,16 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 __infi_verbes__
 # regarder, écouter, ouïr
-    [>aimer|>désirer|>faillir|>entendre|>espérer|>oser|>préférer|>souhaiter]  ~..(?:ée?s?|ez)$
+    [>faillir|>oser]  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
-    [>aller|>venir|>partir]  ?[pas|plus|point|guère|jamais|rien]¿  ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|déguiser)/")
+    [>adorer|>aimer|>désirer|>détester|>entendre|>espérer|>préférer|>souhaiter]  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M") and not value(<1, "|le|la|l’|les|")
+        -2>> =suggVerbInfi(\2)                                                                      && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
+
+    [>aller|>envoyer|>venir|>revenir|>partir]  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|déguiser)/") and not value(>1, "|par|")
         --1>> =suggVerbInfi(\2)                                                                     && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: elle préférait {{mangée}} seule.                                                  ->> manger
@@ -21679,6 +21716,10 @@ TEST: croyez-vous qu’ils oseront {{proposé}} des amendements aussi audacieux�
 TEST: Quelle est cette femme que j’ai entendue {{chanté}} ?                             ->> chanter
 TEST: elles partaient {{prié}} chaque matin                                             ->> prier
 TEST: jamais entendu {{parlé}} de ces choses                                            ->> parler
+TEST: le café, je l’aime velouté.
+TEST: la salade, je la préfère salée
+TEST: les croissants je les préfère beurrés
+TEST: le dialogue, je l’espère apaisé et cordial.
 TEST: Elles étaient venues armées.
 TEST: Il vint déguisé en mousquetaire.
 TEST: D’ailleurs j’irai armé.
@@ -21699,9 +21740,6 @@ __infi_divers__
         <<- /infi/ morph(\-1, ":(?:Q|2p)", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
-    >laisser    [tombé+ses]
-        <<- /infi/ -2>> tomber                                                                      && Laisser tomber. Utilisez l’infinitif.
-
 TEST: de manière à {{obligé}} ces gens
 TEST: ils ont intérêt à {{obligés}} ces gens
 TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
@@ -21711,7 +21749,6 @@ TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les 
 TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.
 TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur
 TEST: Avec quoi {{fabriqué}} un arc ?
-TEST: J’ai laissé {{tombé}} ces connards.
 TEST: des espaces différents de ceux où se crée le chiffre d’affaires et où elles extraient les données
 
 
@@ -21764,11 +21801,16 @@ TEST: je craignais d’être pour toujours abandonnée
 
 
 __infi_locutions__
+    >laisser    [tombé+ses]
+        <<- /infi/ -2>> tomber                                                                      && Laisser tomber. Utilisez l’infinitif.
+
     >sentir le vent tourné
         <<- /infi/ --1>> tourner                                                                    && Locution “sentir le vent tourner ”. Utilisez l’infinitif.
 
+TEST: J’ai laissé {{tombé}} ces connards.
 TEST: j’ai senti le vent {{tourné}}
 TEST: elles sentent le vent tourner en leur faveur.
+
 
 
 !!!! Participes présents                                                                          !!
@@ -21778,6 +21820,7 @@ __conj_participe_présent__
         <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        && Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
 
 TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
+
 
 
 !!!! Participes passés                                                                            !!
@@ -27137,13 +27180,16 @@ __vmode_qqch_que_subjonctif__
     [<start>|,|(]  encore                           [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If)
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                && Après « \2 que », le verbe s’emploie au subjonctif.
 
+    il          arrive                              [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “il arrive que”, le verbe se met au subjonctif s’il s’agit d’une éventualité (mais la construction à l’indicatif est aussi possible s’il y a certitude).
+
     il          est         possible                [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     jusqu’      à           ce                      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     si          tant        est                     [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
 
     peu         [est|était] fallu                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                            && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
 
 TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
 TEST: quoi qu’il en {{conclut}}
@@ -27165,6 +27211,7 @@ TEST: non qu’il {{prend}} son temps
 TEST: si tant est que nous {{prenons}} notre temps
 TEST: moyennant qu’elle {{vient}} demain
 TEST: en attendant qu’il {{devient}} plus raisonnable
+TEST: il arrive qu’il {{vient}}, mais rarement
 TEST: {{où}} qu’il {{est}}, on le trouvera
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
