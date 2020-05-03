@@ -6,6 +6,12 @@
 
 "use strict";
 
+if (typeof(process) !== 'undefined') {
+    var char_player = require("./char_player.js");
+} else if (typeof(require) !== 'undefined') {
+    var char_player = require("resource://grammalecte/graphspell/char_player.js");
+}
+
 
 // Note: 48 is the ASCII code for "0"
 
@@ -57,25 +63,26 @@ var str_transform = {
         return longestCommonSubstring;
     },
 
-    distanceDamerauLevenshtein2: function (s1, s2) {
+    distanceDamerauLevenshtein: function (s1, s2) {
         // distance of Damerau-Levenshtein between <s1> and <s2>
         // https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
         try {
             let nLen1 = s1.length;
             let nLen2 = s2.length;
             let matrix = [];
-            for (let i = 0;  i <= nLen1;  i++) {
-                matrix[i] = new Array(nLen2 + 1);
+            for (let i = 0;  i <= nLen1+1;  i++) {
+                matrix[i] = new Array(nLen2 + 2);
             }
-            for (let i = 0;  i <= nLen1;  i++) {
+            for (let i = 0;  i <= nLen1+1;  i++) {
                 matrix[i][0] = i;
             }
-            for (let j = 0;  j <= nLen2;  j++) {
+            for (let j = 0;  j <= nLen2+1;  j++) {
                 matrix[0][j] = j;
             }
             for (let i = 1;  i <= nLen1;  i++) {
                 for (let j = 1;  j <= nLen2;  j++) {
-                    let nCost = (s1[i] === s2[j]) ? 0 : 1;
+                    //let nCost = (s1[i-1] === s2[j-1]) ? 0 : 1;
+                    let nCost = char_player.distanceBetweenChars(s1[i-1], s2[j-1]);
                     matrix[i][j] = Math.min(
                         matrix[i-1][j] + 1,         // Deletion
                         matrix[i][j-1] + 1,         // Insertion
@@ -86,14 +93,14 @@ var str_transform = {
                     }
                 }
             }
-            return matrix[nLen1][nLen2];
+            return Math.floor(matrix[nLen1][nLen2]);
         }
         catch (e) {
             console.error(e);
         }
     },
 
-    distanceDamerauLevenshtein: function (s1, s2) {
+    distanceDamerauLevenshtein2: function (s1, s2) {
         // distance of Damerau-Levenshtein between <s1> and <s2>
         // https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
         try {
