@@ -100,53 +100,6 @@ var str_transform = {
         }
     },
 
-    distanceDamerauLevenshtein2: function (s1, s2) {
-        // distance of Damerau-Levenshtein between <s1> and <s2>
-        // https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
-        try {
-            let nLen1 = s1.length;
-            let nLen2 = s2.length;
-            let INF = nLen1 + nLen2;
-            let matrix = [];
-            let sd = {};
-            for (let i = 0; i < nLen1+2; i++) {
-                matrix[i] = new Array(nLen2+2);
-            }
-            matrix[0][0] = INF;
-            for (let i = 0; i <= nLen1; i++) {
-                matrix[i+1][1] = i;
-                matrix[i+1][0] = INF;
-                sd[s1[i]] = 0;
-            }
-            for (let j = 0; j <= nLen2; j++) {
-                matrix[1][j+1] = j;
-                matrix[0][j+1] = INF;
-                sd[s2[j]] = 0;
-            }
-
-            for (let i = 1; i <= nLen1; i++) {
-                let DB = 0;
-                for (let j = 1; j <= nLen2; j++) {
-                    let i1 = sd[s2[j-1]];
-                    let j1 = DB;
-                    if (s1[i-1] === s2[j-1]) {
-                        matrix[i+1][j+1] = matrix[i][j];
-                        DB = j;
-                    }
-                    else {
-                        matrix[i+1][j+1] = Math.min(matrix[i][j], Math.min(matrix[i+1][j], matrix[i][j+1])) + 1;
-                    }
-                    matrix[i+1][j+1] = Math.min(matrix[i+1][j+1], matrix[i1] ? matrix[i1][j1] + (i-i1-1) + 1 + (j-j1-1) : Infinity);
-                }
-                sd[s1[i-1]] = i;
-            }
-            return matrix[nLen1+1][nLen2+1];
-        }
-        catch (e) {
-            console.error(e);
-        }
-    },
-
     showDistance (s1, s2) {
         console.log(`Distance: ${s1} / ${s2} = ${this.distanceDamerauLevenshtein(s1, s2)})`);
     },
