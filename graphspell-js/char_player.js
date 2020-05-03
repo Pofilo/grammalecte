@@ -67,7 +67,7 @@ var char_player = {
         ['ä', 'a'],  ['ê', 'é'],  ['í', 'i'],  ['ó', 'o'],  ['ü', 'u'],  ['ý', 'y'],
         ['á', 'a'],  ['ë', 'é'],  ['ì', 'i'],  ['ò', 'o'],  ['ú', 'u'],  ['ỳ', 'y'],
         ['ā', 'a'],  ['ē', 'é'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'y'],
-        ['ç', 'c'],  ['ñ', 'n'],  ['k', 'q'],  ['w', 'v'],
+        ['ç', 'c'],  ['ñ', 'n'],
         ['œ', 'oe'], ['æ', 'ae'],
         ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st'],
         ["⁰", "0"], ["¹", "1"], ["²", "2"], ["³", "3"], ["⁴", "4"], ["⁵", "5"], ["⁶", "6"], ["⁷", "7"], ["⁸", "8"], ["⁹", "9"],
@@ -86,7 +86,7 @@ var char_player = {
             }
             i++;
         }
-        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "ẽ").replace(/ei/g, "ẽ").replace(/ph/g, "f");
+        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "é").replace(/ei/g, "é").replace(/ph/g, "f");
     },
 
     _xTransNumbersToExponent: new Map([
