@@ -11249,6 +11249,21 @@ TEST: Comment lutter contre la cupidité des {{ayant droits}}
 # Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
 
 
+# bien d’autres
+__sgpl_bien_d_autres__
+    [<start>|,|(|et]  bien  d’  autre
+        <<- /sgpl/ not value(>1, "|part|") --1>> autres
+        && Au pluriel : “bien d’autres”, c’est-à-dire d’autres personnes, d’autres choses, d’autres considérations…|https://fr.wiktionary.org/wiki/bien_d%E2%80%99autres
+
+    [<start>|,|(|et]  bien  d’  autres  @:N.*:s¬:(?:[pi]|G)
+        <<- /gn/ --1>> \-1s                                         && Accord avec “autres”, mettez au pluriel.
+
+TEST: eux et bien d’{{autre}} viendront                     ->> autres
+TEST: bien d’autres {{considération}}                       ->> considérations
+TEST: bien d’autre part
+TEST: il s’agit bien d’autre chose.
+
+
 # bien
 __sgpl_très_bien__
     très biens
@@ -12784,12 +12799,15 @@ __purge_locutions_fois__
     ?à¿ d’ autres fois
     d’ innombrables fois
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
+    [de|d’] ?[assez|si|très|trop]¿ nombreuses fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     depuis la [première|dernière|~ième$] fois
     des fois
     des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois
+    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     encore une fois
     $:B fois
     $:B fois [de|d’] suite
+    $:B fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     la derrière fois
     la prochaine fois
     maintes fois
@@ -12797,8 +12815,10 @@ __purge_locutions_fois__
     pas plus [de|d’] [une|$:B] fois
     plein [de|d’] fois
     plus d’ une fois
+    plus d’ une fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     plusieurs fois
     plusieurs fois [de|d’] suite
+    plusieurs fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     pour la [première|seconde|dernière|~ième$] fois
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
@@ -15619,8 +15639,8 @@ __purge_locutions_potentielles__
     à cet instant [<end>|,|)]
         <<- ~1:3>> *
 
-    à [mon|ton|son|notre|votre|leur] sens @¬:A.*:[me]:[si]
-    à [mon|ton|son|notre|votre|leur] sens [<end>|,|)]
+    à [mon|ton|son|notre|votre|leur] [avis|sens] @¬:A.*:[me]:[si]
+    à [mon|ton|son|notre|votre|leur] [avis|sens] [<end>|,|)]
         <<- ~1:3>> *
 
     à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
