@@ -7692,12 +7692,28 @@ TEST: je traversais l’allée discrètement.
 
 
 # aux dépens
-__conf_aux_dépens__
-    au [dépend|dépends|dépens]
-    aux [dépend|dépends]
-        <<- /conf/ ->> aux dépens                       && Locution prépositive : « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
+__conf_aux_dépens!7__
+    !! à [mes|tes|ses|nos|vos|leurs] dépens ¡¡
+    [a|à] [mes|tes|ses|nos|vos|leurs] [dépend+s|dépens]
+        <<- /conf/ ->> à \2 dépens                                      && Locution : « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
 
+    [a|à] ces [dépend+s|dépens]
+        <<- /conf/ ->> à ses dépens                                     && Locution : « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
+
+    [a|à] [mon|ton|son|notre|votre|leur] [dépend+s|dépens]
+        <<- /conf/ ->> ="à "+ \2.replace("on", "es").replace("ON", "ES").replace("otre", "os").replace("OTRE", "OS").replace("eur", "eurs").replace("EUR", "EURS") + " dépens"
+        && Locution : « à mes/tes/ses/nos/vos/leurs dépens », car “dépens” est toujours pluriel.|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
+
+    !! aux dépens ¡¡
+    [au|aux] [dépend+s|dépens]
+        <<- /conf/ ->> aux dépens                                       && Locution prépositive : « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
+
+TEST: c’est comme toujours {{a leurs dépens}}
+TEST: il travaille {{à notre dépens}}
+TEST: c’est {{à ces dépens}}
+TEST: encore une manœuvre {{à son dépens}}
 TEST: Ce sont des clichés {{au dépend}} d’un grand chef. Tout ça pour faire du buzz et exister médiatiquement.
+TEST: agissons aux dépens de ces gens qui ne font que nous nuire.
 
 
 # arrivée / arrivé
@@ -8176,7 +8192,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 # cou / coup / coût
 __conf_coup_cout_cou1__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -8454,6 +8470,7 @@ TEST: Gagnez trois dés lors d’un test
 TEST: aucun des 19 peuples concernés n’en veut
 TEST: un des 18 sera bientôt là.
 TEST: Le délai des cinq ans pourra-t-il être tenu pour une réouverture ?
+TEST: Les dires de la sportive vont dans le sens des déclarations d’un autre des 281 autres athlètes français membres de la délégation.
 
 
 # diagnostic/diagnotique, pronostic/pronostique, public/publique
@@ -12734,6 +12751,7 @@ __purge_locutions_temps__
     par temps [de|d’] pluie
     pendant ce temps-là
     pendant quelque temps
+    pendant un [court|certain|petit] laps de temps
     pendant qu’ il ?en¿ est ?encore¿ temps
     peu [de|d’] temps auparavant
     pour quelque temps
@@ -14609,6 +14627,7 @@ __substantifs_multi_mots__
     >argent [de|d’] poche
     >arnaque à l’ assurance
     >article [de|d’] presse
+    >article à >sensation
     >assignation à résidence
     >attaché [de|d’] presse
     >attaque à main armée
@@ -14848,6 +14867,7 @@ __substantifs_multi_mots__
     >jeu d’ échecs
     >jeu [de|d’] >rôle
     >journal [de|d’] bord
+    >journal à >sensation
     >juge d’ instruction
     >langue [de|d’] bois
     >lame [de|d’] fond
@@ -14961,6 +14981,7 @@ __substantifs_multi_mots__
     >prise [de|d’] conscience
     prix à payer
     prix [de|d’] revient
+    puits [de|d’] [carbone|forage|lumière|pétrole|science]
     QG [de|d’] campagne
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
@@ -18627,6 +18648,7 @@ __conf_tâche_tache__
     >tacher  [de|d’]  [nous|vous]     [le|la|l’|les|en|y]       $:Y
     >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           $:Y
     >tacher  [de|d’]  [lui|leur]      en                        $:Y
+    >tacher  [de|d’]  $:Y
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.|https://fr.wiktionary.org/wiki/t%C3%A2cher
 
@@ -18670,6 +18692,7 @@ TEST: leur {{tache}} consiste à obéir et à fermer leur gueule
 TEST: ma {{tache}} est d’accomplir ce que personne d’autre ne peut faire.
 TEST: votre {{tache}} se résume à obéir à tout ce qu’on vous dit.
 TEST: tu ne me facilites vraiment pas la {{tache}}
+TEST: {{tache}} de réussir.
 TEST: une tâche dévalorisante.
 TEST: peiner à la tâche.
 
@@ -18705,9 +18728,15 @@ __conf_tant_temps_tan__
     au bon vieux [tant|>tan]
         <<- /conf/ --1>> temps                                      && Confusion. Pour parler d’un période heureuse, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
+    les [tant|>tan] >changer
+    les [tant|>tan] >avoir [changé+ses]
+        <<- /conf/ -2>> temps                                       && Confusion probable. Pour parler d’une période, écrivez « temps ».|https://fr.wiktionary.org/wiki/temps
+
 TEST: il est bien évidemment {{tant}} d’en finir avec ça.
 TEST: c’était le bon {{tan}}
 TEST: elle sait prendre du bon {{tant}}
+TEST: les {{tans}} changent
+TEST: les {{tant}} ont changé
 
 
 # tort / tord / tore / torr / tors
@@ -21540,14 +21569,14 @@ __infi_devoir!5__
     >devoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
     >devoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
     >devoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N"))
+        <<- /infi/ not value(\1, "|devoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
 
     >devoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
     >devoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
     >devoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
     >devoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N")) and not tag_before(\1, "_ceque_")
+        <<- /infi/ not value(\1, "|devoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N")) and not tag_before(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
 
     de  devoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
@@ -21566,6 +21595,7 @@ TEST: le devoir imposé par la hiérarchie
 TEST: Le devoir transcendé par l’amour de son pays.
 TEST: un devoir corrigé par plusieurs professeurs.
 TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
+TEST: les droits et devoirs les plus sacrés
 
 
 __infi_pouvoir!5__
@@ -21573,14 +21603,14 @@ __infi_pouvoir!5__
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|puis|pouvoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     >pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        <<- /infi/ not value(\1, "|puis|pouvoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     [de|d’]  pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
@@ -21603,21 +21633,21 @@ __infi_savoir!5__
     >savoir  ~..(?:ée?s?|ez)$
     >savoir  ~..(?:ée?s?|ez)$
     >savoir  ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|savoirs|") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|savoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        <<- /infi/ not value(\1, "|savoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     [de|d’]  savoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
@@ -21635,6 +21665,7 @@ TEST: un certain nombre de savoirs spécialisés
 TEST: je le savais désiré par de nombreuses personnes.
 TEST: il les savait commandités par ses ennemis.
 TEST: le savoir fabriqué dans les universités n’est guère reconnu.
+TEST: savoirs déconsidérés par les tyrans
 
 
 __infi_vouloir!5__
@@ -21642,11 +21673,11 @@ __infi_vouloir!5__
     >vouloir  ~..(?:ée?s?|ez)$
     >vouloir  ~..(?:ée?s?|ez)$
     >vouloir  ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|vouloirs|") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
     >vouloir  [le|la|l’|les|leur]  ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":[MN]") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|vouloirs|") and morph(\-1, ":V", ":[MN]") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
     >vouloir  [ne|n’]    [le|la|l’|les|leur]                                       ~..(?:ée?s?|ez)$
@@ -21654,14 +21685,14 @@ __infi_vouloir!5__
     >vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez)$
     >vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez)$
     >vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ not value(\1, "|vouloirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
     >vouloir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ai(?:s|t|ent))$
     >vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ai(?:s|t|ent))$
     >vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ai(?:s|t|ent))$
     >vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
+        <<- /infi/ not value(\1, "|vouloirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
     de  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
