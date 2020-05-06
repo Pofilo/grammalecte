@@ -787,7 +787,7 @@ class TextParser {
         return bChange;
     }
 
-    _createErrorFromRegex (sText, sText0, sSugg, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext) {
+    _createErrorFromRegex (sText, sText0, sSugg, nOffset, m, iGroup, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext) {
         let nStart = nOffset + m.start[iGroup];
         let nEnd = nOffset + m.end[iGroup];
         // suggestions
@@ -800,8 +800,8 @@ class TextParser {
         } else {
             lSugg = sSugg.gl_expand(m).split("|");
         }
-        if (bUppercase && lSugg.length > 0 && m[iGroup].slice(0,1).gl_isUpperCase()) {
-            lSugg = capitalizeArray(lSugg);
+        if (bCaseSvty && lSugg.length > 0 && m[iGroup].slice(0,1).gl_isUpperCase()) {
+            lSugg = (m[iGroup].gl_isUpperCase()) ? lSugg.map((s) => s.toUpperCase()) : capitalizeArray(lSugg);
         }
         // Message
         let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](sText, m) : sMsg.gl_expand(m);
@@ -824,7 +824,7 @@ class TextParser {
             lSugg = this._expand(sSugg, nTokenOffset, nLastToken).split("|");
         }
         if (bCaseSvty && lSugg.length > 0 && this.lToken[iFirstToken]["sValue"].slice(0,1).gl_isUpperCase()) {
-            lSugg = capitalizeArray(lSugg);
+            lSugg = (this.lToken[iFirstToken]["sValue"].gl_isUpperCase()) ? lSugg.map((s) => s.toUpperCase()) : capitalizeArray(lSugg);
         }
         // Message
         let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](this.lToken, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);

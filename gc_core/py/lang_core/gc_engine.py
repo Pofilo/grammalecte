@@ -673,7 +673,7 @@ class TextParser:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
         return bChange
 
-    def _createErrorFromRegex (self, sText, sText0, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+    def _createErrorFromRegex (self, sText, sText0, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext):
         nStart = nOffset + m.start(iGroup)
         nEnd = nOffset + m.end(iGroup)
         # suggestions
@@ -684,8 +684,8 @@ class TextParser:
             lSugg = []
         else:
             lSugg = m.expand(sRepl).split("|")
-        if bUppercase and lSugg and m.group(iGroup)[0:1].isupper():
-            lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
+        if bCaseSvty and lSugg and m.group(iGroup)[0:1].isupper():
+            lSugg = list(map(lambda s: s.upper(), lSugg))  if m.group(iGroup).isupper()  else list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
         sMessage = globals()[sMsg[1:]](sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
         if bShowRuleId:
@@ -705,7 +705,7 @@ class TextParser:
         else:
             lSugg = self._expand(sSugg, nTokenOffset, nLastToken).split("|")
         if bCaseSvty and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-            lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
+            lSugg = list(map(lambda s: s.upper(), lSugg))  if self.lToken[iFirstToken]["sValue"].isupper()  else list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
         sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
         if bShowRuleId:
