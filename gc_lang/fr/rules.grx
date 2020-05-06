@@ -4049,7 +4049,7 @@ TEST: entre deux chaises…
 
 __tu_mots_grammaticaux__
     au [delà|dehors|dessous|dessus|devant]
-        <<- /tu/ \2.islower() ->> au-\2                         && Il manque un trait d’union.
+        <<- /tu/ \2.islower() ->> \1-\2                         && Il manque un trait d’union.
 
     c’ est [à|a] dire
         <<- /tu/ ->> c’est-à-dire                               && Il manque les traits d’union.
@@ -4061,10 +4061,10 @@ __tu_mots_grammaticaux__
         <<- /tu/ not morph(>1, ":[WA]") ->> \1-ci               && Il manque un trait d’union.
 
     [moi|toi|soi|lui|elle|vous] même
-        <<- /tu/ not value(>1, "|si|s’|") ->> \1-même           && Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
+        <<- /tu/ not value(>1, "|si|s’|") ->> \1-\2             && Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
 
     [nous|vous|eux|elles] mêmes
-        <<- /tu/ ->> \1-mêmes                                   && Il manque un trait d’union.
+        <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
 TEST: {{au delà}}                                                               ->> au-delà
 TEST: {{Au dessus}}                                                             ->> Au-dessus
@@ -4082,7 +4082,7 @@ __tu_locutions__
     [à|a] [la|là] [va|vas] vite
         <<- /tu/ ->> à la va-vite                               && Il manque un trait d’union.
 
-    [à|a] tout [va|vas]
+    [à|a] tout [va|vas|vat]
         <<- /tu/ ->> à tout-va                                  && Il manque un trait d’union.
 
     [à|a] contre [>cœur|coeur]
@@ -6759,7 +6759,7 @@ __conf_à_a_infinitif__
     a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] $:Y
     a  [le|la|l’|les|leur]  $:Y¬:N
         <<- /conf/ not value(<1, "|il|elle|iel|on|n’|m’|t’|l’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
-        -1>> à                                                      && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à                                                      && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: scrupuleux {{a}} n’en toucher qu’une part infime.
 TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
@@ -6770,7 +6770,7 @@ TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 
 __conf_à_qui_infinitif__
     *WORD  a  qui  @:(?:Y|Os)
-        <<- /conf/ morph(\1, ":N", ":Ov") -2>> à                    && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ morph(\1, ":N", ":Ov") -2>> à                    && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: il n’y avait personne {{a}} qui parler de nos problèmes       ->> à
 TEST: des gens {{a}} qui offrir ça                                  ->> à
@@ -7250,7 +7250,7 @@ __conf_à_a_locutions__
     a y [réfléchir|songer|penser]
     a y regarder [de|d’] plus près
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
     a [mon|ton|son|notre|votre|leur] grand désarroi
@@ -7260,7 +7260,7 @@ __conf_à_a_locutions__
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
     a [mes|tes|ses|nos|vos|leurs] risques et périls
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a bonne distance                                                                                [de|d’|des|du|<end>|,]
     a [base|bord|cause|contre-courant|côté|court|défaut|droite|gauche|partir|portée|propos|rebours] [de|d’|des|du|<end>|,]
@@ -7268,7 +7268,7 @@ __conf_à_a_locutions__
     a l’ autre bout                                                                                 [de|d’|des|du|<end>|,]
     a la [portée|suite]                                                                             [de|d’|des|du|<end>|,]
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
@@ -7299,7 +7299,7 @@ __conf_substantif_à_substantif!3__
         <<- /conf/ \2.islower()
             and not value(\3, "|accès|bon|bonne|beau|besoin|charge|confiance|connaissance|conscience|crainte|droit|envie|été|faim|grand|grande|hâte|honte|interdiction|lieu|mauvaise|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|vocation|")
             and morph(\1, ":N", "*")
-        -2>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -2>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: les bobos {{a}} trottinette
 TEST: la lettre A est la première lettre de l’alphabet
@@ -7396,7 +7396,7 @@ __conf_a_à_substantifs__
     >vol a main armée
     >usine a gaz
     >vague a l’ âme
-        <<- /conf/ -2>> à                   && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                   && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: C’est un arc {{a}} poulies
 TEST: Ceci est une arme {{a}} feu.
@@ -7507,7 +7507,7 @@ TEST: elles chantaient à tout bout de champ.
 
 __conf_celui_celle_à_qui__
     [celui|celle|ceux|celles]  a  qui
-        <<- /conf/ -2>> à                           && Confusion. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                           && Confusion. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Ceux {{a}} qui nous avons notifié le problème sont partis.
 TEST: Il y a qui au dîner ce soir ?
@@ -7882,7 +7882,7 @@ TEST: ce qui est capital dans notre société, c’est l’argent.
 __conf_ce_ceux_se!6__
     pour se faire ,
     pour se faire @:G¬:[AYD]
-        <<- /conf/ -2>> ce                              && Confusion probable. Dans cette locution, il faut employer “ce”.|http://fr.wiktionary.org/wiki/pour_ce_faire
+        <<- /conf/ -2>> ce                              && Confusion probable. Dans cette locution, il faut employer “ce”.|https://fr.wiktionary.org/wiki/pour_ce_faire
 
     se [que|qu’|qui|dont|malgré|pourquoi|avec|pour|par]
         <<- /conf/ -1>> ce                              && Confusion. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
@@ -9186,7 +9186,7 @@ __conf_la_là!7__
 
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
     la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute|non)/
-        <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       && Confusion probable. Écrivez “là” si vous voulez dire “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
+        <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       && Confusion probable. Écrivez “là” si vous voulez dire “ici”.|https://fr.wiktionary.org/wiki/l%C3%A0
 
     [ce|cet|cette|ces]  /-la
         <<- /conf/ -2>> =\2[:-2]+"là"                                                               && Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
@@ -9217,7 +9217,7 @@ TEST: de la non moins indispensable défense des libertés, individuelles ou col
         <<- /conf/ __else__ -1>> =\1[:-3]+" là"                                                     && Confusion. Si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
     [ne|me|te|se] là
-        <<- /conf/ -2>> la                                                                          && Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/la
+        <<- /conf/ -2>> la                                                                          && Confusion : “là” signifie “ici”.|https://fr.wiktionary.org/wiki/la
 
 TEST: {{jusque-la}}, tout va bien
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
@@ -9624,11 +9624,11 @@ TEST: c’en est où ?
 __conf_pâle_pale__
     [bien|très|trop|si|vraiment|tellement] >pale
         <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")
-        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
+        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|https://fr.wiktionary.org/wiki/pale
 
     >pale [>imitation|>imitatrice|>rayon]
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
-        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
+        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|https://fr.wiktionary.org/wiki/pale
 
 TEST: elles sont si {{pales}}.
 TEST: cette {{pale}} imitation d’un chef-d’œuvre
@@ -10021,7 +10021,7 @@ TEST: je transporte des porcs de Calais à Londres.
 # pot aux roses / poteau rose
 __conf_pot_aux_roses__
     poteau rose
-        <<- /conf/ ->> pot aux roses                                        && Confusion probable. On dit : « découvrir le pot aux roses ».|http://fr.wiktionary.org/wiki/d%C3%A9couvrir_le_pot_aux_roses
+        <<- /conf/ ->> pot aux roses                                        && Confusion probable. On dit : « découvrir le pot aux roses ».|https://fr.wiktionary.org/wiki/d%C3%A9couvrir_le_pot_aux_roses
 
 TEST: Ils ont découvert le {{poteau rose}}.
 
@@ -10468,7 +10468,7 @@ TEST: Elle remarqua un {{repaire}} à la craie.
 # ris / riz
 __conf_ris_de_veau_agneau__
     [ri|riz] [de|d’] [>veau|agneau+x|chasse]
-        <<- /conf/ -1>> ris                                     && Confusion.|http://fr.wiktionary.org/wiki/ris
+        <<- /conf/ -1>> ris                                     && Confusion.|https://fr.wiktionary.org/wiki/ris
 
     [ri|ris] au lait
     [ri|ris] [arborio|basmati|blanc|brun|cantonais|carnaroli|complet|semi-complet|incollable|OGM|pilaf|soufflé]
@@ -10500,7 +10500,7 @@ __conf_saint_sain_sein_seing__
     [blanc-sein+s|blancs-sein+s]
     [blanc-sain+s|blancs-sain+s]
     [blanc-saint+s|blancs-saint+s]
-        <<- /conf/ ->> blanc-seing|blancs-seings                && Confusion.|http://fr.wiktionary.org/wiki/blanc-seing
+        <<- /conf/ ->> blanc-seing|blancs-seings                && Confusion.|https://fr.wiktionary.org/wiki/blanc-seing
 
 TEST: il priait {{sain}} Anselme de le secourir.
 TEST: Au {{sain}} de l’obscurité, elle se sentait en sécurité.
@@ -10514,7 +10514,7 @@ TEST: {{blanc-sein}}
 __conf_ne_pas_être_sans_savoir__
     >être [pas|plus|jamais|guère] sans >ignorer
     ne [pas|plus|jamais|guère] être sans >ignorer
-        <<- /conf/ --1>> savoir         && Confusion probable : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
+        <<- /conf/ --1>> savoir         && Confusion probable : vous écrivez l’inverse de ce que vous voulez dire.|https://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
 
 TEST: Vous n’êtes pas sans {{ignorer}} que…
 TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.
@@ -10599,6 +10599,20 @@ TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris
 TEST: si venir à la conférence coûte autant, il est préférable de s’abstenir.
 
 
+__conf_sitôt_dit_sitôt_fait__
+    !! sitôt dit ?,¿ sitôt fait ¡¡
+    [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
+    sitôt [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
+    sitôt [dis|dix|dit+s|di] ?,¿ si [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
+    si [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
+    s’ [y|i] [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ s’ [y|i] [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
+        <<- /conf/ ->> sitôt dit, sitôt fait
+        && Confusion. Locution « sitôt dit, sitôt fait ».|https://fr.wiktionary.org/wiki/sit%C3%B4t_dit,_sit%C3%B4t_fait
+
+TEST: {{si tôt dit, sitôt fait}}
+TEST: sitôt dit, sitôt fait.
+
+
 # s’y / si
 __conf_s_y_si__
     ne  si  @:V
@@ -10654,7 +10668,7 @@ __conf_soi_disant__
     [soie-disant+ses]
     [soies-disant+ses]
     [soit-disant+ses]
-        <<- /conf/ ->> soi-disant                                                                   && Confusion : “soi-disant” est un adjectif invariable.|http://fr.wiktionary.org/wiki/soi-disant
+        <<- /conf/ ->> soi-disant                                                                   && Confusion : “soi-disant” est un adjectif invariable.|https://fr.wiktionary.org/wiki/soi-disant
 
 TEST: Méfiez-vous de cette {{soi-disante}} sorcière.
 TEST: Méfiez-vous de cette {{soit-disant}} sorcière.
@@ -10832,19 +10846,19 @@ __conf_sûr_sur__
     sur [de|d’] [la|l’] $:Y
     sur [de|d’] $:Y
         <<- /conf/ -1>> sûr
-        && Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+        && Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
     [sure|surs|sures] [de|d’|que|qu’]
         <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")
-        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
     en >lieu sur
         <<- /conf/ -3>> sûr
-        && Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+        && Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
     en >être >sur
         <<- /conf/ -3>> =\3.replace("u", "û").replace("U", "Û")
-        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
 TEST: Je suis {{sur}} de Patrick.
 TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
@@ -10899,7 +10913,7 @@ __conf_tant_temps_tan_1__
         <<- /conf/ ->> de temps en temps                    && Confusion. Écrivez « de temps en temps ».
 
     depuis la [nui|nuit] des [>tan|tant]
-        <<- /conf/ --1>> temps                              && Confusion. Locution “depuis la nuit des temps”.|http://fr.wiktionary.org/wiki/temps
+        <<- /conf/ --1>> temps                              && Confusion. Locution “depuis la nuit des temps”.|https://fr.wiktionary.org/wiki/temps
 
     [à|a] [>tan|tant] [partiel|partiels|plein|pleins]
         <<- /conf/ -2>> temps                               && Confusion. Pour ce qui est temporel, écrivez “temps”.
@@ -10911,12 +10925,12 @@ __conf_tant_temps_tan_1__
         <<- /conf/ -2>> temps                               && Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
 
     [après|avec] [temps|>tan] [de|d’]
-        <<- /conf/ -2>> tant                                && Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|http://fr.wiktionary.org/wiki/tant
+        <<- /conf/ -2>> tant                                && Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|https://fr.wiktionary.org/wiki/tant
 
     en [temps|>tan] [que|qu’]
         <<- not (value(\2, "|temps|") and value(<1, "|temps|")) >>>
         <<- /conf/ value(>1, "|tel|tels|telle|telles|") -2>> tant       && Confusion. Locution « en tant que tel ».|https://fr.wiktionary.org/wiki/en_tant_que_tel
-        <<- /conf/ __else__ -2>> tant                                   && Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
+        <<- /conf/ __else__ -2>> tant                                   && Confusion. Écrivez « en tant que ».|https://fr.wiktionary.org/wiki/en_tant_que
 
     >tan [pis|pi]
         <<- /conf/ ->> tant pis                             && Confusion. Locution “tant pis”.|https://fr.wiktionary.org/wiki/tant_pis
@@ -11125,33 +11139,33 @@ __conf_voie_voix_vois_voit__
     de vive [>voie|vois|voit]
     [à|a] portée [de|d’] [>voie|vois|voit]
     >éclat [de|d’] [>voie|vois|voit]
-        <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
+        <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     à [>voie|vois|voit] [basse|haute|basses|hautes]
-        <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
+        <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     [>entendre|>écouter] ?@:[WX]¿ $:D >voie
-        <<- /conf/ -3>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
+        <<- /conf/ -3>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     sur la bonne voix
     en ?[si|très|trop]¿ bonne [voix|vois|voit]
-        <<- /conf/ --1>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+        <<- /conf/ --1>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     >ouvrir ?@:[WX]¿ la voix [à|au|aux|<end>]
-        <<- /conf/ -3>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+        <<- /conf/ -3>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     en voix [de|d’] [développement|disparition|guérison|résorption|acquisition|achèvement|extinction|obtention]
     par voix de >conséquence
     par voix [médicamenteuse+s]
-        <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+        <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     voix [abdominale|anale|biliaire|bitumée|carrossable|communale|express|interdite|intramusculaire|intraveineuse|piétonne|principale|prioritaire|privée|publique|déserte|romaine|appienne|flaminienne|ferrée|ferroviaire|lactée|lacrymale|aérienne|maritime|fluviale|terrestre|navigable|détournée|déviée|buccale|digestive|urinaire|respiratoire|parallèle|administrative|diplomatique|gouvernementale|législative|hiérarchique|pavée|rectiligne|sinueuse|souterraine|urbaine]
     voix [de|d’] garage
     voix [de|d’] [recours|perdition]
-        <<- /conf/ -1>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+        <<- /conf/ -1>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     voix [abdominales|anales|biliaires|bitumées|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|pavées|rectilignes|sinueuses|souterraines|urbaines]
-        <<- /conf/ -1>> voies       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+        <<- /conf/ -1>> voies       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
 TEST: elles sont là, à portée de {{voie}}
 TEST: ces patients sont en {{voix}} de guérison.
@@ -13402,6 +13416,7 @@ __purge_locutions__
     bon gré ?,¿ mal gré
     bras dessus ?,¿ bras dessous
     çà et là
+    cahin-caha
     ce faisant
     cependant
     [cela|ça|ceci] mis à part
@@ -13729,7 +13744,7 @@ __purge_locutions__
     en tous les cas
     en tous les sens
     en tout bien tout honneur
-    en tout [cas|genre|lieu|sens|temps]
+    en tout [cas|genre|lieu|sens|point|temps]
     en tout et pour tout
     en tout état [de|d’] cause
     en tout premier lieu
@@ -13843,6 +13858,7 @@ __purge_locutions__
     par bonté [de|d’] [âme|cœur]
     par ce biais
     par certains [aspects|côtés]
+    par définition
     par grand froid
     par gros temps
     par mesure [de|d’] sécurité
@@ -13995,6 +14011,7 @@ __purge_locutions__
     si tel est le cas
     si tant est que ce ?[ne|n’]¿ [soit|fût] ?pas¿ @:A.*:[me]:[si]
     sine qua non
+    sitôt dit ?,¿ sitôt fait
     six pieds sous terre
     soi-disant
     soit dit en passant
@@ -14008,6 +14025,7 @@ __purge_locutions__
     sur ce ,
     sur ce plan-là
     sur la défensive
+    sur le fil du rasoir
     sur la forme comme sur le fond
     sur la même longueur d’ onde
     sur le plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
@@ -14786,6 +14804,7 @@ __substantifs_multi_mots__
     >effort [de|d’] guerre
     >élément à charge
     >emploi du temps
+    >employé [de|d’] maison
     >ennui [de|d’] santé
     >enterrement [de|d’] vie [de|d’] garçon
     >enterrement [de|d’] vie [de|d’] jeune fille
@@ -14967,6 +14986,7 @@ __substantifs_multi_mots__
     >pièce à conviction
     >pièce [de|d’] [théâtre|monnaie]
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >pile à [combustible|hydrogène]
     >pince à linge
     >pistolet à [eau|plomb]
     >placard à [>balai|chaussures]
@@ -14986,6 +15006,7 @@ __substantifs_multi_mots__
     >pot [de|d’] [chambre|colle|départ]
     >poudre aux yeux
     >pouvoir d’ achat
+    >président en exercice
     >presse à >scandale
     preuve ?suffisante¿ du contraire
     preuves ?suffisantes¿ du contraire
@@ -15027,6 +15048,7 @@ __substantifs_multi_mots__
     >salle à manger
     >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
     >salon [de|d’] coiffure
+    sas [de|d’] [confinement|décompression|décontamination|désinfection|livraison|protection|secours|sécurité]
     >sclérose en plaques
     [secret+s] défense
     >seconde d’ arc
@@ -15104,8 +15126,8 @@ __substantifs_multi_mots__
     >voiture [de|d’] location
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
-        <<- ~2:0>> *
-        <<- =>> =select(\1, ":N")
+        <<- not (morph(\1, ":[123][sp]") and morph(<1, ":O[sv]")) ~2:0>> *
+        <<- __also__ =>> =select(\1, ":N")
 
     >blanc comme neige
     >blanc comme [de|d’] la craie
@@ -16346,6 +16368,7 @@ TEST: Berlin fait neuf fois la superficie de Paris et est deux fois moins peupl�
 TEST: Le risque de décès était deux fois plus élevé chez les malades ayant reçu de l’hydroxychloroquine que chez ceux n’en ayant pas reçu, une différence qui s’estompait avec l’ajout d’azithromycine. Cette combinaison ne changeait cependant rien à la probabilité d’être placé sous respirateur.
 TEST: dans les épidémies, le facteur temps compte beaucoup
 TEST: dans l’Histoire, le business as usual est redoutablement résilient
+TEST: la crise pourrait durer plus longtemps qu’envisagé.
 
 
 @@@@
@@ -16443,7 +16466,7 @@ __conf_à_a_après_verbes__
     >vendre a >perte
     >venir a bout
     [>venir|>revenir] a point
-        <<- /conf/ -2>> à                                                   && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                                                   && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     >accéder a
     >appartenir a
@@ -16480,7 +16503,7 @@ __conf_à_a_après_verbes__
     nous nous en >remettre a
     vous vous en >remettre a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") and not value(>1, "|été|")
-        --1>> à                                                             && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        --1>> à                                                             && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     [>abandonner|>accorder|>adapter|>adjoindre|>adresser|>affirmer|>agréer|>aider|>ajouter|>amener|>annoncer|>appeler|>applaudir|>appliquer|>apporter|>apprendre|>arguer|>argüer|>aspirer|>assujettir|>attacher|>atteindre|>attoucher|>attribuer|>autoriser|>avancer|>céder|>changer|>chicaner|>coller|>commander|>commencer|>conclure|>conférer|>confier|>confirmer|>conseiller|>consentir|>conspirer|>continuer|>convertir|>couper|>couter|>coûter|>croire|>décider|>déclarer|>décrire|>défendre|>déférer|>demander|>destiner|>devoir|>dire|>disposer|>disputer|>donner|>échapper|>écrire|>élever|>employer|>engager|>enjoindre|>entendre|>envoyer|>exercer|>expliquer|>exposer|>falloir|>fermer|>filer|>forfaire|>former|>fournir|>gouter|>goûter|>impartir|>imputer|>infliger|>insulter|>intégrer|>intéresser|>jeter|>justifier|>lier|>lire|>livrer|>manquer|>mesurer|>mettre|>montrer|>obliger|>obtenir|>offrir|>ouvrir|>parer|>parler|>passer|>payer|>penser|>permettre|>porter|>pourvoir|>prendre|>préparer|>présenter|>présider|>prétendre|>promettre|>protester|>quémander|>rappeler|>rapprendre|>ravir|>réapprendre|>recoller|>recourir|>redéclarer|>redire|>référer|>réfléchir|>refuser|>regarder|>réimputer|>remesurer|>remettre|>remontrer|>rendre|>renoncer|>reparler|>répondre|>reprendre|>répugner|>retoucher|>retravailler|>retweeter|>réussir|>révéler|>rêver|>satisfaire|>schtroumpfer|>servir|>signaler|>sonner|>soumettre|>souscrire|>soutenir|>statuer|>suppléer|>surseoir|>sursoir|>survendre|>téléphoner|>témoigner|>tendre|>tenir|>tirer|>toucher|>traduire|>travailler|>tweeter|>unir|>veiller|>vendre|>virer|>viser|>vouloir|>aboutir|>acquiescer|>adhérer|>apparaitre|>apparaître|>compatir|>complaire|>concourir|>confiner|>contribuer|>convenir|>coopérer|>correspondre|>déplaire|>désobéir|>disparaitre|>équivaloir|>mentir|>naitre|>naître|>nuire|>obéir|>obtempérer|>participer|>plaire|>profiter|>réagir|>rechigner|>renaitre|>renaître|>résister|>ressembler|>retéléphoner|>seoir|>songer|>sourire|>succéder|>succomber|>suffire|>surréagir|>survivre|>tarder|>vaquer] a
     >arriver a
@@ -16494,17 +16517,17 @@ __conf_à_a_après_verbes__
     >prêter serment a
     >rendre service a
         <<- /conf/ not tag_before(\1, "_propsub_") and not morph(\1, ":[YNA]") and not value(>1, "|été|")
-        --1>> à                                                             && Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        --1>> à                                                             && Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     @:V¬:[YGNAWM]  a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_propsub_") and not morph(>1, ":Q")
-        --1>> à                                                             && Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        --1>> à                                                             && Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     [/VCint|/VCimp]  a
-        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     >passer du coq a l’ âne
-        <<- /conf/ -4>> à                                                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -4>> à                                                   && Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: en proie {{a}} toutes sortes d’illusions
 TEST: ce contrat arrive {{a}} échéance.
@@ -16678,10 +16701,10 @@ __conf_annales_anales__
     >anal du [baccalauréat|bac|brevet]
     >anal de [>physique|>chimie|>mathématique|>biologie|>géographie|>philosophie]
     >anal d’ [>histoire|>économie]
-        <<- /conf/ -1>> annales                         && Confusion : “\1” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
+        <<- /conf/ -1>> annales                         && Confusion : “\1” est l’adjectif relatif à l’anus.|https://fr.wiktionary.org/wiki/annales
 
     [les|ces|des|mes|tes|ses|nos|vos|leurs|plusieurs] >anal
-        <<- /conf/ -2>> annales                         && Confusion : “\2” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
+        <<- /conf/ -2>> annales                         && Confusion : “\2” est l’adjectif relatif à l’anus.|https://fr.wiktionary.org/wiki/annales
 
 TEST: {{anales}} du bac
 TEST: des {{anales}} littéraires
@@ -16833,7 +16856,7 @@ TEST: sur les bancs de l’école.
 # bât / bas
 __conf_bât_bas_bat__
     le [bas|bat] >blesser
-        <<- /conf/ -2>> bât                                             && Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
+        <<- /conf/ -2>> bât                                             && Confusion : là où le bât blesse.|https://fr.wiktionary.org/wiki/b%C3%A2t
 
     [>âne|>cheval|>mule|>mulet|>jument|>sacoche] de [bas|>bat]
         <<- /conf/ -3>> bât                                             && Confusion probable.|https://fr.wiktionary.org/wiki/b%C3%A2t
@@ -16913,14 +16936,14 @@ TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour esp�
 __conf_c_en_être__
     s’ en  [es|est|sera|seras|étais|était] [fini+ses|finit|terminé+ses]
         <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
-        -1:2>> c’en                                         && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+        -1:2>> c’en                                         && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
 
     s’ en  [es|est|sera|seras|étais|était] [assez|trop] [<end>|,|de|d’]
-        <<- /conf/ -1:2>> c’en                              && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+        <<- /conf/ -1:2>> c’en                              && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
 
     s’ en  [es|est|sera|seras|étais|était] @:A¬:[GVW]
         <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
-        -1:2>> c’en                                         && Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».3|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+        -1:2>> c’en                                         && Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».3|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
 
 TEST: tout ça, {{s’en}} est fini.
 TEST: {{s’en}} est assez de ces foutaises.
@@ -17039,10 +17062,10 @@ TEST: faudra rendre bon {{conte}} de vos actes
 
 
 __conf_compter_conter_comté__
-    [s’|m’|t’]          en  >laisser  [compter|compté+ses|>comté]
-    nous nous           en  >laisser  [compter|compté+ses|>comté]
-    vous vous           en  >laisser  [compter|compté+ses|>comté]
-    ne pas [nous|vous]  en  laisser   [compter|compté+ses|>comté]
+    [s’|m’|t’]          en  >laisser  [compter|compté+ses|comptais|>comté]
+    nous nous           en  >laisser  [compter|compté+ses|comptais|>comté]
+    vous vous           en  >laisser  [compter|compté+ses|comptais|>comté]
+    ne pas [nous|vous]  en  laisser   [compter|compté+ses|comptais|>comté]
         <<- /conf/ --1>> conter         && Confusion. Locution “s’en laisser conter”, c’est-à-dire se laisser raconter des histoires.|https://fr.wiktionary.org/wiki/ne_pas_s%E2%80%99en_laisser_conter
 
     >compter fleurette
@@ -17104,7 +17127,7 @@ TEST: C’est {{la}} {{champ de l’heur}}.
 
 __conf_champ_chant__
     >chant de [>blé|>betterave|>fleur|maïs|mais|>tournesol|>tulipe|>force|>lavande]
-        <<- /conf/ -1>> =\1.replace("nt", "mp")         && Confusion probable. Un chant est ce qui se chante.|http://fr.wiktionary.org/wiki/champ
+        <<- /conf/ -1>> =\1.replace("nt", "mp")         && Confusion probable. Un chant est ce qui se chante.|https://fr.wiktionary.org/wiki/champ
 
 TEST: Il traversa le {{chant}} de betteraves.
 
@@ -17195,14 +17218,14 @@ __conf_côte_cote_cotte__
 
     [>côte|>cotte] [>mobilier|>foncier]
     [>côte|>cotte] [de|d’] [niveau|popularité|confiance|alerte|altitude|amour]
-        <<- /conf/ -1>> =\1.replace("ô", "o").replace("tt", "t")    && Confusion : utilisez « cote » pour chiffrer (cotation).|http://fr.wiktionary.org/wiki/cote
+        <<- /conf/ -1>> =\1.replace("ô", "o").replace("tt", "t")    && Confusion : utilisez « cote » pour chiffrer (cotation).|https://fr.wiktionary.org/wiki/cote
 
     [>cote|>côte] de >maille
         <<- /conf/ -1>> =\1.replace("ô", "o").replace("t", "tt")    && Confusion : écrivez « cotte » pour la cotte de mailles.|https://fr.wiktionary.org/wiki/cotte_de_mailles
 
     >avoir la côte
     >avoir la cotte [@:[RCO]|,|<end>]
-        <<- /conf/ -3>> cote                                        && Confusion probable : utilisez “cote” (cotation).|http://fr.wiktionary.org/wiki/cote
+        <<- /conf/ -3>> cote                                        && Confusion probable : utilisez “cote” (cotation).|https://fr.wiktionary.org/wiki/cote
 
     [>côte|>cotte|>cote]  [à|a|á]  [>côte|>cotte|>cote]
         <<- /conf/ ->> côte à côte                                  && Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
@@ -17310,15 +17333,15 @@ TEST: Des hommes {{dénudés}} de compassion.
 __conf_erreur_déceler_desseller_desceller__
     [>erreur|>faute|>incohérence|>problème|>bug|>bogue|>faille|>maladie|>défaut|>défaillance|>perturbation|>irrégularité] <> [>desseller|>desceller]
         <<- /conf/ --1>> =\-1.replace("escell", "écel").replace("essell", "écel")
-        && Confusion probable si ce verbe se rapporte à “\1”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle. Si vous voulez dire “remarquer”, “dévoiler”, “découvrir”, écrivez “déceler”.|http://fr.wiktionary.org/wiki/déceler
+        && Confusion probable si ce verbe se rapporte à “\1”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle. Si vous voulez dire “remarquer”, “dévoiler”, “découvrir”, écrivez “déceler”.|https://fr.wiktionary.org/wiki/déceler
 
     [>desseller|>desceller] [l’|@:[BD]] [>petit|>grand|>énorme|>dangeureux|>formidable|>fort|>léger|>merveilleux|>nouveau|>vrai|>réel|>sévère|>véritable] [>acidité|>activité|>allergie|>anévrisme|>anomalie|>arnaque|>appendicite|>atrophie|>baisse|>bébé|>blessure|>bug|>bogue|>carie|>cancer|>cause|>changement|>complot|>comète|>concentration|>corrélation|>croissance|>défaut|>défaillance|>demande|>dépression|>diabète|>différence|>diminution|>effluve|>épilepsie|>erreur|>essai|>existence|>grossesse|>grosseur|>faille|>faute|>fuite|>fraude|>grippe|>handicap|>hausse|>hémorragie|>hostilité|>hypertrophie|>incompatibilité|>incohérence|>infection|>infraction|>indice|>infidélité|>insuffisance|>intrigue|>irrégularité|>leucémie|>lésion|>lueur|>lumière|>maladie|>malformation|>manœuvre|>manipulation|>molécule|>mensonge|>mutation|>once|>perturbation|>personnalité|>piste|>perte|>planète|>exoplanète|>présence|>qualité|>odeur|>opportunité|>otite|>problème|>surdité|>talent|>tendance|>tentative|>tumeur|>utilisation|hoax|>variation|>vie|virus]
         <<- /conf/ -1>> =\1.replace("escell", "écel").replace("essell", "écel")
-        && Confusion probable si ce mot se rapporte à “\3 \4”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|http://fr.wiktionary.org/wiki/déceler
+        && Confusion probable si ce mot se rapporte à “\3 \4”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|https://fr.wiktionary.org/wiki/déceler
 
     [>desseller|>desceller] [l’|@:[BD]] [>acidité|>activité|>allergie|>anévrisme|>anomalie|>arnaque|>appendicite|>atrophie|>baisse|>bébé|>blessure|>bug|>bogue|>carie|>cancer|>cause|>changement|>complot|>comète|>concentration|>corrélation|>croissance|>défaut|>défaillance|>demande|>dépression|>diabète|>différence|>diminution|>effluve|>épilepsie|>erreur|>essai|>existence|>grossesse|>grosseur|>faille|>faute|>fuite|>fraude|>grippe|>handicap|>hausse|>hémorragie|>hostilité|>hypertrophie|>incompatibilité|>incohérence|>infection|>infraction|>indice|>infidélité|>insuffisance|>intrigue|>irrégularité|>leucémie|>lésion|>lueur|>lumière|>maladie|>malformation|>manœuvre|>manipulation|>molécule|>mensonge|>mutation|>once|>perturbation|>personnalité|>piste|>perte|>planète|>exoplanète|>présence|>qualité|>odeur|>opportunité|>otite|>problème|>surdité|>talent|>tendance|>tentative|>tumeur|>utilisation|hoax|>variation|>vie|virus]
         <<- /conf/ -1>> =\1.replace("escell", "écel").replace("essell", "écel")
-        && Confusion probable si ce mot se rapporte à “\3”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|http://fr.wiktionary.org/wiki/déceler
+        && Confusion probable si ce mot se rapporte à “\3”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|https://fr.wiktionary.org/wiki/déceler
 
 TEST: il faut régler les problèmes {{descellés}} dans le code de l’analyseur syntaxique.
 TEST: il y a une erreur qu’on peut {{desceller}} dans ses analyses.
@@ -17630,25 +17653,25 @@ TEST: j’ai vu un {{flamand}} rose.
 __conf_foi_fois_foie__
     [de|la|cette|une] mauvaise [fois|>foie]
     [ma|ta|sa|notre|votre|leur] fois
-        <<- /conf/ --1>> foi                                                && Confusion probable.|http://fr.wiktionary.org/wiki/foi
+        <<- /conf/ --1>> foi                                                && Confusion probable.|https://fr.wiktionary.org/wiki/foi
 
     sans [fois|>foie] ?,¿ ni >loi
-        <<- /conf/ -2>> foi                                                 && Confusion probable.|http://fr.wiktionary.org/wiki/foi
+        <<- /conf/ -2>> foi                                                 && Confusion probable.|https://fr.wiktionary.org/wiki/foi
 
     bonne [fois|>foie]
         <<- /conf/ not (value(<1, "|une|") and after("(?i)^ +pour toute") )
-        -2>> foi                                                            && Confusion probable.|http://fr.wiktionary.org/wiki/foi
+        -2>> foi                                                            && Confusion probable.|https://fr.wiktionary.org/wiki/foi
 
     [>faire|>perdre|>donner|>avoir]  [fois|>foie]
     >avoir  la  [fois|>foie]
-        <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur religieuse, écrivez “foi”.|http://fr.wiktionary.org/wiki/foi
+        <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur religieuse, écrivez “foi”.|https://fr.wiktionary.org/wiki/foi
 
     [>huile|>terrine|>pâté] de >foi
-        <<- /conf/ --1>> foie                                               && Confusion probable. L’organe s’écrit “foie”.|http://fr.wiktionary.org/wiki/foie
+        <<- /conf/ --1>> foie                                               && Confusion probable. L’organe s’écrit “foie”.|https://fr.wiktionary.org/wiki/foie
 
     [la|une|cette] prochaine foi
     une bonne foi pour [toute|toutes]
-        <<- /conf/ -3>> fois                                                && Confusion probable.|http://fr.wiktionary.org/wiki/fois
+        <<- /conf/ -3>> fois                                                && Confusion probable.|https://fr.wiktionary.org/wiki/fois
 
 TEST: ces gens sont de mauvaise {{fois}}
 TEST: C’est une personne de bonne {{fois}}.
@@ -17861,7 +17884,7 @@ TEST: Faisons des {{levers de fond}}
 # lever un lièvre / soulever
 __conf_lever_un_lièvre__
     >soulever [un|le|des|les|quelques|plusieurs] >lièvre
-        <<- /conf/ -1>> =\1[3:]                                 && Expression impropre. On écrit « lever un lièvre ».|http://fr.wiktionary.org/wiki/lever_le_li%C3%A8vre
+        <<- /conf/ -1>> =\1[3:]                                 && Expression impropre. On écrit « lever un lièvre ».|https://fr.wiktionary.org/wiki/lever_le_li%C3%A8vre
 
 TEST: j’ai {{soulevé}} un lièvre, là !
 
@@ -17877,31 +17900,31 @@ TEST: il ne faut pas {{chasser}} la proie pour l’ombre.
 # lieux / lieues / lieus
 __conf_lieux_lieues_lieus__
     [>assurance|>état|>visite|>maître|>maitre|>seigneur|>magie|>chef|>responsable|respect|entretien|propreté|>propriétaire|tranquillité|dans|vers|>plan] des [lieues|lieus]
-        <<- /conf/ --1>> lieux                                  && Confusion probable. Pour désigner un endroit, écrivez “lieux”.|http://fr.wiktionary.org/wiki/lieu
+        <<- /conf/ --1>> lieux                                  && Confusion probable. Pour désigner un endroit, écrivez “lieux”.|https://fr.wiktionary.org/wiki/lieu
 
     [>lieue|lieus] [>insolite|>accessible|>accueillant|>inaccessible|>inexploré|>lointain|>louche|>proche|>touristique|saint+s|>connu|>inconnu|>mythique|>public|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec+s]
     [>lieue|lieus] de [>communication|>concert|>conférence|>contemplation|>culte|>chasse|>détente|>détention|>départ|>méditation|>mémoire|>pouvoir|>prière|>prostitution|>sépulture|repos|>refuge|>stockage|>travail|>vacance|>spectacle|>conférence|>rassemblement|>sortie|>stationnement|>rencontre|>vacance|>villégiature]
-        <<- /conf/ -1>> lieu|lieux                              && Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
+        <<- /conf/ -1>> lieu|lieux                              && Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|https://fr.wiktionary.org/wiki/lieu
 
     [>lieue|lieus] [>aménager|>abandonner|>insolite|>éloigner|>réserver|>sacrer|>connaître|>méconnaître|>privilégier|>priver]
-        <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              && Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
+        <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              && Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|https://fr.wiktionary.org/wiki/lieu
 
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|$:B:e:p]  [lieux|lieus]
-        <<- /conf/ --1>> lieues                                 && Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
+        <<- /conf/ --1>> lieues                                 && Confusion probable. Pour désigner une distance, écrivez “lieues”.|https://fr.wiktionary.org/wiki/lieue
 
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
-        <<- /conf/ space_after(\2, 1, 4) --1>> lieues           && Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
+        <<- /conf/ space_after(\2, 1, 4) --1>> lieues           && Confusion probable. Pour désigner une distance, écrivez “lieues”.|https://fr.wiktionary.org/wiki/lieue
 
     *NUM >lieu sous [la|les] >mer
     $:B:e:p  >lieu sous [la|les] >mer
-        <<- /conf/ -2>> lieues                                  && Confusion. Pour désigner une distance, écrivez “lieue(s)”.|http://fr.wiktionary.org/wiki/lieue
+        <<- /conf/ -2>> lieues                                  && Confusion. Pour désigner une distance, écrivez “lieue(s)”.|https://fr.wiktionary.org/wiki/lieue
 
     [lieux|>lieue] [>jaune|>noir|>mordre]
-        <<- /conf/ -1>> lieu|lieus                              && Confusion probable. Si vous parlez du poisson, écrivez “lieu(s)”.|http://fr.wiktionary.org/wiki/lieu
+        <<- /conf/ -1>> lieu|lieus                              && Confusion probable. Si vous parlez du poisson, écrivez “lieu(s)”.|https://fr.wiktionary.org/wiki/lieu
 
     >pêche [aux|des] [lieux|lieues]
     >chair des [lieux|lieues]
-        <<- /conf/ -3>> lieu|lieus                              && Confusion. Si vous parlez du poisson, écrivez “lieu(s)”.|http://fr.wiktionary.org/wiki/lieu
+        <<- /conf/ -3>> lieu|lieus                              && Confusion. Si vous parlez du poisson, écrivez “lieu(s)”.|https://fr.wiktionary.org/wiki/lieu
 
 TEST: qui est le responsable des {{lieues}} ?
 TEST: ce sont des {{lieus}} mythiques.
@@ -18138,7 +18161,7 @@ __conf_pâle_pale2!6__
     [>être|>rester|>demeurer|>devenir]  >pale
     [>air|>lumière|>lueur|>teint|coloris|>couleur|>peau|>visage|>bleu|>rouge|>fuschia|>jaune|>vert|gris|>orange|>violet|>pourpre]  >pale
         <<- /conf/ --1>> =\-1.replace("a", "â").replace("A", "Â")
-        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
+        && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|https://fr.wiktionary.org/wiki/pale
 
 TEST: Elle est très {{pale}} !
 TEST: Sous une lumière {{pale}},
@@ -18460,7 +18483,7 @@ TEST: tu n’as {{cas}} prendre le train
 __conf_quand_même__
     comme même [<end>|,|)]
     comme même @:(?:Os|C)
-        <<- /conf/ space_after(\1, 1, 1) -1:2>> quand même      && Confusion probable.|http://fr.wiktionary.org/wiki/quand_m%C3%AAme
+        <<- /conf/ space_after(\1, 1, 1) -1:2>> quand même      && Confusion probable.|https://fr.wiktionary.org/wiki/quand_m%C3%AAme
 
 TEST: {{comme même}} il y va fort, le saligaud !
 TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}…
@@ -18585,7 +18608,7 @@ TEST: se doit d’être fort, ce con, sinon c’est la fin pour lui.
 
 ## soit / soie / soi
 __conf_aller_de_soi__
-    >aller de [sois|>soie]
+    >aller [de|d’] [sois|>soie]
         <<- /conf/ -3>> soi                                 && Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
     >aller ?[pas|jamais|guère]¿ de soit
@@ -18593,6 +18616,17 @@ __conf_aller_de_soi__
 
 TEST: ça va de {{soie}}
 TEST: cela ne va pas de {{soit}}.
+
+
+# suer à grosses gouttes
+__conf_suer_savoir__
+    [su|sus|sut]  à grosses gouttes
+    [su|sus|sut]  comme un [bœuf|boeuf|cochon|goret|phoque|porc]
+    [su|sus|sut]  comme une [baleine|vache]
+        <<- /conf/ -1>> sue                                 && Confusion. Si vous voulez dire « transpirer abondamment », écrivez « sue » du verbe « suer ».|https://fr.wiktionary.org/wiki/tache
+
+TEST: il {{sut}} comme un goret
+TEST: je {{sus}} à grosses gouttes chaque été
 
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
@@ -20570,15 +20604,15 @@ TEST: par {{trente-neufs}} degrés.
 __sgpl_nombre_cents__
     [deux|trois|quatre|cinq|six|sept|huit|neuf]  cent
         <<- /sgpl/ not morph(>1, ":B:e:p|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
-        -2>> cents                          && Mettre “cent” au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|http://fr.wiktionary.org/wiki/cent
+        -2>> cents                          && Mettre “cent” au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|https://fr.wiktionary.org/wiki/cent
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf|mille]  cents
         <<- /sgpl/ morph(>1, ":B:e:p|>une?")
-        -2>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
+        -2>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|https://fr.wiktionary.org/wiki/cent
 
     cents  @:[NA].*:[pi]¬:G
         <<- /sgpl/ morph(<1, ":[VR]|<start>", ":B")
-        -1>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
+        -1>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|https://fr.wiktionary.org/wiki/cent
 
 TEST: deux {{cents}} trois mots                                                         ->> cent
 TEST: il y a {{cents}} mots                                                             ->> cent
@@ -21377,7 +21411,7 @@ TEST: Tous ceux qui disent que la rigidité déflationnaire de l’euro est une 
 
 
 __infi_verbe_de_verbe__
-    [>accuser|>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>jurer|>omettre|>oublier|>permettre|>prévoir|>promettre|>refuser|>suggérer|>tenter]
+    [>accuser|>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>demander|>envisager|>essayer|>éviter|>exiger|>interdire|>jurer|>omettre|>oublier|>permettre|>prévoir|>promettre|>refuser|>suggérer|>tenter]
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
         <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNGA]"))
         --1>> =suggVerbInfi(\-1)                                                                    && Après “\1 de”, le verbe devrait être à l’infinitif.
@@ -21953,16 +21987,13 @@ TEST: Si possible, venez accompagné.
 TEST: Elle vint accompagnée de son père.
 
 
-
-
-
 __infi_avoir_beau__
     >avoir beau ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿     ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir beau ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y] ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir beau ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]      ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir beau ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]          ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir beau ?[ne|n’]¿   [lui|leur|y]                    en                       ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       && Après “avoir beau”, le verbe devrait être à l’infinitif.|http://fr.wiktionary.org/wiki/avoir_beau
+        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       && Après “avoir beau”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/avoir_beau
 
 TEST: Ils ont beau {{consacré}} le plus clair de leur temps à ce projet, ça n’avance guère.
 
@@ -21973,7 +22004,7 @@ __infi_avoir_de_quoi__
     >avoir [de|d’] quoi ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]      ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir [de|d’] quoi ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]          ~..(?:ée?s?|ez|ai[ts]?)$
     >avoir [de|d’] quoi ?[ne|n’]¿   [lui|leur|y]                    en                       ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       && Après “avoir de quoi”, le verbe devrait être à l’infinitif.|http://fr.wiktionary.org/wiki/avoir_de_quoi
+        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       && Après “avoir de quoi”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/avoir_de_quoi
 
 TEST: ils n’ont pas de quoi {{pavoisé}}
 
@@ -22005,7 +22036,7 @@ TEST: elles sentent le vent tourner en leur faveur.
 
 __conj_participe_présent__
     [ne|lui|me|te|se|nous|vous]  ~ants$
-        <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        && Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
+        <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        && Un participe présent est invariable.|https://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
 
 TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 
@@ -22553,7 +22584,7 @@ __conf_det_nom_où_pronom__
     <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [elle|nous|vous|elles|iel|iels]
         || [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|lui|nous|vous|leur]
         <<- /conf/ morph(\3, ":[NA]", ":G")
-        -4>> où                                             && Confusion probable. Pour évoquer un lieu ou un moment, écrivez “où”.|http://fr.wiktionary.org/wiki/o%C3%B9
+        -4>> où                                             && Confusion probable. Pour évoquer un lieu ou un moment, écrivez “où”.|https://fr.wiktionary.org/wiki/o%C3%B9
 
 TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
 TEST: une chambre {{ou}} nous n’avons rien trouvé
