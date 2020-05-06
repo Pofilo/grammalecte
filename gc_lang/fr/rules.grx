@@ -1945,6 +1945,11 @@ __da_puis__
         <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
 
 
+__da_SA__
+    SA
+        <<- morph(<1, ":D") =>> exclude(\1, ":D")
+
+
 __da_son_ton__
     [le|ce|cet|ces|mon|ton|son|quel|quelque|quelques|notre|votre|un|leur|ledit|dudit]  [son|ton]
         <<- =>> exclude(\2, ":D")
@@ -7779,7 +7784,8 @@ __conf_ça_çà_sa!7__
         <<- /conf/ not morph(<1, ">(?:appeler|considérer|trouver)/") -1>> sa    && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque|non)/|:[NAQ].*:f
-        <<- /conf/ not (value(\2, "|ou|") and value(>1, "|son|ses|")) -1>> ça   && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        <<- /conf/ not (value(\2, "|ou|") and value(>1, "|son|ses|")) and morph(\1, ":D")
+        -1>> ça   && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     çà
         <<- /conf/ not value(<1, "|oh|ah|") and not after("^ +et là")
@@ -7788,8 +7794,8 @@ __conf_ça_çà_sa!7__
     ça et là
         <<- /conf/ not morph(<1, ":R") ->> çà et là     && Confusion : « ça » équivaut à « cela ». Dans l’expression « çà et là », « çà » équivaut à « ici ».
 
-    sa  <end>
-        <<- /conf/ -1>> ça                              && Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
+    sa  [<end>|,|)]
+        <<- /conf/ \1 != "SA" -1>> ça                   && Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
 
     [c’|ç’] [à|a]
         <<- /conf/ space_after(\1, 0, 0) and not (value(\2, "|a|") and value(>1, "|été|")) >>>
@@ -7816,6 +7822,11 @@ TEST: sa toute nouvelle application de synchronisation de fichiers
 TEST: communiquer avec sa ou son partenaire.
 TEST: Je trouve ça logique.
 TEST: le tout accompagné de sa non moins spectaculaire signature.
+TEST: Emblème des SA.
+TEST: chef d’état-major de la SA.
+TEST: À partir de 1934, et après l’élimination de ses principaux dirigeants durant la nuit des Longs Couteaux, la SA ne joue plus aucun rôle politique.
+TEST: Adolf Hitler a créé les SA à Munich le 8 août 1921 en réunissant d’anciens combattants, des officiers mécontents et des membres des corps francs
+TEST: En 1933, après l’élection du NSDAP, les SA se voyaient en concurrence avec l’armée régulière (Reichswehr)
 
 
 # car / quart
