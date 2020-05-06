@@ -194,10 +194,16 @@ def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
             aSugg.add(sFlex[:-1]+"UX")
         if sFlex.endswith("AIL") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"UX"):
             aSugg.add(sFlex[:-2]+"UX")
-    if _oSpellChecker.isValid(sFlex+"s"):
-        aSugg.add(sFlex+"s")
-    if _oSpellChecker.isValid(sFlex+"x"):
-        aSugg.add(sFlex+"x")
+    if sFlex[-1:].islower():
+        if _oSpellChecker.isValid(sFlex+"s"):
+            aSugg.add(sFlex+"s")
+        if _oSpellChecker.isValid(sFlex+"x"):
+            aSugg.add(sFlex+"x")
+    else:
+        if _oSpellChecker.isValid(sFlex+"S"):
+            aSugg.add(sFlex+"s")
+        if _oSpellChecker.isValid(sFlex+"X"):
+            aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
     if not aSugg and bSelfSugg and sFlex.endswith(("s", "x", "S", "X")):

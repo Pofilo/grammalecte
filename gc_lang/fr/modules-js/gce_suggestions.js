@@ -257,11 +257,20 @@ function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
             aSugg.add(sFlex.slice(0,-2)+"UX");
         }
     }
-    if (_oSpellChecker.isValid(sFlex+"s")) {
-        aSugg.add(sFlex+"s");
-    }
-    if (_oSpellChecker.isValid(sFlex+"x")) {
-        aSugg.add(sFlex+"x");
+    if (sFlex.slice(-1).gl_isLowerCase()) {
+        if (_oSpellChecker.isValid(sFlex+"s")) {
+            aSugg.add(sFlex+"s");
+        }
+        if (_oSpellChecker.isValid(sFlex+"x")) {
+            aSugg.add(sFlex+"x");
+        }
+    } else {
+        if (_oSpellChecker.isValid(sFlex+"S")) {
+            aSugg.add(sFlex+"s");
+        }
+        if (_oSpellChecker.isValid(sFlex+"X")) {
+            aSugg.add(sFlex+"x");
+        }
     }
     if (mfsp.hasMiscPlural(sFlex)) {
         mfsp.getMiscPlural(sFlex).forEach(function(x) { aSugg.add(x); });
