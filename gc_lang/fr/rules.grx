@@ -645,9 +645,9 @@ TEST: La figure 110 représente…
 !!
 ## Apostrophe typographique
 __[i>/apos(apostrophe_typographique)!8__
-    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`ʼ](?=[\w"«<]) @@0 <<- ->> \1’   && Apostrophe typographique.
+    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['ʼ‘‛´`′‵՚ꞌꞋ](?=[\w"«<]) @@0 <<- ->> \1’   && Apostrophe typographique.
 __[i>/apos(apostrophe_typographique_après_t)!8__
-    t['´‘′`ʼ](?!ils?|elles?|on)(?=[\w"«<]) <<- ->> t’                                                        && Apostrophe typographique.
+    t['ʼ‘‛´`′‵՚ꞌꞋ](?!ils?|elles?|on)(?=[\w"«<]) <<- ->> t’                                                        && Apostrophe typographique.
 
 TEST: {{C'}}est l’apostrophe typographique qui manque.                    ->> C’
 TEST: C’est {{l'}}apostrophe typographique qui manque.                    ->> l’
@@ -655,9 +655,8 @@ TEST: {{Aujourd'}}hui, je suis fatigué
 TEST: Je pense {{qu`}}elle se trompe
 TEST: Que {{t'}}arrive-t-il ?
 
-
 __[i>/typo(typo_apostrophe_incorrecte)!8__
-    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`ʼ][’'´‘′`ʼ ]|”|“|"| [’'´‘′`ʼ] ?))[aeéiouhœæyàîèêôû<]  @@0,0
+    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:['’ʼ‘‛´`′‵՚ꞌꞋ]['’ʼ‘‛´`′‵՚ꞌꞋ ]|”|“|"| ['’ʼ‘‛´`′‵՚ꞌꞋ] ?))[aeéiouhœæyàîèêôû<]  @@0,0
         <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                 && Apostrophe incorrecte.
 
 TEST: {{C’ }}est rageant.                                                 ->> C’
@@ -8217,6 +8216,7 @@ TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 # cou / coup / coût
 __conf_coup_cout_cou1__
+    [>cou|>coût|>cout] au-dessous [de|d’] la ceinture
     [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
@@ -14762,7 +14762,7 @@ __substantifs_multi_mots__
     >cité u
     >clair comme [de|d’] l’ eau [de|d’] [boudin|roche|source]
     >clair comme du cristal
-    >clair comme jus [de|d’] [boudin|>chaussette|chique]
+    >clair comme du jus [de|d’] [boudin|>chaussette|chique]
     [clair+s] [de|d’] lune
     >classement sans suite
     [>clé|>clef] à molette
@@ -21411,7 +21411,7 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             && Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
-        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/") and not morph(\2, ">fieffer/")
+        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/") and not morph(\2, ">(?:fieffer|sacrer)/")
             and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tag_before(\1, "_ceque_")
         -2>> =suggVerbInfi(\2)                                                          && Le verbe devrait être à l’infinitif.
@@ -21449,6 +21449,7 @@ TEST: Un patient peut avoir autant de satanées maladies qui lui chante.
 TEST: C’est toujours ça de gagné.
 TEST: que n’a-t-on pas entendu au sujet de ces revendications, souvent qualifiées de trop désordonnées
 TEST: Tous ceux qui disent que la rigidité déflationnaire de l’euro est une chance pour la France sont de fieffés menteurs
+TEST: Le virus, depuis le début, a joué de sacrés tours aux chercheurs et aux médecins.
 
 
 __infi_verbe_de_verbe__
