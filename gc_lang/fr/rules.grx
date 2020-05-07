@@ -13461,6 +13461,7 @@ __purge_locutions__
     comme par un fait exprès
     comme pas deux
     comme peau de chagrin
+    comme prévu
     comme promis
     comme qui dirait
     comme si [de|d’] rien n’ était
@@ -16410,6 +16411,7 @@ TEST: dans les épidémies, le facteur temps compte beaucoup
 TEST: dans l’Histoire, le business as usual est redoutablement résilient
 TEST: la crise pourrait durer plus longtemps qu’envisagé.
 TEST: on ne peut convoquer un citoyen sur la base des textes constitutionnels, devenus dans ce cas incriminants.
+TEST: ce sont des gens bien
 
 
 @@@@
@@ -23195,7 +23197,34 @@ TEST: celle qui ne pense pas être {{découvert}}
 TEST: laquelle n’était pas {{contrarié}}
 
 
-__ppas_1pl_verbe_état__
+__ppas_iel_verbe_état__
+    iel ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                                     @:[NA].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                                       @:[NA].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|devenues|redevenus|redevenues|restés|restées|demeurés|demeurées]                     @:[NA].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿
+        || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        @:[NA].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || être [devenus|devenues|redevenus|redevenues|restés|restées|demeurés|demeurées]                                                   @:[NA].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                                                          @:[NA].*:p¬:[GWYsi]
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(<1, ":[RV]") and morph(\1, ":3s") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
+        --1>> =suggSing(\-1)                                                                                            && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+
+TEST: iel paraît {{faibles}}
+TEST: iel paraît avoir été complètement {{prises}} de panique.
+TEST: iel doit avoir été bien {{méchants}} pour être traité de la sorte.
+TEST: iel ne peut devenir aussi {{perspicaces}} avec tout cet alcool ingurgité.
+TEST: iel pense être {{désirés}}
+TEST: iel n’y doit pas être {{instruits}}, mais…
+TEST: iel est légion.
+TEST: iel ne paraît pas avoir été affecté, bien qu’iel eût été frappé par un obus.
+TEST: iel est devenu fort.
+
+
+__ppas_nous_verbe_état__
     nous ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                                    @:[NA].*:s¬:[GWYpi]
     nous ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                                      @:[NA].*:s¬:[GWYpi]
     nous ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|devenues|redevenus|redevenues|restés|restées|demeurés|demeurées]                    @:[NA].*:s¬:[GWYpi]
@@ -23366,6 +23395,33 @@ TEST: celles-là qui n’affirment pas avoir été {{oubliés}}
 TEST: contre elles qui n’en estiment pas avoir été {{flouée}}
 TEST: lesquelles veulent devenir {{méchants}}                                     ->> méchantes
 TEST: celles-là imaginent être devenues légion
+
+
+__ppas_iels_verbe_état__
+    iels ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                                    @:[NA].*:s¬:[GWYpi]
+    iels ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                                      @:[NA].*:s¬:[GWYpi]
+    iels ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|devenues|redevenus|redevenues|restés|restées|demeurés|demeurées]                    @:[NA].*:s¬:[GWYpi]
+    iels ?[ne|n’]¿ ?[en|y]¿
+        || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        @:[NA].*:s¬:[GWYpi]
+    iels ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || être [devenus|devenues|redevenus|redevenues|restés|restées|demeurés|demeurées]                                                   @:[NA].*:s¬:[GWYpi]
+    iels ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                                                          @:[NA].*:s¬:[GWYpi]
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(<1, ":[RV]") and morph(\1, ":3p") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
+        --1>> =suggPlur(\-1)                                                                                            && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+
+TEST: iels paraissent {{faible}}
+TEST: iels paraissent avoir été complètement {{prise}} de panique.                ->> prises
+TEST: iels doivent avoir été bien {{méchant}} pour être traité de la sorte.
+TEST: iels ne peuvent devenir aussi {{perspicace}} avec tout cet alcool ingurgité.
+TEST: iels pensent être {{désiré}}
+TEST: iels n’y doivent pas être {{instruit}}, mais…
+TEST: iels sont légion.
+TEST: iels ne paraissent pas avoir été légion, mais l’effet eut autant de force que si iels avaient été des millions.
+TEST: iels sont devenus faibles.
 
 
 __ppas_avoir_été__
