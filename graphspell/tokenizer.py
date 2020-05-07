@@ -33,7 +33,7 @@ _PATTERNS = {
             r'(?P<HASHTAG>[#@][\w-]+)',
             r'(?P<HTML><\w+.*?>|</\w+ *>)',
             r'(?P<PSEUDOHTML>\[/?\w+\])',
-            r"(?P<WORD_ELIDED>(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu|presqu|quelqu)['’´‘′`ʼ])",
+            r"(?P<WORD_ELIDED>(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu|presqu|quelqu)['’ʼ‘‛´`′‵՚ꞌꞋ])",
             r'(?P<WORD_ORDINAL>\d+(?:ers?|res?|è[rm]es?|i[èe][mr]es?|de?s?|nde?s?|ès?|es?|ᵉʳˢ?|ʳᵉˢ?|ᵈᵉ?ˢ?|ⁿᵈᵉ?ˢ?|ᵉˢ?)\b)',
             r'(?P<HOUR>\d\d?[h:]\d\d(?:[m:]\d\ds?|)\b)',
             r'(?P<NUM>\d+(?:[.,]\d+|))',

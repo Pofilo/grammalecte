@@ -95,6 +95,19 @@ aDouble = set("bcdfjklmnprstzBCDFJKLMNPRSTZ")  # letters that may be used twice 
 # Similar chars
 
 d1to1 = {
+    "'": "'’",  # U+0027: apostrophe droite
+    "’": "’",   # U+2019: apostrophe typographique  (sera utilisée par défaut)
+    "ʼ": "ʼ’",  # U+02BC: Lettre modificative apostrophe
+    "‘": "‘’",  # U+2018: guillemet-apostrophe culbuté
+    "‛": "‛’",  # U+201B: guillemet-virgule supérieur culbuté
+    "´": "´’",  # U+00B4: accent aigu
+    "`": "`’",  # U+0060: accent grave
+    "′": "′’",  # U+2032: prime
+    "‵": "‵’",  # U+2035: prime réfléchi
+    "՚": "՚’",  # U+055A: apostrophe arménienne
+    "ꞌ": "ꞌ’",  # U+A78C: latin minuscule saltillo
+    "Ꞌ": "Ꞌ’",  # U+A78B: latin majuscule saltillo
+
     "1": "1₁liîLIÎ",
     "2": "2₂zZ",
     "3": "3₃eéèêEÉÈÊ",
