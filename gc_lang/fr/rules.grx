@@ -6825,6 +6825,20 @@ __conf_suite_à__
 
 TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
 TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
+TEST: cette petite suite a une vue magnifique
+
+
+__conf_à_bâtons_rompus!7__
+    !! à bâtons rompus ¡¡
+    [a|à] [bâton+s|bat-on|bat’on] [rompu+ses]
+    [a|à] [bâton+s|bat-on|bat’on] [>rond|ron+s]  [pu+s|put|pue+s]
+    [a|à] [>bât|ba+s|bat+s] [on|ont|>ton|>thon] [rompu+ses]
+    [a|à] [>bât|ba+s|bat+s] [on|ont|>ton|>thon] [>rond|ron+s]  [pu+s|put|pue+s]
+        <<- /conf/ ->> à bâtons rompus                  && Confusion. Locution « à bâtons rompus ».|https://fr.wiktionary.org/wiki/%C3%A0_b%C3%A2tons_rompus
+
+TEST: s’organiser, comme on put, {{à bas thon rond pu}}
+TEST: actions {{à bâton rompu}}
+TEST: discuter à bâtons rompus
 
 
 __conf_à_cor_et_à_cri__
@@ -8761,6 +8775,7 @@ __conf_fin_faim__
         <<- /conf/ -3>> fin                                     && Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
     jusqu’ à la faim
+    [>cauchemar|>horreur|>tourment] sans faim
         <<- /conf/ --1>> fin                                    && Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
     >faim de non-recevoir
@@ -10601,11 +10616,11 @@ TEST: si venir à la conférence coûte autant, il est préférable de s’abste
 
 __conf_sitôt_dit_sitôt_fait__
     !! sitôt dit ?,¿ sitôt fait ¡¡
-    [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
+    [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop|trot] [fait+s|>fée|fé|fais]
     sitôt [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
-    sitôt [dis|dix|dit+s|di] ?,¿ si [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
-    si [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
-    s’ [y|i] [tôt|>tau|taux|to|>taud|trop] [dis|dix|dit+s|di] ?,¿ s’ [y|i] [tôt|>tau|taux|to|>taud|trop] [fait+s|>fée|fé|fais]
+    sitôt [dis|dix|dit+s|di] ?,¿ si [tôt|>tau|taux|to|>taud|trop|trot] [fait+s|>fée|fé|fais]
+    si [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
+    s’ [y|i] [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ s’ [y|i] [tôt|>tau|taux|to|>taud|trop|trot] [fait+s|>fée|fé|fais]
         <<- /conf/ ->> sitôt dit, sitôt fait
         && Confusion. Locution « sitôt dit, sitôt fait ».|https://fr.wiktionary.org/wiki/sit%C3%B4t_dit,_sit%C3%B4t_fait
 
@@ -12225,6 +12240,10 @@ __purge_années__
     de  ~^\d{2,5}$  @:A.*:s
         <<- ~1:2>> *
 
+    [de|d’] [plusieurs|quelques|$:B|*NUM] [ans|années|mois] [mon|ton|son|notre|votre|leur] [cadet|aîné+e]
+    [de|d’] [plusieurs|quelques|$:B|*NUM] [ans|années|mois] [ma|ta|sa|notre|votre|leur] cadette
+        <<- ~>> *
+
 
 __purge_saisons__
     à [compter|partir] [de|d’]  l’ [automne|été|hiver]  ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
@@ -12760,9 +12779,12 @@ __purge_locutions_temps__
     en d’ autres temps
     en d’ autres temps et d’ autres lieux
     en même temps
-    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour [le|l’] [dire|prononcer|raconter]
-    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour [le|l’] faire comprendre
-    en moins [de|d’] temps qu’ il ne [faut|fallut|faudra|faudrait] pour l’ expliquer
+    en moins [de|d’] temps qu’ il ?[ne|n’]¿ [faut|fallut|faudra|faudrait] pour [le|l’] [dire|prononcer|raconter]
+    en moins [de|d’] temps qu’ il ?[ne|n’]¿ [faut|fallut|faudra|faudrait] pour [le|l’] faire comprendre
+    en moins [de|d’] temps qu’ il ?[ne|n’]¿ [faut|fallut|faudra|faudrait] pour l’ expliquer
+    en moins [de|d’] temps qu’ il ?n’¿ [a|eut|aura|aurait] fallu pour [le|l’] [dire|prononcer|raconter]
+    en moins [de|d’] temps qu’ il ?n’¿ [a|eut|aura|aurait] fallu pour [le|l’] faire comprendre
+    en moins [de|d’] temps qu’ il ?n’¿ [a|eut|aura|aurait] fallu pour l’ expliquer
     en temps [de|d’] [guerre|paix]  ?[économique|religieuse]¿
     en temps [normal|opportun|ordinaire|utile|voulu]
     en temps et en heure
@@ -12837,7 +12859,7 @@ __purge_locutions_temporelles_diverses__
     au jour j
     au jour le jour
     au milieu de la nuit
-    au plus [tard|tôt] [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
+    au plus [tard|tôt] ?[lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]¿
     avant demain ?[matin|soir|après-midi]¿
     comme autrefois
     comme avant
@@ -12928,6 +12950,7 @@ __purge_locutions_temporelles_diverses__
     pour le restant [de|d’] [mes|tes|ses|nos|vos|leurs] jours
     quant à présent
     sine die
+    sans délai ?supplémentaire¿
     soudain
     souvent
     sur ces entrefaites
@@ -13365,8 +13388,9 @@ __purge_locutions__
     au moment opportun
     au même titre que n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
     au pas de [charge|course]
+    au petit bonheur la chance
     au plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
-    au plus [près|pressé|vite|tôt|tard|vite]
+    au plus [près|pressé|vite]
     au plus haut [degré|point]
     au premier abord
     au premier coup d’ œil
@@ -13814,6 +13838,7 @@ __purge_locutions__
     la main dans la main
     la mort dans l’ âme
     la queue entre les jambes
+    ?le¿ dos au mur
     le cas échéant
     le moins du monde
     le moment venu
@@ -14649,7 +14674,7 @@ __substantifs_multi_mots__
     >arc à poulies
     >arme à feu
     >armée [de|d’] l’ air
-    >armée [de|d’] terre
+    >armée [de|d’] [réserve|terre]
     >arme [de|d’] [poing|guerre]
     >arme [de|d’] destruction massive
     >armoire à [>glace|>pharmacie]
@@ -14713,6 +14738,7 @@ __substantifs_multi_mots__
     >chambre à [coucher|gaz]
     >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
     >champion du monde
+    >changement [de|d’] cap
     >chantier [de|d’] construction
     [>chariot|>charriot] à [bagages|roulettes]
     >chasse à courre
@@ -14952,6 +14978,7 @@ __substantifs_multi_mots__
     >montre à gousset
     >mot [de|d’] passe
     >moteur [>essence|>diésel|>diesel]
+    >moteur à réaction
     >motion [de|d’] blâme
     >motion [de|d’] [censure|défiance] ?constructive¿
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
@@ -15014,9 +15041,11 @@ __substantifs_multi_mots__
     prix à payer
     prix [de|d’] revient
     puits [de|d’] [carbone|forage|lumière|pétrole|science]
+    >puissance [de|d’] feu
     QG [de|d’] campagne
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
+    >rampe [de|d’] lancement
     >rapport [de|d’] force
     >rat [de|d’] bibliothèque
     >rayon [de|d’] soleil
@@ -15058,6 +15087,7 @@ __substantifs_multi_mots__
     >seuil [de|d’] tolérance
     >seuil [de|d’] tolérance à la douleur
     >silo à [>grains|blé]
+    >site [de|d’] lancement
     >soldat d’ élite
     >sonnette d’ alarme
     >sortie [de|d’] secours
@@ -15081,7 +15111,7 @@ __substantifs_multi_mots__
     >ténor du barreau
     >tête à claques
     >tête d’ enterrement
-    >tête [de|d’] [linotte|déterré+ses|mule]
+    >tête [de|d’] [linotte|déterré+ses|mule|pont]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
@@ -15091,13 +15121,15 @@ __substantifs_multi_mots__
     >titre [de|d’] [noblesse|propriété|séjour]
     >toile de fond
     >tondeuse à gazon
+    >tour d’ horizon
     >tour [de|d’] passe-passe
     >torrent à sec
     >train à grande vitesse
     >train [de|d’] vie
-    >traitement [de|d’] faveur
+    >traitement [de|d’] [faveur|texte]
     >transport en commun
     >travail d’ intérêt général
+    >tribunal d’ assises
     >trou à >rat
     >trouble à l’ ordre public
     >t-shirt sans >manche
@@ -15124,6 +15156,7 @@ __substantifs_multi_mots__
     >vol à main armée
     >volée [de|d’] bois vert
     >voiture [de|d’] location
+    >wagon à bestiaux
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
         <<- not (morph(\1, ":[123][sp]") and morph(<1, ":O[sv]")) ~2:0>> *
@@ -15773,7 +15806,7 @@ __purge_locutions_potentielles__
     d’ entrée                           [<end>|,|)]
         <<- ~1:2>> *
 
-    dans ce cas                         @¬:A:[me]:[pi]
+    dans ce cas                         @¬:A:[me]:[si]
     dans ce cas                         [<end>|,|)]
         <<- ~1:3>> *
 
@@ -15820,7 +15853,12 @@ __purge_locutions_potentielles__
         <<- ~1:4>> *
 
     de nos jours @¬:A.*:[me]:[pi]
+    de nos jours [<end>|,|)]
         <<- ~1:3>> *
+
+    *WORD [de|d’] prédilection @¬:A.*:[fe]:[pi]
+    *WORD [de|d’] prédilection [<end>|,|)]
+        <<- morph(\1, ":N") ~2:3>> *
 
     des fois  @¬:A.*:[fe]:[pi]
     des fois  [<end>|,|)]
@@ -16038,7 +16076,7 @@ __purge_vite__
 
 
 __purge_locutions_verbales__
-    >avoir [foule|vent]
+    >avoir [foule|lieu|vent]
     >avoir ni queue ?,¿ ni tête
     >aller bon train
     >aller [de|d’] l’ avant
@@ -16056,6 +16094,7 @@ __purge_locutions_verbales__
     >compter à rebours
     >condamner à mort
     >couler à ?grands¿ flots
+    >cour d’ assises
     >demander [assistance|audience|conseil|pardon]
     >dire [adieu|merde]
     [>donner|>redonner] [naissance|sens|suite|vie]
@@ -16124,6 +16163,7 @@ __purge_locutions_verbales__
     >perdre [connaissance|conscience|patience|raison]
     >perdre d’ avance
     >piquer au vif
+    >plier >bagage
     >porter [assistance|atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
     >poser problème
     >porter plainte
@@ -16369,6 +16409,7 @@ TEST: Le risque de décès était deux fois plus élevé chez les malades ayant 
 TEST: dans les épidémies, le facteur temps compte beaucoup
 TEST: dans l’Histoire, le business as usual est redoutablement résilient
 TEST: la crise pourrait durer plus longtemps qu’envisagé.
+TEST: on ne peut convoquer un citoyen sur la base des textes constitutionnels, devenus dans ce cas incriminants.
 
 
 @@@@
@@ -22177,6 +22218,32 @@ __purge_prépositions_pronoms__
         <<- ~2>> *
 
 TODO: comme
+
+
+__purge_pronoms_après_sujet_verbe__
+    [j’|je]     ?[ne|n’]¿   >avoir      moi-même
+    tu          ?[ne|n’]¿   >avoir      toi-même
+    il          ?[ne|n’]¿   >avoir      lui-même
+    elle        ?[ne|n’]¿   >avoir      elle-même
+    iel         ?[ne|n’]¿   >avoir      iel-même
+    on          ?[ne|n’]¿   >avoir      [nous-même|nous-mêmes]
+    nous        ?[ne|n’]¿   >avoir      [nous-même|nous-mêmes]
+    vous        ?[ne|n’]¿   >avoir      [vous-même|vous-mêmes]
+    ils         ?[ne|n’]¿   >avoir      eux-mêmes
+    elles       ?[ne|n’]¿   >avoir      elles-mêmes
+    iels        ?[ne|n’]¿   >avoir      iels-mêmes
+    [j’|je]     ?[ne|n’]¿   >être       moi-même
+    tu          ?[ne|n’]¿   >être       toi-même
+    il          ?[ne|n’]¿   >être       lui-même
+    elle        ?[ne|n’]¿   >être       elle-même
+    iel         ?[ne|n’]¿   >être       iel-même
+    on          ?[ne|n’]¿   >être       [nous-même|nous-mêmes]
+    nous        ?[ne|n’]¿   >être       [nous-même|nous-mêmes]
+    vous        ?[ne|n’]¿   >être       [vous-même|vous-mêmes]
+    ils         ?[ne|n’]¿   >être       eux-mêmes
+    elles       ?[ne|n’]¿   >être       elles-mêmes
+    iels        ?[ne|n’]¿   >être       iels-mêmes
+        <<- ~-1>> *
 
 
 __purge_prep_pronom_comparaison__
