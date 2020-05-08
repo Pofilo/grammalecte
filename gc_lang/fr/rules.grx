@@ -12525,21 +12525,27 @@ __locutions_temporelles_communes__
         <<- ~>> *
 
     ## locutions au singulier
-    au bout d’un                                    {unit_mesure_sing_mas}
-    au bout d’une                                   {unit_mesure_sing_fem}
-    un                                              {unit_mesure_sing_mas} auparavant
-    une                                             {unit_mesure_sing_fem} auparavant
-    un                                              {unit_mesure_sing_mas} plus [tôt|tard]
-    une                                             {unit_mesure_sing_fem} plus [tôt|tard]
+    au bout d’ un                                   {unit_mesure_sing_mas}
+    après un                                        {unit_mesure_sing_mas}
+    depuis un                                       {unit_mesure_sing_mas}
+    en un                                           {unit_mesure_sing_mas}
+    pendant un                                      {unit_mesure_sing_mas}
+        <<- not morph(>1, ":A.*:[me]:[pi]") ~>> *
+
+    au bout d’ une                                  {unit_mesure_sing_fem}
+    après une                                       {unit_mesure_sing_fem}
+    depuis une                                      {unit_mesure_sing_fem}
+    en une                                          {unit_mesure_sing_fem}
+    pendant une                                     {unit_mesure_sing_fem}
+        <<- not morph(>1, ":A.*:[fe]:[pi]") and not (value(\-1, "|année|") and re.search("^[0-9]+$", >1)) ~>> *
+
     à un                                            {unit_mesure_sing_mas} près
     à une                                           {unit_mesure_sing_fem} près
-    après un                                        {unit_mesure_sing_mas}
-    après une                                       {unit_mesure_sing_fem}
-    après près [de|d’] un                           {unit_mesure_sing_mas}
-    après près [de|d’] une                          {unit_mesure_sing_fem}
     après un                                        {unit_mesure_sing_mas} de bons et loyaux services
     après une                                       {unit_mesure_sing_fem} de bons et loyaux services
+    après près [de|d’] un                           {unit_mesure_sing_mas}
     après près [de|d’] un                           {unit_mesure_sing_mas} de bons et loyaux services
+    après près [de|d’] une                          {unit_mesure_sing_fem}
     après près [de|d’] une                          {unit_mesure_sing_fem} de bons et loyaux services
     au fil du                                       {unit_mesure_sing_mas} à venir
     au fil de la                                    {unit_mesure_sing_fem} à venir
@@ -12547,24 +12553,14 @@ __locutions_temporelles_communes__
     dans le                                         {unit_mesure_sing_mas} à venir
     dans la                                         {unit_mesure_sing_fem} à venir
     dans l’                                         [an|année|heure] à venir
-    depuis un                                       {unit_mesure_sing_mas}
-    depuis une                                      {unit_mesure_sing_fem}
     depuis près [de|d’] un                          {unit_mesure_sing_mas}
     depuis près [de|d’] une                         {unit_mesure_sing_fem}
-    depuis un                                       {unit_mesure_sing_mas}
-    depuis une                                      {unit_mesure_sing_fem}
-    un                                              {unit_mesure_sing_mas} plus [tôt|tard]
-    une                                             {unit_mesure_sing_fem} plus [tôt|tard]
     d’ ici un                                       {unit_mesure_sing_mas}
     d’ ici une                                      {unit_mesure_sing_fem}
     ?d’¿ il y a un                                  {unit_mesure_sing_mas}
     ?d’¿ il y a une                                 {unit_mesure_sing_fem}
     ?d’¿ il y a [moins|plus] [de|d’] un             {unit_mesure_sing_mas}
     ?d’¿ il y a [moins|plus] [de|d’] une            {unit_mesure_sing_fem}
-    en un                                           {unit_mesure_sing_mas}
-    en une                                          {unit_mesure_sing_fem}
-    pendant un                                      {unit_mesure_sing_mas}
-    pendant une                                     {unit_mesure_sing_fem}
     pendant près d’ un                              {unit_mesure_sing_mas}
     pendant près d’ une                             {unit_mesure_sing_fem}
     un                                              {unit_mesure_sing_mas} [après|avant|auparavant]
@@ -12629,37 +12625,51 @@ __locutions_temporelles_communes__
     pendant une ?[longue]¿  {unit_mesure_sing_fem}
         <<- ~>> *
 
-    ## locutions épicènes plurielles
-    au bout de [plusieurs|quelques]                 {unit_mesure_plur}
+    ## locutions plurielles
+    au bout de [plusieurs|quelques]                 {unit_mesure_plur_mas}
+    après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur_mas}
+    après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur_mas}
+    depuis $:B:e:p                                  {unit_mesure_plur_mas}
+    depuis *NUM                                     {unit_mesure_plur_mas}
+    depuis près [de|d’] $:B:e:p                     {unit_mesure_plur_mas}
+    depuis près [de|d’] *NUM                        {unit_mesure_plur_mas}
+    depuis quelques                                 {unit_mesure_plur_mas}
+    en *NUM                                         {unit_mesure_plur_mas}
+    pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur_mas}
+    pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur_mas}
+        <<- not morph(>1, ":A.*:[me]:[pi]") ~>> *
+
+    au bout de [plusieurs|quelques]                 {unit_mesure_plur_fem}
+    après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur_fem}
+    après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur_fem}
+    depuis $:B:e:p                                  {unit_mesure_plur_fem}
+    depuis *NUM                                     {unit_mesure_plur_fem}
+    depuis près [de|d’] $:B:e:p                     {unit_mesure_plur_fem}
+    depuis près [de|d’] *NUM                        {unit_mesure_plur_fem}
+    depuis quelques                                 {unit_mesure_plur_fem}
+    en *NUM                                         {unit_mesure_plur_fem}
+    pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur_fem}
+    pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur_fem}
+        <<- not morph(>1, ":A.*:[fe]:[pi]") ~>> *
+
     $:B:e:p                                         {unit_mesure_plur} auparavant
     $:B:e:p                                         {unit_mesure_plur} plus [tôt|tard]
     à quelques                                      {unit_mesure_plur} près
-    après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur}
-    après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur}
     après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur} de bons et loyaux services
     après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur} de bons et loyaux services
     au fil des                                      {unit_mesure_plur} à venir
     dans les                                        {unit_mesure_plur} à venir
-    depuis $:B:e:p                                  {unit_mesure_plur}
-    depuis *NUM                                     {unit_mesure_plur}
-    depuis près [de|d’] $:B:e:p                     {unit_mesure_plur}
-    depuis près [de|d’] *NUM                        {unit_mesure_plur}
-    depuis quelques                                 {unit_mesure_plur}
     des                                             {unit_mesure_plur} plus [tôt|tard]
     des                                             {unit_mesure_plur} à venir
     d’ ici quelques                                 {unit_mesure_plur}
     ?d’¿ il y a [*NUM|$:B:e:p]                      {unit_mesure_plur}
     ?d’¿ il y a [moins|plus] [de|d’] [*NUM|$:B:e:p] {unit_mesure_plur}
     ?d’¿ il y a quelques                            {unit_mesure_plur}
-    en *NUM                                         {unit_mesure_plur}
-    pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur}
-    pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur}
     quelques                                        {unit_mesure_plur} [après|avant|auparavant]
     quelques                                        {unit_mesure_plur} plus [tard|tôt]
     un peu [moins|plus] de [$:B:e:p|*NUM]           {unit_mesure_plur} auparavant
         <<- ~>> *
 
-    ## locutions genrées plurielles
     au cours des            ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains|suivants]
     au cours des            ?$:B:e:p¿ {unit_mesure_plur_fem}    [dernières|passées|précédentes|prochaines|suivantes]
     au fil des              ?$:B:e:p¿ {unit_mesure_plur_mas}    [derniers|passés|précédents|prochains|suivants]
@@ -20050,13 +20060,13 @@ TEST: il en faut trois minimum, cinq maximum
 __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
         <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|")
-        -2>> =suggSing(\2)                                                                  && Accord de nombre erroné : « \1 » devrait être au singulier.
+        -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
         <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
             and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
             or \1 in aREGULARPLURAL )
-        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
+        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
         <<- /gn/ not value(\2, "|maximum|minimum|fois|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
