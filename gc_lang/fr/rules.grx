@@ -26945,17 +26945,16 @@ TEST: elles vont toutes aller faire un tour
 
 
 __conj_det_plur_nom__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  @:V¬:(?:3p|P|Y|G|M|A.*:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
-        <<- /conj/ not checkAgreement(\2, \3) -3>> =suggVerb(\3, ":3p") && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
-        -3>> =suggVerb(\3, ":3p", suggPlur)                             && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggPlur)     && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-        -4>> =suggVerb(\4, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        -4>> =suggVerb(\4, ":3p")                                                                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Ses « chiens » {{coure}} sur ma pelouse.
 TEST: mes filles {{passe}} ce matin
@@ -26965,6 +26964,7 @@ TEST: vos questions ne {{réclame}} aucune réflexion.
 TEST: Ces attaques à main armée {{donne}} la chair de poule.
 TEST: Ces marchands {{passe}} leur temps à se quereller.
 TEST: maints hommes {{oublie}} leurs origines pour mieux se construire un passé glorieux
+TEST: nos hommes qui {{repartirons}} demain
 TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
 TEST: trier les cons et les connes expose à un violent coup de boomerang
 TEST: Tu penses que quelqu’un qui frappe sa femme et ses enfants est un bon père ?

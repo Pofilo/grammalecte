@@ -57,6 +57,7 @@ def rewriteCode (sCode):
     sCode = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', sCode)        # before0(sCode)
     sCode = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                # after0(sCode)
     sCode = re.sub(r"\banalyseWord[(]", 'analyse(', sCode)
+    sCode = re.sub(r"\bcheckAgreement[(]\\(\d+), *\\(\d+)", 'g_checkAgreement(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\2]', sCode)
     sCode = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', sCode)
     sCode = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', sCode)
     sCode = re.sub(r">1", 'lToken[nLastToken+1]["sValue"]', sCode)

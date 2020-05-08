@@ -51,41 +51,6 @@ function apposition (sWord1, sWord2) {
     return sWord2.length < 2 || (cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)));
 }
 
-function isAmbiguousNAV (sWord) {
-    // words which are nom|adj and verb are ambiguous (except être and avoir)
-    let lMorph = _oSpellChecker.getMorph(sWord);
-    if (lMorph.length === 0) {
-        return false;
-    }
-    if (!cregex.mbNomAdj(lMorph) || sWord == "est") {
-        return false;
-    }
-    if (cregex.mbVconj(lMorph) && !cregex.mbMG(lMorph)) {
-        return true;
-    }
-    return false;
-}
-
-function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
-    //// use it if sWord1 won’t be a verb; word2 is assumed to be true via isAmbiguousNAV
-    let lMorph2 = _oSpellChecker.getMorph(sWord2);
-    if (lMorph2.length === 0) {
-        return false;
-    }
-    if (cregex.checkConjVerb(lMorph2, sReqMorphConj)) {
-        // verb word2 is ok
-        return false;
-    }
-    let lMorph1 = _oSpellChecker.getMorph(sWord1);
-    if (lMorph1.length === 0) {
-        return false;
-    }
-    if (cregex.checkAgreement(lMorph1, lMorph2) && (cregex.mbAdj(lMorph2) || cregex.mbAdj(lMorph1))) {
-        return false;
-    }
-    return true;
-}
-
 function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
     //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
     let lMorph2 = _oSpellChecker.getMorph(sWord2);
@@ -112,6 +77,19 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
         return true;
     }
     return false;
+}
+
+function g_checkAgreement (oToken1, oToken2) {
+    // check agreement between <oToken1> and <oToken2>
+    let lMorph1 = oToken1.hasOwnProperty("lMorph") ? oToken1["lMorph"] : _oSpellChecker.getMorph(oToken1["sValue"]);
+    if (lMorph1.length === 0) {
+        return true;
+    }
+    let lMorph2 = oToken2.hasOwnProperty("lMorph") ? oToken2["lMorph"] : _oSpellChecker.getMorph(oToken2["sValue"]);
+    if (lMorph2.length === 0) {
+        return true;
+    }
+    return cregex.checkAgreement(lMorph1, lMorph2);
 }
 
 function checkAgreement (sWord1, sWord2) {
