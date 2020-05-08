@@ -14737,6 +14737,7 @@ __substantifs_multi_mots__
     >cap à suivre
     >carabine à plomb
     >carburant [de|d’] synthèse
+    >carte [de|d’] presse
     >carton d’ emballage
     cas [de|d’] figure
     cas [de|d’] force majeure
@@ -14798,6 +14799,7 @@ __substantifs_multi_mots__
     concours [de|d’] beauté
     >condamné à mort
     >conférence [de|d’] presse
+    >congé [maternité|paternité]
     >conseiller d’ orientation [scolaire|professionnelle]
     >conte [de|d’] fées
     >contrôle [de|d’] routine
@@ -25027,12 +25029,12 @@ TEST: on l’attend pour la fin de semaine, prévoit le Dr Bayart.
 __imp_union_en__
     *WORD  en
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D|Ov)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|B|H|T|D|Ov)|>(?:plus|moins|mieux|peu|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  en
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:aller|partir)/")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|Ov)|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|Ov)|>(?:plus|moins|mieux|peu|trop|très|une?)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{restons en}} là.
@@ -25043,6 +25045,10 @@ TEST: Même l’implacable guerrier-capitaine de la Fédération, James T. Kirk,
 TEST: Terminons en réservant une place de choix à l’un des relais les plus fervents de la pensée
 TEST: Le Souffle puisé à la Parole nous met en synergie avec le Père Qui souffre, souffre en nous sûrement de voir que Sa Parole déjà transmise autrefois peine à être accomplie.
 TEST: Passe en me donnant la nausée.
+TEST: Reviens en y consacrant plus de temps.
+TEST: Reviens en en apportant plus encore.
+TEST: Schématisons en deux positions possibles.
+TEST: Finis en ne comptant que sur toi-même
 
 
 __imp_laisser_le_la_les_infi__
