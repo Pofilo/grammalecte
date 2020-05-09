@@ -75,10 +75,3 @@ def mbUnit (s):
     if 1 < len(s) < 16 and s[0:1].islower() and (not s[1:].islower() or _zUnitNumbers.search(s)):
         return True
     return False
-
-
-#### Exceptions
-
-aREGULARPLURAL = frozenset(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café", \
-                            "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille", \
-                            "jonquille", "marron", "olive", "pervenche", "prune", "sable"])

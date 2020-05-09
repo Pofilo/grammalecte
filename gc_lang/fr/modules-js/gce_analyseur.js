@@ -88,10 +88,3 @@ function mbUnit (s) {
     }
     return false;
 }
-
-
-// Exceptions
-
-const aREGULARPLURAL = new Set(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café",
-                                "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille",
-                                "jonquille", "marron", "olive", "pervenche", "prune", "sable"]);

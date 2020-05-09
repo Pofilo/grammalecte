@@ -2056,6 +2056,11 @@ TEST: Ils sont source de conflits
 TEST: Votre question fait référence à un fait divers déroutant
 
 
+__da_couleurs_invariables__
+    *WORD [abricot|acajou|amarante|anthracite|aubergine|brique|caca|café|cannelle|caramel|carmin|carotte|cerise|châtaigne|chocolat|citron|corail|crème|fuchsia|groseille|havane|jonquille|marron|mastic|nacarat|ocre|olive|paille|parme|pastel|pervenche|pie|prune|sable|tabac|vermillon]
+        <<- morph(\1, ":(D.*:p|B)") =>> exclude(\2, ":A:e:i")
+
+
 
 !!!
 !!!
@@ -19513,8 +19518,7 @@ TEST: servi pas un style et une exigence historique remarquables
 
 __gn_les_1m__
     ,  les  *WORD
-        <<- /gn/ ( morph(\3, ":[NA].*:s", "*") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")) )
-            or \3 in aREGULARPLURAL
+        <<- /gn/ morph(\3, ":[NA].*:s", "*") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -3>> =suggPlur(\3)                                                                  && Accord de nombre erroné : « \3 » devrait être au pluriel.
 
     *WORD  les  *WORD
@@ -19525,8 +19529,7 @@ __gn_les_1m__
         -3>> =suggPlur(\3)                                                                  && Accord de nombre erroné : « \3 » devrait être au pluriel.
 
     <start>  les  *WORD
-        <<- /gn/ ( morph(\3, ":[NA].*:s", ":[ipYPGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")) )
-            or \3 in aREGULARPLURAL
+        <<- /gn/ morph(\3, ":[NA].*:s", ":[ipYPGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -3>> =suggPlur(\3)                                                                  && Accord de nombre erroné : « \3 » devrait être au pluriel.
 
 TEST: ils viennent, les {{petit}}
@@ -19535,6 +19538,7 @@ TEST: Les plus {{grand}} hommes.                              ->> grands
 TEST: les {{véhicule}}                                        ->> véhicules
 TEST: Les {{démoralisation}}.                                 ->> démoralisations
 TEST: dans les {{usine}}                                      ->> usines
+TEST: les {{abricot}}                                         ->> abricots
 TEST: tels que les décrit Macron
 
 
@@ -19571,31 +19575,30 @@ TEST: cette attention de tous les instants portée à la boussole.
 
 __gn_leurs_1m__
     leurs  *WORD
-        <<- /gn/ (morph(\2, ":[NA].*:s", ":(?:[ipGW]|[123][sp])") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")))
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:[ipGW]|[123][sp])") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
         <<- /gn/ __also__ -1>> leur                                                         && Accord de nombre erroné avec « \2 ».
 
 TEST: {{leurs}} {{action}}
 TEST: {{leur}} {{données}}
+TEST: {{leurs}} {{abricot}}
 
 
 __gn_det_pluriel_1m__
     [des|mes|tes|ses|nos|vos|quelques|lesdits|lesdites|desdits|desdites|auxdits|auxdites|moult]  *WORD
-        <<- /gn/ (morph(\2, ":[NA].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")))
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
 TEST: des {{pain}}                                            ->> pains
 TEST: Quelques {{homme}}.                                     ->> hommes
 TEST: plusieurs {{femme}} sont venues.
+TEST: des {{abricot}}
 TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
 
 
 __gn_ces_aux_pluriel_1m__
     [ces|aux]  *WORD
-        <<- /gn/ (morph(\2, ":[NA].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")))
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
         <<- /gn/ __also__ and morph(\2, ">[bcdfglklmnpqrstvwxz].*:m", ":f") >>>
         <<- /gn/ \1.endswith("x") or \1.endswith("X") -1>> au                               && Accord de nombre erroné : « \2 » est au singulier.
@@ -19606,6 +19609,7 @@ TEST: ces {{étudiant}} sont légion.
 TEST: je vais {{aux}} {{cinéma}}
 TEST: il l’a donné aux {{étudiant}}
 TEST: aux {{personne}}
+TEST: clafoutis aux {{abricot}}
 
 
 __gn_det_epi_plur_2m__
@@ -19681,12 +19685,12 @@ TEST: des passeports américain, canadien, néerlandais, allemand et britannique
 
 __gn_plusieurs_1m__
     plusieurs  *WORD
-        <<- /gn/ (morph(\2, ":[NA].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")))
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
 TEST: plusieurs {{femme}}
 TEST: plusieurs {{foi}} par jour.
+TEST: plusieurs {{abricot}}
 
 
 ## Cas particuliers
@@ -19729,8 +19733,7 @@ __gn_certains_1m__
     certains  *WORD
         <<- /gn/ morph(\2, ":[NA].*:f", ":[emGWP]") -1>> certaines                          && Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasPlur(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
-        <<- /gn/ ( morph(\2, ":[NA].*:s", ":(?:[ipGWP]|V0)") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")) )
-            or \1 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:[ipGWP]|V0)") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
 __gn_certains_des_1m__
@@ -19742,8 +19745,7 @@ __gn_certaines_1m__
     certaines  *WORD
         <<- /gn/ morph(\2, ":[NA].*:m", ":[efGWP]") -1>> certains                           && Accord de genre erroné : « \2 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemPlur(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
-        <<- /gn/ ( morph(\2, ":[NA].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]")) )
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
 __gn_certaines_des_1m__
@@ -20043,17 +20045,16 @@ TEST: celles venues chanter doivent se rendre là-bas.
 ## Nombres
 __gn_nombre_lettres_1m__
     $:B:e:p  *WORD
-        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
-            or \2 in aREGULARPLURAL) and not re.search("^[IVXLDM]+$", \1)
+        <<- /gn/ not value(\1, "|neuf|mille|") and morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+            and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     neuf  *WORD
-        <<- /gn/ ( morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
-            or \2 in aREGULARPLURAL
+        <<- /gn/ morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     mille  *WORD
-        <<- /gn/ not value(\2, "|maximum|minimum|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
+        <<- /gn/ not value(\2, "|maximum|minimum|multiplié|divisé|") and morph(\2, ":[NA].*:s", "*") and not value(<1, "|le|un|ce|du|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
@@ -20079,8 +20080,7 @@ __gn_nombre_chiffres_1m__
 
     *NUM  *WORD
         <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
-            and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
-            or \1 in aREGULARPLURAL )
+            and morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
@@ -20709,8 +20709,7 @@ TEST: plus de deux cent quatre-vingt mille personnes
 ## Pluriel des groupes
 __sgpl_nombre_de_1m__
     nombre  [de|d’]  *WORD
-        <<- /sgpl/ (morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>", ":[AD]"))
-            or \3 in aREGULARPLURAL
+        <<- /sgpl/ morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>|>,", ":[AD]")
         -3>> =suggPlur(\3)                                                                  && Ici, « nombre de » devrait probablement être suivi d’un pluriel.
 
 TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
@@ -20719,7 +20718,7 @@ TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 __sgpl_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
-        <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
+        <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/")
         -4>> =suggPlur(\4)                                                                  && Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
