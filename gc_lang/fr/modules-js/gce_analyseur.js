@@ -61,7 +61,7 @@ function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
     if (lMorph2.length === 0) {
         return true;
     }
-    if (bNotOnlyNames  &&  not (cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
+    if (bNotOnlyNames && !(cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
         return false;
     }
     return cregex.checkAgreement(lMorph1, lMorph2);
