@@ -11543,11 +11543,24 @@ __maj_ministères__
     [>ministre|>ministère] des anciens combattants
     [>ministre|>ministère] des [armées|droits|finances|postes|solidarités|sports|sciences]
     [>ministre|>ministère] du [bonheur|budget|commerce|logement|travail]
-    [>ministre|>ministère] de l’ [action|agriculture|aménagement|écologie|économie|éducation|emploi|énergie|enseignement|environnement|équipement|industrie|intérieur|outre-mer|urbanisme]
-    [>ministre|>ministère] de la [culture|cohésion|coopération|défense|guerre|jeunesse|justice|mer|propagande|recherche|santé|solidarité|transition|ville]
-        <<- /maj/ \-1.islower() --1>> =\-1.capitalize()                 && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+        <<- /maj/ \3.islower() -3>> =\3.capitalize()                    && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+
+    [>ministre|>ministère] de l’ action [publique|territoriale]
+    [>ministre|>ministère] de l’ aménagement territorial
+    [>ministre|>ministère] de l’ aménagement du territoire
+    [>ministre|>ministère] de l’ [agriculture|écologie|économie|éducation|emploi|énergie|enseignement|environnement|équipement|industrie|intérieur|outre-mer|urbanisme]
+    [>ministre|>ministère] de la cohésion [sociale|territoriale]
+    [>ministre|>ministère] de la cohésion des territoires
+    [>ministre|>ministère] de la coopération internationale
+    [>ministre|>ministère] de la transition écologique
+    [>ministre|>ministère] de la [culture|défense|guerre|jeunesse|justice|mer|propagande|recherche|santé|solidarité|ville]
+        <<- /maj/ \4.islower() -4>> =\4.capitalize()                    && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
 
 TEST: Le ministre du {{commerce}}                                       ->> Commerce
+TEST: ministère de la {{culture}}                                       ->> Culture
+TEST: Il a réellement travaillé pendant deux ans au ministère des Affaires Étrangères
+TEST: Ministère des Anciens combattants
+TEST: Avez-vous parlé au ministre des affaires en cours.
 
 
 # Les États
@@ -18708,7 +18721,7 @@ TEST: je {{sus}} à grosses gouttes chaque été
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
 __conf_tache_tâche__
     >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision|tri|.+(?:tion|ment|age))/
-        <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
+        <<- /conf/ not value(<1, "|lourde|lourdes|") and not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         && Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
     >tâche  [>difforme|>indélébile|>rouge|>vert|>noir|>bleu|>jaune|>gris|>blanc|>brun|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire|>cuivré]
@@ -18744,6 +18757,7 @@ TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’aut
 TEST: une tâche de sélection des données
 TEST: les agents peu nombreux sont accaparés par le court terme et les tâches de gestion
 TEST: une simple tâche d’étiquetage
+TEST: une lourde tâche d’innombrables mesures ennuyeuses à effectuer
 
 
 __conf_tâche_tache__
