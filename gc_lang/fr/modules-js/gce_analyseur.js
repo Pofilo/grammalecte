@@ -51,35 +51,7 @@ function apposition (sWord1, sWord2) {
     return sWord2.length < 2 || (cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)));
 }
 
-function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
-    //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
-    let lMorph2 = _oSpellChecker.getMorph(sWord2);
-    if (lMorph2.length === 0) {
-        return false;
-    }
-    if (cregex.checkConjVerb(lMorph2, sReqMorphConj)) {
-        // verb word2 is ok
-        return false;
-    }
-    let lMorph1 = _oSpellChecker.getMorph(sWord1);
-    if (lMorph1.length === 0) {
-        return false;
-    }
-    if (cregex.checkAgreement(lMorph1, lMorph2) && (cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
-        return false;
-    }
-    // now, we know there no agreement, and conjugation is also wrong
-    if (cregex.isNomAdj(lMorph1)) {
-        return true;
-    }
-    //if cregex.isNomAdjVerb(lMorph1): # considered true
-    if (bLastHopeCond) {
-        return true;
-    }
-    return false;
-}
-
-function g_checkAgreement (oToken1, oToken2) {
+function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
     // check agreement between <oToken1> and <oToken2>
     let lMorph1 = oToken1.hasOwnProperty("lMorph") ? oToken1["lMorph"] : _oSpellChecker.getMorph(oToken1["sValue"]);
     if (lMorph1.length === 0) {
@@ -88,6 +60,9 @@ function g_checkAgreement (oToken1, oToken2) {
     let lMorph2 = oToken2.hasOwnProperty("lMorph") ? oToken2["lMorph"] : _oSpellChecker.getMorph(oToken2["sValue"]);
     if (lMorph2.length === 0) {
         return true;
+    }
+    if (bNotOnlyNames  &&  not (cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
+        return false;
     }
     return cregex.checkAgreement(lMorph1, lMorph2);
 }
@@ -120,4 +95,3 @@ function mbUnit (s) {
 const aREGULARPLURAL = new Set(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café",
                                 "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille",
                                 "jonquille", "marron", "olive", "pervenche", "prune", "sable"]);
-const aSHOULDBEVERB = new Set(["aller", "manger"]);

@@ -41,29 +41,7 @@ def apposition (sWord1, sWord2):
     return len(sWord2) < 2 or (cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)))
 
 
-def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond):
-    "use it if <sWord1> can be also a verb; <sWord2> is assumed to be True via isAmbiguousNAV"
-    lMorph2 = _oSpellChecker.getMorph(sWord2)
-    if not lMorph2:
-        return False
-    if cr.checkConjVerb(lMorph2, sReqMorphConj):
-        # verb word2 is ok
-        return False
-    lMorph1 = _oSpellChecker.getMorph(sWord1)
-    if not lMorph1:
-        return False
-    if cr.checkAgreement(lMorph1, lMorph2) and (cr.mbAdj(lMorph2) or cr.mbAdjNb(lMorph1)):
-        return False
-    # now, we know there no agreement, and conjugation is also wrong
-    if cr.isNomAdj(lMorph1):
-        return True
-    #if cr.isNomAdjVerb(lMorph1): # considered True
-    if bLastHopeCond:
-        return True
-    return False
-
-
-def g_checkAgreement (dToken1, dToken2):
+def g_checkAgreement (dToken1, dToken2, bNotOnlyNames=True):
     "check agreement between <dToken1> and <dToken2>"
     lMorph1 = dToken1["lMorph"]  if "lMorph" in dToken1  else  _oSpellChecker.getMorph(dToken1["sValue"])
     if not lMorph1:
@@ -71,6 +49,8 @@ def g_checkAgreement (dToken1, dToken2):
     lMorph2 = dToken2["lMorph"]  if "lMorph" in dToken2  else  _oSpellChecker.getMorph(dToken2["sValue"])
     if not lMorph2:
         return True
+    if bNotOnlyNames and not (cr.mbAdj(lMorph2) or cr.mbAdjNb(lMorph1)):
+        return False
     return cr.checkAgreement(lMorph1, lMorph2)
 
 
@@ -102,4 +82,3 @@ def mbUnit (s):
 aREGULARPLURAL = frozenset(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café", \
                             "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille", \
                             "jonquille", "marron", "olive", "pervenche", "prune", "sable"])
-aSHOULDBEVERB = frozenset(["aller", "manger"])
