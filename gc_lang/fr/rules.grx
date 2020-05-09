@@ -4822,8 +4822,7 @@ __virg_après_verbe_COD__
         -2>> \2,                                                && Une virgule est probablement souhaitable.
 
     [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
-        <<- /virg/ morph(\2, ":[123][sp]", ">appeler/|:[NA]") and not value(<1, "|que|qu’|")
-            and not (value(<1, "|ne|n’|") and value(<2, "|que|qu’|"))
+        <<- /virg/ morph(\2, ":[123][sp]", ">appeler/|:[NA]") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
         -2>> \2,                                                && Si “\-2” est une personne apostrophée, alors il faut mettre le nom en incise.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?Th=2&t1=&id=3412
 
 TEST: Tu vas les {{donner}} Rachel.
@@ -4836,6 +4835,7 @@ TEST: Avancez comme sait le faire Patrick.
 TEST: plus délirant encore que ne l’imaginait Marie.
 TEST: moins corrompu que ne pouvait le croire Marie.
 TEST: comme vient de le dire Ruth
+TEST: L’antimoine des sages, matière première extraite directement de la mine, « n’est pas proprement minéral et moins encore métallique », ainsi que nous l’enseigne Philalèthe.
 
 
 
@@ -6254,9 +6254,17 @@ TEST: Quel serait l’homme capable d’une telle horreur ?
 
 
 __conf_déterminant_plur_verbe__
-    [des|ces|mes|tes|ses|aux|nos|vos]  @:V.*:(?:Y|[123][sp])¬:[NA]
+    [des|ces|mes|tes|ses|aux]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
         -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   && Incohérence avec « \1 » : « \2 » est un verbe.
+
+    nos  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
+        <<- /conf/ __also__ and morph(\2, ":1p") -1>> nous                                          && Vouliez-vous écrire « nous » ? Le terme « \2 » est un verbe conjugué à la 1ʳᵉ personne du pluriel.
+
+    vos  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
+        <<- /conf/ __also__ and morph(\2, ":2p") -1>> vous                                          && Vouliez-vous écrire « vous » ? Le terme « \2 » est un verbe conjugué à la 2ᵉ personne du pluriel.
 
     quels  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
@@ -6264,7 +6272,7 @@ __conf_déterminant_plur_verbe__
 
     quelles  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|") and hasSimil(\2, ":[NA]:[fe]:[pi]")
-        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                   && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
 
     quelques  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|puisse|puisses|puissent|")
@@ -6279,6 +6287,8 @@ __conf_déterminant_plur_verbe__
         -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: la crainte des {{attentas}} fait feu de tout bois.
+TEST: {{nos}} {{agissons}}
+TEST: {{vos}} {{prenez}} vos délires pour la réalité.
 TEST: Quelques {{axions}} de la sorte suffisent à nous discréditer.
 TEST: elle se rendit auxdits {{jardinais}}
 TEST: auxdites {{scelles}}, il ne prêta pas attention.
@@ -14522,7 +14532,7 @@ __purge_conditionnelle__
         <<- ~1:2>> *
 
     entre [eux|elles|nous|vous|iels]
-        <<- not morph(<1, ":Ov|>(?:il|on|elle)") ~>> *
+        <<- not morph(<1, ":Ov|>(?:il|on|elle)|>d’") ~>> *
 
     entre [moi|toi|lui|elle|nous|vous|eux|elles] et [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- ~>> *
@@ -15300,10 +15310,10 @@ __purge_couleurs__
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
     blanc   [argenté|cassé|lunaire]
     bleu    [acier|argenté|azur|céleste|ciel|électrique|givré|indigo|marine|nuit|outremer|outre-mer|persan|pétrole|roi|saphir|turquin|turquoise|vert]
-    blond   [argenté|platine|cuivré]
-    brun    cuivré
+    blond   [argenté|platine|cuivré|rougeâtre]
+    brun    [cuivré|rouge|rougeâtre]
     gris    [acier|anthracite|argenté|fer|perle|souris]
-    jaune   [canari|citron|doré|maïs|paille|sable]
+    jaune   [canari|citron|doré|maïs|paille|sable|rougeâtre]
     noir    [de|d’] [encre|jais]
     noir    et blanc
     noir    sur blanc
@@ -15632,6 +15642,8 @@ __purge_après_verbe__
 
     >avoir  pour [lui|nous|vous|longtemps]  ?$:W¿  $:Q
     >être   pour [lui|nous|vous|longtemps]  ?$:W¿  @:[QA]
+    >avoir  de plus                         ?$:W¿  $:Q
+    >être   de plus                         ?$:W¿  @:[QA]
         <<- ~2:-2>> *
 
 
@@ -16427,6 +16439,7 @@ TEST: dans l’Histoire, le business as usual est redoutablement résilient
 TEST: la crise pourrait durer plus longtemps qu’envisagé.
 TEST: on ne peut convoquer un citoyen sur la base des textes constitutionnels, devenus dans ce cas incriminants.
 TEST: ce sont des gens bien
+TEST: beaucoup d’entre nous se souviennent de ce fameux jour
 
 
 @@@@
@@ -16563,7 +16576,7 @@ __conf_à_a_après_verbes__
         <<- /conf/ \-1 != "A" and not tag_before(\1, "_àCOI_") and not value(>1, "|été|")
         --1>> à                                                             && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
-    [>abandonner|>accorder|>adapter|>adjoindre|>adresser|>affirmer|>agréer|>aider|>ajouter|>amener|>annoncer|>appeler|>applaudir|>appliquer|>apporter|>apprendre|>arguer|>argüer|>aspirer|>assujettir|>attacher|>atteindre|>attoucher|>attribuer|>autoriser|>avancer|>céder|>changer|>chicaner|>coller|>commander|>commencer|>conclure|>conférer|>confier|>confirmer|>conseiller|>consentir|>conspirer|>continuer|>convertir|>couper|>couter|>coûter|>croire|>décider|>déclarer|>décrire|>défendre|>déférer|>demander|>destiner|>devoir|>dire|>disposer|>disputer|>donner|>échapper|>écrire|>élever|>employer|>engager|>enjoindre|>entendre|>envoyer|>exercer|>expliquer|>exposer|>falloir|>fermer|>filer|>forfaire|>former|>fournir|>gouter|>goûter|>impartir|>imputer|>infliger|>insulter|>intégrer|>intéresser|>jeter|>justifier|>lier|>lire|>livrer|>manquer|>mesurer|>mettre|>montrer|>obliger|>obtenir|>offrir|>ouvrir|>parer|>parler|>passer|>payer|>penser|>permettre|>porter|>pourvoir|>prendre|>préparer|>présenter|>présider|>prétendre|>promettre|>protester|>quémander|>rappeler|>rapprendre|>ravir|>réapprendre|>recoller|>recourir|>redéclarer|>redire|>référer|>réfléchir|>refuser|>regarder|>réimputer|>remesurer|>remettre|>remontrer|>rendre|>renoncer|>reparler|>répondre|>reprendre|>répugner|>retoucher|>retravailler|>retweeter|>réussir|>révéler|>rêver|>satisfaire|>schtroumpfer|>servir|>signaler|>sonner|>soumettre|>souscrire|>soutenir|>statuer|>suppléer|>surseoir|>sursoir|>survendre|>téléphoner|>témoigner|>tendre|>tenir|>tirer|>toucher|>traduire|>travailler|>tweeter|>unir|>veiller|>vendre|>virer|>viser|>vouloir|>aboutir|>acquiescer|>adhérer|>apparaitre|>apparaître|>compatir|>complaire|>concourir|>confiner|>contribuer|>convenir|>coopérer|>correspondre|>déplaire|>désobéir|>disparaitre|>équivaloir|>mentir|>naitre|>naître|>nuire|>obéir|>obtempérer|>participer|>plaire|>profiter|>réagir|>rechigner|>renaitre|>renaître|>résister|>ressembler|>retéléphoner|>seoir|>songer|>sourire|>succéder|>succomber|>suffire|>surréagir|>survivre|>tarder|>vaquer] a
+    [>abandonner|>accorder|>adapter|>adjoindre|>adresser|>affirmer|>agréer|>aider|>ajouter|>amener|>annoncer|>appeler|>applaudir|>appliquer|>apporter|>apprendre|>arguer|>argüer|>aspirer|>assujettir|>attacher|>atteindre|>attoucher|>attribuer|>autoriser|>avancer|>céder|>changer|>chicaner|>coller|>commander|>commencer|>conclure|>conférer|>confier|>confirmer|>conseiller|>consentir|>conspirer|>continuer|>convertir|>couper|>couter|>coûter|>croire|>décider|>déclarer|>décrire|>défendre|>déférer|>demander|>destiner|>devoir|>dire|>disposer|>disputer|>donner|>échapper|>écrire|>élever|>employer|>engager|>enjoindre|>entendre|>envoyer|>exercer|>expliquer|>exposer|>falloir|>fermer|>filer|>forfaire|>former|>fournir|>gouter|>goûter|>impartir|>imputer|>infliger|>insulter|>intégrer|>intéresser|>jeter|>justifier|>lier|>lire|>livrer|>manquer|>mesurer|>mettre|>montrer|>obliger|>obtenir|>offrir|>ouvrir|>parer|>parler|>passer|>payer|>penser|>permettre|>porter|>pourvoir|>prendre|>préparer|>prescrire|>présenter|>présider|>prétendre|>promettre|>protester|>quémander|>rappeler|>rapprendre|>ravir|>réapprendre|>recoller|>recourir|>redéclarer|>redire|>référer|>réfléchir|>refuser|>regarder|>réimputer|>remesurer|>remettre|>remontrer|>rendre|>renoncer|>reparler|>répondre|>reprendre|>répugner|>retoucher|>retravailler|>retweeter|>réussir|>révéler|>rêver|>satisfaire|>schtroumpfer|>servir|>signaler|>sonner|>soumettre|>souscrire|>soutenir|>statuer|>suppléer|>surseoir|>sursoir|>survendre|>téléphoner|>témoigner|>tendre|>tenir|>tirer|>toucher|>traduire|>travailler|>tweeter|>unir|>veiller|>vendre|>virer|>viser|>vouloir|>aboutir|>acquiescer|>adhérer|>apparaitre|>apparaître|>compatir|>complaire|>concourir|>confiner|>contribuer|>convenir|>coopérer|>correspondre|>déplaire|>désobéir|>disparaitre|>équivaloir|>mentir|>naitre|>naître|>nuire|>obéir|>obtempérer|>participer|>plaire|>profiter|>réagir|>rechigner|>renaitre|>renaître|>résister|>ressembler|>retéléphoner|>seoir|>songer|>sourire|>succéder|>succomber|>suffire|>surréagir|>survivre|>tarder|>vaquer] a
     >arriver a
     >condamner a
     ## locutions
@@ -21467,6 +21480,7 @@ TEST: C’est toujours ça de gagné.
 TEST: que n’a-t-on pas entendu au sujet de ces revendications, souvent qualifiées de trop désordonnées
 TEST: Tous ceux qui disent que la rigidité déflationnaire de l’euro est une chance pour la France sont de fieffés menteurs
 TEST: Le virus, depuis le début, a joué de sacrés tours aux chercheurs et aux médecins.
+TEST: Elle s’était de plus appliquée de bonne heure à l’ornementation des monuments funéraires.
 
 
 __infi_verbe_de_verbe__
@@ -22344,8 +22358,8 @@ __purge_pronoms__
     beaucoup [de|d’] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     beaucoup [de|d’] *WORD @:[VR]¬:[NAP]
     beaucoup [de|d’] *WORD , @¬:[NA]
-        <<- morph(\3, ":[NA].*:p", ":[NA].*:[si]") /1>> bcp_plur
-        <<- morph(\3, ":[NA].*:s", ":[NA].*:[pi]") /1>> bcp_sing
+        <<- morph(\3, ":[NA].*:p", ":(?:[NA].*:[si]|G)") /1>> bcp_plur
+        <<- morph(\3, ":[NA].*:s", ":(?:[NA].*:[pi]|G)") /1>> bcp_sing
         <<- ~2:3>> *
 
     [chacun|chacune] [de|d’] ?entre¿ [nous|vous|eux|elles]
@@ -24394,7 +24408,7 @@ TEST: Cet homme a nui à notre existence.
 __ppas_les_avoir__
     les  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
         <<- /ppas/ morph(\2, ":V0a") -3>> =suggPlur(\3)
-        && Accord avec le COD “les” : Le participe passé “\2” devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec le COD « les » : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: je les avais {{trompé}} avec mon baratin.
 TEST: les avoirs reçus ne couvrent pas toutes les dépenses.
@@ -24406,7 +24420,7 @@ __ppas_nous_avoir__
     nous  >avoir  *WORD  <end>
         <<- /ppas/ morph(\2, ":V0a", ":1p") and morph(\3, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and morph(<1, ":(?:M|Os|N)", ":R") and not value(<2, "|que|qu’|")
         -3>> =suggPlur(\3)
-        && Accord avec le COD “nous” : Le participe passé “\3” devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec le COD « nous » : Le participe passé « \3 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Ces maisons nous avaient {{subjugué}}.
 TEST: Alexandre aujourd’hui nous a {{quitté}}
@@ -24422,7 +24436,7 @@ TEST: c’est la plus belle lettre que le Comité nous a envoyée.
 __ppas_l_avoir__
     l’ >avoir @:V[0-3]..t.*:Q.*:p¬:[GWsi]
         <<- /ppas/ -3>> =suggSing(\3)
-        && Accord avec “l’” : le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec « l’ » : le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils l’avaient {{retrouvés}}.
 TEST: Vous l’avez {{trouvez}}.                                                    ->> trouvé
@@ -24435,7 +24449,7 @@ TEST: il faillit agir, mais l’ayant {{remarqués}}, il passa son chemin.
 __ppas_m_t_avoir__
     [m’|t’] >avoir @:Q.*:p¬:[GWsi]
         <<- /ppas/ not tag_before(\1, "_que_") or morph(\3, ":V[0-3]..t_")  -3>> =suggSing(\3)
-        && Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec « \1 ». S’il s’agit d’un COD, le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
 TEST: Les élèves m’ont {{écoutés}}.
@@ -24447,6 +24461,7 @@ TEST: Nous ne t’avons pas {{écoutées}}.
 TEST: comme ces informations m’avaient {{manquées}}
 TEST: les notes que tu m’as données sont mal écrites.
 TEST: Garde précieusement les secrets que je t’ai confiés.
+TEST: je ne manquai pas de travailler aux choses qu’il m’avait prescrites
 
 
 __ppas_qui_avoir__
@@ -24852,13 +24867,15 @@ __imp_verbe_groupe2_groupe3_t__
     <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              ~\w\w+t$
     <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
-            and not (value(\-1, "|vient|dit|surgit|survient|provient|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
+            and not value(\-1, "|provient|")
+            and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
             and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         && S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
-            and not (value(\-1, "|vient|dit|surgit|survient|provient|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
+            and not value(\-1, "|provient|")
+            and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
             and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         && S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
@@ -24883,6 +24900,8 @@ TEST: Surgit ensuite la violence physique et verbale.
 TEST: De là provient, à l’inverse, la joie palpable qui débordait des places occupées
 TEST: Parait que ces gens-là sont riches.
 TEST: Vient cependant fatalement un moment où
+TEST: De là provient gnosis, connaissance, érudition, doctrine, d’où notre mot français gnose, doctrine des gnostiques et philosophie des Mages.
+TEST: Ainsi périt l’inconstant.
 
 
 # verbes du 3ᵉ groupe en -d
@@ -27545,7 +27564,7 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “faire attention à ce que”, le verbe doit être au subjonctif.
 
     >tenir  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “tenir à ce que”, le verbe doit être au subjonctif.
+        <<- /vmode/ not value(<1, "|ça|cela|ceci|") --1>> =suggVerbMode(\-1, ":S", \-2)             && Après “tenir à ce que”, le verbe doit être au subjonctif.
 
     >veiller  [à|a]  ce  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ not value(<1, "|la|") --1>> =suggVerbMode(\-1, ":S", \-2)                       && Après “veiller à ce que”, le verbe doit être au subjonctif.
@@ -27587,6 +27606,7 @@ TEST: C’est cet interdit qu’il faut lever.
 TEST: pas grand-chose à proposer à part faire attention à ce qu’on fait.
 TEST: La crainte que nous nourrissons à l’égard d’une société libre tient à notre méconnaissance des vertus de l’action individuelle
 TEST: Je sais qu’il nous faut l’aide de mon ami.
+TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
 
 
 __vmode_qqch_que_subjonctif__
