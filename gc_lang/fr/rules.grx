@@ -1927,6 +1927,14 @@ __da_été__
         <<- =>> select(\-1, ":Q")
 
 
+__da_adverbes__
+    environ  [$:B|*NUM]
+        <<- not value(<1, "|l’|un|cet|quel|") =>> exclude(\1, ":N")
+
+    grave
+        <<- morph(<1, ":D") =>> (\1, ":W")
+
+
 __da_prépositions__
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
@@ -13260,6 +13268,7 @@ __purge_locutions__
     à l’ échelon [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
     à l’ échelle [locale|cantonale|départementale|régionale|nationale|européenne|américaine|africaine|asiatique|continentale|internationale|planétaire|galactique|universelle]
     à l’ en croire
+    à l’ environ
     à l’ état pur
     à l’ exclusion de toute autre chose
     à l’ extrémité [est|ouest|nord|sud]
@@ -15391,14 +15400,6 @@ __simplification_noms_propres__
     [Mr|Mlle|Mme|Mgr|miss]  ~^[A-ZÉÈÊ]
         <<- ~2>> *
 
-    $:Cs  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
-        <<- morph(\2, ":M") and not before("\\b(?:plus|moins|aussi) .* que +$")
-        ~2:4>> =rewriteSubject(\2,\4) + "||"
-
-    <start>  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
-        <<- morph(\2, ":M")
-        ~2:0>> =rewriteSubject(\2,\4) + "||"
-
 
 __purge_pronom_aussi__
     [j’|je] *WORD  moi aussi
@@ -16076,6 +16077,23 @@ __purge_tout_tout_tous_toutes__
 @@@@
 @@@@
 @@@@
+
+__fusions_noms_propres_et_pronoms__
+    [<start>|,|(|$:Cs]  [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels|$:M]  et  [moi|nous]
+    [<start>|,|(|$:Cs]  [moi|nous]  et  [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels|$:M]
+        <<- not value(\1, "|que|qu’|") ~2:0>> ␣
+        <<- __also__ /2>> _eq_nous_
+
+    [<start>|,|(|$:Cs]  [toi|lui|elle|iel|vous|eux|elles|iels|$:M]  et  [toi|vous]
+    [<start>|,|(|$:Cs]  [toi|vous]  et  [toi|lui|elle|iel|vous|eux|elles|iels|$:M]
+        <<- not value(\1, "|que|qu’|") ~2:0>> ␣
+        <<- __also__ /2>> _eq_vous_
+
+    [<start>|,|(|$:Cs]  [lui|elle|iel|eux|elles|iels|$:M]  et  [lui|elle|iel|eux|elles|iels]
+    [<start>|,|(|$:Cs]  [lui|elle|iel|eux|elles|iels]  et  [lui|elle|iel|eux|elles|iels|$:M]
+        <<- not value(\1, "|que|qu’|") ~2:0>> ␣
+        <<- __also__ /2>> _eq_iels_
+
 
 __da_le_la_les_leur2__
     [<start>|,|(]  c’                                                 ?[ne|n’]¿  >être   [le|la|l’|les]  @:[NA]¬:G
@@ -20059,16 +20077,18 @@ TEST: celles venues chanter doivent se rendre là-bas.
 ## Nombres
 __gn_nombre_lettres_1m__
     $:B:e:p  *WORD
-        <<- /gn/ not value(\1, "|neuf|mille|") and morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+        <<- /gn/ not value(\1, "|neuf|mille|") and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":D.*:s")
+            and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
             and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     neuf  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+        <<- /gn/ morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not morph(<1, ":D.*:s")
+            and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     mille  *WORD
-        <<- /gn/ not value(\2, "|maximum|minimum|multiplié|divisé|") and morph(\2, ":[NA].*:s", "*") and not value(<1, "|le|un|ce|du|")
+        <<- /gn/ not value(\2, "|maximum|minimum|multiplié|divisé|") and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":D.*:s")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
@@ -20085,6 +20105,7 @@ TEST: L’article VII mentionné dans la revue
 TEST: Le produit de cinq multiplié par trois.
 TEST: deux divisé par douze
 TEST: il en faut trois minimum, cinq maximum
+TEST: il vit dans un vingt-quatre mètre carré.
 
 
 __gn_nombre_chiffres_1m__
@@ -20093,13 +20114,13 @@ __gn_nombre_chiffres_1m__
         -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
-        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
-            and morph(\2, ":[NA].*:s", "*") and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
+            and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
         <<- /gn/ not value(\2, "|maximum|minimum|fois|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
-            and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
+            and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ">(?:et|ou)/|:(?:N|D.*:[si])") and not morph(\3, ">(?:seul|maximum|minimum)/|:(?:[BG]|V0)") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné entre « \2 » et « \3 ».
@@ -20125,6 +20146,9 @@ TEST: L’année 2019 a commencé à le montrer
 TEST: La « première génération » d’ordinateurs des années 1950 a déjà largement cédé la place à une deuxième (transistorisée)
 TEST: Au sein du club des pays les plus prospères, la richesse par habitant est néanmoins 52 fois supérieure à celle des pays à faibles revenus, d’après la Banque mondiale.
 TEST: 1 à 2 comprimés par jour voire 2 à 3 maximum
+TEST: elle vit dans un 24 m carré.
+TEST: elle vit dans un 24 m² triste de la banlieue de Paris.
+TEST: dans son 240 m2 lumineux, c’est la belle vie.
 
 
 ##  trouver ça/ceci/cela + adj
@@ -22167,9 +22191,6 @@ TEST: {{tétaniser}} de voir que leurs théories grandioses ne valent rien
 !!!
 !!!
 
-
-### Simplification des groupes nominaux
-
 __purge_prépositions_pronoms__
     à part [cela|ceci|ça]
     à [cela|ceci|ça] près
@@ -22414,6 +22435,8 @@ __purge_pronoms__
     [un|une] des [nôtres|vôtres]
         <<- ~2:0>> *
 
+
+### Simplification des syntagmes nominaux
 
 __purge_syntagmes_nominaux__
     [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]  <end>
@@ -26816,7 +26839,31 @@ TEST: ceux contre ce que nous faisons deviennent hargneux.
 TEST: ce qu’elles accomplissent est formidable.
 
 
+## 1pl
+__conj_eq_nous__
+    [<start>|,|(|$:Cs]  /_eq_nous_  @:V¬:(?:G|Y|P|1p|M|A.*:p)
+        <<- /conj/ -3>> =suggVerb(\3, ":1p")                                                        && Conjugaison probablement erronée. Accord avec “\2”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
+
+TEST: vous et nous {{iront}} dans la forêt
+
+
+## 2pl
+__conj_eq_vous__
+    [<start>|,|(|$:Cs]  /_eq_vous_  @:V¬:(?:G|P|2p|M|A.*:p)
+        <<- /conj/ -3>> =suggVerb(\3, ":2p")                                                        && Conjugaison probablement erronée. Accord avec “\2”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+TEST: vous et eux {{partirait}} ensemble.
+
+
 ## 3pl
+__conj_eq_iels__
+    /_eq_iels_  @:V¬:(?:3p|P|G|M|A.*:p)
+        <<- /conj/ not morph(<1, ":R") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3p"))
+        -2>> =suggVerb(\2, ":3p")                                       && Conjugaison probablement erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+TEST: lui et elle {{était}} dans l’affliction
+
+
 __conj_elles__
     elles  @:V¬:(?:3p|P|G|M|A.*:f:p)
         <<- /conj/ not morph(<1, ":R") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3p"))
@@ -26836,7 +26883,7 @@ TEST: tout ce qui vient d’elles sera écarté.
 
 
 __conj_iels__
-    iels  @:V¬:(?:3p|P|G|M|A.*:f:p)
+    iels  @:V¬:(?:3p|P|G|M|A.*:p)
         <<- /conj/ not morph(<1, ":R") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3p"))
         -2>> =suggVerb(\2, ":3p")                                       && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __also__ and morph(\2, ":3s") -1>> iel               && Accord avec “\2”.

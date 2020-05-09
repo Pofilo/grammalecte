@@ -14,28 +14,6 @@ def g_morphVC (dToken, sPattern, sNegPattern=""):
     return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, False)
 
 
-def rewriteSubject (s1, s2):
-    "rewrite complex subject: <s1> a prn/patr/npr (M[12P]) followed by “et” and <s2>"
-    if s2 == "lui":
-        return "ils"
-    if s2 == "moi":
-        return "nous"
-    if s2 == "toi":
-        return "vous"
-    if s2 == "nous":
-        return "nous"
-    if s2 == "vous":
-        return "vous"
-    if s2 == "eux":
-        return "ils"
-    if s2 in ("elle", "elles"):
-        if cr.mbNprMasNotFem(_oSpellChecker.getMorph(s1)):
-            return "ils"
-        # si épicène, indéterminable, mais OSEF, le féminin l’emporte
-        return "elles"
-    return s1 + " et " + s2
-
-
 def apposition (sWord1, sWord2):
     "returns True if nom + nom (no agreement required)"
     return len(sWord2) < 2 or (cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)))
