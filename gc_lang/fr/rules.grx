@@ -23,6 +23,12 @@
 # ERREURS COURANTES
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
+# ESPACES INSÉCABLES
+# Messages d’erreur : ne pas utliser les espaces insécables fins
+# -> ça passe mal sur certains affichages (console, par exemple)
+# -> inutile dans Writer
+# -> espaces insécables automatiquement transformés pour le code JavaScript
+
 
 !!
 !!
@@ -6273,11 +6279,11 @@ __conf_déterminant_plur_verbe__
 
     nos  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
-        <<- /conf/ __also__ and morph(\2, ":1p") -1>> nous                                          && Vouliez-vous écrire « nous » ? Le terme « \2 » est un verbe conjugué à la 1ʳᵉ personne du pluriel.
+        <<- /conf/ __also__ and morph(\2, ":1p") -1>> nous                                          && Vouliez-vous écrire « nous » ? Le terme « \2 » est un verbe conjugué à la 1ʳᵉ personne du pluriel.
 
     vos  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
-        <<- /conf/ __also__ and morph(\2, ":2p") -1>> vous                                          && Vouliez-vous écrire « vous » ? Le terme « \2 » est un verbe conjugué à la 2ᵉ personne du pluriel.
+        <<- /conf/ __also__ and morph(\2, ":2p") -1>> vous                                          && Vouliez-vous écrire « vous » ? Le terme « \2 » est un verbe conjugué à la 2ᵉ personne du pluriel.
 
     quels  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
@@ -6510,7 +6516,7 @@ TEST: elle aussi {{mangées}}.
 __conf_en_tant_que_subst__
     en  tant  [que|qu’]  @:V¬:[NAG]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA]")
-        && Confusion probable. Après « en tant que », il faut un substantif, pas un verbe. Exemples : en tant que femme, en tant que patron, en tant que trentenaire…
+        && Confusion probable. Après « en tant que », il faut un substantif, pas un verbe. Exemples : en tant que femme, en tant que patron, en tant que trentenaire…
 
 TEST: en tant qu’{{abaisse}}
 TEST: en tant que tel
@@ -6690,6 +6696,7 @@ TEST: Elle en {{à}} pris.
 TEST: Elle l’en {{à}} averti.
 TEST: lui, avec ceux-là, nous en {{à}} donnés trois.
 TEST: qui en {{à}} ?
+TEST: il les a pris, les {{à}} frapper
 
 
     [il|on]  [nous|vous]  à
@@ -6856,7 +6863,7 @@ __conf_à_bâtons_rompus!7__
     [a|à] [bâton+s|bat-on|bat’on] [>rond|ron+s]  [pu+s|put|pue+s]
     [a|à] [>bât|ba+s|bat+s] [on|ont|>ton|>thon] [rompu+ses]
     [a|à] [>bât|ba+s|bat+s] [on|ont|>ton|>thon] [>rond|ron+s]  [pu+s|put|pue+s]
-        <<- /conf/ ->> à bâtons rompus                  && Confusion. Locution « à bâtons rompus ».|https://fr.wiktionary.org/wiki/%C3%A0_b%C3%A2tons_rompus
+        <<- /conf/ ->> à bâtons rompus                  && Confusion. Locution « à bâtons rompus ».|https://fr.wiktionary.org/wiki/%C3%A0_b%C3%A2tons_rompus
 
 TEST: s’organiser, comme on put, {{à bas thon rond pu}}
 TEST: actions {{à bâton rompu}}
@@ -6970,14 +6977,14 @@ TEST: reculons à grands pas, mais discrètement
 __conf_à_part!6__
     !! à part [cela|ceci|ça] ¡¡
     [a|à] [part+s|par|pare+s] [cela|ceci|ça]
-        <<- /conf/ ->> à part \3                                            && Confusion. Locution « à part cela/ceci/ça ».|https://fr.wiktionary.org/wiki/%C3%A0_part_%C3%A7a
+        <<- /conf/ ->> à part \3                                            && Confusion. Locution « à part cela/ceci/ça ».|https://fr.wiktionary.org/wiki/%C3%A0_part_%C3%A7a
 
     à parts [<end>|,|)|$:D]
-        <<- /conf/ -1:2>> à part                    && Locution « à part », au singulier.
+        <<- /conf/ -1:2>> à part                    && Locution « à part », au singulier.
 
     à [par|pare+s] $:D
     à [par|pare+s] {pronom_obj}
-        <<- /conf/ -1:2>> à part|a par              && Confusion. Ou bien vous voulez dire « à part » pour « hormis », ou bien vous confondez la préposition “à” avec “a” (forme conjuguée du verbe avoir).
+        <<- /conf/ -1:2>> à part|a par              && Confusion. Ou bien vous voulez dire « à part » pour « hormis », ou bien vous confondez la préposition “à” avec “a” (forme conjuguée du verbe avoir).
 
 TEST: {{a pare ça}}                             ->> à part ça
 TEST: un homme {{à parts}}                      ->> à part
@@ -7736,18 +7743,18 @@ TEST: je traversais l’allée discrètement.
 __conf_aux_dépens!7__
     !! à [mes|tes|ses|nos|vos|leurs] dépens ¡¡
     [a|à] [mes|tes|ses|nos|vos|leurs] [dépend+s|dépens]
-        <<- /conf/ ->> à \2 dépens                                      && Locution : « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
+        <<- /conf/ ->> à \2 dépens                                      && Locution « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
 
     [a|à] ces [dépend+s|dépens]
-        <<- /conf/ ->> à ses dépens                                     && Locution : « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
+        <<- /conf/ ->> à ses dépens                                     && Locution « à mes/tes/ses/nos/vos/leurs dépens ».|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
 
     [a|à] [mon|ton|son|notre|votre|leur] [dépend+s|dépens]
         <<- /conf/ ->> ="à "+ \2.replace("on", "es").replace("ON", "ES").replace("otre", "os").replace("OTRE", "OS").replace("eur", "eurs").replace("EUR", "EURS") + " dépens"
-        && Locution : « à mes/tes/ses/nos/vos/leurs dépens », car “dépens” est toujours pluriel.|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
+        && Locution « à mes/tes/ses/nos/vos/leurs dépens », car “dépens” est toujours pluriel.|https://fr.wiktionary.org/wiki/%C3%A0_ses_d%C3%A9pens
 
     !! aux dépens ¡¡
     [au|aux] [dépend+s|dépens]
-        <<- /conf/ ->> aux dépens                                       && Locution prépositive : « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
+        <<- /conf/ ->> aux dépens                                       && Locution prépositive « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
 
 TEST: c’est comme toujours {{a leurs dépens}}
 TEST: il travaille {{à notre dépens}}
@@ -10645,7 +10652,7 @@ __conf_sitôt_dit_sitôt_fait__
     si [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
     s’ [y|i] [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ s’ [y|i] [tôt|>tau|taux|to|>taud|trop|trot] [fait+s|>fée|fé|fais]
         <<- /conf/ ->> sitôt dit, sitôt fait
-        && Confusion. Locution « sitôt dit, sitôt fait ».|https://fr.wiktionary.org/wiki/sit%C3%B4t_dit,_sit%C3%B4t_fait
+        && Confusion. Locution « sitôt dit, sitôt fait ».|https://fr.wiktionary.org/wiki/sit%C3%B4t_dit,_sit%C3%B4t_fait
 
 TEST: {{si tôt dit, sitôt fait}}
 TEST: sitôt dit, sitôt fait.
@@ -14970,6 +14977,7 @@ __substantifs_multi_mots__
     >inspection [de|d’] routine
     >instinct [de|d’] survie
     >interface [utilisateur+s]
+    >intermittent du spectacle
     >invité d’ honneur
     >invité surprise
     >issue de secours
@@ -18730,7 +18738,7 @@ __conf_suer_savoir__
     [su|sus|sut]  à grosses gouttes
     [su|sus|sut]  comme un [bœuf|boeuf|cochon|goret|phoque|porc]
     [su|sus|sut]  comme une [baleine|vache]
-        <<- /conf/ -1>> sue                                 && Confusion. Si vous voulez dire « transpirer abondamment », écrivez « sue » du verbe « suer ».|https://fr.wiktionary.org/wiki/tache
+        <<- /conf/ -1>> sue                                 && Confusion. Si vous voulez dire « transpirer abondamment », écrivez « sue » du verbe « suer ».|https://fr.wiktionary.org/wiki/tache
 
 TEST: il {{sut}} comme un goret
 TEST: je {{sus}} à grosses gouttes chaque été
@@ -18883,7 +18891,7 @@ __conf_tant_temps_tan__
 
     les [tant|>tan] >changer
     les [tant|>tan] >avoir [changé+ses]
-        <<- /conf/ -2>> temps                                       && Confusion probable. Pour parler d’une période, écrivez « temps ».|https://fr.wiktionary.org/wiki/temps
+        <<- /conf/ -2>> temps                                       && Confusion probable. Pour parler d’une période, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
 TEST: il est bien évidemment {{tant}} d’en finir avec ça.
 TEST: c’était le bon {{tan}}
@@ -20111,12 +20119,12 @@ TEST: il vit dans un vingt-quatre mètre carré.
 __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
         <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|")
-        -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
+        -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
         <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
             and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
-        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
         <<- /gn/ not value(\2, "|maximum|minimum|fois|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
@@ -21271,28 +21279,28 @@ TEST: celles qui {{demandées}} viendront demain.
 __conf_conj_suj_verbe_adj__
     [quand|lorsque|puisque]  [le|ce|cet|du]                                 *WORD  ~..[éeiut]s?$  ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[me]:[si]") and  morph(\4, ":Q.*:[me]:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
-        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [la|cette|ma|ta|sa]                            *WORD  ~..[éeiut]e$   ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[fe]:[si]") and  morph(\4, ":Q.*:[fe]:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
-        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [l’|mon|ton|ton|notre|votre|leur]              *WORD  ~..[éeiut]e?$  ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[si]") and  morph(\4, ":Q.*:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
-        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [les|cet|mes|tes|ses|nos|vos|leurs|quelques]   *WORD  ~..[éeiut]e?s$ ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[pi]") and  morph(\4, ":Q.*:[pi]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
-        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [plusieurs|certains|certaines]                 *WORD  ~..[éeiut]e?s$ ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3pl") and  morph(\4, ":Q.*:[pi]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
-        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
+        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
 TEST: {{quand}} le facteur {{arrivé}}, il se précipitait à la fenêtre.
 TEST: {{puisque}} la fête {{finie}}, je vais partir.
@@ -21448,7 +21456,7 @@ TEST: je craignais d’être pour toujours abandonnée
 
 __infi_commencer_finir_par__
     [>commencer|>finir]  par  ?[le|l’|la|leur|les|nous|vous|lui]¿  @:V¬:[NGMY]
-        <<- /infi/ not \3[0:1].isupper() -3>> =suggVerbInfi(\3)                         && Après « commencer/finir par », le verbe devrait être à l’infinitif.
+        <<- /infi/ not \3[0:1].isupper() -3>> =suggVerbInfi(\3)                         && Après « commencer/finir par », le verbe devrait être à l’infinitif.
 
 TEST: commence par {{mangé}} le poulet.
 TEST: enfin la petite finit par {{pleuré}} à chaudes larmes.
@@ -21518,6 +21526,7 @@ TEST: que n’a-t-on pas entendu au sujet de ces revendications, souvent qualifi
 TEST: Tous ceux qui disent que la rigidité déflationnaire de l’euro est une chance pour la France sont de fieffés menteurs
 TEST: Le virus, depuis le début, a joué de sacrés tours aux chercheurs et aux médecins.
 TEST: Elle s’était de plus appliquée de bonne heure à l’ornementation des monuments funéraires.
+TEST: nombre d’entre nous le faisons déjà
 
 
 __infi_verbe_de_verbe__
@@ -22140,6 +22149,62 @@ TEST: J’ai laissé {{tombé}} ces connards.
 TEST: j’ai senti le vent {{tourné}}
 TEST: elles sentent le vent tourner en leur faveur.
 
+
+!!!! Infinitif: conjonction +sujet +à +Vinfi                                                      !!
+
+__conf_conjonction_sujet_à_vinfi__
+    [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  $:M  à  @:V1.*:Y  [<end>|)]
+    [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  $:M  à  @:V1.*:Y  , [je|tu|il|elle|iel|on|c’|nous|vous|ils|elles|iels]
+        <<- /conf/ space_after(\3, 1, 1) -3:4>> ="a "+suggVerbPpas(\4, ":m:s")
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \4 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __else__ -3>> a
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \4 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __also__ -4>> =suggVerbPpas(\4, ":m:s")
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \4 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+
+    [<start>|,|dont|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  $:M  [lui|nous|vous]  à  @:V1.*:Y
+        <<- /conf/ space_after(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __else__ -4>> a
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __also__ -5>> =suggVerbPpas(\5, ":m:s")
+        && Confusion probable. Si « \2 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+
+    [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  @:D.*:s  @:[NA].*:[si]  à  @:V1.*:Y  [<end>|)]
+    [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  @:D.*:s  @:[NA].*:[si]  à  @:V1.*:Y  , [je|tu|il|elle|iel|on|c’|nous|vous|ils|elles|iels]
+        <<- /conf/ space_after(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
+        && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __else__ -4>> a
+        && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __also__ -5>> =suggVerbPpas(\5, ":m:s")
+        && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+
+    [<start>|,|dont|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
+        ||  @:D.*:s  @:[NA].*:[si]  [lui|nous|vous]  à  @:V1.*:Y
+        <<- /conf/ space_after(\5, 1, 1) -5:6>> ="a "+suggVerbPpas(\6, ":m:s")
+        && Confusion probable. Si « \3 \4 » est bien le sujet de l’action « \6 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __else__ -5>> a
+        && Confusion probable. Si « \3 \4 » est bien le sujet de l’action « \6 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+        <<- /conf/ __also__ -6>> =suggVerbPpas(\6, ":m:s")
+        && Confusion probable. Si « \3 \4 » est bien le sujet de l’action « \6 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
+
+TEST: quand Maria {{à parler}}, il a fallu ronger son frein                                 ->> a parlé
+TEST: lorsque Siegfried {{à}} lentement {{avancer}}, ils ont ri, un peu                     ->> a|||avancé
+TEST: Pauline nous {{à mentionner}} dans son document                                       ->> a mentionné
+TEST: Élise lui {{à}} sèchement {{parler}} de leur incompétence                             ->> a|||parlé
+TEST: lorsque le ciment {{à sécher}}, on peut poser le ragréage                             ->> a séché
+TEST: puisque cet individu {{à}} “{{échouer}}”, c’est à nous de jouer                       ->> a|||échoué
+TEST: quand l’homme lui {{à parler}}, nous sûmes quoi faire                                 ->> a parlé
+TEST: l’homme dont le réceptionniste nous {{à}} “{{parler}}”, il faut l’exclure             ->> a|||parlé
+TEST: il y a beaucoup de choses à faire dont le carrelage à réparer, tu ne crois pas ?
+TEST: bien qu’une solution à trouver, il fallait aussi découvrir l’origine du problème afin de prévenir tout malheur futur
+TEST: la tâche à effectuer, il s’en foutait
+TEST: avec 300 dossiers dont le policier à chercher
 
 
 !!!! Participes présents                                                                          !!
@@ -24444,7 +24509,7 @@ TEST: Cet homme a nui à notre existence.
 __ppas_les_avoir__
     les  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
         <<- /ppas/ morph(\2, ":V0a") -3>> =suggPlur(\3)
-        && Accord avec le COD « les » : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec le COD « les » : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: je les avais {{trompé}} avec mon baratin.
 TEST: les avoirs reçus ne couvrent pas toutes les dépenses.
@@ -24456,7 +24521,7 @@ __ppas_nous_avoir__
     nous  >avoir  *WORD  <end>
         <<- /ppas/ morph(\2, ":V0a", ":1p") and morph(\3, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and morph(<1, ":(?:M|Os|N)", ":R") and not value(<2, "|que|qu’|")
         -3>> =suggPlur(\3)
-        && Accord avec le COD « nous » : Le participe passé « \3 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec le COD « nous » : Le participe passé « \3 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Ces maisons nous avaient {{subjugué}}.
 TEST: Alexandre aujourd’hui nous a {{quitté}}
@@ -24472,7 +24537,7 @@ TEST: c’est la plus belle lettre que le Comité nous a envoyée.
 __ppas_l_avoir__
     l’ >avoir @:V[0-3]..t.*:Q.*:p¬:[GWsi]
         <<- /ppas/ -3>> =suggSing(\3)
-        && Accord avec « l’ » : le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec « l’ » : le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils l’avaient {{retrouvés}}.
 TEST: Vous l’avez {{trouvez}}.                                                    ->> trouvé
@@ -24485,7 +24550,7 @@ TEST: il faillit agir, mais l’ayant {{remarqués}}, il passa son chemin.
 __ppas_m_t_avoir__
     [m’|t’] >avoir @:Q.*:p¬:[GWsi]
         <<- /ppas/ not tag_before(\1, "_que_") or morph(\3, ":V[0-3]..t_")  -3>> =suggSing(\3)
-        && Accord avec « \1 ». S’il s’agit d’un COD, le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        && Accord avec « \1 ». S’il s’agit d’un COD, le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
 TEST: Les élèves m’ont {{écoutés}}.
@@ -27544,13 +27609,13 @@ TEST: si les femmes {{auraient}} parlé, je l’aurais su.                      
 __vmode_quand_lorsque_indicatif__
     [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
     [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
 TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
     [<start>|,|(]  pourquoi  @:(?:Os|M)  @:V.*:S¬:[GI]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « pourquoi », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « pourquoi », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
 TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
