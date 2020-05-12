@@ -1193,27 +1193,27 @@ class Flexion:
     _dTagReplacement = {
         # POS
         "nom": ":N", "adj": ":A", "adv": ":W", "negadv": ":X", "mg": ":G", "nb": ":B", "nbro": ":Br",
-        "loc.nom": ":Ñ", "loc.adj": ":Â", "loc.adv": ":Ŵ", "loc.verb": ":Ṽ",
-        "interj": ":J", "loc.interj": ":Ĵ", "titr": ":T",
+        "loc.nom": ":ÉN", "loc.adj": ":ÉA", "loc.adv": ":ÉW", "loc.verb": ":ÉV",
+        "interj": ":J", "loc.interj": ":ÉJ", "titr": ":T",
         "mas": ":m", "fem": ":f", "epi": ":e", "sg": ":s", "pl": ":p", "inv": ":i",
         "infi": ":Y",
         "ppre": ":P", "ppas": ":Q",
         "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
         "spre": ":Sp", "simp": ":Sq", "cond": ":K", "impe": ":E",
         "1sg": ":1s", "1isg": ":1ś", "1jsg": ":1ŝ", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "3pl!": ":3p!",
-        "prepv": ":Rv", "prep": ":R", "loc.prep": ":Ŕ", "loc.prepv": "Ŕv",
+        "prepv": ":Rv", "prep": ":R", "loc.prep": ":ÉR", "loc.prepv": "ÉRv",
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
         "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3", "preverb": ":Ov",
-        "cjco": ":Cc", "cjsub": ":Cs", "cj": ":C", "loc.cj": ":Ĉ", "loc.cjsub": ":Ĉs",
-        "prn": ":M1", "patr": ":M2", "loc.patr": ":Ḿ2", "npr": ":MP", "nompr": ":NM",
+        "cjco": ":Cc", "cjsub": ":Cs", "cj": ":C", "loc.cj": ":ÉC", "loc.cjsub": ":ÉCs",
+        "prn": ":M1", "patr": ":M2", "loc.patr": ":ÉM2", "npr": ":MP", "nompr": ":NM",
         "pfx": ":Zp", "sfx": ":Zs",
         "div": ":H",
         "err": ":F",
         "ponc": ":@p", "sign": ":@s",
         # LEX
-        "symb": ";S"
+        "symb": ";S", "unit": ";U"
     }
 
     def _getSimpleTags (self):
