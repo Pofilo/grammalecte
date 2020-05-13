@@ -2114,6 +2114,11 @@ __tag_sujets__
     [et|ou] [moi|moi-même]
     ni [moi|moi-même]
     [moi|moi-même] et
+    [certains|certaines] d’ entre nous
+    la plupart d’entre nous
+    nombre d’entre nous
+    plusieurs d’ entre nous
+    [quelques-uns|quelques-unes] d’ entre nous
         <<- />> _1p_
 
     nous
@@ -2121,7 +2126,7 @@ __tag_sujets__
     nous-mêmes
     nous [seul|seuls|seules]
     nous autres
-        <<- not morph(<1, ":R") />> _1p_
+        <<- not morph(<1, ">ne/|:R") />> _1p_
 
     vous ?[seul|seuls|seules]¿ ?,¿ qui
     vous-même qui
@@ -2129,6 +2134,11 @@ __tag_sujets__
     [et|ou] [toi|toi-même]
     ni [toi|toi-même]
     [toi|toi-même] et
+    [certains|certaines] d’ entre vous
+    la plupart d’entre vous
+    nombre d’entre vous
+    plusieurs d’ entre vous
+    [quelques-uns|quelques-unes] d’ entre vous
         <<- />> _2p_
 
     vous
@@ -2136,7 +2146,7 @@ __tag_sujets__
     vous-mêmes
     vous [seul|seule|seuls|seules]
     vous autres
-        <<- not morph(<1, ":R") />> _2p_
+        <<- not morph(<1, ">ne/|:R") />> _2p_
 
 
 __tag_verbes__
@@ -2273,16 +2283,16 @@ __fusions_noms_propres__
         <<- morph(<1, ":D.*:[mp]") ~>> ␣
         <<- __also__ =>> define(\1, [":N:m:i"])
 
-    la ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Administration|Area|Assocation|Chamber|Church|Community|Company|Corporation|Cup|Enterprise|Foundation|Gallery|House|League|Library|Navy|Reserve|Society|Station|University]
+    [la|cette] ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:f:s"])
 
-    le ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Championship|College|Consortium|Day|Hall|Hospital|Magazine|Museum|News|Opera|Park|Palace|Post|Restaurant|Theatre|Tournament]
+    [le|au|du|ce] ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Building|Bureau|Casino|Castle|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:m:s"])
 
     the ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Administration|Area|Assocation|Chamber|Church|Community|Company|Corporation|Cup|Enterprise|Foundation|Gallery|House|League|Library|Navy|Reserve|Society|Station|University]
-    the ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Championship|College|Consortium|Day|Hall|Hospital|Magazine|Museum|News|Opera|Park|Palace|Post|Restaurant|Theatre|Tournament]
+    the ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Championship|College|Consortium|Day|Hall|Hospital|Institute|Magazine|Museum|News|Opera|Park|Palace|Post|Restaurant|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:e:s"])
 
@@ -6362,6 +6372,21 @@ TEST: quels seraient nos avantages ?
 TEST: quelles vont être nos chances ?
 
 
+__conf_à_vconj__
+    à  [le|la|l’|les|leur|leurs|ton|son]  @:V¬:[GNAWMBY]
+        <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                                               && Incohérence : après “\1 \2”, on devrait trouver un groupe nominal (ou un verbe à l’infinitif).
+
+    à  [un|une]  @:V¬:[GNAWMB]
+        <<- /conf/ not value(<1, "|un|une|") -3>> =suggSimil(\3, ":[NA]", True)                     && Incohérence : après “\1 \2”, on devrait trouver un groupe nominal.
+
+TEST: à leur {{profile}}
+TEST: à un {{employer}}
+TEST: on les voit un par un devenir prendre un chemin de predition
+TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
+TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
+TEST: Il reste de nombreux militants sincères à la FI.
+
+
 __conf_de_vconj__
     [de|d’]  @:V.*:[123][sp]¬:[GNA]
         <<- /conf/ not \2.istitle() and not value(\2, "|jure|") -2>> =suggSimil(\2, ":[NA]", True)  && Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
@@ -6369,7 +6394,7 @@ __conf_de_vconj__
 TEST: il s’agit de {{mette}} en évidence.
 
 
-    [de|d’]  l’  @:[123][sp]¬:[NAQ]
+    [de|d’]  [l’|leur]  @:[123][sp]¬:[NAQ]
         <<- /conf/ not \3.istitle() -3>> =suggSimil(\3, ":[NA]:.:[si]", True)                       && Incohérence avec “\1 \2” : “\3” est une forme verbale conjuguée.
 
 TEST: de l’{{arrivait}}
@@ -6407,34 +6432,27 @@ TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
 
 __conf_par_vconj__
-    par  ?[le|la|l’|les]¿  @:[123][sp]¬:[GNA]
+    par  ?[le|la|l’|les||leur|leurs]¿  @:[123][sp]¬:[GNA]
         <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           && Incohérence avec “\1” : “\-1” est une forme verbale conjuguée.
 
-    par  [un|une]  @:[123][sp]¬:[GNA]
-        <<- /conf/ not \3.istitle() and not value(<1, "|plus|moins|un|une|")
+    par  [un|une]  @:V¬:[GNA]
+        <<- /conf/ not \3.istitle() and not value(<1, "|un|une|")
         -3>> =suggSimil(\3, ":[NA]", True)                                                          && Incohérence avec “\1\2” : “\3” est une forme verbale conjuguée.
 
 TEST: par {{bloque}} de données
 TEST: par une {{donnait}} sans importance
+TEST: conçu par un {{employer}} très compétent
 TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
 TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
 
 
-__conf_préposition_le_la_les_leur__
-    à  [le|la|l’|les|leur|leurs]  @:V¬:[GNAWMBY]
-        <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           && Incohérence : après “à”, on devrait trouver un groupe nominal (ou un verbe à l’infinitif).
-
-TEST: à leur {{profile}}
-TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
-TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
-TEST: Il reste de nombreux militants sincères à la FI.
-
-
-    [malgré|dès] [le|la|l’|les|leur|leurs]  @:V¬:[GNAWMB]
+__conf_préposition_det_verbe__
+    [malgré|dès] [un|une|le|la|l’|les|leur|leurs|son|ton]  @:V¬:[GNAWMB]
         <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA]", True)         && Incohérence : après “\1 \2”, on devrait trouver un groupe nominal.
 
 TEST: malgré l’{{arrête}} qui interdisait le port
 TEST: dès le {{commencent}}, j’ai vu le problème.
+TEST: malgré un {{employer}} peu dévoué
 TEST: malgré les deux précédentes erreurs
 
 
@@ -6865,7 +6883,7 @@ __conf_à_a__
         <<- /conf/ -3>> à                                           && Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     grâce a
-        <<- /conf/ morph(<1, ":[VN]|<start>", "*") -2>> à           && Confusion probable.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
+        <<- /conf/ morph(<1, ":[VN]|<start>", "*") -2>> à           && Confusion probable. Locution “grâce à”.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
 
     tout a fait
     jusqu’ a
@@ -7165,7 +7183,7 @@ __conf_à_a_locutions__
     a ?[si|très|trop]¿ brève échéance
     a plus ou moins brève échéance
     a but non lucratif
-    a cause [de|d’] {pronom_obj}
+    a cause [de|d’|des|du]
     a ce [compte-là|moment-là|titre]
     a cet égard
     a cet instant précis
@@ -8843,6 +8861,17 @@ TEST: Un homme pas {{évidement}} intelligible.
 TEST: L’{{évidemment}} du sanglier ne sera pas si facile.
 
 
+# en fait
+__conf_en_fait__
+    en [faite|>faîte]
+        <<- /conf/ not value(<1, "|n’|") and not tag_before(\1, "_2p_")
+        ->> en fait                                         && Confusion probable : « en fait » qui signifie « en réalité ». Le faîte est la partie la plus élevée d’un bâtiment.
+
+TEST: {{en faite}}, on en voit partout, ça grouille.
+TEST: ils sont {{en faîtes}} partis à la montagne.
+TEST: Aujourd’hui, n’en faites pas trop.
+
+
 # faim / fin
 __conf_fin_faim__
     >grève de la fin
@@ -8995,7 +9024,7 @@ TEST: Dans son {{fort intérieur}}, je le crois.
 
 
 # fausse / fosse
-__conf_fausse_fosse__
+__conf_fosse_fausse__
     [fausse+s] [Calypso|Nansei-Shoto]
     [fausse+s] de [conservation|subduction|Bougainville|Cedros|Java|Puerto|Ryukyu|Tuscarora]
     [fausse+s] des [musiciens|Aléoutiennes|Kermadec|Kouriles|Mariannes|Tonga|Philippines]
@@ -13027,7 +13056,6 @@ __purge_locutions_temporelles_diverses__
     [de|d’] nos jours
     [de|d’] si bon matin
     [de|d’] toute éternité
-    en d’ autres circonstances
     en début [de|d’] [journée|matinée|soirée|après-midi]
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
     en un claquement de doigts
@@ -13115,31 +13143,17 @@ __purge_locutions_fois__
     à la fois
     à chaque fois
     bien des fois
-    cette [fois|fois-là|fois-ci]
-    ?à¿ chaque fois
-    ?à¿ d’ autres fois
+    à d’ autres fois
     d’ innombrables fois
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois
     [de|d’] ?[assez|si|très|trop]¿ nombreuses fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     depuis la [première|dernière|~ième$] fois
-    des fois
-    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois
-    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     encore une fois
-    $:B fois
-    $:B fois [de|d’] suite
-    $:B fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
-    la derrière fois
-    la prochaine fois
-    maintes fois
     par $:B fois
     pas plus [de|d’] [une|$:B] fois
     plein [de|d’] fois
     plus d’ une fois
     plus d’ une fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
-    plusieurs fois
-    plusieurs fois [de|d’] suite
-    plusieurs fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     pour la [première|seconde|dernière|~ième$] fois
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
@@ -13152,6 +13166,23 @@ __purge_locutions_fois__
     souventes fois
     toutefois
     tant de fois
+        <<- ~>> *
+
+    cette [fois|fois-là|fois-ci]
+    chaque fois
+    d’ autres fois
+    des fois
+    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois
+    des [dizaines|douzaines|vingtaines|trentaines|quarantaines|cinquantaines|soixantaines|centaines|milliers|millions|milliards] de fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
+    $:B fois
+    $:B fois [de|d’] suite
+    $:B fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
+    la derrière fois
+    la prochaine fois
+    maintes fois
+    plusieurs fois
+    plusieurs fois [de|d’] suite
+    plusieurs fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     une autre fois
     un [millier|million|milliard] [de|d’] fois
     une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième|centième|millième] fois
@@ -13162,10 +13193,17 @@ __purge_locutions_fois__
     une ?bonne¿ fois pour toutes
     une prochaine fois
     une seule fois
-        <<- ~>> *
+        <<- not morph(<1, ":R") ~>> *
 
 __purge_locutions_circonstances__
+    dans d’ autres circonstances
+    dans certaines circonstances ?particulières¿
+    dans cette circonstance ?particulière¿
+    dans cette circonstance-là
+    dans ces circonstances ?particulières¿
+    dans ces circonstances-là
     en aucune circonstance
+    en certaines circonstances ?particulières¿
     en cette circonstance ?particulière¿
     en cette circonstance-là
     en ces circonstances ?particulières¿
@@ -13182,15 +13220,16 @@ __purge_locutions_occasion__
     à la [dernière|moindre|première|prochaine] occasion
     à la toute première occasion
     à cette occasion ?particulière¿
+    à cette occasion-là
     en cette occasion ?particulière¿
     en cette occasion-là
     en ces occasions ?particulières¿
-    en [de|d’] [semblables|telles] occasions
-    en d’ innombrables occasions
+    en ces occasions-là
+    en d’ [autres|innombrables] occasions
+    en [de|d’] [rares|semblables|telles] occasions
+    en [certaines|quelques|toutes|plusieurs] occasions
     en maintes occasions
     en toute occasion
-    en d’ autres occasions
-    en [certaines|quelques|toutes|plusieurs] occasions
     en une ?tout¿ autre occasion
     par la même occasion
         <<- ~>> *
@@ -13252,17 +13291,25 @@ __purge_locutions_latines__
 
     in anima vili
     in cauda venenum
-    in vino verita
+    in vino veritas
     sursum corda
     sic transit gloria mundi
         <<- ~>> ␣
         <<- =>> =define(\1, [":LP"])
 
 
+__purge_locutions_incises__
+    [<start>|,|(] [oui|non] [<end>|,|)]
+    [<start>|,|(] ?oui¿ ou non [<end>|,|)]
+    [<start>|,|(] et non l’ inverse [<end>|,|)]
+    [<start>|,|(] fait remarquable [<end>|,|)]
+    [<start>|,|(] entre autres ?choses¿ [<end>|,|)]
+    [<start>|,|(] mieux encore [<end>|,|)]
+    [<start>|,|(] n’ est-ce pas [<end>|)]
+        <<- ~2:-2>>*
+
+
 __purge_locutions__
-    , [oui|non] ,
-    , fait remarquable ,
-    , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|$:B:e:p|quelques|plusieurs] [millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|brûle-pourpoint|califourchon|chacun|cheval|cloche-pied|confesse|contrecœur|contre-cœur|contre-pied|contre-sens|contretemps|>demi-mot|demi-voix|dessein|foison|grand-peine|genoux|gogo|jamais|jeun|loisir|merveille|moitié|nouveau|outrance|peine|perpète|perpette|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
@@ -13280,7 +13327,7 @@ __purge_locutions__
     à bien pire
     à ?[si|très|trop]¿ courte portée
     à ?[si|très|trop]¿ bon [compte|escient|droit]
-    à bout de [bras|souffle|force|forces|nerf|nerfs]
+    à bout [de|d’] [bras|souffle|force|forces|nerf|nerfs]
     à bout [portant|touchant]
     à bras ouverts
     à bras le corps
@@ -13293,7 +13340,7 @@ __purge_locutions__
     à certains égards
     à cet égard
     à ciel ouvert
-    à charge de revanche
+    à charge [de|d’] revanche
     à ?[si|très|trop]¿ chaudes larmes
     à cœur [joie|ouvert|perdu]
     à compter [de|d’] [demain|aujourd’hui|hier|maintenant]
@@ -13322,8 +13369,8 @@ __purge_locutions__
     à ?[si|très|trop]¿ faible [allure|revenu]
     à ?[si|très|trop]¿ faible tirant d’ eau
     à feu et à sang
-    à flanc de [colline|montagne]
-    à fleur de peau
+    à flanc [de|d’] [colline|montagne]
+    à fleur [de|d’] peau
     à franchement parler
     à fonds perdus
     à géométrie variable
@@ -13348,13 +13395,13 @@ __purge_locutions__
     à l’ en croire
     à l’ environ
     à l’ état pur
-    à l’ exclusion de toute autre chose
+    à l’ exclusion [de|d’] toute autre chose
     à l’ extrémité [est|ouest|nord|sud]
     à l’ ordre du jour
     à l’ un d’ entre [nous|vous|eux|iels]
     à l’ une d’ entre [nous|vous|elles|iels]
     à l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
-    à l’ exclusion de toute autre chose
+    à l’ exclusion [de|d’] toute autre chose
     à l’ œil nu
     à l’ [un|une] des leurs
     à l’ [un|une] comme à l’ autre
@@ -13362,11 +13409,11 @@ __purge_locutions__
     à la belle étoile
     à la bonne franquette
     à la limite du supportable
-    à la lumière de tout [ceci|cela|ça]
+    à la lumière [de|d’] tout [ceci|cela|ça]
     à la mords-moi le nœud
     à la nuit tombante
     à la petite semaine
-    à la pointe de l’ épée
+    à la [force|pointe] [de|d’] l’ épée
     à la pointe du progrès ?[algorithmique|biologique|cybernétique|écologique|industriel|informatique|numérique|scientifique|social|spatial|technique|technologique]¿
     à la queue leu leu
     à la surprise générale
@@ -13392,7 +13439,7 @@ __purge_locutions__
     à [ma|ta|sa|notre|votre|leur] juste mesure
     à [mon|ton|son|notre|votre|leur] [avis|détriment|encontre|égard|gré|insu|sujet|tour]
     à [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
-    à [mon|ton|son|notre|votre|leur] grand [désarroi|soulagement]
+    à [mon|ton|son|notre|votre|leur] grand [dam|désarroi|soulagement]
     à n’ en [pas|point] douter
     à n’ en plus finir
     à n’importe quel prix
@@ -13400,14 +13447,14 @@ __purge_locutions__
     à part [entière|ça|cela|ceci]
     à parts égales
     à partir [de|d’]  rien
-    à pas de [géant|loup|tortue|velours]
+    à pas [de|d’] [géant|loup|tortue|velours]
     à pas feutrés
     à personne en danger
-    à perte de vue
+    à perte [de|d’] vue
     à petit feu
     à ?[si|très|trop]¿ petite [dose|échelle]
-    à ?[si|très|trop]¿ peu de choses près
-    à ?[si|très|trop]¿ peu de [distance|frais]
+    à ?[si|très|trop]¿ peu [de|d’] choses près
+    à ?[si|très|trop]¿ peu [de|d’] [distance|frais]
     à peine
     à peu près
     à pied d’ œuvre
@@ -13421,20 +13468,20 @@ __purge_locutions__
     à plus d’ un titre
     à poil [court|dur|long|rêche]
     à point nommé
-    à portée de [main|tir|voix]
+    à portée [de|d’] [main|tir|voix]
     à première vue
     à prix [coûtant|coutant|cassé+s|>modique]
     à [ma|ta|sa|notre|votre|leur] propre initiative
     à proprement parler
     à quatre pattes
-    à qui de droit
+    à qui [de|d’] droit
     à qui mieux mieux
     à qui que ce soit
     à quelque distance
     à quelques [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière] près
     à quelques-uns d’ entre [nous|vous|eux]
     à quelques-unes d’ entre [nous|vous|elles]
-    à ras de terre
+    à ras [de|d’] terre
     à ras [bord|bords]
     à ras [le|du] sol
     à rude épreuve
@@ -13452,19 +13499,19 @@ __purge_locutions__
     à [tire-d’aile|tire-d’ailes]
     à titre [amical|bénévole|conservatoire|commercial|comparatif|consultatif|dérogatoire|exceptionnel|expérimental|fiduciaire|facultatif|indicatif|informatif|grâcieux|gratuit|honorifique|honoraire|humanitaire|informatif|indicatif|informel|juridique|liminaire|lucratif|nominatif|officieux|onéreux|personnel|posthume|préventif|provisoire|provisionnel|subsidiaire|temporaire|transitoire|universel|volontaire]
     à titre d’ [exemple|illustration|information]
-    à titre de comparaison
+    à titre [de|d’] comparaison
     à tombeau ouvert
     à tort ou à raison
     à tort et à travers
-    à tour de [bras|rôle]
+    à tour [de|d’] [bras|rôle]
     à tout [âge|coup|crin|instant|jamais|moment|prix]
-    à tout bout de champ
+    à tout bout [de|d’] champ
     à tout le [moins|monde]
-    à tout point de vue
+    à tout point [de|d’] vue
     à tout un chacun
     à toute [allure|berzingue|bride|épreuve|force|vapeur|vitesse|volée]
     à tous crins
-    à tous points de vue
+    à tous points [de|d’] vue
     à toutes fins utiles
     à toutes jambes
     à travers terre et mer
@@ -13478,7 +13525,7 @@ __purge_locutions__
     à vol d’ oiseau
     à vrai dire
     à vue d’ œil
-    à ?bien¿ y regarder de plus près
+    à ?bien¿ y regarder [de|d’] plus près
     à ?bien¿ y [penser|réfléchir|songer|repenser]
     advienne que pourra
     ah
@@ -13502,17 +13549,17 @@ __purge_locutions__
     au doigt mouillé
     au doigt et à l’ [œil|oeil]
     au débotté
-    au fil de l’ épée
+    au fil [de|d’] l’ épée
     au grand [complet|jamais]
     au hasard
     au jugé
     au leur
-    au lieu de [cela|ceci|ça|quoi]
+    au lieu [de|d’] [cela|ceci|ça|quoi]
     au loin
-    au milieu de nulle part
+    au milieu [de|d’] nulle part
     au moment opportun
     au même titre que n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
-    au pas de [charge|course]
+    au pas [de|d’] [charge|course]
     au petit bonheur la chance
     au plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
     au plus [près|pressé|vite]
@@ -13540,20 +13587,20 @@ __purge_locutions__
     avant toutes choses
     avant d’ aller plus loin
     avant d’ en arriver là
-    avant de faire quoi que ce soit
-    avant de faire quoi que ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
+    avant [de|d’] faire quoi que ce soit
+    avant [de|d’] faire quoi que ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
     avant qu’ il ne soit trop tard
-    avant un bon bout de temps
+    avant un bon bout [de|d’] temps
     avec beaucoup [de|d’] [circonspection|prudence]
     avec [brio|constance|joie|légèreté|insistance|peine]
     avec autre chose
     avec le plus grand soin
     avec pertes et fracas
-    avec un peu de chance
+    avec un peu [de|d’] chance
     avec tout le respect que je [vous|te|leur|lui] dois
     avec tout le respect que nous [vous|te|leur|lui] devons
     avec tout un chacun
-    avec un peu de chance
+    avec un peu [de|d’] chance
     avec un ?[léger|petit]¿ temps d’ avance
     avec un temps d’ avance ?$:W¿ [considérable|énorme|gigantesque|important|phénoménal]
     avec un ?[léger|petit]¿ temps [de|d’] retard
@@ -13576,7 +13623,7 @@ __purge_locutions__
     ci-dessous
     ci-dessus
     chose promise ?,¿ chose due
-    comme de juste
+    comme [de|d’] juste
     comme bon [me|te|lui|leur|nous|vous] semble
     comme ci ?,¿ comme ça
     comme cul et chemise
@@ -13586,7 +13633,7 @@ __purge_locutions__
     comme par [enchantement|magie]
     comme par un fait exprès
     comme pas deux
-    comme peau de chagrin
+    comme peau [de|d’] chagrin
     comme prévu
     comme promis
     comme qui dirait
@@ -13630,7 +13677,7 @@ __purge_locutions__
     d’ empoigne
     d’ en [bas|dessous|face|haut]
     d’ entre [eux|elles]
-    d’ entrée de jeu
+    d’ entrée [de|d’] jeu
     d’ est en ouest
     d’ extrême [droite|gauche]
     d’ [extrême-droite|extrême-gauche]
@@ -13650,8 +13697,8 @@ __purge_locutions__
     d’ un pas [alerte|mesuré]
     d’ un peu partout
     d’ un peu trop [près|loin]
-    d’ un revers de main
-    d’ un revers de la main ?[droite|gauche]¿
+    d’ un revers [de|d’] main
+    d’ un revers [de|d’] la main ?[droite|gauche]¿
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
     d’ une certaine [façon|manière]
@@ -13676,26 +13723,26 @@ __purge_locutions__
     [de|d’] but en blanc
     [de|d’] ce fait ?[incontestable|irréfutable|même]¿
     [de|d’] ce seul fait
-    [de|d’] ce point de vue
+    [de|d’] ce point [de|d’] vue
     [de|d’] cette sorte
     [de|d’] cet acabit
     [de|d’] côté
     [de|d’] courte vue
     [de|d’] deux choses l’ une
     [de|d’] droite à gauche
-    [de|d’] droite comme de gauche
+    [de|d’] droite comme [de|d’] gauche
     [de|d’] fâcheuse mémoire
     [de|d’] fil en aiguille
     [de|d’] fond en comble
     [de|d’] fort [loin|près]
     [de|d’] ?[assez|si|très|trop]¿ [fraîche|fraiche] date
-    [de|d’] [gaieté|gaîté|gaité] de cœur
+    [de|d’] [gaieté|gaîté|gaité] [de|d’] cœur
     [de|d’] grande ampleur
     [de|d’] gauche à droite
-    [de|d’] gauche comme de droite
+    [de|d’] gauche comme [de|d’] droite
     [de|d’] génération en génération
     [de|d’] gré à gré
-    [de|d’] gré ou de force
+    [de|d’] gré ou [de|d’] force
     [de|d’] guerre lasse
     [de|d’] haut en bas
     [de|d’] là-bas
@@ -13716,7 +13763,7 @@ __purge_locutions__
     [de|d’] nulle part
     [de|d’] pire en pire
     [de|d’] ?[assez|si|très|trop]¿ près
-    [de|d’] près ou de loin
+    [de|d’] près ou [de|d’] loin
     [de|d’] par le monde ?entier¿
     [de|d’] part en part
     [de|d’] part et d’ autre
@@ -13746,9 +13793,9 @@ __purge_locutions__
     [de|d’] vive voix
     [de|d’] [nous|vous] tous
     [de|d’] tous [côtés|bords]
-    [de|d’] tous les cas de figure [possibles|imaginables|existants|rencontrés]
-    [de|d’] tous les cas de figure possibles et imaginables
-    [de|d’] tous les cas de figure imaginables et possibles
+    [de|d’] tous les cas [de|d’] figure [possibles|imaginables|existants|rencontrés]
+    [de|d’] tous les cas [de|d’] figure possibles et imaginables
+    [de|d’] tous les cas [de|d’] figure imaginables et possibles
     [de|d’] tout poil
     [de|d’] tout premier [ordre|plan]
     [de|d’] toute [évidence|façon|part|urgence]
@@ -13777,7 +13824,7 @@ __purge_locutions__
     Dieu seul le sait
     dos à dos
     du bout des lèvres
-    du coin de l’ [œil|oeil]
+    du coin [de|d’] l’ [œil|oeil]
     du fond du cœur
     du haut en bas
     du même [acabit|coup|ordre|tonneau]
@@ -13791,11 +13838,11 @@ __purge_locutions__
     en aucune [façon|manière]
     en ?[assez|si|très|trop]¿ bas âge
     en ?[assez|si|très|trop]¿ bon état ?général¿
-    en ?[assez|si|très|trop]¿ bon état de [fonctionnement|marche]
+    en ?[assez|si|très|trop]¿ bon état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ bonne [compagnie|place|posture|voie]
     en bonne et due forme
     en bonne santé ?[générale|physique|mentale|psychique]¿
-    en bout de course
+    en bout [de|d’] course
     en cas [de|d’] besoin ?[absolu|impérieux]¿
     en cas [de|d’] doute ?[légitime|suffisant]¿
     en cas [de|d’] nécessité ?[absolue|impérieuse]¿
@@ -13837,10 +13884,10 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ grande [difficulté|majorité|partie|pompe]
     en ?[assez|si|très|trop]¿ haut lieu
     en ?[assez|si|très|trop]¿ haute [estime|mer]
-    en l’ absence de preuve suffisante
-    en l’ absence de preuve suffisante du contraire
-    en l’ absence de preuves suffisantes
-    en l’ absence de preuves suffisantes du contraire
+    en l’ absence [de|d’] preuve suffisante
+    en l’ absence [de|d’] preuve suffisante du contraire
+    en l’ absence [de|d’] preuves suffisantes
+    en l’ absence [de|d’] preuves suffisantes du contraire
     en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
@@ -13904,7 +13951,7 @@ __purge_locutions__
     en toute bonne foi
     en ?toute¿ connaissance [de|d’] cause
     en toute [confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|modestie|sécurité|simplicité]
-    en travers de la gorge
+    en travers [de|d’] la gorge
     en vase clos
     en vigueur
     en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
@@ -13953,6 +14000,7 @@ __purge_locutions__
     jusqu’ à bac
     jusqu’ à plus soif
     jusqu’ à >preuve du contraire
+    jusqu’ à un certain point
     jusque-là
     ?[de|d’]¿ là
     ?[de|d’]¿ là-bas
@@ -13973,7 +14021,7 @@ __purge_locutions__
     le cas échéant
     le moins du monde
     le moment venu
-    l’ air de rien
+    l’ air [de|d’] rien
     ?de¿ loin
     loin [de|d’] là
     loin [de|d’] tout [ça|cela|ceci]
@@ -14097,7 +14145,8 @@ __purge_locutions__
     quel qu’ en soit [le|l’] [moyen|prix|danger]
     quel qu’ en soit [le|l’] risque ?financier¿
     quelle qu’ en soit la [cause|raison]
-    quelque [part|peu]
+    quelque peu
+    ?[de|d’]¿ quelque part
     qui plus est
     quoi qu’ il [arrive|arrivât|advienne|advînt]
     quoi qu’ il soit [arrivé|advenu]
@@ -14120,7 +14169,7 @@ __purge_locutions__
     sans [m’|t’|s’|nous|vous] en apercevoir
     sans [m’|t’|s’|nous|vous] en rendre compte
     sans [me|m’|te|t’|se|s’|nous|vous] faire [attendre|avoir|comprendre|désirer|entendre|prier|remarquer|repérer|surprendre|voir]
-    sans [me|m’|te|t’|se|s’|nous|vous] douter de rien
+    sans [me|m’|te|t’|se|s’|nous|vous] douter [de|d’] rien
     sans faire [de|d’] vagues
     sans foi ?,¿ ni loi
     sans grand résultat
@@ -14148,7 +14197,7 @@ __purge_locutions__
     sans [croiser|rencontrer|voir] personne
     sans [croiser|rencontrer|voir] âme qui vive
     sans tergiverser
-    sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
+    sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer [de|d’] respect
     sans y [croire|parvenir|réussir|réfléchir|songer|penser]
     sans y [faire|prêter] attention
     sans y prendre [garde|goût|gout|ombrage]
@@ -14185,7 +14234,7 @@ __purge_locutions__
     sur la forme comme sur le fond
     sur la même longueur d’ onde
     sur le plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
-    sur le pied de guerre
+    sur le pied [de|d’] guerre
     sur le qui-vive
     surtout
     s’ il [te|vous] [plaît|plait]
@@ -14205,7 +14254,7 @@ __purge_locutions__
     tout du long
     tout feu ?,¿ tout >flamme
     tout à fait
-    tout de go
+    tout [de|d’] go
     toute honte bue
     toutes choses égales par ailleurs
     toutes griffes dehors
@@ -14294,12 +14343,12 @@ __gestion_mots_grammaticaux__
     à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
     à peu [de|d’] distance                                                                                              [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre]                                   [de|du|d’|des]
-    à l’ [insu|instar|intérieur|inverse|opposé|orée|ouest]                                                              [de|du|d’|des]
+    à l’ [insu|instar|intérieur|inverse|issue|opposé|orée|ouest]                                                        [de|du|d’|des]
     à l’ autre bout                                                                                                     [de|du|d’|des]
     à la [hauteur|merci|portée|proximité|recherche|suite]                                                               [de|du|d’|des]
     à la grande surprise                                                                                                [de|du|d’|des]
     à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                [de|du|d’|des]
-    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                         [de|du|d’|des]
+    à [quelques|plusieurs] [dizaines|centaines|milliers] [de|d’] [mètres|kilomètres]                                    [de|du|d’|des]
     à [base|force|raison]                                                                                               [de|d’]
     à grand renfort                                                                                                     [de|d’]
     à grands coups                                                                                                      [de|d’]
@@ -14323,15 +14372,17 @@ __gestion_mots_grammaticaux__
     dans la ligne de mire                                                                                               [de|du|d’|des]
     des [quatre|4] coins                                                                                                [de|du|d’|des]
     en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|marge]                        [de|du|d’|des]
-    en [possession|présence|provenance|quête|raison|sus|termes|travers|vertu]                                           [de|du|d’|des]
+    en [possession|présence|provenance|quête|raison|sus|tête|termes|travers|vertu]                                      [de|du|d’|des]
     en dépit de la proximité                                                                                            [de|du|d’|des]
     en forme                                                                                                            [de|d’]
     en flagrant délit                                                                                                   [de|d’]
+    en hommage                                                                                                          [à|au|aux]
+    en l’ [absence|attente|honneur]                                                                                     [de|du|d’|des]
     en lieu et place                                                                                                    [de|du|d’|des]
     en matière                                                                                                          [de|d’]
-    en l’ [absence|attente|honneur]                                                                                     [de|du|d’|des]
     en plein milieu                                                                                                     [de|du|d’|des]
     le long                                                                                                             [de|du|d’|des]
+    par égard                                                                                                           pour
     par le biais                                                                                                        [de|du|d’|des]
     par l’ entremise                                                                                                    [de|du|d’|des]
     par manque                                                                                                          [de|d’]
@@ -14355,10 +14406,6 @@ __gestion_mots_grammaticaux__
 
     au moins  @:[DB]
         <<- ~1:2>> *
-
-    [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles|iels]
-    [chacun|chacune]            d’ entre [nous|vous|eux|elles|iels]
-        <<- ~2:0>> *
 
     ceux et [celle|celles] qui
         <<- ~2:3>> *
@@ -14661,6 +14708,9 @@ __purge_conditionnelle__
     entre [moi|toi|lui|elle|nous|vous|eux|elles] et [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- ~>> *
 
+    juste à temps
+        <<- not morph(<1, ":D") ~>> *
+
     haut [placé+ses]
         <<- not value(<1, "|en|de|d’|") ~1>> *
 
@@ -14670,7 +14720,7 @@ __purge_conditionnelle__
     hélas
         <<- not morph(<1, ":(?:X|Ov)") and not tag_before(\1, "_2s_") ~>> *
 
-    hein
+    [hein|hop]
         <<- not morph(<1, ":D") ~>> *
 
     la lettre [a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z]  @:(?:3s|Ov)
@@ -14767,6 +14817,7 @@ __purge_conditionnelle__
         <<- morph(<1, ":(?:V|N:f)", ":G") ~>> *
 
     tête baissée
+    tête la première
         <<- morph(<1, ":[NV]", ":D.*:[fe]:[si]") ~>> *
 
     tant  que  ça  @¬:(?:3s|X|Oo)
@@ -14802,6 +14853,7 @@ __substantifs_multi_mots__
     abus [de|d’] position dominante
     abus [de|d’] pouvoir
     >accident [de|d’] la route
+    >accident [de|d’] voiture
     >accusé [de|d’] reception
     >acte [*NUM|$:B]
     >acte [*NUM|$:B] ?,¿ scène [*NUM|$:B]
@@ -14860,6 +14912,7 @@ __substantifs_multi_mots__
     >bon à rien
     [bonne+s|>bonniche] à tout faire
     >boucle d’ >oreille
+    >bout [de|d’] gras
     bras d’ honneur
     bras [de|d’] fer
     >brave ?d’¿ entre les braves
@@ -14898,7 +14951,7 @@ __substantifs_multi_mots__
     >chasse d’ eau
     >chasseur [de|d’] primes
     >château d’ eau
-    >chef [de|d’] file
+    >chef [de|d’] [cabinet|file]
     >chef d’ [état-major|entreprise]
     >chef d’ orchestre ?[moderne|symphonique]¿
     >chemin [de|d’] [croix|fer|traverse]
@@ -15046,6 +15099,7 @@ __substantifs_multi_mots__
     >garde à vue
     >garde du corps
     gaz à >effet [de|d’] serre
+    >genou à terre
     >geste >barrière
     >gilet [de|d’] sauvetage
     >gouvernement d’ union nationale
@@ -15170,6 +15224,7 @@ __substantifs_multi_mots__
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >pile à [combustible|hydrogène]
     >pince à linge
+    [>piqûre|>piqure] [de|d’] rappel
     >pistolet à [eau|plomb]
     >placard à [>balai|chaussures]
     >plan [A|B|C|cul]
@@ -15828,13 +15883,16 @@ __purge_avant_adjectifs_adverbes__
         <<- not value(<1, "|un|le|ce|du|mon|ton|son|notre|votre|leur|") ~1>> *
 
     si  @:[AW]
-        <<- not (\2 == "bien" and value(>1, "|que|qu’|")) and not (\2 == "tant" and value(>1, "|est|")) ~1>> *
+        <<- not (value(\2, "|bien|") and value(>1, "|que|qu’|")) and not value(\2, "|tant|") ~1>> *
 
     un [brin|chouia|chouïa|rien|minimum|soupçon|tantinet]  ?[trop|plus|moins]¿
         <<- morph(>1, ":A", ":G") ~>> *
 
     [assez|trop]  @:[AW]¬:[123][sp]
         <<- ~1>> *
+
+    pas [assez|trop]
+        <<- not morph(<1, ":D.*:(?:m:s|[me]:p)") ~1>> *
 
     pour  toujours  @:[AQ]
         <<- ~1:2>> *
@@ -15892,9 +15950,9 @@ __purge_quoique__
 __purge_locutions_potentielles__
     à ce [jour|moment|stade] @¬:A.*:[me]:[si]
     à ce [jour|moment|stade] [<end>|,|)]
-    à cet instant @¬:A.*:[me]:[si]
-    à cet instant [<end>|,|)]
-        <<- ~1:3>> *
+    à [cet|chaque|l’] instant @¬:A.*:[me]:[si]
+    à [cet|chaque|l’] instant [<end>|,|)]
+        <<- ~1:-2>> *
 
     à cet endroit        @¬:A.*:[me]:[si]
     à cet endroit        [<end>|,|)]
@@ -15902,17 +15960,17 @@ __purge_locutions_potentielles__
     à certains endroits  [<end>|,|)]
         <<- ~1:-2>> *
 
-    à [mon|ton|son|notre|votre|leur] [avis|sens] @¬:A.*:[me]:[si]
-    à [mon|ton|son|notre|votre|leur] [avis|sens] [<end>|,|)]
-        <<- ~1:3>> *
+    à [mon|ton|son|notre|votre|leur] [avis|regard|sens] @¬:A.*:[me]:[si]
+    à [mon|ton|son|notre|votre|leur] [avis|regard|sens] [<end>|,|)]
+        <<- ~1:-2>> *
 
-    à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
-    à [mes|tes|ses|nos|vos|leurs] yeux  [<end>|,|)]
-        <<- ~1:3>> *
+    à [mes|tes|ses|nos|vos|leurs] [regards|yeux]  @¬:A.*:[me]:[pi]
+    à [mes|tes|ses|nos|vos|leurs] [regards|yeux]  [<end>|,|)]
+        <<- ~1:-2>> *
 
     à la dernière [minute|seconde]  @¬:A.*:[fe]:[si]
     à la dernière [minute|seconde]  [<end>|,|)]
-        <<- ~1:4>> *
+        <<- ~1:-2>> *
 
     à la longue     @:¬:N.*:[fe]:[si]
     à la longue     [<end>|,|)]
@@ -15922,7 +15980,7 @@ __purge_locutions_potentielles__
     à l’ époque     [<end>|,|)]
     à l’ identique  @:¬:N.*:[si]
     à l’ identique  [<end>|,|)]
-        <<- ~1:3>> *
+        <<- ~1:-2>> *
 
     à répétition  @¬:A.*:[fe]:[si]
     à répétition  [<end>|,|)]
@@ -15930,7 +15988,7 @@ __purge_locutions_potentielles__
 
     au bout d’ un moment  @:¬:A.*:[me]:[si]
     au bout d’ un moment  [<end>|,|)]
-        <<- ~1:5>> *
+        <<- ~1:-2>> *
 
     au [départ|quotidien]  @:¬:A.*:[me]:[si]
     au [départ|quotidien]  [<end>|,|)]
@@ -15943,12 +16001,12 @@ __purge_locutions_potentielles__
     [<start>|,|(] ben voyons
         <<- ~2:3>> *
 
-    chaque [année|semaine|journée|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
-    chaque [année|semaine|journée|décennie]  [<end>|,|)]
+    chaque [seconde|minute|heure|journée|semaine|année|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
+    chaque [seconde|minute|heure|journée|semaine|année|décennie]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:2>> *
 
-    chaque [an|instant|jour|mois]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
-    chaque [an|instant|jour|mois]  [<end>|,|)]
+    chaque [instant|moment|jour|mois|trimestre|semestres|an|siècle|millénaire]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
+    chaque [instant|moment|jour|mois|trimestre|semestres|an|siècle|millénaire]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:2>> *
 
     d’ apparat
@@ -16002,13 +16060,9 @@ __purge_locutions_potentielles__
     dans un avenir [lointain|proche]    [<end>|,|)]
         <<- ~1:-2>> *
 
-    de ce fait  @¬:A.*:[me]:[si]
-    de ce fait  [<end>|,|)]
-        <<- ~1:3>> *
-
-    de ce seul fait  @¬:A.*:[me]:[si]
-    de ce seul fait  [<end>|,|)]
-        <<- ~1:4>> *
+    de ce ?seul¿ fait  @¬:A.*:[me]:[si]
+    de ce ?seul¿ fait  [<end>|,|)]
+        <<- ~1:-2>> *
 
     de nos jours @¬:A.*:[me]:[pi]
     de nos jours [<end>|,|)]
@@ -16102,6 +16156,9 @@ __purge_locutions_potentielles__
     pour un temps  [<end>|,|)]
         <<- ~1:3>> *
 
+    >preuve à l’ appui
+        <<- not morph(<1, ":D") ~>> *
+
     sans détour  @:¬:[NA].*:[me]:[si]
     sans détour  [<end>|,|)]
         <<- ~1:2>> *
@@ -16128,11 +16185,11 @@ __purge_locutions_potentielles__
     ?à¿ un [instant|moment]  [<end>|,|)]
     ?pour¿ un seul [instant|moment]  @¬>où|:A.*:[me]:[si]
     ?pour¿ un seul [instant|moment]  [<end>|,|)]
-        <<- not morph(<1, ":R|>d’/") ~1:-2>> *
+        <<- not morph(<1, ":R") ~1:-2>> *
 
     un jour  @:¬:A.*:[me]:[si]
     un jour  [<end>|,|)]
-        <<- not morph(<1, ":R|>d’/") ~1:2>> *
+        <<- not morph(<1, ":R") ~1:2>> *
 
     vu les circonstances  @¬:A:[fe]:[pi]
     vu les circonstances  [<end>|,|)]
@@ -16580,6 +16637,8 @@ TEST: la crise pourrait durer plus longtemps qu’envisagé.
 TEST: on ne peut convoquer un citoyen sur la base des textes constitutionnels, devenus dans ce cas incriminants.
 TEST: ce sont des gens bien
 TEST: beaucoup d’entre nous se souviennent de ce fameux jour
+TEST: Hormis les enseignements fondamentaux transmis à la petite école, la suite n’est qu’une infinie perte de temps où l’on bourre l’esprit des élèves de connaissances parfaitement inutiles, dont la plupart d’entre nous ne gardent aucun souvenir sitôt les portes du lycée franchies.
+TEST: il ne désirait ne plus le faire…
 
 
 @@@@
@@ -16643,6 +16702,18 @@ TEST: __mc__ des {{portes-avions}}.
 
 # a / à
 __conf_à_a_après_verbes__
+    n’ /_VCint_ qu’ a
+        <<- morphVC(\2, ">avoir/") --1>> à
+        && Locution : « n’avoir qu’à faire quelque chose ». Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+
+    n’ >avoir qu’ a
+        <<- /conf/ --1>> à
+        && Locution : « n’avoir qu’à faire quelque chose ». Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: ils n’ont qu’{{a}} cherché.
+TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit ?
+
+
     >appeler a l’ aide
     >avoir a l’ œil
     >arriver a [destination|échéance]
@@ -16700,8 +16771,7 @@ __conf_à_a_après_verbes__
     >équivaloir a
     ## locutions
     >appartenir en propre a
-    >avoir [tendance|vocation] a
-    >avoir trait a
+    >avoir [peine|tendance|trait|vocation] a
     >faire [allusion|attention|barrage|confiance|défaut|écran|envie|exception|part|peur|plaisir|signe] a
     >laisser libre cours a
     >mettre fin a
@@ -16709,7 +16779,7 @@ __conf_à_a_après_verbes__
     >prêter attention a
     enclin a
     en être [réduit+ses] a
-    en proie a
+    en [hommage|proie] a
     [m’|t’|s’] en >remettre a
     nous nous en >remettre a
     vous vous en >remettre a
@@ -16726,6 +16796,7 @@ __conf_à_a_après_verbes__
     >faire [barrage|barrière|confiance] a
     >faire faux bond a
     >prêter serment a
+    >rendre hommage a
     >rendre service a
         <<- /conf/ not tag_before(\1, "_propsub_") and not morph(\1, ":[YNA]") and not value(>1, "|été|")
         --1>> à                                                             && Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
@@ -17143,7 +17214,7 @@ TEST: une raclée {{en bonnes et dues formes}}
 TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour espérer un retour positif.
 
 
-## s’en / c’en
+## c’en / s’en
 __conf_c_en_être__
     s’ en  [es|est|sera|seras|étais|était] [fini+ses|finit|terminé+ses]
         <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
@@ -17824,12 +17895,13 @@ TEST: Elle est souvent {{faîte}} de cette manière-là.
 TEST: Vous {{faîtes}} mal !
 
 
-    en [faite|>faîte]
-        <<- /conf/ not tag_before(\1, "_2p_") ->> en fait                     && Confusion probable : « en fait » qui signifie « en réalité ». Le faîte est la partie la plus élevée d’un bâtiment.
+# fausse / fosse
+__conf_fausse_fosse__
+    >faire une fosse couche
+    combien de >fosse [couche+s]
+        <<- /conf/ -3>> =\3.replace("o", "au").replace("O", "AU")           && Confusion. Une “fausse couche”.
 
-TEST: {{en faite}}, on en voit partout, ça grouille.
-TEST: ils sont {{en faîtes}} partis à la montagne.
-TEST: Aujourd’hui, n’en faites pas trop.
+TEST: elle a fait une {{fosse}} couche.                                     ->> fausse
 
 
 # filtre / philtre
@@ -18595,7 +18667,7 @@ TEST: Ils vont {{peut être}} enfin faire quelque chose de leur misérable exist
 TEST: L’un peut être réglé immédiatement
 TEST: Réussir peut parfois être la pire chose possible.
 TEST: Peut vraiment être violent en cas d’humiliation.
-TEST: « Oui, sans doute », mais peut être pas pour tout le monde
+TEST: « Oui, sans doute », mais peut-être pas pour tout le monde
 TEST: La réalisation de composants (injection plastique…) peut être limitée.
 
 
@@ -19662,7 +19734,7 @@ __gn_les_1m__
 
     *WORD  les  *WORD
         <<- /gn/ morph(\2, ":D")
-            and ( morph(\3, ":[NA].*:s", "*") or (morph(\3, ":[NA].*:s", ":[pi]|>avoir/") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y"))) )
+            and ( morph(\3, ":[NA].*:s", "*") or (morph(\3, ":[NA].*:s", ":[pi]|>avoir/") and morph(\1, ":[RC]", ">(?:e[tn]|ou|puis)/") and not (morph(\1, ":Rv") and morph(\3, ":Y"))) )
             and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
             and not (value(\1, "|que|") and morph(<1, ">tel/") and morph(\3, ":3[sp]"))
         -3>> =suggPlur(\3)                                                                  && Accord de nombre erroné : « \3 » devrait être au pluriel.
@@ -19679,6 +19751,7 @@ TEST: Les {{démoralisation}}.                                 ->> démoralisati
 TEST: dans les {{usine}}                                      ->> usines
 TEST: les {{abricot}}                                         ->> abricots
 TEST: tels que les décrit Macron
+TEST: J’en ramasse quelques-unes, puis les glisse dans l’une de mes poches, ça me fera un souvenir.
 
 
 __gn_les_2m__
@@ -21677,13 +21750,22 @@ __infi_qqch_de__
     >avoir le droit                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir le droit de”, le verbe devrait être à l’infinitif.
 
-    >avoir hâte                                 [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    >avoir ?toute¿ hâte                         [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir hâte de”, le verbe devrait être à l’infinitif.
+
+    >avoir ?tout¿ loisir                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir loisir de”, le verbe devrait être à l’infinitif.
 
     >avoir [besoin|peur|raison]                 [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir [besoin|peur|raison]                 [de|d’]  [l’|la|leur]              ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+
+    point [ne|n’] >être besoin                  [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+
+    point [ne|n’] >être besoin                  [de|d’]  [l’|la|leur]              ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -21743,39 +21825,42 @@ __infi_qqch_de__
     sous peine                                  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “sous peine de”, le verbe devrait être à l’infinitif.
 
-TEST: afin de leur {{percée}} une ouverture
-TEST: en train de {{percées}}
-TEST: au lieu de la {{travaillée}}, elle restait les bras ballants
-TEST: au lieu de nous {{données}} du travail, il bavassait sans cesse
-TEST: elle tricha à seule fin d’{{allée}} à l’université
-TEST: ils sont à même de {{trouvé}} la bonne réponse
-TEST: ces explications sont plus à même de les {{touchés}}
-TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
-TEST: il a l’air de {{pensée}} qu’on est des crétins
-TEST: tu avais raison de {{pensée}} ça
-TEST: nous eûmes la chance de la {{trouvée}} facilement
-TEST: avoir raison de la {{considérée}} ainsi
-TEST: vous avez le droit de lui {{craché}} à la gueule
-TEST: ils ont vite fait de nous {{poussée}} à bout
-TEST: elle est en train de {{mangée}}
-TEST: elle n’avait de cesse de la {{poussée}} dans ses derniers retranchements
-TEST: je déteste sa manière de la {{rabaissée}} en permanence.
-TEST: Elle avait hâte de {{dévouée}} sa vie à sa passion
-TEST: il est hors de question de {{menée}} cette attaque ainsi
-TEST: il serait temps de {{poussée}} la logique jusqu’au bout
-TEST: impossible d’{{échappée}} à cette horreur.
-TEST: hors d’état de {{pensée}} à quoi que ce soit
-TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
-TEST: sous peine de nous {{pesée}} lourd sun l’estomac
-TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
-TEST: il n’est pas question de {{pensée}} à ça pour l’instant.
-TEST: il était question de la {{recrachée}} épuisée sans se soucier de sa santé.
-TEST: pas question de nous {{laissés}} faire !
-TEST: Ne fais pas semblant de l’{{oubliée}}.
-TEST: non content de {{damnés}} pour l’éternité
-TEST: non contente de l’{{ignorée}}, elle en était fière.
-TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements
-TEST: d’crainte d’l’{{touché}}, m’sieur…
+TEST: afin de leur {{percée}} une ouverture                                                         ->> percer
+TEST: en train de {{percées}}                                                                       ->> percer
+TEST: au lieu de la {{travaillée}}, elle restait les bras ballants                                  ->> travailler
+TEST: au lieu de nous {{données}} du travail, il bavassait sans cesse                               ->> donner
+TEST: elle tricha à seule fin d’{{allée}} à l’université                                            ->> aller
+TEST: ils sont à même de {{trouvé}} la bonne réponse                                                ->> trouver
+TEST: ces explications sont plus à même de les {{touchés}}                                          ->> toucher
+TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.                      ->> trouver
+TEST: il a l’air de {{pensée}} qu’on est des crétins                                                ->> penser
+TEST: tu avais raison de {{pensée}} ça                                                              ->> penser
+TEST: point n’était besoin de {{données}} sans cesse des nouvelles                                  ->> donner
+TEST: point n’était besoin de leur {{avancé}} de l’argent.                                          ->> avancer
+TEST: nous eûmes la chance de la {{trouvée}} facilement                                             ->> trouver
+TEST: avoir raison de la {{considérée}} ainsi                                                       ->> considérer
+TEST: vous avez le droit de lui {{craché}} à la gueule                                              ->> cracher
+TEST: ils ont vite fait de nous {{poussée}} à bout                                                  ->> pousser
+TEST: elle est en train de {{mangée}}                                                               ->> manger
+TEST: nous avions tout loisir de nous {{consacré}} à cela                                           ->> consacrer
+TEST: elle n’avait de cesse de la {{poussée}} dans ses derniers retranchements                      ->> pousser
+TEST: je déteste sa manière de la {{rabaissée}} en permanence.                                      ->> rabaisser
+TEST: Elle avait hâte de {{dévouée}} sa vie à sa passion                                            ->> dévouer
+TEST: il est hors de question de {{menée}} cette attaque ainsi                                      ->> mener
+TEST: il serait temps de {{poussée}} la logique jusqu’au bout                                       ->> pousser
+TEST: impossible d’{{échappée}} à cette horreur.                                                    ->> échapper
+TEST: hors d’état de {{pensée}} à quoi que ce soit                                                  ->> penser
+TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.        ->> penser
+TEST: sous peine de nous {{pesée}} lourd sun l’estomac                                              ->> peser
+TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?                                           ->> fabriquer
+TEST: il n’est pas question de {{pensée}} à ça pour l’instant.                                      ->> penser
+TEST: il était question de la {{recrachée}} épuisée sans se soucier de sa santé.                    ->> recracher
+TEST: pas question de nous {{laissés}} faire !                                                      ->> laisser
+TEST: Ne fais pas semblant de l’{{oubliée}}.                                                        ->> oublier
+TEST: non content de {{damnés}} pour l’éternité                                                     ->> damner
+TEST: non contente de l’{{ignorée}}, elle en était fière.                                           ->> ignorer
+TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements                        ->> pousser
+TEST: d’crainte d’l’{{touché}}, m’sieur…                                                            ->> toucher
 
 
 #### Infinitif après divers
@@ -21951,10 +22036,10 @@ __infi_vouloir!5__
         <<- /infi/ not value(\1, "|vouloirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tag_before(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
-    de  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
-    de  vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ai[ts]?)$
-    de  vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ai[ts]?)$
-    de  vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ai[ts]?)$
+    [de|d’]  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
+    [de|d’]  vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ai[ts]?)$
+    [de|d’]  vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ai[ts]?)$
+    [de|d’]  vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ai[ts]?)$
         <<- /infi/ morph(\-1, ":V", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “\2”, ce verbe devrait être à l’infinitif.
 
@@ -22369,7 +22454,7 @@ __purge_prépositions_pronoms__
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout le monde           [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:4>> *
 
-    [après|avant|avec|par|pour|contre|sans|envers|chez|de|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]        [<end>|,|@:[VXG]¬>qui/]
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là] [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:2>> *
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon]         moi     [seul+e]        [<end>|,|@:[VXG]¬>qui/]
@@ -22411,10 +22496,24 @@ __purge_prépositions_pronoms__
     par         chez
         <<- ~1:-2>> *
 
+    [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles|iels]
+    [chacun|chacune]            d’ entre [nous|vous|eux|elles|iels]
+    [certains|quelques-uns]     d’ entre [nous|vous|eux|iels]
+    [certaines|quelques-unes]   d’ entre [nous|vous|elles|iels]
+    plusieurs                   d’ entre [nous|vous|eux|elles|iels]
+        <<- ~2:0>> *
+
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre nous
+        <<- /1>> _d_entre_nous_
+
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre vous
+        <<- /1>> _d_entre_vous_
+
     à bonne distance [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     à côté [de|d’]                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     à part                          {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     à [cause|partir] [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    autour [de|d’]                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     au-dessus [de|d’]               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     au-dedans [de|d’]               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     de chez *WORD ?jusqu’¿ à chez   {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
@@ -27143,14 +27242,18 @@ TEST: avec la plupart des femmes qui {{devienne}} mère
 
 __conj_certains_certaines_plusieurs__
     [certains|certaines|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
-        <<- /conj/ not morph(<1, ":[VR]")
+        <<- /conj/ not morph(<1, ":[VR]") and not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
         --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [certains|certaines|plusieurs]  qui  @:V¬:(?:G|3p|P)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3p")                          && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
+        --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: certains {{prenne}} leur temps
 TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même trompés.
+TEST: nous verrons, certains {{arriverons}} à vaincre
+TEST: certains d’entre nous avons la chance d’y entrer
+TEST: plusieurs d’entre vous aurez la chance d’y accéder.
 
 
 __conj_certains_certaines__
@@ -27158,17 +27261,16 @@ __conj_certains_certaines__
         <<- /conj/ -2>> \2s                                             && Mettez au pluriel “\2” si vous désignez plusieurs personnes.
         <<- /conj/ morph(\3, ":[12]p") -3>> =suggVerb(\3, ":3p")        && Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
 
-    [<start>|,|(]  certain  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir).*:3s|:N.*:[me]:[si]
+    [<start>|,|(]  certain  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir|sembler|pouvoir|vouloir).*:3s|:N.*:[me]:[si]
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            && Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
         <<- /conj/ -2>> \2s                                             && Mettez au pluriel “\2” si vous désignez plusieurs personnes.
 
-    [<start>|,|(]  certaine  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir).*:3s|:N.*:[fe]:[si]
+    [<start>|,|(]  certaine  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir|sembler|pouvoir|vouloir).*:3s|:N.*:[fe]:[si]
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            && Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
         <<- /conj/ -2>> \2s                                             && Mettez au pluriel “\2” si vous désignez plusieurs personnes.
 
 TEST: {{certain}} deviennent idiots à cette seule pensée.
 TEST: nous savons, {{certaine}} {{avancerons}} avec enthousiasme
-TEST: nous verrons, certains {{arriverons}} à vaincre
 TEST: mais c’est exact, {{certaine}} perdent leur calme souvent dans les méandres de l’administration.
 TEST: {{certain}} {{donne}} beaucoup.
 TEST: {{certaine}} y {{arrive}} à tous les coups.
@@ -27179,18 +27281,21 @@ TEST: si tu persévères, certaine deviendra la réussite.
 __conj_quelques_uns__
     quelques-uns   @:V¬:(?:G|3p|P|[NAQ].*:m:[pi])
     quelques-unes  @:V¬:(?:G|3p|P|[NAQ].*:f:[pi])
-        <<- /conj/ not morph(<1, ":[VR]")
+        <<- /conj/ not morph(<1, ":[VR]") and not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
         --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     quelques-uns   qui  @:V¬:(?:G|3p|P)
     quelques-unes  qui  @:V¬:(?:G|3p|P)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3p")                          && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
+        --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: quelques-uns {{arrive}} demain
 TEST: Quelques-unes {{imagine}} une autre vie que celle-là.
 TEST: Quelques-unes {{rêve}} d’un autre monde.
 TEST: quelques-uns qui se {{croit}} chez eux
 TEST: Quelques-unes lestées de plombe.
+TEST: quelques-unes d’entre nous avons la chance d’y entrer
+TEST: quelques-uns d’entre vous avez deviné la supercherie.
 
 
 __conj_tous_toutes__
