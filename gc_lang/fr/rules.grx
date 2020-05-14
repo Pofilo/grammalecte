@@ -2239,6 +2239,13 @@ __fusions_noms_communs__
     quantitative easing
         <<- ~>> ␣
 
+    jusqu’ [au-boutiste+s|au-boutisme+s]
+        <<- ~>> ␣
+
+    notre père
+        <<- morph(<1, ":D.*:[mp]") ~>> ␣
+        <<- __also__ =>> define(\1, [":N:m:i"])
+
     presqu’ [>ile|>île]
         <<- ~>> ␣
         <<- =>> change_meta(\1, "WORD")
@@ -2257,6 +2264,19 @@ __fusions_noms_communs_séparés_slah__
 
 
 __fusions_noms_propres__
+    d’ Alembert
+    d’ Estaing
+    de Gaulle
+    de Broglie
+    des Cars
+    du Bellay
+    du Guesclin
+    La Bruyère
+    La Fayette
+    La Fontaine
+        <<- ~>> ␣
+        <<- =>> define(\1, [":M2:e:i"])
+
     cac  40
         <<- ~>> ␣
 
@@ -2279,20 +2299,16 @@ __fusions_noms_propres__
         <<- =>> define(\1, [":T"])
         <<- ~1>> *
 
-    notre père
-        <<- morph(<1, ":D.*:[mp]") ~>> ␣
-        <<- __also__ =>> define(\1, [":N:m:i"])
-
-    [la|cette] ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
+    [la|cette]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:f:s"])
 
-    [le|au|du|ce] ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Building|Bureau|Casino|Castle|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
+    [le|au|du|ce]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:m:s"])
 
-    the ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Administration|Area|Assocation|Chamber|Church|Community|Company|Corporation|Cup|Enterprise|Foundation|Gallery|House|League|Library|Navy|Reserve|Society|Station|University]
-    the ~^[A-ZÀÂÉÈÊÎÔ]. ?~^[A-ZÀÂÉÈÊÎÔ].¿ [Act|Championship|College|Consortium|Day|Hall|Hospital|Institute|Magazine|Museum|News|Opera|Park|Palace|Post|Restaurant|Theatre|Tournament]
+    the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
+    the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":MP:e:s"])
 
@@ -8350,7 +8366,8 @@ __conf_cour_cours_court_courre__
         <<- !1:2>>
 
     en cour
-        <<- /conf/ ->> en cours                             && Confusion probable. Une cour… Un cours… Adjectif : court(e).
+        <<- /conf/ not value(>1, "|suprême|fédérale|")
+        ->> en cours                                        && Confusion probable. Une cour… Un cours… Adjectif : court(e).
 
     [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains] [court+s] [de|d’]
         || [allemand|anglais|arabe|arabe|bengali|bhodjpouri|cantonais|coréen|égyptien|espagnol|français|grec|gujarati|haoussa|hébreu|hindi|indonésien|italien|italien|latin|japonais|javanais|mandarin|marathi|minnan|ourdou|pendjabi|persan|portugais|russe|sanskrit|sanscrit|swahili|tamoul|thaï|turc|tégoulou|vietnamien|wu]
@@ -15121,6 +15138,7 @@ __substantifs_multi_mots__
     >hôtel [de|d’] ville
     >hôtesse d’ accueil
     >infirmier [de|d’] garde
+    >ingénieur du son
     >inspection [de|d’] routine
     >instinct [de|d’] survie
     >interface [utilisateur+s]
@@ -24969,7 +24987,7 @@ TEST: les avaient-ils {{détectez}} ?
 
 !!
 !!
-!!!! Accords avec l’adjectif précédant le pronom                                                  !!
+!!!! Participes passés: Accords avec l’adjectif précédant le pronom                               !!
 !!
 !!
 
@@ -25985,9 +26003,11 @@ TEST: l’{{eut-il}} voulu que ça n’aurait rien changé            ->> eût-i
 __purge_préverbes1__
     [ne|n’|me|m’|te|se|s’|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
         <<- ~1>> *
+        <<- /-1>> _ngn_
 
     t’  @:(?:[123][sp]|P|Y)¬:(?:X|2s)|>(?:rien|ie?ls?|elles?|on)/
         <<- ~1>> *
+        <<- /-1>> _ngn_
 
     le    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[me]:[si]|G|M)
     la    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[fe]:[si]|G|M)
@@ -25995,159 +26015,211 @@ __purge_préverbes1__
     les   @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[pi]|G|M)
     leur  @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[si]|G|M)
         <<- \2.islower() ~1>> *
+        <<- /-1>> _ngn_
 
     en    @:(?:[123][sp]|P|Y)¬:[NA]
         <<- \2.islower() and not (value(\2, "|attendant|admettant|") and value(>1, "|que|qu’|")) ~1>> *
+        <<- /-1>> _ngn_
 
     nous  @:(?:[123][sp]|P|Y)¬:1p
         <<- \2.islower() and not (morph(<1, ":1p") and not value(<1, "|sachons|veuillons|allons|venons|partons|") and value(<2, "|<start>|,|")) ~1>> *
+        <<- /-1>> _ngn_
 
     vous  @:(?:[123][sp]|P|Y)¬:2p
         <<- \2.islower() and not (morph(<1, ":2p") and not value(<1, "|sachez|veuillez|allez|venez|partez|") and value(<2, "|<start>|,|")) ~1>> *
+        <<- /-1>> _ngn_
 
     lui   @:(?:[123][sp]|P|Y)¬:3s
         <<- not morph(<1, ":R") ~1>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     tu  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     tu  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     tu  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     tu  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     tu  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elle|iel|celle-là|celle-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elle|iel|celle-là|celle-ci]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elle|iel|celle-là|celle-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elle|iel|celle-là|celle-ci]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elle|iel|celle-là|celle-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     nous  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     nous  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     nous  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     nous  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     nous  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     vous  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     vous  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     vous  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     vous  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     vous  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     ils  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     ils  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     ils  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     ils  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     ils  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     [eux|ceux-là|ceux-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [eux|ceux-là|ceux-ci]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [eux|ceux-là|ceux-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [eux|ceux-là|ceux-ci]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     [eux|ceux-là|ceux-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elles|iels|celles-là|celles-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elles|iels|celles-là|celles-ci]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elles|iels|celles-là|celles-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elles|iels|celles-là|celles-ci]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+        <<- /-1>> _ngn_
 
     [elles|iels|celles-là|celles-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":[NA]") ~2>> *
+        <<- /-1>> _ngn_
 
     [je|j’|il|on|ils]  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
         <<- ~2>> *
+        <<- /-1>> _ngn_
 
     tu  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":V0") ~2>> *
+        <<- /-1>> _ngn_
 
     [lui|celui-là|celui-ci]          [nous|vous|lui]  @:(?:[123][sp]|P|Y)
     [elle|celle-là|celle-ci|iel]     [nous|vous|lui]  @:(?:[123][sp]|P|Y)
@@ -26155,6 +26227,7 @@ __purge_préverbes1__
     [eux|ceux-là|ceux-ci]            [nous|vous|lui]  @:(?:[123][sp]|P|Y)
     [elles|celles-là|celles-ci|iels] [nous|vous|lui]  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":R") ~2>> *
+        <<- /-1>> _ngn_
 
 
 __purge_préverbes2__
@@ -26164,13 +26237,16 @@ __purge_préverbes2__
     [le|la|l’|les]    [lui|leur|en|y]      @:(?:[123][sp]|P|Y)¬:X
     leur              en                   @:(?:[123][sp]|P|Y)¬:X
         <<- ~1:2>> *
+        <<- /-1>> _ngn_
 
     lui               en                   @:(?:[123][sp]|P|Y)¬:X
         <<- not morph(<1, ":(?:R|3s)") ~1:2>> *
+        <<- /-1>> _ngn_
 
     t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X
         <<- not morph(\3, ":2s") or value(<1, "|je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|") ~1:2>> *
         <<- ~2>> *
+        <<- /-1>> _ngn_
 
 
 __purge_préverbes_négation__
@@ -26179,6 +26255,7 @@ __purge_préverbes_négation__
     [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]            @:(?:[123][sp]|P|Y)¬:X
     [ne|n’]  [lui|leur]                     en                         @:(?:[123][sp]|P|Y)¬:X
         <<- ~1:-2>> *
+        <<- /-1>> _ngn_
 
 
 __purge_proposition_subordonnée__
@@ -26239,6 +26316,7 @@ __purge_proposition_subordonnée__
     [que|qu’]   $:M et $:M              ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:V0.*:3p    @:Q¬:G   @:[123][sp]
     [que|qu’]   $:M et $:M              ?[ne|n’]¿   [lui|leur|y]                    en                          @:V0.*:3p    @:Q¬:G   @:[123][sp]
         <<- morph(<1, ":N", ":V") ~1:-2>> *
+        <<- /-1>> _ngn_
 
 
 __purge_substantifs_comme_lui_elle__
@@ -26960,7 +27038,8 @@ __conj_le_la_leur_nom__
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not checkAgreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
-        <<- /conj/ morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3s", suggSing)  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [le|la|l’|leur]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
@@ -27005,21 +27084,23 @@ __conj_det_sing_nom__
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[me]:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not checkAgreement(\2, \3) >>>
-        <<- /conj/ morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3s", suggSing) && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [une|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD  @:V¬:(?:3s|P|Y|3p!|G|M)
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[fe]:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not checkAgreement(\2, \3) >>>
-        <<- /conj/ morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3s", suggSing) && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\4, ":3p") )
-        -4>> =suggVerb(\4, ":3s")                                                                                       && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        -4>> =suggVerb(\4, ":3s")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: Tu devrais le savoir, ce roman-là de Jean-Paul Sartre {{es}} passionnant.
 TEST: Cette confusion qui {{donnent}} le tournis.
@@ -27318,13 +27399,14 @@ __conj_det_plur_nom__
     [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  @:V¬:(?:3p|P|Y|G|M|A.*:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
-        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggPlur) && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-        -4>> =suggVerb(\4, ":3p")                                                                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        -4>> =suggVerb(\4, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Ses « chiens » {{coure}} sur ma pelouse.
 TEST: mes filles {{passe}} ce matin
@@ -27346,13 +27428,14 @@ __conj_les_nom__
             and not ( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
-        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggPlur) && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     les  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-        -4>> =suggVerb(\4, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        -4>> =suggVerb(\4, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Les abstentions {{est}} présumée manifester un défaut d’opinion marquée
 TEST: Les cours de culture générale nous {{apporte}} de l’ouverture d’esprit.
@@ -27397,29 +27480,32 @@ __conj_certains_certaines_plusieurs_nom__
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
-        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggMasPlur)  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3p", suggMasPlur)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     certaines  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
-        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggFemPlur)  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3p", suggFemPlur)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     plusieurs  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
-        <<- /conj/ morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")) -3>> =suggVerb(\3, ":3p", suggPlur) && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
+        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [certains|certaines|plusieurs]  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-        -4>> =suggVerb(\4, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        -4>> =suggVerb(\4, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: les chattes {{danse}}
 TEST: certains hommes {{marchande}} sans cesse
