@@ -1404,8 +1404,8 @@ function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
     return true;
 }
 
-function define (dTokenPos, nPos, lMorph) {
-    dTokenPos.get(nPos)["lMorph"] = lMorph;
+function define (dTokenPos, nPos, sMorphs) {
+    dTokenPos.get(nPos)["lMorph"] = sMorphs.split("|");
     return true;
 }
 
@@ -1452,17 +1452,17 @@ function g_exclude (oToken, sPattern, lDefault=null) {
     return true;
 }
 
-function g_add_morph (oToken, lNewMorph) {
+function g_add_morph (oToken, sNewMorph) {
     "Disambiguation: add a morphology to a token"
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
-    lMorph.push(...lNewMorph);
+    lMorph.push(...sNewMorph.split("|"));
     oToken["lMorph"] = lMorph;
     return true;
 }
 
-function g_define (oToken, lMorph) {
+function g_define (oToken, sMorphs) {
     // set morphologies of <oToken>, always return true
-    oToken["lMorph"] = lMorph;
+    oToken["lMorph"] = sMorphs.split("|");
     return true;
 }
 

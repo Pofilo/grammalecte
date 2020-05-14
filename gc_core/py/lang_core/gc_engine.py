@@ -1189,12 +1189,12 @@ def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     return True
 
 
-def define (dTokenPos, nPos, lMorph):
-    "Disambiguation: set morphologies of token at <nPos> with <lMorph>"
+def define (dTokenPos, nPos, sMorphs):
+    "Disambiguation: set morphologies of token at <nPos> with <sMorphs>"
     if nPos not in dTokenPos:
         echo("Error. There should be a token at this position: ", nPos)
         return True
-    dTokenPos[nPos]["lMorph"] = lMorph
+    dTokenPos[nPos]["lMorph"] = sMorphs.split("|")
     return True
 
 
@@ -1236,17 +1236,17 @@ def g_exclude (dToken, sPattern, lDefault=None):
     return True
 
 
-def g_add_morph (dToken, lNewMorph):
+def g_add_morph (dToken, sNewMorph):
     "Disambiguation: add a morphology to a token"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    lMorph.extend(lNewMorph)
+    lMorph.extend(sNewMorph.split("|"))
     dToken["lMorph"] = lMorph
     return True
 
 
-def g_define (dToken, lMorph):
+def g_define (dToken, sMorphs):
     "Disambiguation: set morphologies of <dToken>, always return True"
-    dToken["lMorph"] = lMorph
+    dToken["lMorph"] = sMorphs.split("|")
     #echo("DA:", dToken["sValue"], lMorph)
     return True
 

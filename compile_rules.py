@@ -362,9 +362,6 @@ def createAction (sIdAction, sAction, nGroup):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
-        if "define" in sAction and not re.search(r"define\(dTokenPos, *m\.start.*, \[.*\] *\)", sAction):
-            print(f"# Error in action at line {sIdAction}: second argument for define must be a list of strings")
-            print(sAction)
         lFUNCTIONS.append(("_d_"+sIdAction, sAction))
         sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]

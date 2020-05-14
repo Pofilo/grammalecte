@@ -384,9 +384,6 @@ class GraphBuilder:
             return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
         if cAction == "=":
             ## disambiguator
-            if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
-                print(f"\n# Error in action at line <{sLineId}/{sActionId}>: second argument for <define> must be a list of strings")
-                exit()
             sAction = self.createFunction("da", sAction)
             return [sLineId, sOption, sCondition, cAction, sAction]
         print("\n# Unknown action at ", sLineId, sActionId)

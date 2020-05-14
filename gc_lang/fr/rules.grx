@@ -1651,11 +1651,11 @@ TEST: {{3O}} (chiffre avec un O).                                         ->> 30
 
 __[i](d_eepi_écriture_épicène_pluriel)__
     ({w_1}[éuitsrn])_(?:[nt]|)e_s  @@0
-    <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, [":N:A:Q:e:p"])
+    <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
 
 __[i](d_eepi_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])_e  @@0
-    <<- morph(\1, ":[NAQ]") =>> define(\1, [":N:A:Q:e:s"])
+    <<- morph(\1, ":[NAQ]") =>> define(\1, ":N:A:Q:e:s")
 
 
 !!!! Purge des références aux notes                                                               !!
@@ -1950,7 +1950,7 @@ __da_prépositions__
 
     y compris
         <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
-        <<- __also__ =>> define(\1, [":G:R"])
+        <<- __also__ =>> define(\1, ":G:R")
 
 
 __da_puis__
@@ -1979,11 +1979,11 @@ __da_mots_grammaticaaux__
 
 __da_autre_chose_quelque_chose__
     quelque chose
-        <<- =>> define(\2, [":N:m:s"])
+        <<- =>> define(\2, ":N:m:s")
 
     autre chose
         <<- not morph(<1, ">entre/|:D") ~>> ␣
-        <<- =>> define(\1, [":G"])
+        <<- =>> define(\1, ":G")
 
 
 __da_groupe_nominal__
@@ -1992,7 +1992,7 @@ __da_groupe_nominal__
 
     bac + ~^\d\d?$
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:e:i"])
+        <<- =>> define(\1, ":N:e:i")
 
     [de|d’]  @:¬:[YD]
         <<- =>> exclude(\2, ":(?:[123][sp]|P)")
@@ -2005,11 +2005,11 @@ __da_groupe_nominal__
 
     l’ un comme l’ autre
         <<- ~>> ␣
-        <<- =>> define(\1, [":LN:m:p"])
+        <<- =>> define(\1, ":LN:m:p")
 
     l’ une comme l’ autre
         <<- ~>> ␣
-        <<- =>> define(\1, [":LN:f:p"])
+        <<- =>> define(\1, ":LN:f:p")
 
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
@@ -2047,21 +2047,21 @@ __da_groupe_nominal__
 
     nombre  [de|d’|des]  [@:[NA]|<end>|,]
         <<- not morph(<1, ":D") >>>
-        <<- morph(<1, ":A.*:[me]:[si]") =>> add_morph(\1, [">nombre/:G:D"])
-        <<- __else__ =>> define(\1, [">nombre/:G:D"])
+        <<- morph(<1, ":A.*:[me]:[si]") =>> add_morph(\1, ">nombre/:G:D")
+        <<- __else__ =>> define(\1, ">nombre/:G:D")
 
     par  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
 
     plein  [de|d’]  @:[AN]
-        <<- not morph(<1, ":D.*:m|>(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
+        <<- not morph(<1, ":D.*:m|>(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, ":G")
 
     source [de|d’]
-        <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, [":LV"])
+        <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, ":LV")
 
     tout feu ?,¿ tout >flamme
         <<- ~>> ␣
-        <<- =>> define(\1, [":A:e:i"])
+        <<- =>> define(\1, ":A:e:i")
 
     très  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
@@ -2211,7 +2211,7 @@ __fusions_mots_grammaticaux__
     alors    [que|qu’]
     dès lors [que|qu’]
         <<- ~>> ␣
-        <<- =>> define(\1, [":Cs"])
+        <<- =>> define(\1, ":Cs")
 
     quelqu’ [un|une]
         <<- ~>> ␣
@@ -2221,14 +2221,14 @@ __fusions_mots_grammaticaux__
 __fusions_noms_communs__
     au revoir
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:m:i"])
+        <<- =>> define(\1, ":N:m:i")
 
     n’ importe [qui|quoi|quel|quelle|quels|quelles|où|ou|lequel|laquelle|lesquels|lesquelles]
         <<- ~1:2>> ␣
 
     [cultural|gender] studies
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:f:p"])
+        <<- =>> define(\1, ":N:f:p")
 
     black [>bloc|>block]
     jet set
@@ -2244,7 +2244,7 @@ __fusions_noms_communs__
 
     notre père
         <<- morph(<1, ":D.*:[mp]") ~>> ␣
-        <<- __also__ =>> define(\1, [":N:m:i"])
+        <<- __also__ =>> define(\1, ":N:m:i")
 
     presqu’ [>ile|>île]
         <<- ~>> ␣
@@ -2260,7 +2260,7 @@ __fusions_noms_communs__
 __fusions_noms_communs_séparés_slah__
     *WORD  /  *WORD
         <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and morph(\1, ":N") and morph(\-1, ":N") ~>> ␣
-        <<- =>> define(\1, [":N:e:i"])
+        <<- =>> define(\1, ":N:e:i")
 
 
 __fusions_noms_propres__
@@ -2275,7 +2275,7 @@ __fusions_noms_propres__
     La Fayette
     La Fontaine
         <<- ~>> ␣
-        <<- =>> define(\1, [":M2:e:i"])
+        <<- =>> define(\1, ":M2:e:i")
 
     cac  40
         <<- ~>> ␣
@@ -2285,36 +2285,36 @@ __fusions_noms_propres__
 
     Peugeot  ~^\d0\d\d?$
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:e:i"])
+        <<- =>> define(\1, ":N:e:i")
 
     Mai 68
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:m:i"])
+        <<- =>> define(\1, ":N:m:i")
 
     ~^[A-ZÀÂÉÈÊÎÔ].  ~^[A-ZÀÂÉÈÊÎÔ].
         <<- analyse_with_next(\1, " ", ":") ~>> ␣
-        <<- __else__ and morph(\1, ":M") and morph(\2, ":V", ":[GM]") =>> define(\2, [":M2"])
+        <<- __else__ and morph(\1, ":M") and morph(\2, ":V", ":[GM]") =>> define(\2, ":M2")
 
     Me  ~^[A-ZÀÂÉÈÊÎÔ].
-        <<- =>> define(\1, [":T"])
+        <<- =>> define(\1, ":T")
         <<- ~1>> *
 
     [la|cette]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":MP:f:s"])
+        <<- =>> define(\2, ":MP:f:s")
 
     [le|au|du|ce]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":MP:m:s"])
+        <<- =>> define(\2, ":MP:m:s")
 
     the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
     the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Championship|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":MP:e:s"])
+        <<- =>> define(\2, ":MP:e:s")
 
     ~^[A-ZÀÂÉÈÊÎÔ]. Airways
         <<- ~>> ␣
-        <<- =>> define(\2, [":MP:e:i"])
+        <<- =>> define(\2, ":MP:e:i")
 
 
 __immunités__
@@ -2523,7 +2523,7 @@ __inte_rendez_vous__
     ne [lui|leur] en            rendez-vous
     ne [le|la|les|lui|leur]     rendez-vous
     [me|ne|nous|vous|lui]       rendez-vous
-        <<- =>> define(\-1, [":VCi1:2p"])
+        <<- =>> define(\-1, ":VCi1:2p")
         <<- !-1>>
 
 #   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
@@ -13312,7 +13312,7 @@ __purge_locutions_latines__
     sursum corda
     sic transit gloria mundi
         <<- ~>> ␣
-        <<- =>> =define(\1, [":LP"])
+        <<- =>> =define(\1, ":LP")
 
 
 __purge_locutions_incises__
@@ -14408,7 +14408,7 @@ __gestion_mots_grammaticaux__
     sous la houlette                                                                                                    [de|du|d’|des]
     sous forme                                                                                                          [de|d’]
         <<- ~1:-2>> ␣
-        <<- =>> define(\1, [":G:R:LR"])
+        <<- =>> define(\1, ":G:R:LR")
 
     tout au [bout|long] [de|du|d’|des]
         <<- not morph(<1, ":R") ~1>> *
@@ -14416,7 +14416,7 @@ __gestion_mots_grammaticaux__
     à travers $:D
     à travers >différent
         <<- ~1:2>> ␣
-        <<- =>> define(\1, [":G:R:LR"])
+        <<- =>> define(\1, ":G:R:LR")
 
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
@@ -14496,7 +14496,7 @@ __gestion_mots_grammaticaux__
 
     le pour et le contre
         <<- ~>> ␣
-        <<- =>> define(\1, [":LN:m:p"])
+        <<- =>> define(\1, ":LN:m:p")
 
     le [pressentiment|sentiment] [que|qu’]
         <<- ~1>> _
@@ -14568,7 +14568,7 @@ __p_dét_plur_nombre_nom__
     la  >numéro  un
     la  >numéro  $:B
     la  >numéro  *NUM
-        <<- =>> define(\2, [">numéro/:N:f:s"])
+        <<- =>> define(\2, ">numéro/:N:f:s")
         <<- ~3>> *
 
     le  numéro  un  @:¬:N:[em]:[is]
@@ -14597,16 +14597,16 @@ __simplification_des_nombres__
     [vingt|trente|quarante|cinquante|soixante|soixante-dix|septante|quatre-vingt|octante|huitante|quatre-vingt-dix|nonante|mille] et [un|une|onze]
         <<- ~>> \1-et-\3||
         <<- ~2:3>> *
-        <<- =>> define(\1, [":B:e:p"])
+        <<- =>> define(\1, ":B:e:p")
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]  cents  @:[NAQ].*:[pi]¬:(?:G|3p)
         <<- ~1:2>> ␣
-        <<- =>> define(\1, [":B:e:p"])
+        <<- =>> define(\1, ":B:e:p")
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf] ?cent¿ mille
     cent mille
         <<- ~>> ␣
-        <<- =>> define(\1, [":B:e:p"])
+        <<- =>> define(\1, ":B:e:p")
 
 
 __purge_des_nombres__
@@ -15526,7 +15526,7 @@ __purge_couleurs__
     couleur sable
         <<- morph(<1, ":[NA]", ":D") ~>> *
         <<- __else__ and morph(<1, ":D|>(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)") ~>> ␣
-        <<- __also__ =>> define(\1, [":A:e:i"])
+        <<- __also__ =>> define(\1, ":A:e:i")
 
 
 __simplification_noms_propres__
@@ -15615,7 +15615,7 @@ __purge_après_être__
     [>être|>devenir|>rester] pieds nus
     [>être|>devenir|>rester] père et mère
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":LV"])
+        <<- =>> define(\2, ":LV")
 
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] [bon|meilleur] marché
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] cousin et cousine
@@ -15632,7 +15632,7 @@ __purge_après_être__
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] père et mère
         <<- ~2>> *
         <<- ~3:0>> ␣
-        <<- =>> define(\3, [":LV"])
+        <<- =>> define(\3, ":LV")
 
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ avant tout
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ du moins
@@ -15659,7 +15659,7 @@ __purge_après_être__
     /_VCint_ pieds nus
     /_VCint_ père et mère
         <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> ␣
-        <<- __also__ =>> define(\2, [":LV"])
+        <<- __also__ =>> define(\2, ":LV")
 
     /_VCint_ [pas|jamais|plus|guère|point] [bon|meilleur] marché
     /_VCint_ [pas|jamais|plus|guère|point] cousin et cousine
@@ -15676,7 +15676,7 @@ __purge_après_être__
     /_VCint_ [pas|jamais|plus|guère|point] père et mère
         <<- morphVC(\1, ">(?:être|devenir|rester)") ~2>> *
         <<- __also__ ~3:0>> ␣
-        <<- __also__ =>> define(\3, [":LV"])
+        <<- __also__ =>> define(\3, ":LV")
 
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ avant tout
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ du moins
@@ -15745,7 +15745,7 @@ __purge_après_avoir__
     >avoir  partie [gagnée|liée]
     >avoir  voix au chapitre
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":LV"])
+        <<- =>> define(\2, ":LV")
 
     >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  [pas|jamais|plus|guère|point]  bon [dos|fond]
@@ -15757,7 +15757,7 @@ __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]  quartier libre
     >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- ~3:0>> ␣
-        <<- =>> define(\3, [":LV"])
+        <<- =>> define(\3, ":LV")
 
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
@@ -15799,7 +15799,7 @@ __purge_après_avoir__
     /_VCint_  partie [gagnée|liée]
     /_VCint_  voix au chapitre
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
-        <<- __also__ =>> define(\2, [":LV"])
+        <<- __also__ =>> define(\2, ":LV")
 
     /_VCint_  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /_VCint_  [pas|jamais|plus|guère|point]  bon [dos|fond]
@@ -15811,7 +15811,7 @@ __purge_après_avoir__
     /_VCint_  [pas|jamais|plus|guère|point]  quartier libre
     /_VCint_  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
-        <<- __also__ =>> define(\3, [":LV"])
+        <<- __also__ =>> define(\3, ":LV")
 
     /_VCint_  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /_VCint_  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
@@ -16456,7 +16456,7 @@ __purge_locutions_verbales__
     [>venir|>revenir] je [ne|n’] sais ?pas¿ ?trop¿ d’ où
     [>venir|>revenir] on [ne|n’] sait ?pas¿ ?trop¿ d’ où
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":LV"])
+        <<- =>> define(\2, ":LV")
 
 
 __sgpl_faire_plaisir__
