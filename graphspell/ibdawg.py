@@ -342,7 +342,7 @@ class IBDAWG:
             if (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 if self.sLangCode == "fr" and sNewWord.lower() in ("l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu") and sRemain[0:1] in cp.aVowel:
                     oSuggResult.addSugg(sNewWord+"’"+sRemain)
-                if (len(sNewWord) > 1 and len(sRemain) > 1) or sNewWord in ("a", "à", "y") or sRemain in ("a", "à", "y"):
+                if (len(sNewWord) > 1 and len(sRemain) > 1) or sNewWord in "aày" or sRemain in "aày":
                     oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
@@ -354,7 +354,7 @@ class IBDAWG:
                 if nMaxHardRepl and self.isNgramsOK(cChar+sRemain[1:2]):
                     self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
                 if nMaxJump:
-                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
+                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar)
         if not bAvoidLoop: # avoid infinite loop
             if len(sRemain) > 1:
                 if cCurrent == sRemain[1:2]:
@@ -411,7 +411,7 @@ class IBDAWG:
                 return
         if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
             oSuggResult.addSugg(sNewWord, nDeep)
-        for cChar, jAddr in self._getCharArcsWithPriority(iAddr, oSuggResult.sWord[nDeep:nDeep+1]):
+        for cChar, jAddr in self._getCharArcs(iAddr, oSuggResult.sWord[nDeep:nDeep+1]):
             self._suggest2(oSuggResult, nDeep+1, jAddr, sNewWord+cChar)
         return
 
@@ -420,21 +420,6 @@ class IBDAWG:
         for nVal, jAddr in self._getArcs(iAddr):
             if nVal <= self.nChar:
                 yield (self.dCharVal[nVal], jAddr)
-
-    def _getSimilarCharArcs (self, cChar, iAddr):
-        "generator: yield similar char of <cChar> and address of the following node"
-        for c in cp.d1to1.get(cChar, [cChar]):
-            if c in self.dChar:
-                jAddr = self._lookupArcNode(self.dChar[c], iAddr)
-                if jAddr:
-                    yield (c, jAddr)
-
-    def _getCharArcsWithPriority (self, iAddr, cChar):
-        if not cChar:
-            yield from self._getCharArcs(iAddr)
-        lTuple = list(self._getCharArcs(iAddr))
-        lTuple.sort(key=lambda t: 0  if t[0] in cp.d1to1.get(cChar, cChar)  else  1)
-        yield from lTuple
 
     def _getTails (self, iAddr, sTail="", n=2):
         "return a list of suffixes ending at a distance of <n> from <iAddr>"

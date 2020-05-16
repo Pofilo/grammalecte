@@ -391,7 +391,6 @@ class IBDAWG {
         if (nDist > oSuggResult.nDistLimit) {
             return;
         }
-
         let cCurrent = sRemain.slice(0, 1);
         for (let [cChar, jAddr] of this._getCharArcs(iAddr)) {
             if (char_player.d1to1.gl_get(cCurrent, cCurrent).indexOf(cChar) != -1) {
@@ -402,7 +401,7 @@ class IBDAWG {
                     this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
                 }
                 if (nMaxJump) {
-                    this._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
+                    this._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar); // True for avoiding loop?
                 }
             }
         }
