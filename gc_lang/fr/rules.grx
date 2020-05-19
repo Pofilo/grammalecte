@@ -1941,29 +1941,13 @@ __da_adverbes__
         <<- morph(<1, ":D") =>> (\1, ":W")
 
 
-__da_prépositions__
+__da_mots_grammaticaaux__
+    autour [de|du|d’|des]
+        <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
+
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
-    passé  [<end>|,|$:R]
-        <<- =>> exclude(\1, ":G")
-
-    y compris
-        <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
-        <<- __also__ =>> define(\1, ":G:R")
-
-
-__da_puis__
-    puis
-        <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
-
-
-__da_SA__
-    SA
-        <<- morph(<1, ":D") =>> exclude(\1, ":D")
-
-
-__da_mots_grammaticaaux__
     [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
@@ -1975,6 +1959,22 @@ __da_mots_grammaticaaux__
 
     [le|l’|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
+
+    puis
+        <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
+
+    SA
+        <<- morph(<1, ":D") =>> exclude(\1, ":D")
+
+    passé  [<end>|,|$:R]
+        <<- =>> exclude(\1, ":G")
+
+    vu  [<end>|,|$:R]
+        <<- =>> exclude(\1, ":G")
+
+    y compris
+        <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
+        <<- __also__ =>> define(\1, ":G:R")
 
 
 __da_autre_chose_quelque_chose__
@@ -1989,6 +1989,12 @@ __da_autre_chose_quelque_chose__
 __da_groupe_nominal__
     aucun  @:[NA].*:[me]
         <<- =>> exclude(\2, ":V")
+
+    avions
+        <<- not tag_before(\1, "_1p_") and not value(<1, "|n’|") and not value(>1, "|nous|") =>> select(\-1, ":N")
+
+    l’ avions
+        <<- morph(<1, ":Y") =>> select(\-1, ":N")
 
     bac + ~^\d\d?$
         <<- ~>> ␣
@@ -11511,6 +11517,15 @@ __sgpl_ensemble__
 TEST: Allons-y toutes {{ensembles}}                             ->> ensemble
 
 
+# en particulier
+__sgpl_en_particulier__
+    en particuliers
+        <<- /conf/ not morph(<1, ">agir/") ->> en particulier       && Locution “en particulier” toujours au singulier.|https://fr.wiktionary.org/wiki/en_particulier
+
+TEST: en général et {{en particuliers}}
+TEST: agir en particulier averti.
+
+
 # en rangs serrés
 __sgpl_en_rangs_serrés__
     en rang serré
@@ -13204,7 +13219,7 @@ __purge_locutions_fois__
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
     pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour [trois|3] fois rien
-    pour une fois
+    pour [cette|une] fois
     quelquefois
     quelques fois
     sans y [réfléchir|songer|penser] à [deux|2] fois
@@ -13702,6 +13717,7 @@ __purge_locutions__
     dans l’ [idéal|immédiat]
     dans la mesure du possible
     dans la dernière ligne droite
+    dans le feu de l’ action
     dans leur globalité
     dans leur grande majorité
     dans tout [cela|ça|ceci]
@@ -14276,9 +14292,10 @@ __purge_locutions__
     sur ce ,
     sur ce plan-là
     sur la défensive
-    sur le fil du rasoir
     sur la forme comme sur le fond
     sur la même longueur d’ onde
+    sur la sellette
+    sur le fil du rasoir
     sur le plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
     sur le pied [de|d’] guerre
     sur le qui-vive
@@ -15142,6 +15159,7 @@ __substantifs_multi_mots__
     >fou à lier
     [>fourgon|>fourgonnette] [de|d’] location
     >frayeur [de|d’] tous les diables
+    >frein à >tambour
     >frousse [de|d’] tous les diables
     >fuite en avant
     >fusil à [plomb|pompe]
@@ -15343,7 +15361,6 @@ __substantifs_multi_mots__
     >salon [de|d’] coiffure
     sas [de|d’] [confinement|décompression|décontamination|désinfection|livraison|protection|secours|sécurité]
     >sclérose en plaques
-    [secret+s] défense
     >seconde d’ arc
     >sel [de|d’] [aluminium|ammonium|mer]
     >serpent à sonnette
@@ -15439,7 +15456,7 @@ __substantifs_multi_mots__
     >court sur pattes
     [cousu+ses] [main]
     [cousu+ses] [de|d’] fil blanc
-    [daté+ses] du [1er|1ᵉʳ|1|01|2|02|3|03|4|04|5|05|6|06|7|07|8|08|9|09|10|11|12|13|14|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] {mois} ?[prochain|passé|dernier|~^[0-9]{2,5}$]¿
+    [daté+ses] du [1er|1ᵉʳ|1|01|2|02|3|03|4|04|5|05|6|06|7|07|8|08|9|09|10|11|12|13|14|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] {mois} ?[prochain|passé|dernier|précédent|~^[0-9]{2,5}$]¿
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
     >droit comme un i
@@ -15463,6 +15480,7 @@ __substantifs_multi_mots__
     [remis+es] à plat
     >sain [de|d’] [corps|esprit]
     >sain [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
+    [secret+s] défense
     >sourd comme un pot
     >sujet à interprétation
     >sujet à interprétations diverses
@@ -16027,14 +16045,14 @@ __purge_locutions_potentielles__
     à la dernière [minute|seconde]  [<end>|,|)]
         <<- ~1:-2>> *
 
-    à la longue     @:¬:N.*:[fe]:[si]
-    à la longue     [<end>|,|)]
-    à la dérive     @:¬:A.*:[fe]:[si]
-    à la dérive     [<end>|,|)]
-    à l’ époque     @:¬:A.*:[fe]:[si]
-    à l’ époque     [<end>|,|)]
-    à l’ identique  @:¬:N.*:[si]
-    à l’ identique  [<end>|,|)]
+    à la longue         @:¬:N.*:[fe]:[si]
+    à la longue         [<end>|,|)]
+    à la [dérive|mode]  @:¬:A.*:[fe]:[si]
+    à la [dérive|mode]  [<end>|,|)]
+    à l’ époque         @:¬:A.*:[fe]:[si]
+    à l’ époque         [<end>|,|)]
+    à l’ identique      @:¬:N.*:[si]
+    à l’ identique      [<end>|,|)]
         <<- ~1:-2>> *
 
     à répétition  @¬:A.*:[fe]:[si]
@@ -16203,8 +16221,10 @@ __purge_locutions_potentielles__
     pour de bon  [<end>|,|)]
         <<- ~1:3>> *
 
-    pour partie  @:¬:A.*:f:s
-    pour partie  [<end>|,|)]
+    pour la majeure partie  @:¬:A.*:[fe]:[si]
+    pour la majeure partie  [<end>|,|)]
+    pour partie             @:¬:A.*:[fe]:[si]
+    pour partie             [<end>|,|)]
         <<- ~1:2>> *
 
     pour un temps  @:¬:[NA].*:[me]:[si]
@@ -16218,8 +16238,10 @@ __purge_locutions_potentielles__
     sans détour  [<end>|,|)]
         <<- ~1:2>> *
 
-    sans [réserve|surprise]  @:¬:[NA].*:[fe]:[si]
-    sans [réserve|surprise]  [<end>|,|)]
+    sans grande surprise    @:¬:[NA].*:[fe]:[si]
+    sans grande surprise    [<end>|,|)]
+    sans [réserve|surprise] @:¬:[NA].*:[fe]:[si]
+    sans [réserve|surprise] [<end>|,|)]
         <<- ~1:2>> *
 
     semblait-il
@@ -16370,6 +16392,7 @@ __purge_locutions_verbales__
     [>brûler|>bruler] à vif
     >charger à blanc
     >chauffer à blanc
+    >classer sans suite
     >compter à rebours
     >condamner à mort
     >couler à ?grands¿ flots
@@ -16696,7 +16719,7 @@ TEST: Hormis les enseignements fondamentaux transmis à la petite école, la sui
 TEST: il ne désirait ne plus le faire…
 TEST: Ma chambre est trois fois plus grande que la tienne.
 TEST: Il est trois ans plus jeune que moi.
-
+TEST: On peut sans doute laisser sans grand problème toutes les baskets à la mode être produites à l’autre bout du monde
 
 
 @@@@
@@ -18087,7 +18110,8 @@ TEST: la {{gente}} masculine est grossière et l’a toujours été.
 
 # golf / golfe
 __conf_golf_golfe2__
-    >jouer au golfe
+    >jouer      au golfe
+    >pratiquer  le golfe
         <<- /conf/ -3>> golf                        && Confusion. Un golfe est une zone maritime qui avance dans les terres. Pour le sport, écrivez “golf”.
 
 TEST: il joue au {{golfe}} tous les jours.
@@ -18097,7 +18121,7 @@ TEST: Jouer au golf.
 # goutte / goûte
 __conf_goûte_goutte__
     [goûte|goûtes|goute|goutes] [de|d’] [alcool|acide|amour|bière|eau|folie|huile|javel|lait|liquide|mercure|miel|peinture|pluie|rhum|rosée|salive|sang|semence|sperme|sueur|urine|vin|vinaigre|whisky]
-        <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt")
+        <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt").replace("Û", "U").replace("T", "TT")
         && Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.|https://fr.wiktionary.org/wiki/goutte
 
     >passer entre les [goûte+s|goute+s]
@@ -18902,12 +18926,36 @@ TEST: pour le service en salle
 
 
 # sans / sens
-__conf_sens_dessus_dessous__
-    sans dessus dessous
+__conf_sang_sans_sens__
+    [sans|san] dessus dessous
     sans-dessus-dessous
         <<- /conf/ ->> sens dessus dessous                          && Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/tache
 
+    [sans|san] [bleu|royal|mêlé]
+    [sans|san] humain
+    [sans|san] de la victime
+    [sans|san] des victimes
+    [sans|san] >avoir >couler
+    [sans|san] >couler
+    [sans|san] qui >couler
+    [sans|san] qui >avoir >couler
+        <<- /conf/ morph(<1, ":D.*:[me]") -1>> sang                 && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
+
+    [couvert+ses|recouvert+ses] [de|d’] [sans|san|sens]
+    >avoir [ça|cela|ceci] dans le [sans|san|sens]
+    >buveur [de|d’] [sans|san|sens]
+    >flot [de|d’] [sans|san|sens]
+    la voix du [sans|san|sens]
+    >pisser [le|du] [sans|sens]
+    c >être [mon|ton|son|notre|votre|leur|leurs] [sans|san]
+        <<- /conf/ --1>> sang                                       && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
+
 TEST: Tout est {{sans dessus dessous}}.
+TEST: le {{sans}} a coulé.
+TEST: le {{san}} qui coulera encore sera sur vos mains
+TEST: elle a ça dans le {{sans}}
+TEST: elle pissait le {{sans}}
+TEST: ce témoignage va dans le sens de la victime.
 
 
 # aller sans dire
@@ -19222,6 +19270,7 @@ TEST: l’{{amicale}} {{animal}}
 TEST: l’amour {{immortels}}
 TEST: du chien et de l’{{excellente}} {{collier}} qu’il avait autour du cou.
 TEST: du chien et de l’étonnant {{colliers}} qu’il avait autour du cou.
+TEST: elle prendra l’{{avions}} dès que possible
 
 
 __gn_le_1m__
@@ -19264,14 +19313,14 @@ TEST: Comme avec l’Hyperloop, le bus chinois conçu pour passer au-dessus des 
 
 __gn_le_2m__
     le  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                                 && Accord de genre erroné : « \1 \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggMasSing(\3)                                                                       && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou]  le  *WORD  *WORD
-        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not \4.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                                 && Accord de genre erroné : « \2 \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\4, \4)
@@ -19326,14 +19375,14 @@ TEST: il pense à la fois où nous avons eu cet accident idiot.
 
 __gn_la_2m__
     la  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3, True)                                                         && Accord de genre erroné : « \1 \2 » est féminin, « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggFemSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  la  *WORD  *WORD
-        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4, True)                                                         && Accord de genre erroné : « \2 \3 » est féminin, « \4 » est masculin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
@@ -19367,7 +19416,7 @@ TEST: dans {{leur}} {{usines}}
 
 __gn_leur_2m__
     leur  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, False)                                                       && Accord de genre erroné entre « \2 » et « \3 ».
@@ -19377,7 +19426,7 @@ __gn_leur_2m__
         <<- /gn/ __also__ and morph(\2, ":[NA].*:i") -1>> leurs                             && Accord de nombre erroné avec « \2 \3 ».
 
     [et|ou|de|d’]  leur  *WORD  *WORD
-        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ ((morph(\3, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\4, ":[NA].*:f", "*")) or (morph(\3, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\4, ":[NA].*:m", "*")))
             and not apposition(\3, \4)
         -4>> =switchGender(\4, False)                                                       && Accord de genre erroné entre « \3 » et « \4 ».
@@ -19523,14 +19572,14 @@ TEST: Quatorze heures découpées en quatre parties, une sortant en salles chaqu
 ## un / une
 __gn_un_2m__
     un  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                                 && Accord de genre erroné : « \1 \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3)                                                                       && Accord de nombre erroné avec « \2 » : « \3 » devrait être au singulier.
 
     [et|ou|d’]  un  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                                 && Accord de genre erroné : « \2 \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
@@ -19546,14 +19595,14 @@ TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{
 
 __gn_une_2m__
     une  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3, True)                                                                 && Accord de genre erroné : « \1 \2 » est féminin, « \3 » est masculin.
         <<- /gn/ \2 != "fois" and morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3)                                                                       && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|d’]  une  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4, True)                                                                 && Accord de genre erroné : « \2 \3 » est féminin, « \4 » est masculin.
         <<- /gn/ \3 != "fois" and morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
@@ -19637,14 +19686,14 @@ TEST: à partir de pièces détachées, au départ entièrement venues de l’é
 
 __gn_det_mas_sing_2m__
     [ce|cet|quel|au|ledit|dudit|audit|aucun|nul]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggMasSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  [ce|cet|quel|au|ledit|dudit|audit|aucun|nul]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
@@ -19670,7 +19719,7 @@ TEST: {{mon}} {{chienne}}
 
 __gn_mon_ton_son_2m__
     [mon|ton|son]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:m", ":(?:B|G|e|V0|f)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ">[aâeéèêiîoôuûyœæ].*:[NA].*:f", ":(?:B|G|e|V0|m)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
@@ -19679,7 +19728,7 @@ __gn_mon_ton_son_2m__
         -3>> =suggMasSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  [mon|ton|son]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:m", ":(?:B|G|e|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ">[aâeéèêiîoôuûyœæ].*:[NA].*:f", ":(?:B|G|e|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
@@ -19711,14 +19760,14 @@ TEST: Après cet épisode, la SA a joué un rôle marginal dans l’histoire du 
 
 __gn_det_fem_sing_2m__
     [ma|ta|sa|cette|quelle|ladite]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NAQ].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NAQ].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3, True)                                                         && Accord de genre erroné : « \1 \2 » est féminin, « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NAQ].*:[si]", ":G") and morph(\3, ":[NAQ].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggFemSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  [ma|ta|sa|cette|quelle|ladite]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NAQ]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NAQ]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NAQ].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NAQ].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
         <<- /gn/ morph(\3, ":[NAQ].*:[si]", ":G") and morph(\4, ":[NAQ].*:p", ":[GWsi]") and not apposition(\3, \4)
@@ -19748,7 +19797,7 @@ TEST: {{Quelque}} amis
 
 __gn_det_epi_sing_2m__
     [chaque|quelque|notre|votre]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, False)                                                       && Accord de genre erroné entre « \2 » et « \3 ».
@@ -19757,7 +19806,7 @@ __gn_det_epi_sing_2m__
         -3>> =suggSing(\3)                                                                  && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  [chaque|quelque|notre|votre]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ ((morph(\3, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\4, ":[NA].*:f", "*")) or (morph(\3, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\4, ":[NA].*:m", "*")))
             and not apposition(\3, \4)
         -4>> =switchGender(\4, False)                                                       && Accord de genre erroné entre « \3 » et « \4 ».
@@ -19814,7 +19863,7 @@ TEST: J’en ramasse quelques-unes, puis les glisse dans l’une de mes poches, 
 
 __gn_les_2m__
     les  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné entre « \2 » et « \3 ».
@@ -19823,7 +19872,7 @@ __gn_les_2m__
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
     [et|ou]  les  *WORD  *WORD
-        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not morph(\3, ">seul/") >>>
         <<- /gn/ ((morph(\3, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\4, ":[NA].*:f", "*")) or (morph(\3, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\4, ":[NA].*:m", "*")))
             and not apposition(\3, \4)
         -4>> =switchGender(\4, True)                                                                && Accord de genre erroné entre « \3 » et « \4 ».
@@ -19886,7 +19935,7 @@ TEST: clafoutis aux {{abricot}}
 
 __gn_det_epi_plur_2m__
     [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|au|aux|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|au|aux|") and not morph(\3, ">seul/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné entre « \2 » et « \3 ».
@@ -19895,13 +19944,13 @@ __gn_det_epi_plur_2m__
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
     [et|ou|de|d’]  [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ ((morph(\3, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\4, ":[NA].*:f", "*")) or (morph(\3, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\4, ":[NA].*:m", "*")))
             and not apposition(\3, \4)
         -4>> =switchGender(\4, True)                                                                && Accord de genre erroné entre « \3 » et « \4 ».
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =switchGender(\3, True)                           && Accord de genre erroné avec « \4 ».
         <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-            and not (\1.startswith("de") and value(<1, "|un|une|"))
+            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
         -4>> =suggPlur(\4)                                                                          && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces {{beaux}} {{institutions}}
@@ -19979,12 +20028,12 @@ __gn_det_plur_3m__
     [plusieurs|quelques|certains|certaines|moult]           *WORD  *WORD  *WORD
     [lesdits|lesdites|desdits|desdites|auxdits|auxdites]    *WORD  *WORD  *WORD
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
-            and morph(\4, ":[NA].*:s", "*") and \4.islower() and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
+            and morph(\4, ":[NA].*:s", "*") and \4.islower() and not before("(?i)\\bune? de +$") and not morph(\4, ">seul/")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
     leurs  *WORD  *WORD  *WORD
         <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
-            and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
+            and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not morph(\4, ">seul/")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces petites sottes {{déjantée}}
@@ -20202,18 +20251,18 @@ TEST: {{Quels}} qu’en soient les raisons                      ->> Quelles
 
 __gn_det_mas_plur_2m__
     [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggMasPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
     [et|ou|de|d’]  [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \3.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[pi]", ":G") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-            and not (\1.startswith("de") and value(<1, "|un|une|"))
+            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
         -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: certains claviers {{dégueulasse}}
@@ -20227,18 +20276,18 @@ TEST: chez certains la revue Limite provoque des crises d’hystérie.
 
 __gn_det_fem_plur_2m__
     [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggFemPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
     [et|ou|de|d’]  [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
         <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-            and not (\1.startswith("de") and value(<1, "|un|une|"))
+            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
         -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: certaines idioties {{stupide}}
@@ -22728,7 +22777,6 @@ __purge_pronoms__
     [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre vous
         <<- /1>> _d_entre_vous_
 
-
     [aucun|aucune] des *WORD [ne|n’]
         <<- ~2:3>> *
 
@@ -22739,8 +22787,8 @@ __purge_pronoms__
     beaucoup [de|d’] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     beaucoup [de|d’] *WORD @:[VR]¬:[NAP]
     beaucoup [de|d’] *WORD , @¬:[NA]
-        <<- morph(\3, ":[NA].*:p", ":(?:[NA].*:[si]|G)") /1>> bcp_plur
-        <<- morph(\3, ":[NA].*:s", ":(?:[NA].*:[pi]|G)") /1>> bcp_sing
+        <<- morph(\3, ":[NA].*:p", ":(?:[NA].*:[si]|G)") /1>> _bcp_plur_
+        <<- __else__ and morph(\3, ":[NA].*:s", ":(?:[NA].*:[pi]|G)") /1>> _bcp_sing_
         <<- ~2:3>> *
 
     la plupart des *WORD <end>
@@ -24106,25 +24154,47 @@ __ppas_sujet_être_accord_genre__
             and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and
             ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":(?:[123]p|P)")
         --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[en|y]¿
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés]                                        *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[me]:[pi]", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]") and morph(\2, ":(?:[123]p|P)")
+        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
+
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenues|redevenues|restées|demeurées]                                    *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[fe]:[pi]", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]") and morph(\2, ":(?:[123]p|P)")
+        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
+
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  *WORD  ?[ne|n’]¿  ?[en|y]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[en|y]¿
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  *WORD  ?[ne|n’]¿  ?[en|y]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[en|y]¿
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  *WORD  ?[ne|n’]¿  ?[en|y]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) !-1>>
@@ -24144,11 +24214,20 @@ TEST: l’avenir de la région paraissait {{suspendue}} à ce financement
 TEST: l’idiot qui n’y affirmait pas être devenu {{géniale}} mais seulement moins ignorant
 TEST: Mon ami qui pensait être {{suivie}}
 TEST: l’écolier qui ne croyait pas avoir été {{brillante}}
-TEST: les femmes sont vraiment {{partis}}                                         ->> parties
-TEST: les hommes n’en sont pas tout à fait {{fâchées}}                            ->> fâchés
+TEST: les femmes sont vraiment {{partis}}                                                   ->> parties
+TEST: les hommes n’en sont pas tout à fait {{fâchées}}                                      ->> fâchés
 TEST: plusieurs invités qui n’en sont pas {{contentes}}
 TEST: les réunions sans cesse reportées qui sont {{annulés}}
 TEST: les hommes croyant être {{instruites}}
+TEST: deux estimations ont été {{reçus}}                                                    ->> reçues
+TEST: certains hommes croient avoir été {{dupées}}                                          ->> dupés
+TEST: certains hommes qui pensent être plus {{instruites}} qu’ils ne sont réellement        ->> instruits
+TEST: puisque certains hommes n’en pensent pas moins être {{trompées}}                      ->> trompés
+TEST: certains hommes qui n’en pensent pas devenir {{folles}} pour autant                   ->> fous
+TEST: certaines femmes pensent avoir été {{trompés}}                                        ->> trompées
+TEST: certaines femmes ne croient pas être {{appauvris}}                                    ->> appauvries
+TEST: certaines femmes qui y pensent être {{escroqués}}                                     ->> escroquées
+TEST: certaines femmes qui n’en risquent pas moins d’être {{découverts}}                    ->> découvertes
 TEST: Les tortures que ce journaliste pense être “normales”.
 TEST: La première était René, le parfumeur, qui s’approcha de Catherine
 TEST: les abrutis sont légion
@@ -27541,11 +27620,11 @@ TEST: les failles par lesquelles entrait l’eau étaient impossibles à boucher
 __conj_beaucoup__
     beaucoup    @:V¬:(?:P|Q|G|Y)
         <<- /conj/ not morph(<1, ":[VR]") >>>
-        <<- /conj/ tag(\1, "bcp_plur") and not morph(\2, ":3p")
+        <<- /conj/ tag(\1, "_bcp_plur_") and not morph(\2, ":3p")
         -2>> =suggVerb(\2, ":3p")                                   && Conjugaison erronée. Accord avec “\1”. Le substantif suivant étant au pluriel, le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ __else__ and tag(\1, "bcp_sing") and not morph(\2, ":3s")
+        <<- /conj/ __else__ and tag(\1, "_bcp_sing_") and not morph(\2, ":3s")
         -2>> =suggVerb(\2, ":3s")                                   && Conjugaison erronée. Accord avec “\1”. Le substantif suivant étant au singulier, le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conj/ __else__ and \2 != "a" and not tag(\1, "bcp_sing") and not morph(\2, ":3p") and not (space_after(\1, 1, 2) and morph(\2, ":V0"))
+        <<- /conj/ __else__ and \2 != "a" and not tag(\1, "_bcp_sing_") and not morph(\2, ":3p") and not (space_after(\1, 1, 2) and morph(\2, ":V0"))
         -2>> =suggVerb(\2, ":3p")                                   && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     beaucoup    qui  @:V¬:(?:3p|P|G)
