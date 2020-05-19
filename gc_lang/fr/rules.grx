@@ -9168,6 +9168,17 @@ TEST: je n’en aimais certains guère.
 TEST: ce que nous appelons Guerre psychologique
 
 
+# haut de gamme
+__conf_haut_de_gamme__
+    !! haut de gamme ¡¡
+    [haut+ses|o|ô|au|oh|ho] [de|d’] [gamme+s|game+s]
+        <<- /conf/ ->> haut de gamme
+        && Confusion probable. Locution nominale et adjectivale “haut de gamme” (invariable), c’est-à-dire de haute qualité, au sommet de la gamme possible parmi les produits existants.|https://fr.wiktionary.org/wiki/haut_de_gamme
+
+TEST: des véhicules {{hauts de gamme}}                      ->> haut de gamme
+TEST: c’est du {{oh de game}}                               ->> haut de gamme
+
+
 # héro / héros
 __conf_héros__
     [le|quel|ce|cet|un|du|au]  héro
@@ -14996,7 +15007,7 @@ __substantifs_multi_mots__
     >chemise sans >manche
     >chèque en blanc
     >chèque sans provision
-    >cheval [de|d’] Troie
+    >cheval [de|d’] [bataille|Troie]
     >chili con carne
     >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
@@ -16818,7 +16829,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >équivaloir a
     ## locutions
     >appartenir en propre a
-    >avoir [peine|tendance|trait|vocation] a
+    >avoir [accès|peine|tendance|trait|vocation] a
     >faire [allusion|attention|barrage|confiance|défaut|écran|envie|exception|part|peur|plaisir|signe] a
     >laisser libre cours a
     >mettre fin a
@@ -22550,29 +22561,6 @@ __purge_prépositions_pronoms__
     pour        chez
         <<- ~1:-2>> *
 
-
-    [aucun|aucune]                  des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
-    [chacun|chacune]                des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
-    [certains|certaines]            des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
-    [quelques-uns|quelques-unes]    des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
-    plusieurs                       des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
-        <<- ~2:0>> *
-
-    aucun                       d’ entre [nous|vous|eux|iels]
-    aucune                      d’ entre [nous|vous|elles|iels]
-    [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles|iels]
-    [chacun|chacune]            d’ entre [nous|vous|eux|elles|iels]
-    [certains|quelques-uns]     d’ entre [nous|vous|eux|iels]
-    [certaines|quelques-unes]   d’ entre [nous|vous|elles|iels]
-    plusieurs                   d’ entre [nous|vous|eux|elles|iels]
-        <<- ~2:0>> *
-
-    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre nous
-        <<- /1>> _d_entre_nous_
-
-    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre vous
-        <<- /1>> _d_entre_vous_
-
     à bonne distance [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     à côté [de|d’]                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     à part                          {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
@@ -22603,6 +22591,12 @@ __purge_prépositions_pronoms__
     eux             seuls
     elles           seules
     iels            [seuls|seules]
+        <<- ~2>> *
+
+    nous    [tous|toutes]   qui
+    vous    [tous|toutes]   qui
+    eux     tous            qui
+    elles   toutes          qui
         <<- ~2>> *
 
 TODO: comme
@@ -22700,9 +22694,40 @@ __purge_l_un_l_autre_les_uns_les_autres__
     entre les uns et les autres
         <<- ~>> *
 
+
 __purge_pronoms__
-    [aucun|aucune] [de|d’] ?entre¿ [nous|vous|eux|elles]
+    [aucun|aucune]                  des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
+    [chacun|chacune]                des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
+    [certains|certaines]            des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
+    [quelques-uns|quelques-unes]    des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
+    plusieurs                       des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
+    [un|une]                        des [miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
         <<- ~2:0>> *
+
+    [aucun|aucune]                  d’ entre [nous|vous|eux|elles|iels]
+    [celui|celle|celles|ceux]       d’ entre [nous|vous|eux|elles|iels]
+    [chacun|chacune]                d’ entre [nous|vous|eux|elles|iels]
+    [certains|quelques-uns]         d’ entre [nous|vous|eux|iels]
+    [certaines|quelques-unes]       d’ entre [nous|vous|elles|iels]
+    plusieurs                       d’ entre [nous|vous|eux|elles|iels]
+    [un|une]                        d’ entre [nous|vous|eux|elles|iels]
+        <<- ~2:0>> *
+
+    [aucun|aucune]                  [de|d’] [nous|vous|eux|elles|iels]
+    [celui|celle|celles|ceux]       [de|d’] [nous|vous|eux|elles|iels]
+    [chacun|chacune]                [de|d’] [nous|vous|eux|elles|iels]
+    [certains|quelques-uns]         [de|d’] [nous|vous|eux|iels]
+    [certaines|quelques-unes]       [de|d’] [nous|vous|elles|iels]
+    plusieurs                       [de|d’] [nous|vous|eux|elles|iels]
+    [un|une]                        [de|d’] [nous|vous|eux|elles|iels]
+        <<- not (value(\-1, "|nous|vous|") and morph(>1, ":Y")) ~2:0>> *
+
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre nous
+        <<- /1>> _d_entre_nous_
+
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes] d’ entre vous
+        <<- /1>> _d_entre_vous_
+
 
     [aucun|aucune] des *WORD [ne|n’]
         <<- ~2:3>> *
@@ -22717,9 +22742,6 @@ __purge_pronoms__
         <<- morph(\3, ":[NA].*:p", ":(?:[NA].*:[si]|G)") /1>> bcp_plur
         <<- morph(\3, ":[NA].*:s", ":(?:[NA].*:[pi]|G)") /1>> bcp_sing
         <<- ~2:3>> *
-
-    [chacun|chacune] [de|d’] ?entre¿ [nous|vous|eux|elles]
-        <<- ~2:0>> *
 
     la plupart des *WORD <end>
     la plupart des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
@@ -22739,23 +22761,39 @@ __purge_pronoms__
     la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD , @¬:[NA]
         <<- ~3:5>> *
 
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) <end>
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) , @¬:[NA]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) <end>
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) , @¬:[NA]
         <<- ~3:6>> *
 
-    nous    [tous|toutes]   qui
-    vous    [tous|toutes]   qui
-    eux     tous            qui
-    elles   toutes          qui
-        <<- ~2>> *
+    [<start>|,|l’] [un|une] des *WORD <end>
+    [<start>|,|l’] [un|une] des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] des *WORD @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] des *WORD , @¬:[NA]
+        <<- ~3:4>> *
+        <<- /2>> _un_des_
 
-    [un|une] de [nous|vous]
-    [un|une] d’ [eux|elles]
-    [un|une] d’ entre [nous|vous|eux|elles]
-    [un|une] des [nôtres|vôtres]
-        <<- ~2:0>> *
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) <end>
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) , @¬:[NA]
+        <<- ~3:5>> *
+        <<- /2>> _un_des_
+
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD <end>
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD , @¬:[NA]
+        <<- ~3:5>> *
+        <<- /2>> _un_des_
+
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) <end>
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) , @¬:[NA]
+        <<- ~3:6>> *
+        <<- /2>> _un_des_
 
 
 ### Simplification des syntagmes nominaux
@@ -22800,12 +22838,22 @@ __purge_syntagmes_nominaux__
         <<- __else__ ~3>> *
 
     l’ *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y|V0)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y|V0)|>air/") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
-    [des|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|au|aux] *WORD *WORD
-        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+    leur *WORD *WORD
+        <<- not value(<1, "|le|la|du|au|") and morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
+        <<- __else__ ~3>> *
+
+    leurs *WORD *WORD
+        <<- not value(<1, "|des|les|aux|") and morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    [des|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|au|aux] *WORD *WORD
+        <<- morph(\2, ":[NA]") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
@@ -23418,18 +23466,19 @@ __ppas_3sg_mas_verbe_état__
     ([il|quiconque]) ?[ne|n’]¿ s’ ?[en|y]¿  (>efforcer)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not tag(\1, "_enum_") and morph(\2, ":3s") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ s’ ?[en|y]¿  (>efforcer)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ s’ ?[en|y]¿  (>efforcer)
+        || [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not tag(\1, "_enum_") and morph(\2, ":3s") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
@@ -23496,6 +23545,18 @@ __ppas_3sg_mas_verbe_état__
     lequel ?[ne|n’]¿ s’ ?[en|y]¿  >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)                                                          && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                               @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_        @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_        @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_       @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_      @:A¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  ?l’¿ un  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_     @:A¬:(?:[GWM]|[me]:[si])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[123]s|:P")
+        --1>> =switchGender(\-1)                                                                    && Accord erroné : “un” et “\-1” ne sont pas accordés, l’adjectif devrait être au masculin singulier.
+
+TEST: un des leurs restait {{introuvables}}
 TEST: Il semble être {{partis}} pour toujours.                                    ->> parti
 TEST: Il n’est pas {{demander}} à chacun de participer.
 TEST: Il n’en était pas {{contents}}.                                             ->> content
@@ -23546,6 +23607,10 @@ TEST: tout s’efforce de rester {{unis}} ensemble.
 TEST: lui s’y efforçait de paraître {{instruits}}
 TEST: il ne s’y efforce pas moins de paraître {{connaisseurs}}
 TEST: lequel ne s’efforçait pas d’être {{connus}}
+TEST: un d’entre nous ne sera pas {{épargnés}}
+TEST: un des nôtres deviendra {{meilleurs}} que vous, aucun doute possible.
+TEST: l’un d’entre eux ne paraîtra pas aussi {{éduquées}} que prévu
+TEST: l’un de nous n’y risquera pas d’être {{découverts}}
 TEST: C’est donc seules que les deux femmes sont amenées à comparaître
 TEST: C’eût été pure imagination.
 TEST: Je n’arrêtais pas de me répéter que tout cela était peut-être pure imagination
@@ -23562,18 +23627,18 @@ TEST: dès que l’occasion lui en fut laissée
 
 
 __ppas_3sg_fem_verbe_état__
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenue|redevenue|restée|demeurée]                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenue|redevenue|restée|demeurée]                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿ (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
         <<- /ppas/ not tag(\1, "_enum_") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ s’ ?[en|y]¿  (>efforcer)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ s’ ?[en|y]¿  (>efforcer)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
         <<- /ppas/ not tag(\1, "_enum_") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
@@ -23603,6 +23668,17 @@ __ppas_3sg_fem_verbe_état__
     laquelle ?[ne|n’]¿ s’ ?[en|y]¿  >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)                                                          && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   @:A¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  ?l’¿  une  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  @:A¬:(?:[GWM]|[fe]:[si])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[123]s|:P")
+        --1>> =switchGender(\-1)                                                                    && Accord erroné : “une” et “\-1” ne sont pas accordés, l’adjectif devrait être au féminin singulier.
+
 TEST: elle a été {{perdu}} par ses parents                                        ->> perdue
 TEST: Elle semble être totalement {{ruiné}}.                                      ->> ruinée
 TEST: Elle est complètement {{fol}}.                                              ->> folle
@@ -23627,6 +23703,10 @@ TEST: elle qui ne s’efforçait jamais d’être {{connus}}
 TEST: celle-là qui ne s’en efforçait pas moins d’être {{reconnu}}
 TEST: celle-ci ne s’y efforçait jamais de devenir plus {{fortes}}
 TEST: laquelle s’y efforce de paraître {{humbles}}
+TEST: une d’elles risquait d’être {{attaqué}} en justice
+TEST: l’une des nôtres était {{perdu}} dans la paperasse
+TEST: l’une d’entre nous ne risquait pas de devenir {{folles}}
+TEST: l’une d’entre elles n’y était pas {{sensibles}}
 
 
 __ppas_iel_verbe_état__
@@ -23908,8 +23988,7 @@ TEST: Partir aurait été assurer sa survie.
 TEST: J’ai été conseiller régional
 
 
-
-!!!! Participes passés: accord en nombre avec la conjugaison de « être » (et équivalent)            !!
+!!!! Participes passés: accord en nombre avec la conjugaison de « être » (et équivalent)          !!
 
 __ppas_être_accord_sing__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NA].*:p¬:[GMWYsi]
@@ -27307,11 +27386,11 @@ TEST: Son courage, son ardeur étaient immenses,
 
 __conj_un_une__
     [un|une]  @:V¬:(?:3s|P|G|Q|M|[NA].*:[si])
-        <<- /conj/ morph(<1, ":C|<start>|>(?:,|dont)", ":(?:Y|P|Q|[123][sp]|R)̉|>(?:sauf|excepté|et|ou)/")
+        <<- /conj/ not tag(\1, "_un_des_") and morph(<1, ":C|<start>|>(?:,|dont)", ":(?:Y|P|Q|[123][sp]|R)̉|>(?:sauf|excepté|et|ou)/")
         --1>> =suggVerb(\-1, ":3s")                             && Conjugaison erronée. Accord avec “\1…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    [un|une]  qui  @:V¬:(?:3s|P|G|Q|[NA].*:[si])
-        <<- /conj/ morph(<1, "<start>|>(?:,|dont)/|:R")
+    [un|une]  qui  @:V¬:(?:3s|P|G)
+        <<- /conj/ not tag(\1, "_un_des_") and morph(<1, "<start>|>(?:,|dont)/|:R")
         --1>> =suggVerb(\-1, ":3s")                             && Conjugaison erronée. Accord avec “\2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: il y en a beaucoup, tu vois, même si un {{seras}} mieux pensé que les autres.
@@ -27325,13 +27404,13 @@ TEST: Tous sauf un viendront.
 
 
 __conj_un_une_des__
-    [un|une]  des  *WORD  @:V¬:(?:3s|P|G|Q|M|[NA].*:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
-        --1>> =suggVerb(\-1, ":3s")                                     && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+    [un|une]  @:V¬:(?:3s|P|G|Q|M|[NA].*:[pi])
+        <<- /conj/ tag(\1, "_un_des_") and morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
+        --1>> =suggVerb(\-1, ":3s")                                     && Conjugaison erronée. Accord avec “\1…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    [un|une]  des  *WORD  qui  @:V¬:(?:3[sp]|P|G)
+    [un|une]  des *WORD  qui  @:V¬:(?:3[sp]|P|G)
         <<- /conj/ morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
-        --1>> =suggVerb(\-1, ":3s")                                     && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du singulier ou du pluriel.
+        --1>> =suggVerb(\-1, ":3s")                                     && Conjugaison erronée. Accord avec “\1…”. Le verbe devrait être à la 3ᵉ personne du singulier ou du pluriel.
 
 TEST: un des ingénieurs {{vinrent}} nous dire quoi faire.
 TEST: un des membres présents au conseil {{demandent}} un vote à bulletin secret
