@@ -9075,6 +9075,10 @@ __conf_fosse_fausse__
     au bord de la fausse
         <<- /conf/ -5>> fosse                                               && Confusion probable : “fausse” est l’adjectif féminin de “faux”. Pour évoquer une profondeur, écrivez “fosse”.
 
+    >fosse [>alerte|>déclaration]
+        <<- /conf/ -1>> =\1.replace("o", "au").replace("O", "AU")
+        && Confusion probable : une fosse est une dépression ou une cavité dans le sol. Pour évoquer une falsification ou une erreur, écrivez “fausse”.|https://fr.wiktionary.org/wiki/fausse
+
 TEST: la {{fausse}} Calypso.
 TEST: La {{fausse}} des Mariannes.
 TEST: La {{fausse}} d’aisance.
@@ -9083,6 +9087,8 @@ TEST: Une {{fausse}} commune.
 TEST: La {{fausse}} du Chili.
 TEST: Nous sommes tombés dans la {{fausse}} aux lions.
 TEST: Elles sont arrivées au bord de la {{fausse}}.
+TEST: ils ont fait une {{fosse}} déclaration
+TEST: encore une {{fosse}} alerte
 
 
 # forcement / forcément
@@ -12827,7 +12833,7 @@ __locutions_temporelles_communes__
         <<- ~>> *
 
     ## locutions plurielles
-    au bout de [plusieurs|quelques]                 {unit_mesure_plur_mas}
+    au bout de [nombreux|plusieurs|quelques]        {unit_mesure_plur_mas}
     après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur_mas}
     après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur_mas}
     depuis $:B:e:p                                  {unit_mesure_plur_mas}
@@ -12840,7 +12846,7 @@ __locutions_temporelles_communes__
     pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur_mas}
         <<- not morph(>1, ":A.*:[me]:[pi]") ~>> *
 
-    au bout de [plusieurs|quelques]                 {unit_mesure_plur_fem}
+    au bout de [nombreuses|plusieurs|quelques]      {unit_mesure_plur_fem}
     après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur_fem}
     après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur_fem}
     depuis $:B:e:p                                  {unit_mesure_plur_fem}
@@ -15217,6 +15223,7 @@ __substantifs_multi_mots__
     >lit [de|d’] camp
     >livraison à domicile
     >livre [de|d’] [poche|chevet]
+    >livret A
     >livret d’ épargne ?[bancaire|populaire|salariale]¿
     >loi d’ airain
     >longueur d’ avance
@@ -15287,6 +15294,7 @@ __substantifs_multi_mots__
     >passation [de|d’] pouvoir
     >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
+    >perte [de|d’] temps ?précieux¿
     >peur [de|d’] tous les diables
     >piano à queue
     >pièce à conviction
@@ -16045,14 +16053,14 @@ __purge_locutions_potentielles__
     à la dernière [minute|seconde]  [<end>|,|)]
         <<- ~1:-2>> *
 
-    à la longue         @:¬:N.*:[fe]:[si]
-    à la longue         [<end>|,|)]
-    à la [dérive|mode]  @:¬:A.*:[fe]:[si]
-    à la [dérive|mode]  [<end>|,|)]
-    à l’ époque         @:¬:A.*:[fe]:[si]
-    à l’ époque         [<end>|,|)]
-    à l’ identique      @:¬:N.*:[si]
-    à l’ identique      [<end>|,|)]
+    à la longue             @:¬:N.*:[fe]:[si]
+    à la longue             [<end>|,|)]
+    à la [dérive|mode]      @:¬:A.*:[fe]:[si]
+    à la [dérive|mode]      [<end>|,|)]
+    à l’ [avance|époque]    @:¬:A.*:[fe]:[si]
+    à l’ [avance|époque]    [<end>|,|)]
+    à l’ identique          @:¬:N.*:[si]
+    à l’ identique          [<end>|,|)]
         <<- ~1:-2>> *
 
     à répétition  @¬:A.*:[fe]:[si]
@@ -16070,6 +16078,10 @@ __purge_locutions_potentielles__
     au pire  @:A¬:N.*:[me]:[si]
     au pire  [<end>|,|)]
         <<- ~1:2>> *
+
+    avec le recul  @:A¬:A.*:[me]:[si]
+    avec le recul  [<end>|,|)]
+        <<- ~1:3>> *
 
     [<start>|,|(] ben voyons
         <<- ~2:3>> *
@@ -16403,7 +16415,7 @@ __purge_locutions_verbales__
     [>donner|>redonner] quartier libre
     >élire domicile
     >étouffer dans l’ œuf
-    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|scandale|sens|sensation|signe|surface|usage|volte-face]
+    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|scandale|sens|sensation|signe|surface|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -16720,6 +16732,7 @@ TEST: il ne désirait ne plus le faire…
 TEST: Ma chambre est trois fois plus grande que la tienne.
 TEST: Il est trois ans plus jeune que moi.
 TEST: On peut sans doute laisser sans grand problème toutes les baskets à la mode être produites à l’autre bout du monde
+TEST: Faire cours avec un bâillon m’indique assez bien l’importance qu’on accorde à ce que je peux bien vouloir dire en classe.
 
 
 @@@@
@@ -16809,6 +16822,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >fermer a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
+    >mener a bien
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>plat|>profit|>table|>terre]
     [>mettre|>remettre] a l’ [écart|épreuve]
     >naviguer a [vu+ses]
@@ -16908,6 +16922,10 @@ TEST: N’y a-t-il pas {{a}} la table du saucisson ?
 TEST: cet homme mange bien {{a}} la maison ?
 TEST: tombé {{a}} terre, il crut ne jamais pouvoir se relever.
 TEST: il passe sans cesse du coq {{a}} l’âne
+TEST: Mener {{a}} bien cette tâche.
+TEST: je ne veux pas prendre part {{a}} ce désastre
+TEST: je me tiens {{a}} distance de ces abrutis
+TEST: faisons barrage {{a}} la démagogie.
 TEST: Ce que je mange a un goût de surgelé.
 TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
 TEST: Un rendez-vous a bousculé ses plans
@@ -24405,55 +24423,55 @@ TEST: {{libres}} aime avoir été notre fille                                   
 !!
 
 __ppas_avoir_l_air__
-    il  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+    il  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ --1>> =suggMasSing(\-1)                                      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    elle  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[si]|G)
+    elle  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ not morph(<1, ":R|>(?:et|ou)/") --1>> =suggFemSing(\-1)      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    <start>  [le|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+    <start>  [le|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morph(\3, ":[NA].*:[me]", ":f") --1>> =suggMasSing(\-1)      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    <start>  [la|une|cette|ma|ta|sa|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[si]|G)
+    <start>  [la|une|cette|ma|ta|sa|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morph(\3, ":[NA].*:[fe]", ":m") --1>> =suggFemSing(\-1)      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [<start>]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:m:[si]|G)
+    [<start>]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:m:[si]|G)
         <<- /ppas/ morph(\2, ":M.*:m", ":M.*:[fe]") --1>> =suggMasSing(\-1)     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    ils  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]|G)
+    ils  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]|G)
         <<- /ppas/ --1>> =suggMasPlur(\-1)                                      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    elles  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
+    elles  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
         <<- /ppas/ not morph(<1, ":R|>(?:et|ou)/") --1>> =suggFemPlur(\-1)      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    <start>  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+    <start>  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morph(\3, ":[NA].*:m:[pi]", ":[fe]") and morph(\-1, ":[NA].*:f")
         --1>> =suggMasPlur(\-1)                                                 && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
         <<- /ppas/ __else__ and morph(\3, ":[NA].*:f:[pi]", ":[me]") and morph(\-1, ":[NA].*:(?:m:p|f:s)")
         --1>> =suggFemPlur(\-1)                                                 && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+    >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morph(\1, ":V0a.*:[123]s") and morph(\-1, ":A.*:p") and not value(<1, "|on|")
         --1>> =suggSing(\-1)                                                    && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
         <<- /ppas/ __else__ and morph(\1, ":V0a.*:[123]p") and morph(\-1, ":A.*:s")
         --1>> =suggPlur(\-1)                                                    && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [/-je|/-tu|/-iel]  l’  air  @:A¬:(?:A.*:[si]|G)
+    [/-je|/-tu|/-iel]  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggSing(\-1)                     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [/-nous|/-iels]  l’  air  @:A¬:(?:A.*:(?:m:[si]|p)|G)
+    [/-nous|/-iels]  ?eu¿  l’  air  @:A¬:(?:A.*:(?:m:[si]|p)|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggPlur(\-1)                     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-il  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+    /-il  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasSing(\-1)                  && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-elle  l’  air  @:A¬:(?:A.*:[si]|G)
+    /-elle  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemSing(\-1)                  && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-ils  l’  air  @:A¬:(?:A.*:[me]|G)
+    /-ils  ?eu¿  l’  air  @:A¬:(?:A.*:[me]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasPlur(\-1)                  && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-elles  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
+    /-elles  ?eu¿  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemPlur(\-1)                  && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
 TEST: avait l’air {{sinistres}} des mauvais jours.                      ->> sinistre
@@ -24476,6 +24494,7 @@ TEST: la voiture avait l’air {{foutues}}                                ->> fo
 TEST: Le chien a l’air {{idiote}}                                       ->> idiot
 TEST: Les écoles avaient l’air {{fermés}}                               ->> fermées
 TEST: Nos voisins auront l’air {{perdues}}                              ->> perdus
+TEST: elles ont eu l’air {{égarés}}                                     ->> égarées
 TEST: Avais-je l’air égarée ?
 TEST: Avais-tu l’air folle ?
 TEST: Avait-il l’air serein ?
