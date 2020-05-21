@@ -416,10 +416,10 @@ TEST: voici des (parenthèses{{ )}}, n’est-ce pas ?                        ->
 # Parenthèses collées
 __<s>/typo(typo_parenthèse_fermante_collée)__
     [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b)
-    <<- not before("\\([rR][eéEÉ]$") ->> ") "                                                       && Il manque un espace après la parenthèse.
+        <<- not before("\\([rR][eéEÉ]$") ->> ") "                                                   && Il manque un espace après la parenthèse.
 __<s>/typo(typo_parenthèse_ouvrante_collée)__
     \b[(](?=[^)][^)][^)])
-    <<- ->> " ("                                                                                    && Il manque un espace avant la parenthèse.
+        <<- ->> " ("                                                                                && Il manque un espace avant la parenthèse.
 
 TEST: C’est au fond du couloir{{(}}celui du deuxième étage{{)}}qu’il se trouve.
 TEST: (a + b)²
@@ -1382,8 +1382,8 @@ TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 !!
 __[i]/date(date_nombres)__
     (?<!\d[ ./-])(\d\d?)([ ./-])(\d\d?)([ ./-])(\d\d\d+)(?![ ./-]\d)  @@0,*,w,**,$
-    <<- \2 == \4 and not checkDate(\1, \3, \5) and not before("(?i)\\b(?:version|article|référence)s? +$") ->> _                       && Cette date est invalide.
-    <<- ~>> \1-\3-\5
+        <<- \2 == \4 and not checkDate(\1, \3, \5) and not before("(?i)\\b(?:version|article|référence)s? +$") ->> _    && Cette date est invalide.
+        <<- ~>> \1-\3-\5
 
 TEST: le {{29 02 2011}}
 TEST: le {{40-02-2011}}
@@ -1452,7 +1452,7 @@ TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 ## Casse
 __[s]/ocr(ocr_casse_pronom_vconj)__
     {w2}-(On|Ils?|Elles?|Tu|Je|Nous|Vous|Mêmes?|Ci|Là|Une?s|Les?|La|Leur) @@$
-    <<- -1>> =\1.lower()                                                                            && Erreur de numérisation ? Casse douteuse.
+        <<- -1>> =\1.lower()                                                                        && Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ Part-{{On}} demain ?
 TEST: __ocr__ À ce compte-{{Ci}}, on n’en viendra jamais à bout.
@@ -1476,7 +1476,7 @@ TEST: __ocr__ prenez-en.
 ## Trait d’union conditionnel
 __[i]/ocr(tu_trait_union_conditionnel)__
     ({w1})‑({w1})  @@0,$
-    <<- ->> \1\2|\1-\2                                                                              && Trait d’union conditionnel. Erreur de numérisation ?
+        <<- ->> \1\2|\1-\2                                                                          && Trait d’union conditionnel. Erreur de numérisation ?
 
 TEST: __ocr__ c’est {{anti‑américain}}
 
@@ -1628,10 +1628,10 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 __[s](doublon)__
     ({w1}) {1,3}\1  @@0
-    <<- not re.search("(?i)^([nv]ous|faire|en|la|lui|donnant|œuvre|h[éoa]|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|[0-9]+)$", \1)
-        and not (re.search("^(?:est|une?)$", \1) and before("[’']$"))
-        and not (\1 == "mieux" and before("(?i)qui +$"))
-    ->> \1   && Doublon.
+        <<- not re.search("(?i)^([nv]ous|faire|en|la|lui|donnant|œuvre|h[éoa]|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|[0-9]+)$", \1)
+            and not (re.search("^(?:est|une?)$", \1) and before("[’']$"))
+            and not (\1 == "mieux" and before("(?i)qui +$"))
+        ->> \1                                                                                      && Doublon.
 
 TEST: Il y a un {{doublon doublon}}.
 
@@ -1651,11 +1651,11 @@ TEST: {{3O}} (chiffre avec un O).                                         ->> 30
 
 __[i](d_eepi_écriture_épicène_pluriel)__
     ({w_1}[éuitsrn])_(?:[nt]|)e_s  @@0
-    <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
 
 __[i](d_eepi_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])_e  @@0
-    <<- morph(\1, ":[NAQ]") =>> define(\1, ":N:A:Q:e:s")
+        <<- morph(\1, ":[NAQ]") =>> define(\1, ":N:A:Q:e:s")
 
 
 !!!! Purge des références aux notes                                                               !!
@@ -1663,11 +1663,11 @@ __[i](d_eepi_écriture_épicène_singulier)__
 # les références aux notes
 __<s>(p_exposants)__
     [¹²³⁴⁵⁶⁷⁸⁹⁰]+
-    <<- ~>> *
+        <<- ~>> *
 
 __[i](p_références_aux_notes)__
     ({w_2})(\d+)  @@0,$
-    <<- not morph(\0, ":") and morph(\1, ":") ~2>> *
+        <<- not morph(\0, ":") and morph(\1, ":") ~2>> *
 
 TEST: POLITIQUESOCIÉTÉÉCONOMIEMONDECULTUREART DE VIVREMAGAZINE (qui peut faire boguer JavaScript avec certaines regex)
 
@@ -1684,15 +1684,15 @@ TEST: Nous préparons une {{contre−attaque}}.
 
 __<i]/tu(tu_t_euphonique_incorrect)__
     ([-–—− ]t(?:[’' ][-–—−]?|[-–—−][’' ]?))(ie?ls?|elles?|on|tu)  @@0,$
-    <<- re.search("(?i)^(?:ie?ls|elles|tu)$", \2) -1>> -    && Le “t” euphonique n’est pas nécessaire avec “\2”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
-    <<- __else__ and \1 != "-t-" and \1 != "-T-" -1>> -t-   && Pour le “t” euphonique, il faut deux traits d’union. Pas d’apostrophe. Pas d’espace.
-    <<- \1 != "-t-" ~1>> -t-
+        <<- re.search("(?i)^(?:ie?ls|elles|tu)$", \2) -1>> -    && Le “t” euphonique n’est pas nécessaire avec “\2”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+        <<- __else__ and \1 != "-t-" and \1 != "-T-" -1>> -t-   && Pour le “t” euphonique, il faut deux traits d’union. Pas d’apostrophe. Pas d’espace.
+        <<- \1 != "-t-" ~1>> -t-
 __<i]/tu(tu_t_euphonique_superflu)__
     [td]([- ]t[-’' ])(?:il|elle|on)  @@1
-    <<- -1>> -                                              && Le “t” euphonique est superflu quand le verbe se termine par “t” ou “d”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
-    <<- \1 != "-t-" ~1>> -t-
+        <<- -1>> -                                              && Le “t” euphonique est superflu quand le verbe se termine par “t” ou “d”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+        <<- \1 != "-t-" ~1>> -t-
 __<i]/tu(tu_t_euphonique_manquant)__
-    [aec](-(il|elle|on))  @@1,2  <<- -1>> -t-\2             && Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+    [aec](-(il|elle|on))  @@1,2  <<- -1>> -t-\2                 && Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
 
 TEST: va{{ t’}}il y parvenir ?                          ->> -t-
 TEST: A{{ t’}}elle soif ?                               ->> -t-
@@ -4315,6 +4315,11 @@ __tu_substantifs__
     >arrière >petit >nièce
         <<- /tu/ ->> arrière-petite-nièce|arrière-petites-nièces    && Mettez des traits d’union.
 
+    au jour d’ [hui+s|oui|huit]
+    [au-jour-d’hui+s]
+    au-jour d’ [hui+s|oui|huit]
+        <<- /tu/ ->> aujourd’hui        && Soudez. “Aujourd’hui” : agglutination de l’ancienne locution “au jour d’hui”, “hui” signifiant autrefois “en ce jour”.|https://fr.wiktionary.org/wiki/aujourd%E2%80%99hui
+
     [basket|volley] ball
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
@@ -4493,6 +4498,7 @@ TEST: son {{arrière petite fille}}
 TEST: mon {{arrière petit fils}}
 TEST: un {{arrière petit neveu}}
 TEST: ton {{arrière petite nièce}}
+TEST: {{au jour d’hui}}
 TEST: je déteste le {{basket ball}}
 TEST: sur le {{bas côté}}
 TEST: les {{beaux arts}}
@@ -4552,24 +4558,41 @@ TEST: Il a été nommé {{vice président}}
 TEST: un super {{week end}}                             ->> week-end
 
 
+__tu_chez_pronom__
+    mon chez moi
+    ton chez toi
+    [son|leur] chez [lui|elle]
+    [un|ce|son|leur|leurs] chez soi
+    notre chez nous
+    votre chez vous
+    [leur|leurs] chez [eux|elles]
+        <<- /tu/ -2:3>> \2-\3                                       && Dans le cas de figure où chez soi est utilisé comme nom, il faut mettre un trait d’union.
+
+TEST: c’est mon {{chez moi}}
+TEST: c’est ton {{chez toi}}.
+TEST: c’est notre {{chez nous}}
+TEST: chez soi, rien d’impersonnel.
+
+
 __tu_va_t_en__
-    va t en
-    va t-en
-    va-t en
-    va-t-en
+    [va+s] t [en|>an]
+    [va+s] [t-en|>tan]
+    va-t [en|>an]
+    [va-t-en|vas-t-en]
     vat-en
         <<- /tu/ not value(>1, "|guerre|guerres|") ->> va-t’en                                      && Une apostrophe est nécessaire (s’en aller).
 
-    va t en >guerre
-    va-t’en >guerre
-    va t’en >guerre
-    va-t en >guerre
-    va t-en >guerre
-    vat’en >guerre
-    vat-en >guerre
-    vat en >guerre
-    va-t-en >guerre
+    [va|vas] t [en|>an] [>guerre|guère]
+    va-t’en [>guerre|guère]
+    [va|vas] t’en [>guerre|guère]
+    va-t [en|>an] [>guerre|guère]
+    [va+s] [t-en|>tan|tant] [>guerre|guère]
+    vat’en [>guerre|guère]
+    vat-en [>guerre|guère]
+    vat [en|>an] [>guerre|guère]
+    va-t-en [>guerre|guère]
     va-t’en-guerre
+    va-t-en-guère
         <<- /tu/ ->> va-t-en-guerre                                                                 && Va-t-en-guerre (invariable) : des traits d’union sont nécessaires.|https://fr.wiktionary.org/wiki/va-t-en-guerre
 
 TEST: {{Va-t-en}}, c’en est assez.
@@ -4612,9 +4635,12 @@ __tu_toponymes__
     Saône et Loire
         <<- /tu/ ->> \1-\2-\3                                                                       && Il manque les traits d’union.
 
+    Clermont-Ferrant
+    Clermont [Ferrant|Ferrand]
+        <<- /tu/ ->> Clermont-Ferrand                                                               && Ville de Clermont-Ferrand.
+
     Bosnie Herzégovine
     Charente Maritime
-    Clermont [Ferrant|Ferrand]
     Colombie Britannique
     États Unis
     Franche Comté
@@ -4634,9 +4660,13 @@ __tu_toponymes__
     Royaume Uni
         <<- /tu/ ->> Royaume-Uni                                                                    && Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
 
-    [Saint|Sainte] /_Tit_
-        <<- /tu/ not value(<1, "|<start>|") and morph(\2, ":M") ->> \1-\2
-        && Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
+    Saint /_Tit_
+        <<- /tu/ not value(<1, "|<start>|") and morph(\2, ":M") -:>> \1-\2|saint \2
+        && Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “saint” sans majuscule, sans trait d’union.
+
+    Sainte /_Tit_
+        <<- /tu/ not value(<1, "|<start>|") and morph(\2, ":M") -:>> \1-\2|sainte \2
+        && Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “sainte” sans majuscule, sans trait d’union.
 
     [St|Ste]  /_Tit_
         <<- /tu/ ->> \1-\2
@@ -4661,7 +4691,8 @@ TEST: Vivre aux {{Pays Bas}}
 TEST: Des vacances en {{Rhône Alpes}}
 TEST: Émigrer au {{Royaume Uni}}
 TEST: Elle déménage en {{Saône et Loire}}
-TEST: La station {{Saint Georges}}
+TEST: La station {{Saint Georges}}                          ->> Saint-Georges|saint Georges
+TEST: que penser de {{Sainte Catherine}}                    ->> Sainte-Catherine|sainte Catherine
 TEST: Elle va prier à {{Ste Catherine}}.
 
 
@@ -4772,7 +4803,7 @@ __tu_y_attaché__
     ~^[yY][’-]\w+
         <<- /tu/ morph(\1, ":V0", "", 2) -1>> ="y " + \1[2:]                    && Ni apostrophe ni trait d’union après “y”.
 
-    ~^[yY][’-][\w-]+-(?:ils?|elles?|je|tu|on|nous|vous)
+    ~^[yY][’-][\w-]+-(?:ie?ls?|elles?|je|tu|on|nous|vous)$
     y’en
     y-en
         <<- /tu/ -1>> ="y " + \1[2:]                                            && Ni apostrophe ni trait d’union après “y”.
@@ -7909,18 +7940,18 @@ TEST: autant que faire se peut, il faut éviter la confusion entre ces deux disc
 # ça / çà / sa
 __conf_ça_çà_sa!7__
     ça  @:[NAQ].*:f¬:(?:G|P|[123][sp])|>seul/
-        <<- /conf/ not morph(<1, ">(?:appeler|considérer|trouver)/") -1>> sa    && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        <<- /conf/ not morph(<1, ">(?:appeler|considérer|trouver)/") -1>> sa                        && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque|non)/|:[NAQ].*:f
         <<- /conf/ not (value(\2, "|ou|") and value(>1, "|son|ses|")) and morph(\1, ":D")
-        -1>> ça   && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        -1>> ça                                                                                     && Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+
+    sa  $:P¬:A
+        <<- /conf/ \1 != "SA" -1>> ça|se                && Confusion probable : “\2” est un participe présent. Soit vous confondez “ça” (équivalent à cela ou ceci) et “sa” (déterminant féminin), soit il faut écrire “se” (exemples : untel se considérant légitime, se prenant en main, se trouvant assez capable…), soit “\2” devrait être un nom ou adjectif féminin.
 
     çà
         <<- /conf/ not value(<1, "|oh|ah|") and not after("^ +et là")
-        ->> ça                                          && Confusion : « çà » ne s’emploie plus guère que dans l’expression « çà et là ».
-
-    ça et là
-        <<- /conf/ not morph(<1, ":R") ->> çà et là     && Confusion : « ça » équivaut à « cela ». Dans l’expression « çà et là », « çà » équivaut à « ici ».
+        ->> ça                                          && Confusion : « çà » ne s’emploie plus guère que dans l’expression « çà et là ».|https://fr.wiktionary.org/wiki/%C3%A7%C3%A0
 
     sa  [<end>|,|)]
         <<- /conf/ \1 != "SA" -1>> ça                   && Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
@@ -7929,6 +7960,9 @@ __conf_ça_çà_sa!7__
         <<- /conf/ space_after(\1, 0, 0) and not (value(\2, "|a|") and value(>1, "|été|")) >>>
         <<- /conf/ value(>1, "|été|") -2>> a            && Confusion. Pour le verbe avoir à la 3ᵉ personne du singulier, écrivez “a”.
         <<- /conf/ __else__ ->> ça|sa                   && Confusion. Si vous voulez dire “cela”, écrivez “ça”. Pour le déterminant possessif, écrivez “sa”.
+
+    ça et là
+        <<- /conf/ not morph(<1, ":R") ->> çà et là     && Confusion : « ça » équivaut à « cela ». Dans l’expression « çà et là », « çà » équivaut à « ici ».
 
 TEST: Je prends {{sa}}…
 TEST: {{ça}} patrie, il la détestait
@@ -7943,6 +7977,7 @@ TEST: il faut s’y prendre comme {{sa}}
 TEST: on fait {{sa}} lorsqu’on a tout perdu
 TEST: {{ç’a}} craint, cette histoire
 TEST: ç’{{à}} été dur                                                           ->> a
+TEST: {{sa}} trouvant en difficulté, il ne sut que faire                        ->> ça|se
 TEST: ç’a été difficile.
 TEST: Eux, ils appellent ça routine.
 TEST: avec sa presque belle-mère
@@ -7955,6 +7990,7 @@ TEST: chef d’état-major de la SA.
 TEST: À partir de 1934, et après l’élimination de ses principaux dirigeants durant la nuit des Longs Couteaux, la SA ne joue plus aucun rôle politique.
 TEST: Adolf Hitler a créé les SA à Munich le 8 août 1921 en réunissant d’anciens combattants, des officiers mécontents et des membres des corps francs
 TEST: En 1933, après l’élection du NSDAP, les SA se voyaient en concurrence avec l’armée régulière (Reichswehr)
+TEST: les SA devenant de plus en plus extrêmistes
 
 
 # car / quart
@@ -8387,7 +8423,7 @@ __conf_cour_cours_court_courre__
     >avoir ?@:[WX]¿  [cour|court+s|courre+s]
         <<- /conf/ --1>> cours                              && Confusion. « Avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
 
-    [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court|courts|courre|courres]
+    [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court+s|courre+s]
         <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
 
 TEST: au {{court}} de cette journée
@@ -8412,8 +8448,8 @@ __conf_cuir_cuire__
         <<- /conf/ -3>> cuire           && Confusion. Locution “dur à cuire”. Le cuir est le nom qu’on donne à la peau animale. Pour évoquer la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
         <<- /conf/ \2 == "a" -2>> à     && Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
-    en cuire [de|d’] [buffle|crocodile|hippopotame|porc|vache]
-        <<- /conf/ -2>> cuir            && Confusion. La peau animale s’écrit “cuir”.|https://fr.wiktionary.org/wiki/cuire
+    en cuire [de|d’] [âne|auroch|bison|bœuf|buffle|cerf|cheval|chèvre|chevreuil|crocodile|daim|génisse|hippopotame|kangourou|porc|sanglier|serpent|taureau|vache|veau|zébu|zèbre]
+        <<- /conf/ -2>> cuir            && Confusion. La peau animale s’écrit “cuir”.|https://fr.wiktionary.org/wiki/cuir
 
 TEST: ce sont des durs à {{cuir}}
 TEST: Quelle dure {{a}} {{cuir}}, celle-là.
@@ -14119,7 +14155,8 @@ __purge_locutions__
     ¿[de|d’|vers]¿ nulle part
     ô combien
     oh
-    ou quelque chose d’ approchant
+    ou quelque chose d’ [approchant|identique]
+    ou quelque chose [de|d’] similaire
     où bon [me|te|lui|nous|vous|leur] semble
     oui [ou|et] non
     outre mesure
@@ -16475,7 +16512,7 @@ __purge_locutions_verbales__
     >passer à tabac
     >passer du coq à l’ âne
     >percer à jour
-    >perdre [connaissance|conscience|patience|raison]
+    >perdre [connaissance|conscience|patience|pied|raison]
     >perdre d’ avance
     >piquer au vif
     >plier >bagage
@@ -18281,6 +18318,15 @@ __conf_lâcher_la_proie_pour_l_ombre__
 TEST: il ne faut pas {{chasser}} la proie pour l’ombre.
 
 
+# lest / leste
+__conf_lâcher_du_lest__
+    [>jeter|>lâcher|>relâcher] [du|le|ce] leste
+    [>gramme|>kilo|>tonne] [de|d’] leste
+        <<- /conf/ --1>> lest                                   && Confusion. L’adjectif “leste” signifie “adroit, agile, prompt…”. Pour l’excédent de poids, écrivez ”lest”.|https://fr.wiktionary.org/wiki/lest
+
+TEST: Faut lâcher du {{leste}}
+
+
 # lieux / lieues / lieus
 __conf_lieux_lieues_lieus__
     [>assurance|>état|>visite|>maître|>maitre|>seigneur|>magie|>chef|>responsable|respect|entretien|propreté|>propriétaire|tranquillité|dans|vers|>plan] des [lieues|lieus]
@@ -18965,6 +19011,7 @@ __conf_sang_sans_sens__
     >flot [de|d’] [sans|san|sens]
     la voix du [sans|san|sens]
     >pisser [le|du] [sans|sens]
+    >soif [de|d’] [sans|san]
     c >être [mon|ton|son|notre|votre|leur|leurs] [sans|san]
         <<- /conf/ --1>> sang                                       && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
 
