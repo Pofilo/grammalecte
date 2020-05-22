@@ -1969,6 +1969,9 @@ __da_mots_grammaticaaux__
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
+    pourvu
+        <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
+
     vu  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
@@ -10504,8 +10507,8 @@ TEST: {{qu’elles qu’en soient}} les raisons                             ->> 
 
 # quelque part
 __conf_quelque_part__
-    [quel|quels|quelle|quelles] que [pare|pares|par|pars|>part]
-    [quelque|quelques] [pare|pares|par|pars|parts]
+    [quel|quels|quelle|quelles] que [pare+s|par+s|>part]
+    [quelque|quelques] [pare+s|par+s|parts]
     quelques part
         <<- /conf/ ->> quelque part                                         && Confusion probable.|https://fr.wiktionary.org/wiki/quelque_part
 
@@ -10652,7 +10655,7 @@ TEST: {{quoique}} vous ayez pu faire, ça a donné les résultats escomptés.
 # raisonner / résonner
 __conf_raisonner_résonner__
     [la|le|les|me|te|se|nous|vous] >résonner
-        <<- /conf/ -2>> =\2.replace("réso", "raiso")            && Confusion probable. Vous utilisez la raison, mais vous ne “sonnez” pas.
+        <<- /conf/ -2>> =\2.replace("éson", "aison").replace("ÉSON", "AISON")       && Confusion probable. Vous utilisez la raison, mais vous ne “sonnez” pas.
 
 TEST: Vous {{résonnez}} comme un sot.
 TEST: Nous allons le {{résonner}}.
@@ -10724,7 +10727,7 @@ __conf_saint_sain_sein_seing__
 
     [>sein|saint+s] d’ esprit
     [>sein|saint+s] de corps et d’ esprit
-        <<- /conf/ -1>> sain|sains                              && Confusion probable. Pour dire “en bonne santé”, écrivez “sain”.
+        <<- /conf/ -1>> sain|sains                              && Confusion probable. Pour dire “en bonne santé”, écrivez “sain”.|https://fr.wiktionary.org/wiki/sain
 
     [blanc-sein+s|blancs-sein+s]
     [blanc-sain+s|blancs-sain+s]
@@ -11374,16 +11377,16 @@ __conf_voie_voix_vois_voit__
         <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     [>entendre|>écouter] ?@:[WX]¿ $:D >voie
-        <<- /conf/ -3>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
+        <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     sur la bonne voix
     en ?[si|très|trop]¿ bonne [voix|vois|voit]
         <<- /conf/ --1>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     >ouvrir ?@:[WX]¿ la voix [à|au|aux|<end>]
-        <<- /conf/ -3>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
+        <<- /conf/ --2>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
-    en voix [de|d’] [développement|disparition|guérison|résorption|acquisition|achèvement|extinction|obtention]
+    en voix [de|d’] [achèvement|acquisition|décrépitude|développement|dissolution|disparition|extinction|guérison|obtention|rémission|résorption|rétablissement]
     par voix de >conséquence
     par voix [médicamenteuse+s]
         <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
@@ -11428,6 +11431,7 @@ __conf_voir_voire__
     [>aller|>falloir|>pouvoir|>vouloir]         ?[guère|jamais|pas|plus|point|rien]¿   ?[nous|vous]¿   voire
         <<- /conf/ --1>> voir           && Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
+    [à|par] voire
     [et|ou] voire  $:D
         <<- /conf/ -2>> voir            && Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
@@ -11481,17 +11485,17 @@ TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 !!!! Confusions de vocabulaire                                                                    !!
 
 __conf_vocabulaire!5__
-    [con+s] >cul >pisse >anse
-    [con+s] >cul >pisse [>an|>en] [se|ce]
+    [con+s] [>cul|cu|que] >pisse >anse
+    [con+s] [>cul|cu|que] >pisse [>an|>en] [se|ce]
         <<- /conf/ ->> concupiscence                            && Confusion de vocabulaire ?|https://fr.wiktionary.org/wiki/concupiscence
 
-    [con+s] >cul [pissant+s]
-    [con+s] >cul >pisse [>an|>en]
+    [con+s] [>cul|cu|que] [pissant+s]
+    [con+s] [>cul|cu|que] >pisse [>an|>en]
         <<- /conf/ ->> concupiscent|concupiscents               && Confusion de vocabulaire ?|https://fr.wiktionary.org/wiki/concupiscent
 
-    [con+s] >cul [pissante+s]
-    [con+s] >cul >pisse [ante|ente]
-    [con+s] >cul >pisse [>an|>en] te
+    [con+s] [>cul|cu|que] [pissante+s]
+    [con+s] [>cul|cu|que] >pisse [ante|ente]
+    [con+s] [>cul|cu|que] [>pisse|pi|pis] [>an|>en] te
         <<- /conf/ ->> concupiscente|concupiscentes             && Confusion de vocabulaire ?|https://fr.wiktionary.org/wiki/concupiscent
 
     [dix|dis|dit+ses|des] [>tir|>tire|tirent] [en|>an|han] [>bique|>bic|>bec]
@@ -11500,8 +11504,9 @@ __conf_vocabulaire!5__
 
     [fi|>fil|>phi|>phil] [>lac|>laque] [>terre|ter|taire]
     [fila|phila] [que|qu’] [>terre|ter|taire]
+    [>fil|fi|>phi] [>lac|>laque] [>terre|ter|taire]
     [fil|phil] [a|à|as|ah|ha] [que|qu’] [>terre|ter|taire]
-        <<- /conf/ ->> phylactère|phylactère                    && Confusion de vocabulaire ?|https://fr.wiktionary.org/wiki/phylactère
+        <<- /conf/ ->> phylactère|phylactères                   && Confusion de vocabulaire ?|https://fr.wiktionary.org/wiki/phylactère
 
 TEST: des brutes pleines de {{cons culs pisse anse}}
 TEST: un homme {{con cul pissant}}
@@ -14988,6 +14993,7 @@ __substantifs_multi_mots__
     >arme à feu
     >armée [de|d’] l’ air
     >armée [de|d’] [réserve|terre]
+    >arme à enquerre
     >arme [de|d’] [poing|guerre]
     >arme [de|d’] destruction massive
     >armoire à [>glace|>pharmacie]
@@ -15435,7 +15441,8 @@ __substantifs_multi_mots__
     tas [de|d’] ferraille ?rouillée¿
     >talon >aiguille
     tapis [de|d’] prière
-    taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
+    taux [de|d’] [abstention|absorption|alcool|alphabétisation|change|cholestérol|cholesterol|endettement|fécondité|glycémie|inflation|intérêt|imposition|natalité|occupation|ouverture|œstrogène|participation|testostérone|TVA|urbanisation|urée|usure]
+    taux [de|d’] mortalité ?[infantile|néonatale]¿
     >témoin à charge
     tenants et aboutissants
     >ténor du barreau
@@ -15445,6 +15452,7 @@ __substantifs_multi_mots__
     >terrain à découvert
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
+    >tir à la première personne
     >tir [de|d’] barrage
     >tiret d’ incise
     >tireur d’ élite
@@ -16112,8 +16120,8 @@ __purge_locutions_potentielles__
     au bout d’ un moment  [<end>|,|)]
         <<- ~1:-2>> *
 
-    au [départ|quotidien]  @:¬:A.*:[me]:[si]
-    au [départ|quotidien]  [<end>|,|)]
+    au [début|commencement|départ|quotidien]  @:¬:A.*:[me]:[si]
+    au [début|commencement|départ|quotidien]  [<end>|,|)]
         <<- ~1:2>> *
 
     au pire  @:A¬:N.*:[me]:[si]
@@ -16157,7 +16165,7 @@ __purge_locutions_potentielles__
     dans la ?[grande|petite]¿ majorité des cas                  @:¬:A:[me]:[pi]
     dans la ?[grande|petite]¿ majorité des cas                  [<end>|,|)]
     dans la ?[grande|petite]¿ majorité des cas [de|d’] figure   @:¬:A:[me]:[pi]
-    dans la ?[grande|petite]¿ majorité des cas [de|d’] figure   end>|,|)]
+    dans la ?[grande|petite]¿ majorité des cas [de|d’] figure   [<end>|,|)]
     dans la plupart des cas                                     @:¬:A:[me]:[pi]
     dans la plupart des cas                                     [<end>|,|)]
     dans la plupart des cas [de|d’] figure                      @:¬:A:[me]:[pi]
@@ -16305,7 +16313,7 @@ __purge_locutions_potentielles__
         <<- not value(<1, "|il|ne|n’|") ~>> *
 
     tête la première
-        <<- not morph(<1, ":D") and not morph(>1, ":[NA].*:[fe]:[si]") ~>> *
+        <<- not morph(<1, ":D") and not morph(>1, ":A.*:[fe]:[si]") ~>> *
 
     ?pour¿ toute [ma|ta|sa|notre|votre|leur] vie  @:¬:A.*:[fe]:[si]
     ?pour¿ toute [ma|ta|sa|notre|votre|leur] vie  [<end>|,|)]
@@ -16313,7 +16321,7 @@ __purge_locutions_potentielles__
 
     ?à¿ un [instant|moment]  @¬>où/|:A.*:[me]:[si]
     ?à¿ un [instant|moment]  [<end>|,|)]
-    ?pour¿ un seul [instant|moment]  @¬>où|:A.*:[me]:[si]
+    ?pour¿ un seul [instant|moment]  @¬>où/|:A.*:[me]:[si]
     ?pour¿ un seul [instant|moment]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:-2>> *
 
@@ -16336,9 +16344,9 @@ __purge_tous_deux_trois__
 
 # tous / tout / toute / toutes
 __purge_tout_tout_tous_toutes__
-    tout            [le|ce|cet|mon|ton|son]
-    toute           [la|cette|ma|ta|sa]
-    [tous|toutes]   [les|des|mes|tes|ses|ces|nos|vos|leurs]
+    tout                    [le|ce|cet|mon|ton|son]
+    toute                   [la|cette|ma|ta|sa]
+    [tous|toutes||tout_e_s] [les|des|mes|tes|ses|ces|nos|vos|leurs]
         <<- ~1>> *
 
     /-on        [tous|toutes]
@@ -16350,10 +16358,10 @@ __purge_tout_tout_tous_toutes__
     /-iels      [tous|toutes|tout_e_s]
         <<- ~2>> *
 
-    *WORD       [tous|toutes]
+    *WORD       [tous|toutes|tout_e_s]
         <<- morph(\1, ":[123]p") ~2>> *
 
-    on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes]
+    on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes|tout_e_s]
         <<- morph(\-2, ":[123]s") ~-1>> *
 
 
@@ -18124,11 +18132,16 @@ __conf_fond_fonds_fonts__
     fonds baptismaux
         <<- /conf/ -1>> fonts                   && Confusion. Écrivez “fonts”, qui vient du latin “fons” et signifie « fontaine, source ».
 
+    [un|le|du|ce] [fonds|fonts] [de|d’] ?[la|l’]¿ [assiette|bouteille|cuve|casserolle|marmite|poêle]
+    [un|le|du|ce] [fonds|fonts] du [seau|tupperware|wok]
+        <<- /conf/ -2>> fond                    && Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
+
 TEST: faire une levée de {{fond}}.
 TEST: jouer {{à fond perdu}}
 TEST: elle a vendu son {{fond}} de commerce
 TEST: il a reçu de l’argent d’un {{fond}} d’investissement
 TEST: les {{fonds}} baptismaux.
+TEST: le {{fonds}} de la cuve
 
 
 # glaciaire / glacière
@@ -22869,10 +22882,10 @@ __purge_pronoms__
     la plupart des *WORD , @¬:[NA]
         <<- ~3:4>> *
 
-    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) <end>
-    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
-    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) , @¬:[NA]
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) <end>
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) @:[VR]¬:[NAP]
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) , @¬:[NA]
         <<- ~3:5>> *
 
     la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD <end>
@@ -22881,37 +22894,37 @@ __purge_pronoms__
     la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD , @¬:[NA]
         <<- ~3:5>> *
 
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) <end>
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
-    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) , @¬:[NA]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) <end>
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) @:[VR]¬:[NAP]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) , @¬:[NA]
         <<- ~3:6>> *
 
     [<start>|,|l’] [un|une] des *WORD <end>
-    [<start>|,|l’] [un|une] des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [<start>|,|l’] [un|une] des *WORD @:[VR]¬:[NAP]
     [<start>|,|l’] [un|une] des *WORD , @¬:[NA]
         <<- ~3:4>> *
         <<- /2>> _un_des_
 
-    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) <end>
-    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
-    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) , @¬:[NA]
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) <end>
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]) , @¬:[NA]
         <<- ~3:5>> *
         <<- /2>> _un_des_
 
     [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD <end>
-    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[VR]¬:[NAP]
     [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD , @¬:[NA]
         <<- ~3:5>> *
         <<- /2>> _un_des_
 
-    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) <end>
-    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|[<start>|,|l’]|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
-    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]|O) , @¬:[NA]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) <end>
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) @:[VR]¬:[NAP]
+    [<start>|,|l’] [un|une] de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) , @¬:[NA]
         <<- ~3:6>> *
         <<- /2>> _un_des_
 
