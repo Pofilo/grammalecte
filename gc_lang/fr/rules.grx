@@ -2049,7 +2049,7 @@ __da_groupe_nominal__
         <<- =>> exclude(\4, ":[123][sp]")
 
     en peine
-        <<- =>> exclude(\2, ":V")
+        <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
 
     m’ [dame|sieur]
         <<- ~>> ␣
@@ -2372,10 +2372,6 @@ TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
 TEST: de Bordeaux ou de n’importe où
 TEST: il n’y a pas faute.
 TEST: une séparation hommes/femmes
-
-
-
-
 
 
 
@@ -4338,6 +4334,9 @@ __tu_substantifs__
     >centre >ville
         <<- /tu/ ->> centre-ville|centres-villes                && Il manque un trait d’union.
 
+    [cesser|cessez] le feu
+        <<- /tu/ morph(<1, ":D.*:[me]") ->> cessez-le-feu       && S’il s’agit du nom commun, mettez des traits d’union.|https://fr.wiktionary.org/wiki/cessez-le-feu
+
     [chassé+ses] [croisé+ses]
         <<- /tu/ ->> chassé-croisé|chassés-croisés              && Il manque un trait d’union.
 
@@ -4506,6 +4505,7 @@ TEST: je déteste le {{basket ball}}
 TEST: sur le {{bas côté}}
 TEST: les {{beaux arts}}
 TEST: {{le}} {{bouche à oreille}}
+TEST: un {{cessez le feu}}
 TEST: {{chef lieu}} de ce canton
 TEST: un {{chassé croisé}}
 TEST: ne vois-tu pas que c’est un {{chef d’œuvre}} ?
@@ -4559,6 +4559,7 @@ TEST: un {{va et vient}} incessant me casse la tête
 TEST: il va et vient sans mot dire
 TEST: Il a été nommé {{vice président}}
 TEST: un super {{week end}}                             ->> week-end
+TEST: commencez par cesser le feu
 
 
 __tu_chez_pronom__
@@ -11379,8 +11380,12 @@ __conf_voie_voix_vois_voit__
     [>entendre|>écouter] ?@:[WX]¿ $:D >voie
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
-    sur la bonne voix
-    en ?[si|très|trop]¿ bonne [voix|vois|voit]
+    sur la [bonne|mauvaise] voix
+    en ?[si|très|trop]¿ [bonne|mauvaise] [voix|vois|voit]
+        <<- /conf/ --1>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
+
+    [>marcher|>courir] ?@:[WX]¿ sur [la|cette|une|quelle] voix
+    [>emprunter|>indiquer|>montrer|>parcourir] ?@:[WX]¿ [la|cette|une|quelle] voix
         <<- /conf/ --1>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     >ouvrir ?@:[WX]¿ la voix [à|au|aux|<end>]
@@ -11403,6 +11408,7 @@ TEST: elles sont là, à portée de {{voie}}
 TEST: ces patients sont en {{voix}} de guérison.
 TEST: à {{voie}} basse
 TEST: écoute cette {{voie}} magnifique
+TEST: elle refusa d’emprunter cette {{voix}}
 TEST: sur la bonne {{voix}}
 TEST: c’est en bonne {{voix}}.
 TEST: il faut ouvrir la {{voix}} aux nouveaux venus.
@@ -15078,6 +15084,7 @@ __substantifs_multi_mots__
     >chèque en blanc
     >chèque sans provision
     >cheval [de|d’] [bataille|Troie]
+    >chien [de|d’] garde
     >chili con carne
     >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
@@ -15127,6 +15134,7 @@ __substantifs_multi_mots__
     >cour d’ assises
     [>coût|>cout] [de|d’] revient
     >couteau à cran d’ arrêt
+    >crime [de|d’] guerre
     >crise de >nerf
     >cuillère à [café|soupe]
     >cure [de|d’] [désintoxication|désintox]
@@ -15215,7 +15223,7 @@ __substantifs_multi_mots__
     >frein à >tambour
     >frousse [de|d’] tous les diables
     >fuite en avant
-    >fusil à [plomb|pompe]
+    >fusil à [lunette|plomb|pompe]
     >garde à vue
     >garde du corps
     gaz à >effet [de|d’] serre
@@ -15587,7 +15595,7 @@ TEST: deux câbles en acier situés de part et d’autre du chariot
 
 
 __purge_locutions_adjectivales__
-    ancienne formule
+    ancienne [formule|génération]
     bas de gamme
     basse consommation
     bon [enfant|marché|teint]
@@ -16270,6 +16278,10 @@ __purge_locutions_potentielles__
     le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps @:¬:A:[me]:[si]|>d[e’]/
     le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps [<end>|,|)]
         <<- ~1:6>> *
+
+    par précaution  @:¬:A.*:[fe]:[si]
+    par précaution  [<end>|,|)]
+        <<- ~1:-2>> *
 
     pour cette raison même
         <<- ~>> *
@@ -17862,8 +17874,8 @@ TEST: Elle a fait un {{prêt}} à la banque.
 TEST: J’ai fait un {{empreint}} à la bibliothèque.
 
 
-# entretien / maintien / soutien
-__conf_entretien_maintien_soutien__
+# entretient / maintient / soutient
+__conf_entretient_maintient_soutient__
     [un|le|ce|cet]                     *WORD           [entretien|maintien|soutien]  [<end>|,|@:[DR]]
         <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":N", ":[AG]")
         -3>> \3t                                                                            && Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
@@ -17900,6 +17912,14 @@ TEST: une grande déclaration {{entretien}}                      ->> entretient
 TEST: notre exubérante existence {{maintien}} notre santé       ->> maintient
 TEST: notre vie exubérante {{maintien}} notre santé             ->> maintient
 TEST: c’est un homme qui {{entretien}} sa forme                 ->> entretient
+
+
+# entretien / maintien / soutien
+__conf_entretien_maintien_soutien!6__
+    [<start>|,|(] soutient [à|a|au|aux]
+        <<- /conf/ -2>> soutien                                                             && Confusion probable : “\2” est une forme verbale (3ᵉ pers. au présent). Le nom commun s’écrit “soutien”.
+
+TEST: {{soutient}} aux anciens combattants                      ->> soutien
 TEST: le petit entretien le paralysait
 
 
@@ -19012,6 +19032,9 @@ __conf_sang_sans_sens__
     sans-dessus-dessous
         <<- /conf/ ->> sens dessus dessous                          && Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/tache
 
+    [le|du|quel|un] ?[certain|faible|grand]¿ [sans|san] [de|d’] la mesure
+        <<- /conf/ --4>> sens                                       && Confusion. Le sens de la mesure.
+
     [sans|san] [bleu|royal|mêlé]
     [sans|san] humain
     [sans|san] de la victime
@@ -19037,6 +19060,8 @@ TEST: le {{sans}} a coulé.
 TEST: le {{san}} qui coulera encore sera sur vos mains
 TEST: elle a ça dans le {{sans}}
 TEST: elle pissait le {{sans}}
+TEST: elle a su malgré garder un certain {{sans}} de la mesure
+TEST: avoir le {{sans}} de la mesure, c’est primordial
 TEST: ce témoignage va dans le sens de la victime.
 
 
