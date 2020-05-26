@@ -1244,6 +1244,13 @@ def g_add_morph (dToken, sNewMorph):
     return True
 
 
+def g_rewrite (dToken, sToReplace, sReplace):
+    "Disambiguation: rewrite morphologies"
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    dToken["lMorph"] = [ sMorph.replace(sToReplace, sReplace)  for sMorph in lMorph ]
+    return True
+
+
 def g_define (dToken, sMorphs):
     "Disambiguation: set morphologies of <dToken>, always return True"
     dToken["lMorph"] = sMorphs.split("|")
