@@ -4657,8 +4657,11 @@ __tu_toponymes__
     Rhône Alpes
         <<- /tu/ ->> \1-\2                                                                          && Il manque un trait d’union.
 
+    Mongolie [intérieur+e]
+        <<- /tu/ ->> Mongolie-Intérieure                                                            && Il manque un trait d’union. Mongolie-Intérieure : région autonome de Chine.
+
     [les|des|aux]   Pays Bas
-    [<start>|,|(]     Pays Bas  contre
+    [<start>|,|(]   Pays Bas  contre
         <<- /tu/ -2:3>> \2-\3                                                                       && Il manque un trait d’union.
 
     Royaume Uni
@@ -4688,6 +4691,7 @@ TEST: La {{Haute Garonne}}
 TEST: L’{{Île de France}} est surpeuplée.
 TEST: Un nouveau président à la {{Maison Blanche}}
 TEST: La guerre au {{Moyen Orient}}
+TEST: voyage en {{Mongolie intérieur}}
 TEST: Il ne connaît au {{Nouveau Brunswick}}
 TEST: Elle a visité la {{Nouvelle Orléans}}
 TEST: Vivre dans le {{Pas de Calais}}
@@ -8406,14 +8410,13 @@ __conf_cour_cours_court_courre__
     au [cour|court+s|courre+s] [de|d’|des|du]
         <<- /conf/ -2>> cours                               && Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).
 
-    en cour martiale
+    en cour [fédérale|martiale|suprême]
     en cour [de|d’] [cassation|justice]
     en cour d’ >assise
         <<- !1:2>>
 
     en cour
-        <<- /conf/ not value(>1, "|suprême|fédérale|")
-        ->> en cours                                        && Confusion probable. Une cour… Un cours… Adjectif : court(e).
+        <<- /conf/ ->> en cours                             && Confusion probable. Une cour… Un cours… Adjectif : court(e).
 
     [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains] [court+s] [de|d’]
         || [allemand|anglais|arabe|arabe|bengali|bhodjpouri|cantonais|coréen|égyptien|espagnol|français|grec|gujarati|haoussa|hébreu|hindi|indonésien|italien|italien|latin|japonais|javanais|mandarin|marathi|minnan|ourdou|pendjabi|persan|portugais|russe|sanskrit|sanscrit|swahili|tamoul|thaï|turc|tégoulou|vietnamien|wu]
@@ -8444,6 +8447,8 @@ TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
 TEST: ils vont passer prochainement en cour martiale.
+TEST: je ne veux pas la prendre de court.
+TEST: elle ne veut pas prendre de cours de musique.
 
 
 # cuir / cuire
@@ -9812,7 +9817,8 @@ __conf_où_ou__
     depuis l’ [année|heure|instant]                 ou
         <<- /conf/ --1>> où                                 && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
-    >être ?$:W¿ dans [une|cette|la] situation ou
+    [>être|>rester|>demeurer] en situation ou
+    [>être|>arriver] ?$:W¿ dans [une|cette|la] situation ou
     [vient|vint|viendra|viendrait] un temps ou
         <<- /conf/ --1>> où                                 && Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
@@ -17876,6 +17882,9 @@ TEST: J’ai fait un {{empreint}} à la bibliothèque.
 
 # entretient / maintient / soutient
 __conf_entretient_maintient_soutient__
+    $:M  [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ -2>> \2t                                                                 && Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
+
     [un|le|ce|cet]                     *WORD           [entretien|maintien|soutien]  [<end>|,|@:[DR]]
         <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":N", ":[AG]")
         -3>> \3t                                                                            && Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
@@ -17903,6 +17912,7 @@ __conf_entretient_maintient_soutient__
     qui [entretien|maintien|soutien]  [<end>|,|@:[DR]]
         <<- /conf/ -2>> \2t                                                                 && Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
+TEST: Sophie {{soutien}} à fond son épouse                      ->> soutient
 TEST: la grande {{maintien}} sa version.                        ->> maintient
 TEST: cette femme {{entretien}} sa santé                        ->> entretient
 TEST: ce que le patron {{soutien}}                              ->> soutient
@@ -28856,6 +28866,7 @@ TEST: C’est pure folie.
 TEST: Du côté de ceux sans qui le cinéma se réduirait à pas grand-chose
 TEST: Il commence à monter sur scène au Club Méditerranée
 TEST: Je n’en avais cure.
+TEST: À toute chose malheur est bon.
 
 
 
