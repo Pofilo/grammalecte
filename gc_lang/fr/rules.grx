@@ -24180,7 +24180,7 @@ TEST: J’ai été conseiller régional
 
 !!!! Participes passés: accord en nombre avec la conjugaison de « être » (et équivalent)          !!
 
-__ppas_être_accord_sing__
+__ppas_être_accord_sing!3__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NAQ].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                             @:[NAQ].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                            @:[NAQ].*:p¬:[GMWYsi]
@@ -24202,22 +24202,23 @@ __ppas_être_accord_sing__
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_   @:[NAQ].*:p¬:[GMWYsi]
         <<- /ppas/ morph(\1, ":[123]s", ":(?:C|N.*:p)") --1>> =suggSing(\-1)                        && Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
 
-TEST: cette petite chienne avait été longtemps {{malades}}.
-TEST: Ce mâle qui est resté {{arrogants}} ?
-TEST: Cette folle qui n’affirme pas avoir été {{frappés}}.
-TEST: Cet animal qui n’en souhaite pas rester {{amnésiques}}.
+TEST: cette petite chienne à poil roux avait été longtemps {{malades}}.
+TEST: Ce mâle malingre et rachitique qui est resté {{arrogants}} ?
+TEST: folle qui n’affirme pas avoir été {{frappés}}.
+TEST: homme qui n’en souhaite pas rester {{amnésiques}}.
 TEST: Qui n’en semble pas être devenu {{malades}} ?
 TEST: C’est le crime qui se vante, qui adore avoir semblé {{légitimes}}.
 TEST: ce jour, et surtout cette soirée, qui ne semble pas devenir {{interminables}}.
 TEST: ces emmerdeurs, qui ne sont toujours pas {{parti}}, ont encore eu une idée pour nous pourrir la vie.
 TEST: ne déclare pas avoir été {{présents}}
 TEST: déteste paraître {{ignorants}}
+TEST: n’aime pas paraître {{faibles}}.
 TEST: les plus anciens restes trouvés à ce jour proviennent de ce site
 TEST: Restes crâniens.
 TEST: Demeures victoriennes.
 
 
-__ppas_être_accord_plur__
+__ppas_être_accord_plur!3__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   @:[NAQ].*:s¬:[GMWYpi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     @:[NAQ].*:s¬:[GMWYpi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  @:[NAQ].*:s¬:[GMWYpi]
@@ -24239,94 +24240,23 @@ __ppas_être_accord_plur__
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           @:[NAQ].*:s¬:[GMWYpi]
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[13]p") --1>> =suggPlur(\-1)                && Accord avec la forme verbale “\1” : “\-1” devrait être au pluriel.
 
-TEST: ces atouts sont très {{favorable}}
-TEST: Mais ces hommes affirment être redevenus {{humble}}.
-TEST: ces femmes n’affirment pas avoir été {{courtoise}}.
+TEST: lui et son staff y sont très {{favorable}}
+TEST: Mais cet homme et son compagnon affirment être redevenus {{humble}}.
+TEST: cette femme et cet homme n’affirment pas avoir été {{courtoise}}.
+TEST: un chat et un chien qui n’en demeurent pas moins {{attaché}} à leur maître
 TEST: des avocates qui n’imaginent pas devenir {{inapte}} pour si peu.
 TEST: ces hommes qui n’y semblent pas avoir été {{élégant}}.
 TEST: Qui adorerait être redevenu {{sains}}.
 TEST: qui n’en furent pas {{balayé}} au premier coup de vent.
-TEST: n’aime pas paraître {{faibles}}.
 TEST: semblent être redevenus {{sage}}
 TEST: ce que les journalistes estiment être normal.
 TEST: qui échappe à tout contrôle démocratique et dans lequel les lobbies sont partie prenante est une folie.
 
 
 
-!!!! Participes passés: accord en genre avec le substantif précédent                              !!
+!!!! Participes passés: accord avec le substantif précédent                                       !!
 
-__ppas_sujet_être_accord_genre__
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_        *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_        *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_       *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_      *WORD
-    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_     *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and
-            morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":[AQ].*:f", ":[GWMme]") and (morph(\2, ":(?:[123]s|P)") or (not tag(\1, "_enum_") and morph(\2, ":P")))
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   *WORD
-    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and
-            morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":[AQ].*:m", ":[GWMfe]") and (morph(\2, ":(?:[123]s|P)") or (not tag(\1, "_enum_") and morph(\2, ":P")))
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   *WORD
-    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and
-            ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":[AQ].*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":[AQ].*:f", ":[GWme]")))
-            and (morph(\2, ":(?:[123]s|P)") or (not tag(\1, "_enum_") and morph(\2, ":P")))
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
-    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and
-            ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":[AQ].*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":[AQ].*:f", ":[GWme]"))) and morph(\2, ":(?:[123]p|P)")
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés]                                        *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
-    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[me]:[pi]", ":[GWfe]") and morph(\-1, ":[AQ].*:f", ":[GWme]") and morph(\2, ":(?:[123]p|P)")
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenues|redevenues|restées|demeurées]                                    *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            *WORD
-    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           *WORD
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[fe]:[pi]", ":[GWme]") and morph(\-1, ":[AQ].*:m", ":[GWfe]") and morph(\2, ":(?:[123]p|P)")
-        --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
+__ppas_sujet_être_accord_immunités__
     *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  *WORD  ?[ne|n’]¿  ?[en|y]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
@@ -24337,6 +24267,54 @@ __ppas_sujet_être_accord_genre__
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) !-1>>
+
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  *WORD
+        <<- /ppas/ checkAgreement(\1, \-1) !-1>>
+
+
+__ppas_sujet_être_accord_singulier__
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|$:Cs]  [un|le|ce|cet]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  @:[AQ]¬:(?:[GWM]|[me]:[si])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[me]", ":[GW]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
+        --1>> =suggMasSing(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés.
+
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  @:[AQ]¬:(?:[GWM]|[fe]:[si])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[fe]", ":[GW]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
+        --1>> =suggFemSing(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés.
+
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                            @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_     @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_     @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_    @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_   @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  @:[AQ]¬:[GWM]
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P"))) >>>
+        <<- /ppas/ morph(\1, ":f", ":[me]") and morph(\-1, ":m", ":[fe]") --1>> =suggFemSing(\-1)               && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre. Mettez au féminin singulier.
+        <<- /ppas/ __else__ and morph(\1, ":m", ":[fe]") and morph(\-1, ":f", ":[me]") --1>> =suggMasSing(\-1)  && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre. Mettez au masculin singulier.
+        <<- /ppas/ __else__ and morph(\-1, ":p", ":[si]") --1>> =suggSing(\-1)                                  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au singulier.
 
 TEST: Un orage est {{annoncée}}.
 TEST: ce chat ne sera pas {{euthanasiée}}
@@ -24352,12 +24330,62 @@ TEST: Sa femme qui ne paraît pas avoir été {{choqué}}
 TEST: l’avenir de la région paraissait {{suspendue}} à ce financement
 TEST: l’idiot qui n’y affirmait pas être devenu {{géniale}} mais seulement moins ignorant
 TEST: Mon ami qui pensait être {{suivie}}
+TEST: notre amie risquait d’être {{oubliés}}
 TEST: l’écolier qui ne croyait pas avoir été {{brillante}}
+TEST: l’hypocrite pensait avoir été {{subtils}}
+TEST: La première était René, le parfumeur, qui s’approcha de Catherine
+
+
+__ppas_sujet_être_accord_pluriel__
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            @:[AQ]¬:[GWM]
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|$:B]  (*WORD)
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           @:[AQ]¬:[GWM]
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\2, ":(?:[123]p|P)") >>>
+        <<- /ppas/ morph(\1, ":f", ":[me]") and morph(\-1, ":m", ":[fe]") --1>> =suggFemPlur(\-1)               && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre. Mettez au féminin pluriel.
+        <<- /ppas/ __else__ and morph(\1, ":m", ":[fe]") and morph(\-1, ":f", ":[me]") --1>> =suggMasPlur(\-1)  && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre. Mettez au masculin pluriel.
+        <<- /ppas/ __else__ and morph(\-1, ":s", ":[pi]") --1>> =suggPlur(\-1)                                  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au pluriel.
+
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés]                                        @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_              @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_              @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_             @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_            @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|$:Cs]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_           @:[AQ]¬:(?:[GW]|[me]:[pi])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[me]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
+        --1>> =suggMasPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
+
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                  @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                    @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenues|redevenues|restées|demeurées]                                   @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_verbeétat_)     ?[en|y]¿                    /_LVEF_verbe_verbeétat_             @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_être_ppas_)     ?[en|y]¿  être              /_LVEF_verbe_être_ppas_             @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_avoir_ppas_)    ?[en|y]¿  avoir             /_LVEF_verbe_avoir_ppas_            @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_à_verbeétat_)   à  ?[ne|n’]¿ ?[en|y]¿       /_LVEF_verbe_à_verbeétat_           @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|$:Cs]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_verbe_de_verbeétat_)  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_          @:[AQ]¬:(?:[GW]|[fe]:[pi])
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[fe]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
+        --1>> =suggFemPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin pluriel.
+
 TEST: les femmes sont vraiment {{partis}}                                                   ->> parties
 TEST: les hommes n’en sont pas tout à fait {{fâchées}}                                      ->> fâchés
 TEST: plusieurs invités qui n’en sont pas {{contentes}}
 TEST: les réunions sans cesse reportées qui sont {{annulés}}
 TEST: les hommes croyant être {{instruites}}
+TEST: les ouvriers ayant été {{persécutée}} par leur hiérarchie                             ->> persécutés
 TEST: deux estimations ont été {{reçus}}                                                    ->> reçues
 TEST: certains hommes croient avoir été {{dupées}}                                          ->> dupés
 TEST: certains hommes qui pensent être plus {{instruites}} qu’ils ne sont réellement        ->> instruits
@@ -24368,7 +24396,6 @@ TEST: certaines femmes ne croient pas être {{appauvris}}                       
 TEST: certaines femmes qui y pensent être {{escroqués}}                                     ->> escroquées
 TEST: certaines femmes qui n’en risquent pas moins d’être {{découverts}}                    ->> découvertes
 TEST: Les tortures que ce journaliste pense être “normales”.
-TEST: La première était René, le parfumeur, qui s’approcha de Catherine
 TEST: les abrutis sont légion
 
 
@@ -24384,17 +24411,6 @@ __ppas_nom_propre_être_accord_genre__
         <<- /ppas/ not tag(\1, "_enum_") and ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":[AQ].*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":[AQ].*:f", ":[GWme]")))
             and (morph(\2, ":(?:[123]s|P)") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    && Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
-
-    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
-        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
-        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
-        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
-        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
-        || avoir [été|semblé|paru]                                                                  *WORD
-        <<- /ppas/ checkAgreement(\1, \-1) !-1>>
 
 TEST: Marianne semble devenue {{colériques}}
 TEST: Pauline n’affirme pas avoir été {{vaincu}} pour autant
