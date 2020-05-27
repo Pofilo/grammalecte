@@ -8340,6 +8340,15 @@ TEST: ce sont des {{comptes}} de bonnes femmes
 TEST: Elle parla au comte d’amour, mais il fit mine de n’y rien entendre.
 
 
+# content / comptant / contant
+__conf_content_comptant_contant__
+    [<start>|,|(] non [>comptant|contant] [de|d’|du|des]
+        <<- /conf/ --2>> content                                                        && Confusion. Locution prépositive “non content de…”.|https://fr.wiktionary.org/wiki/non_content_de
+
+TEST: elle avait tout son {{contant}} de problèmes.
+TEST: non {{comptant}} de s’en prendre à eux, il s’attaqua aussi à elles
+
+
 # corps / cor
 __conf_corps_cor__
     [a|à] bras le >cor
@@ -10916,37 +10925,24 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 
 
 __conf_soi_soit_soie__
-    [chez|sur|avec|pour] [soit|sois]
+    [chez|sur|avec|pour|devant|derrière] [soit|sois]
     don de [soit|sois]
     estime de [soit|sois|>soie]
     >repli sur [soit|sois|>soie]
-        <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.
-
-    [ça|cela|ceci] >aller ?$:W¿ de soit
-        <<- /conf/ not after(" soit ") --1>> soi                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/aller_de_soi
+        <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
     en soit
         <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
-        -2>> soi                                                                                    && Confusion probable.
+        -2>> soi                                                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/soi
+
+    [ça|cela|ceci] >aller ?$:W¿ de soit
+        <<- /conf/ not after(" soit ") --1>> soi                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/aller_de_soi
 
     [soi|sois|soit|>soie]  >même
         <<- /conf/ morph(<1, ":[YQ]|>(?:avec|contre|par|pour|sur)/|<start>|>,") ->> soi-même        && Confusion probable : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
 
     [sois-même|soit-même|soie-même|soies-même|soi-mêmes|sois-mêmes|soit-mêmes|soie-mêmes|soies-mêmes]
         <<- /conf/ ->> soi-même                                                                     && Confusion : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
-
-    que  sa  soi  @:[WXAQ]
-        <<- /conf/ -3>> soit|soie                                               && Confusion. Pour le verbe être au subjonctif, écrivez “soit”. Pour la fibre servant à la confection de textile, écrivez “soie”.
-
-    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
-    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
-    >être [soi+s|>soie] $:D $:N ?,¿ [soit|soi+s|>soie]
-        <<- /conf/ morph(\1, "[123][sp]") -2>> soit                             && Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
-
-    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
-    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
-    >être soit $:D $:N ?,¿ [soit|soi+s|>soie]
-        <<- /conf/ morph(\1, "[123][sp]") --1>> soit                            && Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
 
 TEST: chez {{soit}}, c’est presque toujours mieux.
 TEST: ce n’est pas la philosophie en {{soit}} qui est problématique
@@ -10955,8 +10951,6 @@ TEST: Penser par {{soit même}}…
 TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
 TEST: pas sûr que {{sa}} {{soi}} terminé avant demain
 TEST: Cela va presque de {{soit}}
-TEST: c’est {{soi}} lui, soit moi                                                   ->> soit
-TEST: ce serait soit elle, {{soie}} une inconnue                                    ->> soit
 TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
 TEST: Quoi qu’il en soit
 TEST: À moins qu’elle n’en soit la victime.
@@ -10983,9 +10977,24 @@ __conf_soit_soi_soie__
     [quel|quels|quelle|quelles] que [soi|>soie|sois]
         <<- /conf/ -3>> soit|soient                             && Confusion probable.
 
+    que  sa  soi  @:[WXAQ]
+        <<- /conf/ -3>> soit|soie                                               && Confusion. Pour le verbe être au subjonctif, écrivez “soit”. Pour la fibre servant à la confection de textile, écrivez “soie”.
+
+    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être [soi+s|>soie] [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être [soi+s|>soie] $:D $:N ?,¿ [soit|soi+s|>soie]
+        <<- /conf/ morph(\1, "[123][sp]") -2>> soit                             && Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+
+    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être soit [moi|toi|lui|elle|nous|vous|eux|iel|iels] ?,¿ [soit|soi+s|>soie]
+    >être soit $:D $:N ?,¿ [soit|soi+s|>soie]
+        <<- /conf/ morph(\1, "[123][sp]") --1>> soit                            && Pour évoquer une possibilité, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+
 TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
 TEST: {{soie}} t’arrives avant tout le monde.
 TEST: Quels que {{soi}} les problèmes, on peut les surmonter.
+TEST: c’est {{soi}} lui, soit moi                                                   ->> soit
+TEST: ce serait soit elle, {{soie}} une inconnue                                    ->> soit
 TEST: Sois le plus efficace possible.
 
 
@@ -15400,7 +15409,7 @@ __substantifs_multi_mots__
     >rat [de|d’] bibliothèque
     >rayon [de|d’] soleil
     >réaction en [chaîne|chaine]
-    région Grand Est
+    >région Grand Est
     >règlement [de|d’] comptes
     >remède [de|d’] cheval
     >requête en nullité
@@ -15456,6 +15465,7 @@ __substantifs_multi_mots__
     tas [de|d’] ferraille ?rouillée¿
     >talon >aiguille
     tapis [de|d’] prière
+    >tarte à la crème ?[catalane|fraiche|fraîche|patissière]¿
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|change|cholestérol|cholesterol|endettement|fécondité|glycémie|inflation|intérêt|imposition|natalité|occupation|ouverture|œstrogène|participation|testostérone|TVA|urbanisation|urée|usure]
     taux [de|d’] mortalité ?[infantile|néonatale]¿
     >témoin à charge
@@ -17520,6 +17530,7 @@ TEST: qui fera les {{comtes}} ?
 TEST: faudra rendre bon {{conte}} de vos actes
 
 
+# compter / conter / comté
 __conf_compter_conter_comté__
     [s’|m’|t’]          en  >laisser  [compter|compté+ses|comptais|>comté]
     nous nous           en  >laisser  [compter|compté+ses|comptais|>comté]
@@ -22214,10 +22225,10 @@ TEST: faire seulement ce que tu pouvais ne satisfaisait pas tes patrons.
 
 
 __infi_savoir!5__
-    >savoir  ~..(?:ée?s?|ez)$
-    >savoir  ~..(?:ée?s?|ez)$
-    >savoir  ~..(?:ée?s?|ez)$
-    >savoir  ~..(?:ée?s?|ez)$
+    >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
+    >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
+    >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
+    >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ not value(\1, "|savoirs|") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
@@ -22246,6 +22257,7 @@ TEST: Il faut savoir {{arrêté}} les frais.                                    
 TEST: le moment venu elle saurait les {{humiliés}} devant tout le monde                 ->> humilier
 TEST: tu sauras les {{arrêtait}} avec ça, non ?                                         ->> arrêter
 TEST: c’est important de savoir {{refusé}} une offre qui a l’air alléchante             ->> refuser
+TEST: elle savait quoi {{préparé}}                                                      ->> préparer
 TEST: un certain nombre de savoirs spécialisés
 TEST: je le savais désiré par de nombreuses personnes.
 TEST: il les savait commandités par ses ennemis.
