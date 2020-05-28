@@ -1453,10 +1453,17 @@ function g_exclude (oToken, sPattern, lDefault=null) {
 }
 
 function g_add_morph (oToken, sNewMorph) {
-    "Disambiguation: add a morphology to a token"
+    // Disambiguation: add a morphology to a token
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
     lMorph.push(...sNewMorph.split("|"));
     oToken["lMorph"] = lMorph;
+    return true;
+}
+
+function g_rewrite (oToken, sToReplace, sReplace) {
+    // Disambiguation: rewrite morphologies
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    oToken["lMorph"] = lMorph.map(s => s.replace(sToReplace, sReplace));
     return true;
 }
 

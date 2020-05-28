@@ -354,7 +354,7 @@ class IBDAWG:
                 if nMaxHardRepl and self.isNgramsOK(cChar+sRemain[1:2]):
                     self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
                 if nMaxJump:
-                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar) # True for avoiding loop?
+                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True) # True for avoiding loop?
         if not bAvoidLoop: # avoid infinite loop
             if len(sRemain) > 1:
                 if cCurrent == sRemain[1:2]:
@@ -388,32 +388,6 @@ class IBDAWG:
         if not self.a2grams:
             return True
         return sChars in self.a2grams
-
-    #@timethis
-    def suggest2 (self, sWord, nSuggLimit=10):
-        "returns a set of suggestions for <sWord>"
-        sWord = cp.spellingNormalization(sWord)
-        sPfx, sWord, sSfx = cp.cut(sWord)
-        oSuggResult = SuggResult(sWord)
-        self._suggest2(oSuggResult)
-        aSugg = oSuggResult.getSuggestions(nSuggLimit)
-        if sSfx or sPfx:
-            # we add what we removed
-            return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
-        return aSugg
-
-    def _suggest2 (self, oSuggResult, nDeep=0, iAddr=0, sNewWord=""):
-        # recursive function
-        #logging.info((nDeep * "  ") + sNewWord)
-        if nDeep >= oSuggResult.nDistLimit:
-            sCleanNewWord = cp.simplifyWord(sNewWord)
-            if st.distanceSift4(oSuggResult.sCleanWord[:len(sCleanNewWord)], sCleanNewWord) > oSuggResult.nDistLimit:
-                return
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-            oSuggResult.addSugg(sNewWord, nDeep)
-        for cChar, jAddr in self._getCharArcs(iAddr, oSuggResult.sWord[nDeep:nDeep+1]):
-            self._suggest2(oSuggResult, nDeep+1, jAddr, sNewWord+cChar)
-        return
 
     def _getCharArcs (self, iAddr):
         "generator: yield all chars and addresses from node at address <iAddr>"
