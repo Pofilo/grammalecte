@@ -354,7 +354,7 @@ class IBDAWG:
                 if nMaxHardRepl and self.isNgramsOK(cChar+sRemain[1:2]):
                     self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
                 if nMaxJump:
-                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar) # True for avoiding loop?
+                    self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True) # True for avoiding loop?
         if not bAvoidLoop: # avoid infinite loop
             if len(sRemain) > 1:
                 if cCurrent == sRemain[1:2]:

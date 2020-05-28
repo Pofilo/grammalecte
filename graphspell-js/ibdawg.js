@@ -401,7 +401,7 @@ class IBDAWG {
                     this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
                 }
                 if (nMaxJump) {
-                    this._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar); // True for avoiding loop?
+                    this._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true); // true for avoiding loop?
                 }
             }
         }
