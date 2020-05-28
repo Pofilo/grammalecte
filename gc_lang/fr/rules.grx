@@ -10848,7 +10848,15 @@ TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris
 TEST: si venir à la conférence coûte autant, il est préférable de s’abstenir.
 
 
-__conf_sitôt_dit_sitôt_fait__
+# sitôt / si tôt
+__conf_sitôt__
+    [<start>|,|(] si tôt  $:A
+        <<- /conf/ -2:3>> sitôt                             && Confusion probable : si vous voulez dire “aussitôt”, écrivez “sitôt”.|https://fr.wiktionary.org/wiki/sit%C3%B4t
+
+TEST: {{si tôt}} accomplie, il fallut recommencer
+
+
+__conf_sitôt_dit_sitôt_fait!6__
     !! sitôt dit ?,¿ sitôt fait ¡¡
     [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop|trot] [dis|dix|dit+s|di] ?,¿ [si+s|>scie|ci+s] [tôt|>tau|taux|to|>taud|trop|trot] [fait+s|>fée|fé|fais]
     sitôt [dis|dix|dit+s|di] ?,¿ sitôt [fait+s|>fée|fé|fais]
@@ -13872,6 +13880,7 @@ __purge_locutions__
     [de|d’] fort [loin|près]
     [de|d’] ?[assez|si|très|trop]¿ [fraîche|fraiche] date
     [de|d’] [gaieté|gaîté|gaité] [de|d’] cœur
+    [de|d’] grand renom
     [de|d’] grande ampleur
     [de|d’] gauche à droite
     [de|d’] gauche comme [de|d’] droite
@@ -14049,6 +14058,7 @@ __purge_locutions__
     en premier lieu
     en première [instance|ligne]
     en [première|seconde|~ième$] [classe|position]
+    en [1ʳᵉ|2ᵉ|3ᵉ|4ᵉ|5ᵉ|6ᵉ|7ᵉ|8ᵉ|9ᵉ|10ᵉ|11ᵉ|12ᵉ|13ᵉ|14ᵉ|15ᵉ|16ᵉ|17ᵉ|18ᵉ|19ᵉ|20ᵉ] [classe|position]
     en provenance du monde entier
     en pure perte
     en quantité suffisante
@@ -15411,6 +15421,7 @@ __substantifs_multi_mots__
     >réaction en [chaîne|chaine]
     >région Grand Est
     >règlement [de|d’] comptes
+    >relation à distance
     >remède [de|d’] cheval
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
@@ -16526,7 +16537,7 @@ __da_locutions_verbales__
     >jouer franc jeu
     >jouer cartes sur table
     >juger sur >pièce
-    >lâcher prise
+    >lâcher [prise|pied]
     >laisser pour compte
     >laisser carte blanche
     >marcher à rebours
@@ -16821,6 +16832,7 @@ TEST: Il est trois ans plus jeune que moi.
 TEST: On peut sans doute laisser sans grand problème toutes les baskets à la mode être produites à l’autre bout du monde
 TEST: Faire cours avec un bâillon m’indique assez bien l’importance qu’on accorde à ce que je peux bien vouloir dire en classe.
 TEST: le rejet de l’État-providence est plus élevé dans les régions où les immigrants se trouvent en plus grand nombre
+TEST: les délices nouvelles
 
 
 @@@@
@@ -17401,26 +17413,6 @@ TEST: une raclée {{en bonnes et dues formes}}
 TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour espérer un retour positif.
 
 
-## c’en / s’en
-__conf_c_en_être__
-    s’ en  [es|est|sera|seras|étais|était] [fini+ses|finit|terminé+ses]
-        <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
-        -1:2>> c’en                                         && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-
-    s’ en  [es|est|sera|seras|étais|était] [assez|trop] [<end>|,|de|d’]
-        <<- /conf/ -1:2>> c’en                              && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-
-    s’ en  [es|est|sera|seras|étais|était] @:A¬:[GVW]
-        <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
-        -1:2>> c’en                                         && Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».3|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-
-TEST: tout ça, {{s’en}} est fini.
-TEST: {{s’en}} est assez de ces foutaises.
-TEST: c’est tellement idiot, {{s’en}} est dérisoire…
-TEST: c’en est fini d’eux, ils sont comme morts
-TEST: c’en est assez, ça suffit
-
-
 # en butte à / but / bute
 __conf_en_butte_à_au__
     en [>but|>bute]  [à|au|aux]
@@ -17477,6 +17469,45 @@ TEST: {{s’}}est vraiment merdique.
 TEST: s’est par exemple illustré au combat.
 TEST: il ne s’est pas juste montré
 TEST: il s’était des journées entières consacré à son jeu favori.
+
+
+__conf_c_en_être__
+    !! c’ en [est|était|fut|sera|serait] [fini|fait|terminé|assez|trop] ¡¡
+    [sans|san|sens|>sang|cens]  [et|est|hé|eh|ai+s|aie+s|ait]                                                    [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [sans|san|sens|>sang|cens]  [>étai|était|>été|étaient]                                                       [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [sans|san|sens|>sang|cens]  [fus|fut|fût|fue+s]                                                              [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [sans|san|sens|>sang|cens]  [sera+s|serra+s|serai+s|serait|serez|seraient|serrais|serrait|serrez|serraient]  [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+        <<- /conf/ morph(<1, "<start>|>[,(]") -1>> c’en                                            && Locution “c’en est fini/fait/assez/trop…”.
+
+    [c’|s’|c|s] [en|>an]  [et|est|hé|eh|ai+s|aie+s|ait]                                                    [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [c’|s’|c|s] [en|>an]  [>étai|était|>été|étaient]                                                       [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [c’|s’|c|s] [en|>an]  [fus|fut|fût|fue+s]                                                              [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+    [c’|s’|c|s] [en|>an]  [sera+s|serra+s|serai+s|serait|serez|seraient|serrais|serrait|serrez|serraient]  [fini+ses|finit|finît|fait+s|fais|>fée|fé|>terminer]
+        <<- /conf/ morph(<1, "<start>|>[,(]") and not (value(\1, "|c’|") and value(\2, "|en|"))
+        -1:2>> c’en                                                                                 && Locution “c’en est fini/fait/assez/trop…”.
+
+    s’ en [es|est|sera|seras|étais|était|serai|serais|serait|fut|fût] @:A¬:[GVW]
+        <<- /conf/ morph(<1, ":C|<start>|>[,(]")
+        -1:2>> c’en                                         && Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+
+    s’ en [es|est|sera|seras|étais|était|serai|serais|serait|fut|fût] [assez|trop] [<end>|,|de|d’|du|des]
+        <<- /conf/ -1:2>> c’en                              && Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|https://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+
+TEST: tout ça, {{s’en}} est fini.
+TEST: {{s’en}} est assez de ces foutaises.
+TEST: c’est tellement idiot, {{s’en}} est dérisoire…
+TEST: {{s’en}} est terminé d’elles
+TEST: {{s’en}} était fini d’eux
+TEST: {{sang}} fut fini de nous
+TEST: {{sans}} sera fini de vous
+TEST: {{s ans}} serrait finit de moi
+TEST: {{s’en}} est fée d’elles
+TEST: {{s’en}} était fait d’eux
+TEST: {{sang}} fut fait de nous
+TEST: {{sans}} serra faits de vous
+TEST: {{s ans}} serrait fée de moi
+TEST: c’en est fini d’eux, ils sont comme morts
+TEST: c’en est assez, ça suffit
 
 
 # ce / se
@@ -25510,8 +25541,8 @@ TEST: {{Découragés}}, je suis parti.
 
 __ppas_adj_accord_il__
     <start>  *WORD  ?,¿  il
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|")  and not tag(\2, "_exctx_")
-            and morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|")  and not tag(\2, "_exctx_") and morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])")
+            and not morph(>1, ">falloir/") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
         -2>> =suggMasSing(\2)                                                   && Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
 TEST: — {{Déçue}}, il s’en est allé.
