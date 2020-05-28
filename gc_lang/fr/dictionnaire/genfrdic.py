@@ -590,7 +590,7 @@ class Dictionnaire:
         sExtensionName = EXT_PREFIX_MOZ + self.sVersion
         spExt = spBuild + '/' + sExtensionName
         dir_util.mkpath(spExt+'/dictionaries')
-        copyTemplate('_templates/moz', spExt, 'install.rdf', dTplVars)
+        copyTemplate('_templates/moz', spExt, 'manifest.json', dTplVars)
         spDict = spBuild + '/' + PREFIX_DICT_PATH + self.sVersion
         file_util.copy_file(spDict+'/fr-classique.dic', spExt+'/dictionaries/fr-classic.dic')
         file_util.copy_file(spDict+'/fr-classique.aff', spExt+'/dictionaries/fr-classic.aff')
@@ -942,7 +942,7 @@ class Entree:
         for sFlag in makeLongFlags(self.flags):
             if sFlag not in dFlags:
                 if sFlag not in ['**', '()', '||', '--']:
-                    lFlexions.append( (self.lemma, '[unknown flag: {}]'.format(sFlag)) )
+                    lFlexions.append( (self.lemma, '[unknown flag: {}]'.format(sFlag), self.di) )
                     echo("ERROR: "  + self.lemma + ' - unknown flag: ' + sFlag)
             else:
                 oFlag = dFlags[sFlag]
