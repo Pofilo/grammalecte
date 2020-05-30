@@ -824,7 +824,7 @@ class Entree:
             sErr += '[is] incohérent'
         if self.iz.endswith(("mas", "fem", "epi")) and (not self.flags or not self.flags.startswith(("S", "X", "F", "W", "A", "I", "U"))):
             sErr += '[is] incomplet'
-        if self.flags.startswith(("a", "b", "c", "d")) and not self.lemma.endswith("er"):
+        if self.flags.startswith(("a0", "b0", "c0", "d0")) and not self.lemma.endswith("er"):
             sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
         if self.flags.startswith("f") and not self.lemma.endswith(("ir", "ïr")):
             sErr += "drapeau pour verbe du 2ᵉ groupe sur un lemme non conforme"
