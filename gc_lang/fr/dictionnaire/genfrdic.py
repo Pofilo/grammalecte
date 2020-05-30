@@ -1526,7 +1526,7 @@ def main ():
     oFrenchDict = Dictionnaire(xArgs.verdic, "French dictionary")
     for sFile in ['orthographe/FRANCAIS.dic']:
         oFrenchDict.readDictionary(sFile)
-    oFrenchDict.readAffixes('orthographe/FRANCAIS_5.aff')
+    oFrenchDict.readAffixes('orthographe/FRANCAIS_7.aff')
 
     ### Contrôle
     oFrenchDict.sortEntriesNatural()
