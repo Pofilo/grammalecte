@@ -590,7 +590,7 @@ class Dictionnaire:
         sExtensionName = EXT_PREFIX_MOZ + self.sVersion
         spExt = spBuild + '/' + sExtensionName
         dir_util.mkpath(spExt+'/dictionaries')
-        copyTemplate('_templates/moz', spExt, 'install.rdf', dTplVars)
+        copyTemplate('_templates/moz', spExt, 'manifest.json', dTplVars)
         spDict = spBuild + '/' + PREFIX_DICT_PATH + self.sVersion
         file_util.copy_file(spDict+'/fr-classique.dic', spExt+'/dictionaries/fr-classic.dic')
         file_util.copy_file(spDict+'/fr-classique.aff', spExt+'/dictionaries/fr-classic.aff')
@@ -812,7 +812,7 @@ class Entree:
             sErr += 'espace en fin de lemme'
         if re.match(r"v[0123]", self.po) and not re.match(r"[eas_][ix_][tx_][nx_][pqreuvx_][mx_][ex_z][ax_z]\b", self.po[2:]):
             sErr += 'verbe inconnu: ' + self.po
-        if (re.match(r"S[*.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[*.]", self.flags) and not re.search("[ul]$", self.lemma)):
+        if (re.match(r"S[.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[.]", self.flags) and not re.search("[ul]$", self.lemma)):
             sErr += 'drapeau inutile'
         if self.iz == '' and re.match(r"[SXAI](?!=)", self.flags) and self.po:
             sErr += '[is] vide'
@@ -820,16 +820,11 @@ class Entree:
             sErr += '[is] incomplet'
         if re.match(r"[FW]", self.flags) and re.search(r"epi|mas|fem|inv|sg|pl", self.iz):
             sErr += '[is] incohérent'
-        if re.match(r".\*", self.flags) and re.match(r"[bcdfgjklmnpqrstvwxz]", self.lemma):
-            sErr += 'drapeau pour lemme commençant par une voyelle'
         if re.search(r"pl|sg|inv", self.iz) and re.match(r"[SXAIFW](?!=)", self.flags):
             sErr += '[is] incohérent'
-        if re.search(r"nom|adj", self.po) and re.match(r"(?i)[aâàäáeéèêëiîïíìoôöóòuûüúù]", self.lemma) and re.match("[SFWXAI][.]", self.flags) \
-           and "pel" not in self.lx:
-            sErr += 'le drapeau derait finir avec *'
         if self.iz.endswith(("mas", "fem", "epi")) and (not self.flags or not self.flags.startswith(("S", "X", "F", "W", "A", "I", "U"))):
             sErr += '[is] incomplet'
-        if self.flags.startswith(("a", "b", "c", "d")) and not self.lemma.endswith("er"):
+        if self.flags.startswith(("a0", "b0", "c0", "d0")) and not self.lemma.endswith("er"):
             sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
         if self.flags.startswith("f") and not self.lemma.endswith(("ir", "ïr")):
             sErr += "drapeau pour verbe du 2ᵉ groupe sur un lemme non conforme"
@@ -942,7 +937,7 @@ class Entree:
         for sFlag in makeLongFlags(self.flags):
             if sFlag not in dFlags:
                 if sFlag not in ['**', '()', '||', '--']:
-                    lFlexions.append( (self.lemma, '[unknown flag: {}]'.format(sFlag)) )
+                    lFlexions.append( (self.lemma, '[unknown flag: {}]'.format(sFlag), self.di) )
                     echo("ERROR: "  + self.lemma + ' - unknown flag: ' + sFlag)
             else:
                 oFlag = dFlags[sFlag]
@@ -1531,7 +1526,7 @@ def main ():
     oFrenchDict = Dictionnaire(xArgs.verdic, "French dictionary")
     for sFile in ['orthographe/FRANCAIS.dic']:
         oFrenchDict.readDictionary(sFile)
-    oFrenchDict.readAffixes('orthographe/FRANCAIS_5.aff')
+    oFrenchDict.readAffixes('orthographe/FRANCAIS_7.aff')
 
     ### Contrôle
     oFrenchDict.sortEntriesNatural()
