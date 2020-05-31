@@ -45,16 +45,7 @@ dSUBDIC = { '*': 'Commun',
             'M': 'Moderne',
             'C': 'Classique',
             'A': 'Annexe',
-            'P': 'Multimots',
             'X': 'Contributeurs' }
-
-dMODERNE = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS “MODERNE”',
-             'shortname': '“Moderne”',
-             'asciiName': 'fr-moderne',
-             'mozAsciiName': 'fr-FR-modern',
-             'subDicts': '*MX',
-             'mozId': 'fr-dicollecte-moderne',
-             'description': "Dictionnaire français “Moderne”" }
 
 dCLASSIQUE = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS “CLASSIQUE”',
                'shortname': '“Classique”',
@@ -647,60 +638,6 @@ class Dictionnaire:
         if spDestGL:
             echo("   Fichier de déclinaison copié dans Grammalecte...")
             file_util.copy_file(spBuild+'/dictDecl.txt', spDestGL)
-
-    def generateSpellVariants (self, nReq, spBuild):
-        if nReq < 1: nReq = 1
-        if nReq > 2: nReq = 2
-        echo(" * Lexique >> variantes par suppression... n = " + str(nReq))
-        with open(spBuild+'/dictSpellVariants-'+str(nReq)+'.txt', 'w', encoding='utf-8', newline="\n") as hDst:
-            for oFlex in frozenset(self.lFlexions):
-                hDst.write(oFlex.sFlexion+"\t_\t_\n")
-                if len(oFlex.sFlexion) <= 2:
-                    n = 0
-                elif len(oFlex.sFlexion) <= 5:
-                    n = 1
-                else:
-                    n = nReq
-                #lTup = self._generatePhonetVariants(oFlex.sFlexion)
-                lTup = self._generateDeleteVariants(oFlex.sFlexion, oFlex.sFlexion, n)
-                for t in lTup:
-                    sTag = t[1]  if "\t" in t[1]  else t[1]+"\t_"
-                    hDst.write(t[0]+"\t"+sTag+"\n")
-
-    _lTupPhonet = [ ("ph", "f"), ("qu", "k"), ("ss", "c"), ("ss", "ç"), ("ct", "x"),
-        ("oe", "œ"), ("ae", "æ"), ("ei", "é"), ("ai", "é"), ("au", "o"), ("eau", "o"),
-    ]
-
-    def _generatePhonetVariants (self, s):
-        l = []
-        for torep, rep in self._lTupPhonet():
-            for m in torep.finditer(s):
-                l.append( (s[:m.start(0)] + rep + s[m.end(0):], str(m.start(0))+":"+str(m.start(0)+len(rep))+">"+torep) )
-        return l
-
-    def _generateDeleteVariants (self, sWord0, sWordCur, n):
-        "renvoie une liste de tuples : (forme dégradée de sWord, code de genèse de sWord)"
-        # caution: recursive function
-        if n == 0:
-            return []
-        lTup = []
-        for i in range(len(sWordCur)):
-            sNew = sWordCur[0:i]+sWordCur[i+1:]
-            lTup.append( ( sNew, self._generateAddCode(sWord0, sNew) ) )
-            lTup += self._generateDeleteVariants(sWord0, sNew, n-1)
-        return lTup
-
-    def _generateAddCode (self, sWord, sCrippled):
-        "returns addCode to generate sWord from sCrippled"
-        sAdd = ""
-        for i in range(len(sWord)):
-            if sWord[i] != sCrippled[i:i+1]:
-                sCrippled = sCrippled[:i] + sWord[i] + sCrippled[i:]
-                if sAdd:
-                    sAdd += "\t"
-                sAdd += str(i)+"+"+sWord[i]
-        return sAdd  if sAdd  else "0"
-
 
 
 class Entree:
@@ -1504,7 +1441,6 @@ def main ():
     xParser.add_argument("-m", "--mode", help="0: no tags,  1: Hunspell tags (default),  2: All tags", type=int, choices=[0, 1, 2], default=1)
     xParser.add_argument("-u", "--uncompress", help="do not use Hunspell compression", action="store_true")
     xParser.add_argument("-s", "--simplify", help="no virtual lemmas", action="store_true")
-    xParser.add_argument("-sv", "--spellvariants", help="generate spell variants", action="store_true")
     xParser.add_argument("-gl", "--grammalecte", help="copy generated files to Grammalecte folders", action="store_true")
     xArgs = xParser.parse_args()
 
@@ -1538,8 +1474,6 @@ def main ():
     oFrenchDict.calcMetaphone2()
 
     #oFrenchDict.createNgrams(spBuild, 3)
-    if xArgs.spellvariants:
-        oFrenchDict.generateSpellVariants(1, spBuild)
 
     ### Statistiques
     spfStats = spBuild+'/'+STATS_NAME+xArgs.verdic+'.txt'
