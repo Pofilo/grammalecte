@@ -79,8 +79,8 @@ dMOZEXT = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS',
 BUILD_PATH = '_build'
 PREFIX_DICT_PATH = 'hunspell-french-dictionaries-v'
 EXT_PREFIX_OOO = 'lo-oo-ressources-linguistiques-fr-v'
-EXT_PREFIX_MOZ = 'moz-hunspell-fr-dicollecte-v'
-LEX_PREFIX = 'lexique-dicollecte-fr-v'
+EXT_PREFIX_MOZ = 'moz-hunspell-fr-v'
+LEX_PREFIX = 'lexique-grammalecte-fr-v'
 STATS_NAME = 'statistiques-v'
 
 MPLHEADER = "# This Source Code Form is subject to the terms of the Mozilla Public\n" + \
