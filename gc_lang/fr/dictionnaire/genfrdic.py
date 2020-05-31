@@ -7,7 +7,6 @@ __license__ = "MPL 2"
 
 import os
 import sys
-import time
 import re
 import collections
 import zipfile
@@ -306,7 +305,6 @@ class Dictionnaire:
                "# file, You can obtain one at http://mozilla.org/MPL/2.0/.\n\n" + \
                "# AFFIXES DU {} v{}\n".format(dTplVars['name'], self.sVersion) + \
                "# par Olivier R. -- licence MPL 2.0\n" + \
-               "# Généré le " + time.strftime("%d-%m-%Y à %H:%M") + "\n" \
                "# Pour améliorer le dictionnaire, allez sur https://grammalecte.net/\n\n"
 
         with open(spDst+'/'+dTplVars['asciiName']+'.aff', 'w', encoding='utf-8', newline="\n") as hDst:
@@ -507,7 +505,7 @@ class Dictionnaire:
         echo(' * Lexique >> [ {} ] '.format(spfDst))
         with open(spfDst, 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(MPLHEADER)
-            hDst.write("# Lexique des formes fléchies du français - Dicollecte v{}\n# Licence : MPL v2.0\n\n".format(version))
+            hDst.write("# Lexique des formes fléchies du français - Grammalecte v{}\n# Licence : MPL v2.0\n\n".format(version))
             hDst.write(oStatsLex.getInfo())
             hDst.write(Flexion.header(oStatsLex))
             for oFlex in self.lFlexions:
@@ -607,7 +605,7 @@ class Dictionnaire:
         sLexName = LEX_PREFIX + version
         spLex = spBuild + '/' + sLexName
         dir_util.mkpath(spLex)
-        # write Dicollecte lexicon
+        # write lexicon
         self.sortLexiconByFreq()
         self.writeLexicon(spLex + '/' + sLexName + '.txt', version, oStatsLex)
         self.writeGrammarCheckerLexicon(spBuild + '/' + sLexName + '.lex', version)
