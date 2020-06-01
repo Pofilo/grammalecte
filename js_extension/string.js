@@ -27,7 +27,7 @@ if (String.prototype.grammalecte === undefined) {
         return (this.search(/^[a-zà-öø-ÿﬀ-ﬆ0-9'’-]+$/) !== -1);
     };
     String.prototype.gl_isUpperCase = function () {
-        return (this.search(/^[A-ZÀ-ÖØ-ßŒ0-9'’-]+$/) !== -1);
+        return (this.search(/^[A-ZÀ-ÖØ-ßŒ0-9'’-]+$/) !== -1  &&  this.search(/^[0-9]+$/) === -1);
     };
     String.prototype.gl_isTitle = function () {
         return (this.search(/^[A-ZÀ-ÖØ-ßŒ][a-zà-öø-ÿﬀ-ﬆ'’-]+$/) !== -1);
