@@ -39,7 +39,7 @@
 OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj, num nf, virg poncfin, ocr chim, liga mapos
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
-OPTGROUP/style: bs pleo, redon1 redon2, neg
+OPTGROUP/style: bs pleo, eleu neg, redon1 redon2
 OPTGROUP/misc: date mc
 OPTGROUP/debug: idrule
 
@@ -74,9 +74,10 @@ OPT/inte:           True        True        True        True        True        
 OPT/vmode:          True        True        True        True        True        True
 OPT/bs:             True        True        True        True        True        True
 OPT/pleo:           True        True        True        True        True        True
+OPT/eleu:           True        True        True        True        True        True
+OPT/neg:            False       False       False       False       False       False
 OPT/redon1:         False       False       False       False       False       False
 OPT/redon2:         False       False       False       False       False       False
-OPT/neg:            False       False       False       False       False       False
 OPT/date:           True        True        True        True        True        True
 OPT/mc:             False       False       False       False       False       False
 OPT/idrule:         False       False       False       False       False       False
@@ -136,9 +137,10 @@ OPTCOLOR/inte:      fuschia     vert_vif
 OPTCOLOR/vmode:     fuschia     vert_vif
 OPTCOLOR/bs:        cyan        cyan_vif
 OPTCOLOR/pleo:      cyan        cyan_vif
+OPTCOLOR/eleu:      cyan        cyan_vif
+OPTCOLOR/neg:       cyan        cyan_vif
 OPTCOLOR/redon1:    cyan        cyan_vif
 OPTCOLOR/redon2:    cyan        cyan_vif
-OPTCOLOR/neg:       cyan        cyan_vif
 OPTCOLOR/date:      cyan        cyan_vif
 OPTCOLOR/mc:        cyan        cyan_vif
 
@@ -188,6 +190,7 @@ OPTLABEL/vmode:     Modes verbaux
 OPTLABEL/style:     Style
 OPTLABEL/bs:        Populaire|Souligne un langage courant considéré comme erroné, comme « malgré que ».
 OPTLABEL/pleo:      Pléonasmes|Repère des redondances sémantiques, comme « au jour d’aujourd’hui », « monter en haut », etc.
+OPTLABEL/eleu:      Élisions et euphonies|Signale les élisions incorrectes et les tournures dysphoniques.
 OPTLABEL/neg:       Adverbe de négation [!]|Ne … pas, ne … jamais, etc.
 OPTLABEL/redon1:    Répétitions dans le paragraphe [!]|Sont exclus les mots grammaticaux, ceux commençant par une majuscule, ainsi que “être” et “avoir”.
 OPTLABEL/redon2:    Répétitions dans la phrase [!]|Sont exclus les mots grammaticaux, ainsi que “être” et “avoir”.
@@ -237,6 +240,7 @@ OPTLABEL/vmode:     Verbal modes
 OPTLABEL/style:     Style
 OPTLABEL/bs:        Popular style|Underlines misuse of language though informal and commonly used.
 OPTLABEL/pleo:      Pleonasms|Semantic replications, like « au jour d’aujourd’hui », « monter en haut », etc.
+OPTLABEL/eleu:      Élisions et euphonies|Signale les élisions incorrectes et les tournures dysphoniques.
 OPTLABEL/neg:       Negation adverb [!]|Ne … pas, ne … jamais, etc.
 OPTLABEL/redon1:    Duplicates in paragraph [!]|Are excluded grammatical words, words beginning by a capital letter, and also “être” and “avoir”.
 OPTLABEL/redon2:    Duplicates in sentence [!]|Are excluded grammatical words, and also “être” and “avoir”.
@@ -1688,11 +1692,11 @@ __<i]/tu(tu_t_euphonique_incorrect)__
         <<- __else__ and \1 != "-t-" and \1 != "-T-" -1>> -t-   && Pour le “t” euphonique, il faut deux traits d’union. Pas d’apostrophe. Pas d’espace.
         <<- \1 != "-t-" ~1>> -t-
 __<i]/tu(tu_t_euphonique_superflu)__
-    [td]([- ]t[-’' ])(?:il|elle|on)  @@1
+    [td]([- ]t[-’' ])(?:ie?l|elle|on)  @@1
         <<- -1>> -                                              && Le “t” euphonique est superflu quand le verbe se termine par “t” ou “d”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
         <<- \1 != "-t-" ~1>> -t-
-__<i]/tu(tu_t_euphonique_manquant)__
-    [aec](-(il|elle|on))  @@1,2  <<- -1>> -t-\2                 && Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+__<i]/eleu(eleu_t_euphonique_manquant)__
+    [aec](-(ie?l|elle|on))  @@1,2  <<- -1>> -t-\2               && Euphonie. Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
 
 TEST: va{{ t’}}il y parvenir ?                          ->> -t-
 TEST: A{{ t’}}elle soif ?                               ->> -t-
@@ -2020,8 +2024,11 @@ __da_groupe_nominal__
         <<- ~>> ␣
         <<- =>> define(\1, ":LN:f:p")
 
-    [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
+    [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- not morph(\-1, ":V0") =>> exclude(\2, ":V")
+
+    sa  *WORD
+        <<- not morph(\-1, ":V0") and not morph(\-1, ":3s") =>> exclude(\2, ":V")
 
     les  ~.es$
         <<- not value(<1, "|tu|ne|n’|me|m’|te|t’|se|s’|nous|vous|") and morph(\2, ":V1.*Ip.*:2s") and not tag_before(\1, "_2s_") and not value(>1, "|tu|pas|jamais|")
@@ -2411,7 +2418,7 @@ __inte_verbes_composés_interrogatifs__
         <<- />> -je|_VCint_
 
     aie-je
-        <<- /conj/ ->> ai-je                                                                        && Forme interrogative. N’employez pas le subjonctif présent.
+        <<- /vmode/ ->> ai-je                                                                       && Forme interrogative. N’employez pas le subjonctif présent.
 
     ~\w-[tT]u$
         <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", None, True)            && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
@@ -3551,24 +3558,25 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 
 !!
 !!
-!!!! Élisions                                                                                     !!
+!!!! Élisions & euphonie                                                                          !!
 !!
 !!
 
-__typo_élisions_manquantes__
-    [le|la|de]  ~^[aâeéêiîoôu].
-        <<- /typo/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+# élisions
+__eleu_élisions_manquantes__
+    [le|la|de]  ~^[aâeéèêiîoôuûyœæ].
+        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
-        <<- /typo/ space_after(\1, 1, 1) -1:.2>> s’                         && Il faut élider “si” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+        <<- /eleu/ space_after(\1, 1, 1) -1:.2>> s’                         && Il faut élider “si” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
     que [il|ils|elle|elles|on|iel|iels]
-        <<- /typo/ space_after(\1, 1, 1) -1:.2>> qu’                        && Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+        <<- /eleu/ space_after(\1, 1, 1) -1:.2>> qu’                        && Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
-    se  ~^[aâeéêiîoôu].
-        <<- /typo/ \1 != "SE" and space_after(\1, 1, 1) and morph(\2, ":V", ":Q")
-        -1:.2>> s’                                                          && Il faut élider le pronom “se” et l’accoler au verbe.|http://fr.wikipedia.org/wiki/Élision
+    [me|te|se]  ~^[aâeéèêiîoôuûyœæ].
+        <<- /eleu/ not \1.isupper() and space_after(\1, 1, 1) and morph(\2, ":V", ":Q")
+        -1:.2>> =\1[0:1]+"’"                                                && Il faut élider le pronom “\1” et l’accoler au verbe.|http://fr.wikipedia.org/wiki/Élision
 
 TEST: {{le }}amour                                                        ->> l’
 TEST: {{la }}imagination                                                  ->> l’
@@ -3577,16 +3585,76 @@ TEST: {{de }}est                                                          ->> d�
 TEST: je crois que {{si }}ils viennent, ils seront mécontents
 TEST: {{Que }}ils soient heureux
 TEST: Il {{se }}avançait parmi eux.
+TEST: il {{me }}oublie souvent
 TEST: J’ai passé une journée de ouf.
 
 
 # ce -> cet
-__typo_euphonie_cet__
-    ce  ~^[aâeéêiîoôu]
-        <<- /typo/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
-        -1>> cet                                                                && Euphonie : “ce” devient “cet” devant un mot commençant par une voyelle.
+__eleu_euphonie_cet__
+    ce  ~^[aâeéèêiîoôuûyœæ]
+        <<- /eleu/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
+        -1>> cet                                                                && Euphonie : “ce” devient “cet” devant un mot commençant par une voyelle.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: {{ce}} animal est dangereux
+
+
+# Verbe 1ʳᵉ personne du singulier, interrogatif… xxxé-je
+__eleu_é_je__
+    /-je
+        <<- /eleu/ morphVC(\1, "V1.*:1s") and \1.endswith("e-je") ->> =\1.replace("e-je", "é-je")+"|"+\1.replace("e-je", "è-je")
+        && Euphonie. Pour les verbes finissant par “e” à l’interrogatif à la 1ʳᵉ personne du singulier, mettez un accent aigu ou grave sur le “e” final. Exemple : “pensé-je” (présent), à ne pas confondre avec “pensais-je” (imparfait).|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: {{pense-je}}                                                                      ->> pensé-je|pensè-je
+TEST: pensé-je
+TEST: souhaitè-je
+
+
+# ma, ta, sa / mon, ton, son
+__eleu_euphonie_ma_ta_sa__
+    [ma|ta]  ~^[aâeéèêiîoôuûyœæ].
+        <<- /eleu/ morph(\2, ":[NA]") and not re.search("(?i)^(?:onz|énième|ouf|énième|I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2)
+        -1>> =\1[0:1]+"on"                                                      && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. Exemple : mon étoile (féminin).|https://fr.wikipedia.org/wiki/Euphonie
+
+    sa  ~^[aâeéèêiîoôuûyœæ].
+        <<- /eleu/ not \1.isupper() and morph(\2, ":[NA]") and not re.search("(?i)^(?:onz|énième|ouf|énième|I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2) >>>
+        <<- /eleu/ morph(\2, ":[123][sp]") -1>> =\1[0:1]+"on|ça"                && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. (À moins que vous ne confondiez “sa” et “ça”.) Exemple : son étoile (féminin), ça existe.|https://fr.wikipedia.org/wiki/Euphonie
+        <<- /eleu/ __else__ -1>> =\1[0:1]+"on"                                  && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. Exemple : son étoile (féminin).|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: {{ta}} aimée                                              ->> ton
+TEST: {{ma}} obligée                                            ->> mon
+TEST: {{sa}} œuvre                                              ->> son|ça
+TEST: {{sa}} existence                                          ->> son
+TEST: SA déchue aux yeux du Fuhrer
+TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
+
+
+# nouvel / nouveaux
+__eleu_nouvel_nouveau_euphonie__
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  homme
+        <<- /eleu/ -2>> nouvel                                              && Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aâeéèêiîoôuûyœæ]
+        <<- /eleu/ morph(\3, ":[NA].*:[me]:s", ":[123][sp]") -2>> nouvel    && Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: ce {{nouveau}} homme
+TEST: un {{nouveau}} élément relance l’enquête
+TEST: il se sentait de nouveau homme
+TEST: il se sentait à nouveau homme
+
+
+# vieil / vieux
+__eleu_vieil_vieux_euphonie__
+    vieux  homme
+        <<- /eleu/ -1>> vieil                                   && Euphonie. Utilisez “vieil” s’il précède un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+    vieux  ~^[aâeéèêiîoôuûyœæ]
+        <<- /eleu/ morph(\2, ":[NA].*:[me]:s", ":[123][sp]")
+        -1>> vieil                                              && Euphonie. Utilisez “vieil” s’il précède un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: ce {{vieux}} homme
+TEST: c’est un {{vieux}} imbécile.
+TEST: Le {{vieux}} homme était parti.                         ->> vieil
+TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 
 
 
@@ -5605,23 +5673,6 @@ __pleo_différer_ajourner_reporter__
 TEST: {{Ajourner à une date ultérieure}}        ->> Ajourner
 TEST: {{différer à une date ultérieure}}        ->> différer
 TEST: {{reporter à plus tard}}                  ->> reporter
-
-
-
-!!
-!!
-!!!! Tournures de langage                                                                         !!
-!!
-!!
-
-# Mon, ton, son : euphonie
-__gn_mon_ton_son_euphonie__
-    [ma|ta|sa]  @>[aâeéèêiîoôuûyœæ].+:[NAQ].*:f¬:[eGW]
-        <<- /gn/ -1>> =\1.replace("a", "on")                                && Même si « \2 » est féminin, on utilise « mon/ton/son » pour faire la liaison.|http://fr.wikipedia.org/wiki/Euphonie
-
-TEST: {{ta}} aimée                                            ->> ton
-TEST: {{ma}} obligée                                          ->> mon
-TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
 
 
 
@@ -9572,37 +9623,57 @@ TEST: Et les intellectuels ? En France comme ailleurs, tous n’ont pas, loin s
 
 
 # m’a / ma
-__conf_m_a_ma!6__
-    [<start>|,|(]  tu  ma
+__conf_m_a_ma!7__
+    [<start>|,|(]  tu  [ma|mas]
         <<- /conf/ --1>> m’as                       && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 2ᵉ personne précédé du pronom personnel ”me”, écrivez “m’as”.
 
-    [il|ils|on]  ma
+    [il|ils]  [ma|mas]
+        <<- /conf/ not morph(<1, ":3s")
+        --1>> m’a                                   && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+
+    on  [ma|mas]
         <<- /conf/ morph(<1, "<start>|:C|>,/")
         --1>> m’a                                   && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
 
-    [ne|n’]  ma
+    [ne|n’]  [ma|mas]
         <<- /conf/ --1>> m’a                        && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
 
-    ça  ma  *WORD
+    ça  [ma|mas]  *WORD
         <<- /conf/ morph(<1, "<start>|:C|>,/") and analyse(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
         -2>> m’a                                    && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+
+    qui ma  *WORD
+        <<- /conf/ analyse(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
+        -2>> m’a                                    && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+
+    ma  @:(?:Q.*:e:i|V1.*:Y)¬:f:s
+        <<- /conf/ -1>> m’a                         && Confusion probable : “\-2“ est un participe passé. Vous confondez probablement “ma” et “m’a” (contraction de “me” suivi du verbe avoir “a”).
 
 TEST: tu {{ma}} prise par surprise                          ->> m’as
 TEST: il {{ma}} tuée                                        ->> m’a
 TEST: cette femme ne {{ma}} prise que deux fois             ->> m’a
+TEST: {{on}} {{ma}} dézinguée                               ->> m’a|||ont
 TEST: ça {{ma}} {{foutu}} en l’air
+TEST: cet homme {{ma}} succédé à ce poste                   ->> m’a
+TEST: {{ma}} {{donner}} la nausée, ce con
+TEST: c’est ça qui {{ma}} forcée à poursuivre               ->> m’a
 TEST: ça ma grande, c’est mon secret
 
 
 # m’ont / mon
 __conf_m_ont!6__
-    [il|ils]  mon
+    il  mon
         <<- /conf/ morph(<1, "<start>|:C|>,/")
+        --1>> m’ont                                 && Confusion probable : “mon” est un déterminant possessif. Pour le verbe “avoir” à la 3ᵉ personne du pluriel précédé du pronom personnel ”me”, écrivez “m’ont”.
+
+    ils  mon
+        <<- /conf/ not morph(<1, ":(?:3p|D)")
         --1>> m’ont                                 && Confusion : “mon” est un déterminant possessif. Pour le verbe “avoir” à la 3ᵉ personne du pluriel précédé du pronom personnel ”me”, écrivez “m’ont”.
 
     ne  mon
         <<- /conf/ --1>> m’ont                      && Confusion : “mon” est un déterminant possessif. Pour le verbe “avoir” à la 3ᵉ personne du pluriel précédé du pronom personnel ”me”, écrivez “m’ont”.
 
+TEST: il {{mon}} détruit                                    ->> m’ont
 TEST: ils {{mon}} donné du fil à retordre, ces cons.        ->> m’ont
 TEST: ces écarts ne {{mon}} posé aucun problème             ->> m’ont
 
@@ -9681,18 +9752,7 @@ TEST: nous vous proposons de faire vôtre une autre volonté
 TEST: Elle récitait sans cesse des Notre Père.
 
 
-# nouvel / nouveaux
-__conf_nouvel_nouveau_euphonie__
-    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  homme
-        <<- /conf/ -2>> nouvel                                  && Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aâeéiîou]
-        <<- /conf/ morph(\3, ":[NA].*:[me]:s") -2>> nouvel      && Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
-
-TEST: ce {{nouveau}} homme
-TEST: un {{nouveau}} élément relance l’enquête
-TEST: il se sentait de nouveau homme
-TEST: il se sentait à nouveau homme
 
 
 # nulle part
@@ -11496,19 +11556,7 @@ TEST: sans lui voire sans rien
 TEST: il fait ça pour nous voire pour tout le monde
 
 
-# vieil / vieux
-__conf_vieil_vieux_euphonie__
-    vieux  homme
-        <<- /conf/ -1>> vieil                                   && Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-    vieux  ~^[aeéiîou]
-        <<- /conf/ morph(\2, ":[NA].*:[me]:s", ":[123][sp]")
-        -1>> vieil                                              && Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
-
-TEST: ce {{vieux}} homme
-TEST: c’est un {{vieux}} imbécile.
-TEST: Le {{vieux}} homme était parti.                         ->> vieil
-TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 
 
 
