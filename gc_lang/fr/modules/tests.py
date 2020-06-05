@@ -206,7 +206,7 @@ class TestGrammarChecking (unittest.TestCase):
         # untested rules
         i = 0
         for _, sOpt, sLineId, sRuleId in gce.listRules():
-            if sOpt != "@@@@" and sRuleId not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
+            if sOpt != "@@@@" and sRuleId.rstrip("0123456789") not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
                 echo(f"# untested rule: {sLineId}/{sRuleId}")
                 i += 1
         if i:
@@ -230,7 +230,7 @@ class TestGrammarChecking (unittest.TestCase):
             sRes = sRes[:dErr["nStart"]] + "~" * (dErr["nEnd"] - dErr["nStart"]) + sRes[dErr["nEnd"]:]
             sListErr += "    * {sLineId} / {sRuleId}  at  {nStart}:{nEnd}\n".format(**dErr)
             lAllSugg.append("|".join(dErr["aSuggestions"]))
-            self._aTestedRules.add(dErr["sRuleId"])
+            self._aTestedRules.add(dErr["sRuleId"].rstrip("0123456789"))
             # test messages
             if "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
                 print("\n# Line num : " + dErr["sLineId"] + \
