@@ -18226,9 +18226,12 @@ TEST: j’ai vu un {{flamand}} rose.
 
 # foi / fois / foie
 __conf_foi_fois_foie__
+    ## foi
     [de|la|cette|une] mauvaise [fois|>foie]
     [ma|ta|sa|notre|votre|leur] fois
-        <<- /conf/ --1>> foi                                                && Confusion probable.|https://fr.wiktionary.org/wiki/foi
+    [>homme|>femme] [de|d’] peu [de|d’] [>foie|fois]
+    >acte [de|d’] [>foie|fois]
+        <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur (religieuse), écrivez “foi”.|https://fr.wiktionary.org/wiki/foi
 
     sans [fois|>foie] ?,¿ ni >loi
         <<- /conf/ -2>> foi                                                 && Confusion probable.|https://fr.wiktionary.org/wiki/foi
@@ -18239,13 +18242,15 @@ __conf_foi_fois_foie__
 
     [>faire|>perdre|>donner|>avoir]  [fois|>foie]
     >avoir  la  [fois|>foie]
-        <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur religieuse, écrivez “foi”.|https://fr.wiktionary.org/wiki/foi
+        <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur (religieuse), écrivez “foi”.|https://fr.wiktionary.org/wiki/foi
 
+    ## foie
     [>huile|>terrine|>pâté] de >foi
         <<- /conf/ --1>> foie                                               && Confusion probable. L’organe s’écrit “foie”.|https://fr.wiktionary.org/wiki/foie
 
-    [la|une|cette] prochaine foi
-    une bonne foi pour [toute|toutes]
+    ## fois
+    [la|une|cette] prochaine [foi|>foie]
+    une bonne [foi|>foie] pour [toute|toutes]
         <<- /conf/ -3>> fois                                                && Confusion probable.|https://fr.wiktionary.org/wiki/fois
 
 TEST: ces gens sont de mauvaise {{fois}}
@@ -20205,7 +20210,7 @@ __gn_nombre_plur_2m__
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné entre « \2 » et « \3 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           && Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":V0") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
 TEST: deux sombres {{idiot}}
@@ -20214,6 +20219,7 @@ TEST: huit {{grandes}} {{claviers}}
 TEST: X a perdu mon estime et ma considération.
 TEST: vivre une situation hors du commun à deux a aussi pesé dans la balance.
 TEST: deux jours minimum
+TEST: ils disent finalement tous les deux la même chose
 
 
 __gn_des_2m__
@@ -20222,7 +20228,7 @@ __gn_des_2m__
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 && Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
         <<- not morph(\3, ":G|>a/") and checkAgreement(\2, \3) =>> =exclude(\3, ":V")
 
@@ -20266,7 +20272,7 @@ __gn_det_plur_3m__
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
     leurs  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
             and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not morph(\4, ">seul/")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
@@ -23214,7 +23220,7 @@ __purge_syntagme_verbal__
         <<- not morph(\2, ">(?:être|demeurer|devenir|redevenir|sembler|para[îi]tre|rester)/") ~1:2>> *
 
     [à|de|d’|par|pour|sans]  [l’|le|la|les]  ?[en|y]¿   $:Y
-        <<- ~>> *
+        <<- not morph(>1, ":Y") ~>> *
 
     ne [lui|leur]
         <<- not value(>1, "|en|") ~2>> *
@@ -23299,6 +23305,7 @@ TEST: Notre but n’était pas de devenir célèbres.
 TEST: sans qu’on ait à le lui ordonner
 TEST: Les messages envoyés à toto@toto.fr seront transmis à Roger.
 TEST: En outre, les grosses institutions comme l’Éducation Nationale ne développent pas forcément en interne
+TEST: Le mieux serait de le faire glisser
 
 
 __tag_locutions_verbales_d_état__
