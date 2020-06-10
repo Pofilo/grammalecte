@@ -4093,8 +4093,8 @@ TEST: Dans ce drive in douze hommes mangent.
 
 
 __tu_préfixe_mi__
-    mi  @:[NAQ]
-        <<- /tu/ ->> mi-\2                                      && S’il s’agit d’un seul mot, il manque un trait d’union.
+    mi  @:[NAQ]¬:G
+        <<- /tu/ not value(\2, "|a|") ->> mi-\2                                      && S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: J’ai été engagé pour un {{mi temps}}.
 
@@ -4921,6 +4921,7 @@ TEST: je suis allé dans la {{grand’rue}}.                           ->> grand
 
 
 !!!! Trait d’union : formes interrogative (nous/vous)                                             !!
+
 __inte_union_nous1!7__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~ons$  nous
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ons$  nous
@@ -7337,7 +7338,7 @@ __conf_à_a_locutions__
     a géométrie variable
     a gorge déployée
     a grand-peine
-    a grande échelle
+    a ?[si|très|trop|plus|moins]¿ grande échelle
     a grands frais
     a ?[si|très|trop]¿ haut risque
     a ?[si|très|trop]¿ haute [altitude|voix]
@@ -7408,7 +7409,7 @@ __conf_à_a_locutions__
     a personne en danger
     a perte [de|d’] vue
     a ?[si|très|trop]¿ petit feu
-    a ?[si|très|trop]¿ petite [dose|échelle]
+    a ?[si|très|trop|plus|moins]¿ petite [dose|échelle]
     a ?[si|très|trop]¿ peu [de|d’] >chose près
     a peu près
     a pied d’ œuvre
@@ -9859,6 +9860,8 @@ __conf_où_ou__
     par ou
     n’importe ou
     ni ou
+    pour la fois ou
+    pour ?toutes¿ les fois ou
     c’ en [est|était|sera|serait] ou
         <<- /conf/ --1>> où                                 && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
@@ -13570,7 +13573,7 @@ __purge_locutions__
     à glacer le sang
     à glacer les sangs
     à gorge déployée
-    à grande échelle
+    à ?[si|très|trop|plus|moins]¿ grande échelle
     à ?[si|très|trop]¿ grands frais
     à grands traits ?[imprécis|rageurs|précis|vagues]¿
     à ?[si|très|trop]¿ haut risque
@@ -13645,7 +13648,7 @@ __purge_locutions__
     à personne en danger
     à perte [de|d’] vue
     à petit feu
-    à ?[si|très|trop]¿ petite [dose|échelle]
+    à ?[si|très|trop|plus|moins]¿  petite [dose|échelle]
     à ?[si|très|trop]¿ peu [de|d’] choses près
     à ?[si|très|trop]¿ peu [de|d’] [distance|frais]
     à peine
@@ -13954,6 +13957,7 @@ __purge_locutions__
     [de|d’] mal en pis
     [de|d’] mieux en mieux
     [de|d’] moindre [envergure|valeur]
+    [de|d’] moins en moins
     [de|d’] nature [étrangère|inconnue|indéterminée|insolite]
     [de|d’] notoriété publique
     [de|d’] nulle part
@@ -13966,6 +13970,7 @@ __purge_locutions__
     [de|d’] ?presque¿ partout
     [de|d’] peu d’ importance
     [de|d’] pied ferme
+    [de|d’] pire en pire
     [de|d’] pis en pis
     [de|d’] place en place
     [de|d’] plein [droit|fouet]
@@ -13994,6 +13999,7 @@ __purge_locutions__
     [de|d’] tous les cas [de|d’] figure imaginables et possibles
     [de|d’] tout poil
     [de|d’] tout premier [ordre|plan]
+    [de|d’] tout [mon|ton|son|notre|votre|leur] cœur
     [de|d’] toute [évidence|façon|part|urgence]
     [de|d’] toutes [parts|pièces|sortes]
     [de|d’] toutes les possibilités [existantes|imaginables|rencontrées]
@@ -14006,11 +14012,6 @@ __purge_locutions__
     [de|d’] [mon|ton|son|notre|votre|leur] vivant
     [de|d’] [ma|ta|sa|notre|votre|leur] part
     [de|d’] [ma|ta|sa|notre|votre|leur] propre volonté
-    [de|d’] moins en moins
-    [de|d’] plus en plus
-    [de|d’] mieux en mieux
-    [de|d’] pire en pire
-    [de|d’] tout [mon|ton|son|notre|votre|leur] cœur
     debout
     derechef
     derrière tout [cela|ceci|ça]
@@ -14038,7 +14039,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ bon état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ bonne [compagnie|place|posture|voie]
     en bonne et due forme
-    en bonne santé ?[générale|physique|mentale|psychique]¿
+    en ?[assez|si|très|trop]¿ bonne santé ?[générale|physique|mentale|psychique]¿
     en bout [de|d’] course
     en cas [de|d’] besoin ?[absolu|impérieux]¿
     en cas [de|d’] doute ?[légitime|suffisant]¿
@@ -14074,7 +14075,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ fâcheuse posture
     en file indienne
     en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
-    en forte [baisse|hausse]
+    en ?[assez|si|très|trop]¿ forte [baisse|hausse]
     en gage [de|d’] bonne foi
     en garde à vue ?prolongée¿
     en ?[assez|si|très|trop|plus|moins]¿ grand nombre
@@ -15367,6 +15368,7 @@ __substantifs_multi_mots__
     >maison à colombages
     >maison [de|d’] [campagne|passe|retraite]
     >mal [de|d’] [tête|ventre|mer]
+    >manche à balai
     >mandat [de|d’] [arrêt|dépôt]
     >marchand [de|d’] tapis
     >marchand [de|d’] fruits et légumes
@@ -15588,11 +15590,11 @@ __substantifs_multi_mots__
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
         <<- not (morph(\1, ":[123][sp]") and morph(<1, ":O[sv]")) ~2:0>> *
-        <<- __also__ =>> =select(\1, ":N")
+        <<- __also__ =>> =select(\1, ":[NA]")
 
     >bête à [manger|bouffer] du foin
     >blanc comme neige
-    >blanc comme [de|d’] la craie
+    >blanc comme ?[de|d’]¿ la craie
     >blanc comme un linge
     >brut [de|d’] décoffrage
     >clair comme [de|d’] l’ eau [de|d’] [boudin|roche|source]
@@ -15613,6 +15615,7 @@ __substantifs_multi_mots__
     >fort en gueule
     >fou [de|d’] rage ?[contenue|retenue]¿
     >élu à la majarité absolue
+    gauche caviar
     >haut comme [trois|3] pommes
     >haut en couleur
     >lent à la [comprenette|détente]
@@ -20933,6 +20936,7 @@ __gn_devinette__
     [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs]  *WORD  *WORD
     [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des  *WORD  *WORD
         <<- /gn/ morph(\-1, ":[NA].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and morph(\-2, ":[NA].*:[pi]") and not apposition(\-2, \-1)
+            and not (value(>1, "|et|ou|") and morph(>2, ":A.*:[si]"))
         --1>> =suggPlur(\-1)                                                                && Accord erroné : « \-1 » devrait être au pluriel.
 
 TEST: La fille de cette belle {{inconnu}}                       ->> inconnue
@@ -20947,6 +20951,7 @@ TEST: le meurtre de son ex-petite amie
 TEST: à cette envie de la voir sourire tout le temps
 TEST: sur les raisons de la chute d’un des hommes populaires du pays.
 TEST: sur les raisons de la chute d’une des stars populaires du pays.
+TEST: Les bombardements des aviations syrienne et américaine
 
 
 __gn_un_une_de_leur_nom__
