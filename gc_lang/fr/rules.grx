@@ -1098,30 +1098,6 @@ TEST: Ligne de points{{...........................}}
 TEST: Aujourd’hui, M. Camus va nous lire son texte.
 
 
-
-!!
-!!
-!!!! Tirets                                                                                       !!
-!!
-!!
-
-# Tirets, énumérations et dialogues
-__<s>/typo(typo_tiret_début_ligne)__    ^[-_][  ] <<- ->> "— |– "           && Dialogues et énumérations : un tiret cadratin ou demi-cadratin, suivi d’un espace insécable, est requis.
-__<s>/typo(typo_tiret_dans_dialogue)__  ^ *«[  ](-[  ]) @@$ <<- -1>> "— |– "
-    && Dialogues : un tiret cadratin ou demi-cadratin, suivi d’un espace insécable, est requis. (Attention : à moins qu’il s’agisse d’un dialogue inclus dans un autre dialogue, cette manière d’écrire est erronée.)
-__<s>/nbsp(nbsp_après_tiret1)__          ^([—–]) +  @@0  <<- ->> "\1 "      && Dialogues et énumérations : ce tiret doit être suivi d’un espace insécable.
-__<s>/nbsp(nbsp_après_tiret2)__  ^([—–-])[\w«“‘]  @@0  <<- -1>> "— |– "     && Dialogues et énumérations : il faut tiret cadratin ou demi-cadratin suivi d’un espace insécable.
-__<s>/typo(typo_tiret_incise)__         " - " <<- ->> " – | — "             && Tiret d’incise : un tiret cadratin ou demi-cadratin est requis.
-
-TEST: {{- }}Ce tiret n’est correct nulle part.                              ->> "— |– "
-TEST: {{– }}Il manque toujours un espace insécable !                        ->> "– "
-TEST: {{— }}Idem ! etc.                                                     ->> "— "
-TEST: {{_ }}C’est long !                                                    ->> "— |– "
-TEST: {{—}}Viens là.                                                        ->> "— |– "
-TEST: Cette phrase contient{{ - }}c’est certain – des tirets d’incise.      ->> " – | — "
-TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. ->> "— |– "
-
-
 !!
 !!
 !!!! Ponctuations redondantes                                                                     !!
@@ -1180,9 +1156,41 @@ TEST: {{» }}C’est ce qu’on croit savoir.                                   
 
 !!
 !!
+!!!! Tirets                                                                                       !!
+!!
+!!
+
+# Tirets, énumérations et dialogues
+__<s>/typo(typo_tiret_début_ligne)__    ^[-_][  ] <<- ->> "— |– "           && Dialogues et énumérations : un tiret cadratin [1] ou demi-cadratin [2], suivi d’un espace insécable, est requis.
+__<s>/typo(typo_tiret_dans_dialogue)__  ^ *«[  ](-[  ]) @@$ <<- -1>> "— |– "
+    && Dialogues : un tiret cadratin [1] ou demi-cadratin [2], suivi d’un espace insécable, est requis. (Attention : à moins qu’il s’agisse d’un dialogue inclus dans un autre dialogue, cette manière d’écrire est erronée.)
+__<s>/nbsp(nbsp_après_tiret1)__          ^([—–]) +  @@0  <<- ->> "\1 "      && Dialogues et énumérations : ce tiret doit être suivi d’un espace insécable.
+__<s>/nbsp(nbsp_après_tiret2)__  ^([—–-])\d  @@0  <<- -1>> "— |– |−"        && Dialogues et énumérations : il faut tiret cadratin [1] ou demi-cadratin [2] suivi d’un espace insécable. S’il s’agit du signe “moins” indiquant un nombre négatif, utilisez le signe “moins” [3].
+__<s>/nbsp(nbsp_après_tiret3)__  ^([—–-])[\w«“‘]  @@0  <<- -1>> "— |– "     && Dialogues et énumérations : il faut tiret cadratin [1] ou demi-cadratin [2] suivi d’un espace insécable.
+__<s>/typo(typo_tiret_incise)__         " - " <<- ->> " – | — "             && Tiret d’incise : un tiret demi-cadratin [1] ou cadratin [2] est requis.
+
+TEST: {{- }}Ce tiret n’est correct nulle part.                              ->> "— |– "
+TEST: {{– }}Il manque toujours un espace insécable !                        ->> "– "
+TEST: {{— }}Idem ! etc.                                                     ->> "— "
+TEST: {{_ }}C’est long !                                                    ->> "— |– "
+TEST: {{—}}Viens là.                                                        ->> "— |– "
+TEST: {{-}}200 degrés                                                       ->> "— |– |−"
+TEST: Cette phrase contient{{ - }}c’est certain – des tirets d’incise.      ->> " – | — "
+TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. ->> "— |– "
+
+
+!!
+!!
 !!!! Signes typographiques                                                                        !!
 !!
 !!
+
+__<s]/typo(typo_signe_moins)__
+    -(\d+)  @@$  <<- not before("\\w$") ->> −\1|– \1|— \1
+    && S’il s’agit de représenter un nombre négatif, utilisez le signe typographique “moins” [1]. S’il s’agit d’une incise, utilisez un tiret demi-cadratin [2] ou un tiret cadratin [3].
+
+TEST: Résultat : {{-72}}.
+
 
 __<s>/typo(typo_signe_multiplication)__
     (\d+) ?[x*] ?(\d+)  @@0,$ <<- not \0.startswith("0x") ->> \1 × \2                               && Signe de multiplication typographique.
@@ -1191,13 +1199,6 @@ TEST: {{800 x 600}}                                                         ->> 
 TEST: {{800*600}}                                                           ->> 800 × 600
 TEST: {{800 * 600}}                                                         ->> 800 × 600
 TEST: nombre au format hexadécimal : 0x4407
-
-
-__<s]/typo(typo_signe_moins)__
-    -(\d+)  @@$  <<- not before("\\w$") ->> −\1|– \1|— \1
-    && S’il s’agit de représenter un nombre négatif, utilisez le signe typographique “moins”. S’il s’agit d’une incise, utilisez un tiret demi-cadratin ou un tiret cadratin.
-
-TEST: Résultat : {{-72}}.
 
 
 __<s>/typo(typo_inférieur_ou_égal)__                [\w  ](<=)[\w  ]  @@* <<- -1>> ≤|⩽              && Signe “inférieur ou égal”.
@@ -11430,6 +11431,10 @@ __conf_ver_vers_verre_vert__
     ce [ver|>verre|vert] quoi
         <<- /conf/ -2>> vers                                        && Confusion. Dans la locution “ce vers quoi”, écrivez “vers” (qui signifie “en direction de”).
 
+    >plat [>fond] [de|d’] [vert+s|>ver]
+    >plafond [de|d’] [vert+s|>ver]
+        <<- /conf/ --1>> verre                                      && Confusion. Locution “plafond de verre”.|https://fr.wiktionary.org/wiki/plafond_de_verre
+
     [le|ce|du|un] [>verre|vert|verts|vers] ?qui¿ [ai|ait|es|est|>étai|était|étais|serais|serai|serait|fut|fût|fus] dans le fruit
     [le|ce|du|un] [>verre|vert|verts|vers] dans le fruit
         <<- /conf/ -2>> ver
@@ -11452,6 +11457,7 @@ TEST: en finir avec le {{vert}} qui était dans le fruit.
 TEST: un immonde {{vert}} de terre
 TEST: Un {{ver}} de bière fraîche.
 TEST: On va lui tirer les {{verts}} du nez
+TEST: plafond de {{ver}}
 
 
 # voix / voie / vois / voit
@@ -15439,6 +15445,7 @@ __substantifs_multi_mots__
     [>piqûre|>piqure] [de|d’] rappel
     >pistolet à [eau|plomb]
     >placard à [>balai|chaussures]
+    >plafond de verre
     >plan [A|B|C|cul]
     >plan [de|d’] relance
     >planche [de|d’] salut
