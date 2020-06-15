@@ -84,7 +84,7 @@ def checkTokenNumbers (sText, sActionId, nToken):
 
 def checkIfThereIsCode (sText, sActionId):
     "check if there is code in <sText> (debugging)"
-    if re.search(r"[.]\w+[(]|sugg\w+[(]|\(\\[0-9]|\[[0-9]", sText):
+    if re.search(r"[.]\w+[(]|sugg\w+[(]|\(\\[0-9]|\[(?:[0-9]:|:)", sText):
         print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
         print(sText)
 
