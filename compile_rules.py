@@ -135,11 +135,11 @@ def countGroupInRegex (sRegex):
     return 0
 
 
-def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
+def createRule (s, nLineId, sLang, bParagraph, dOptPriority):
     "returns rule as list [option name, regex, bCaseInsensitive, identifier, list of actions]"
     global dJSREGEXES
 
-    sLineId = f"#{nIdLine}" + ("p" if bParagraph else "s")
+    sLineId = f"#{nLineId}" + ("p" if bParagraph else "s")
     sRuleId = sLineId
 
     #### GRAPH CALL
@@ -250,7 +250,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     lActions = []
     nAction = 1
     for sAction in s.split(" <<- "):
-        t = createAction(sRuleId + "_" + str(nAction), sAction, nGroup)
+        t = createAction(sLineId, sRuleId + "_" + str(nAction), sAction, nGroup)
         nAction += 1
         if t:
             lActions.append(t)
@@ -264,40 +264,40 @@ def checkReferenceNumbers (sText, sActionId, nToken):
     "check if token references in <sText> greater than <nToken> (debugging)"
     for x in re.finditer(r"\\(\d+)", sText):
         if int(x.group(1)) > nToken:
-            print(f"# Error in token index at line {sActionId} ({nToken} tokens only)")
+            print(f"# Error in token index at line {sLineId} / {sActionId} ({nToken} tokens only)")
             print(sText)
 
 
-def checkIfThereIsCode (sText, sActionId):
+def checkIfThereIsCode (sText, sLineId, sActionId):
     "check if there is code in <sText> (debugging)"
     if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
-        print(f"# Warning at line {sActionId}:  This message looks like code. Line should probably begin with =")
+        print(f"# Warning at line {sLineId} / {sActionId}:  This message looks like code. Line should probably begin with =")
         print(sText)
 
 
-def createAction (sIdAction, sAction, nGroup):
+def createAction (sLineId, sActionId, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
     if not m:
-        print(f"# No action at line {sIdAction}")
+        print(f"# No action at line {sLineId} / {sActionId}")
         return None
 
     #### CONDITION
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        lFUNCTIONS.append(("_c_"+sIdAction, sCondition))
-        checkReferenceNumbers(sCondition, sIdAction, nGroup)
+        lFUNCTIONS.append(("_c_"+sActionId, sCondition))
+        checkReferenceNumbers(sCondition, sActionId, nGroup)
         if ".match" in sCondition:
-            print("# Error. JS compatibility. Don't use .match() in condition, use .search()")
-        sCondition = "_c_"+sIdAction
+            print(f"# Error at line {sLineId} / {sActionId}. JS compatibility. Don't use .match() in condition, use .search()")
+        sCondition = "_c_"+sActionId
     else:
         sCondition = None
 
     #### iGroup / positioning
     iGroup = int(m.group(2)) if m.group(2) else 0
     if iGroup > nGroup:
-        print(f"# Selected group > group number in regex at line {sIdAction}")
+        print(f"# Error. Selected group > group number in regex at line {sLineId} / {sActionId}")
 
     #### ACTION
     sAction = sAction[m.end():].strip()
@@ -308,7 +308,7 @@ def createAction (sIdAction, sAction, nGroup):
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
-            print(f"# No message. Action id: {sIdAction}")
+            print(f"# No message. Id: {sLineId} / {sActionId}")
         else:
             sMsg = sAction[iMsg+4:].strip()
             sAction = sAction[:iMsg].strip()
@@ -317,44 +317,44 @@ def createAction (sIdAction, sAction, nGroup):
             if mURL:
                 sURL = mURL.group(1).strip()
                 sMsg = sMsg[:mURL.start(0)].strip()
-            checkReferenceNumbers(sMsg, sIdAction, nGroup)
+            checkReferenceNumbers(sMsg, sActionId, nGroup)
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
-                lFUNCTIONS.append(("_m_"+sIdAction, sMsg))
-                sMsg = "=_m_"+sIdAction
+                lFUNCTIONS.append(("_m_"+sActionId, sMsg))
+                sMsg = "=_m_"+sActionId
             else:
-                checkIfThereIsCode(sMsg, sIdAction)
+                checkIfThereIsCode(sMsg, sLineId, sActionId)
 
-    checkReferenceNumbers(sAction, sIdAction, nGroup)
+    checkReferenceNumbers(sAction, sActionId, nGroup)
     if sAction[0:1] == "=" or cAction == "=":
         sAction = prepareFunction(sAction)
         sAction = sAction.replace("m.group(i[4])", "m.group("+str(iGroup)+")")
     else:
-        checkIfThereIsCode(sAction, sIdAction)
+        checkIfThereIsCode(sAction, sLineId, sActionId)
 
     if cAction == ">":
         ## no action, break loop if condition is False
         return [sCondition, cAction, ""]
 
     if not sAction:
-        print(f"# Error in action at line {sIdAction}:  This action is empty.")
+        print(f"# Error in action at line {sLineId} / {sActionId}:  This action is empty.")
         return None
 
     if cAction == "-":
         ## error detected --> suggestion
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("_s_"+sIdAction, sAction[1:]))
-            sAction = "=_s_"+sIdAction
+            lFUNCTIONS.append(("_s_"+sActionId, sAction[1:]))
+            sAction = "=_s_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print(f"# Error in action at line {sIdAction}:  the message is empty.")
+            print(f"# Error in action at line {sLineId} / {sActionId}:  the message is empty.")
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
     if cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("_p_"+sIdAction, sAction[1:]))
-            sAction = "=_p_"+sIdAction
+            lFUNCTIONS.append(("_p_"+sActionId, sAction[1:]))
+            sAction = "=_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iGroup]
@@ -362,10 +362,10 @@ def createAction (sIdAction, sAction, nGroup):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
-        lFUNCTIONS.append(("_d_"+sIdAction, sAction))
-        sAction = "_d_"+sIdAction
+        lFUNCTIONS.append(("_d_"+sActionId, sAction))
+        sAction = "_d_"+sActionId
         return [sCondition, cAction, sAction]
-    print(f"# Unknown action at line {sIdAction}")
+    print(f"# Unknown action at line {sLineId} / {sActionId}")
     return None
 
 
