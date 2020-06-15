@@ -1121,10 +1121,13 @@ TEST: Vraiment, bof {{;;}} on ne sait guère qu’en penser.
 TEST: Raisons {{:.}} trop, c’est trop.
 
 
-#__<s]/typo__  °C <<- ->> ℃                                                      && Typographie. Utilisez le signe des degrés approprié.
 
+!!
+!!
+!!!! Espaces insécables                                                                           !!
+!!
+!!
 
-# Espaces insécables
 __<s>/nbsp(nbsp_ajout_avant_double_ponctuation)__
     \b[?!;]  <<- sCountry != "CA" ->> =" "+\0               && Il manque un espace insécable.
 __<s>/nbsp(nbsp_avant_double_ponctuation)__
@@ -1152,6 +1155,48 @@ TEST: Voyelles:{{a}}.                                                       ->> 
 TEST: Succession : a{{;}} b.                                                ->> " ;"
 TEST: C’est assez {{: }}parlez !                                            ->> ": "
 TEST: {{» }}C’est ce qu’on croit savoir.                                    ->> "» |« "
+
+
+__[s]/unit(unit_nbsp_avant_unités1)__
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKVΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|px|MHz|°C|℃)(?![’'])  @@0,0,$
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Avec une unité de mesure, mettez un espace insécable.
+        <<- __else__ ->> "\2 \3"                                    && Avec une unité de mesure, mettez un espace insécable.
+
+__[s]/unit(unit_nbsp_avant_unités2)__
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
+        <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+
+__[s]/unit(unit_nbsp_avant_unités3)__
+    ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
+        <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+
+TEST: Ça a duré {{3µs}}                                 ->> 3 µs
+TEST: Ça a duré {{3,5 µs}}                              ->> 3,5 µs
+TEST: il y en a {{3 m²}}                                ->> 3 m²
+TEST: il a fait {{10%}}                                 ->> 10 %
+TEST: Ça coûte {{13,4¥}}.                               ->> 13,4 ¥
+TEST: il mesure {{30,3 cm}}                             ->> 30,3 cm
+TEST: il est monté à {{18 %}}                           ->> 18 %
+TEST: une température de {{22,4 °C}}                    ->> 22,4 °C
+TEST: il en veut {{18kg}}                               ->> 18 kg
+TEST: il me le propose pour {{243 gCO2/kWh}}            ->> 243 gCO2/kWh
+TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
+TEST: en l’an 2000 Urgondorletroll eut une idée
+TEST: 1998 s’annonce grandiose.
+TEST: il y en a 3,43 milliards.
+TEST: je veux 200 euros.
+
+
+__[s]/nbsp(nbsp_math)__
+    (?:cos|sin|tan|cotan)²? [2-9]?[a-zA-Zα-ωΑ-Ω]
+        <<- ->> =\0.replace(" ", " ")+"|"+\0.replace(" ", "(")+")"          && Mettez un espace insécable ou, plus strictement, des parenthèses.
+
+TEST: {{cos ω}}                                         ->> cos ω|cos(ω)
+TEST: {{sin γ}}                                         ->> sin γ|sin(γ)
 
 
 !!
@@ -1214,6 +1259,8 @@ __<s>/liga(ligatures_typographiques)__              [ﬁﬂﬀﬃﬄﬅﬆ] <<- 
 TEST: __liga__ un {{ﬂ}}ottement                                           ->> fl
 TEST: __liga__ une belle {{ﬁ}}gure                                        ->> fi
 
+
+#__<s]/typo__  °C <<- ->> ℃                                                      && Typographie. Utilisez le signe des degrés approprié.
 
 
 !!
@@ -1288,46 +1335,6 @@ TEST: ces actions ne représentent rien{{’}} pour moi.
 TEST: « Je suis là.
 TEST: — Oui, nous t’avons vu arriver. »
 TEST: « J’en suis “malade”. »
-
-
-!!
-!!
-!!!! Espaces insécables avant unités de mesure                                                    !!
-!!
-!!
-
-__[s]/unit(unit_nbsp_avant_unités1)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKVΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|px|MHz|°C|℃)(?![’'])  @@0,0,$
-        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Avec une unité de mesure, mettez un espace insécable.
-        <<- __else__ ->> "\2 \3"                                    && Avec une unité de mesure, mettez un espace insécable.
-
-__[s]/unit(unit_nbsp_avant_unités2)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
-        <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
-        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-
-__[s]/unit(unit_nbsp_avant_unités3)__
-    ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
-        <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
-        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-
-TEST: Ça a duré {{3µs}}                                 ->> 3 µs
-TEST: Ça a duré {{3,5 µs}}                              ->> 3,5 µs
-TEST: il y en a {{3 m²}}                                ->> 3 m²
-TEST: il a fait {{10%}}                                 ->> 10 %
-TEST: Ça coûte {{13,4¥}}.                               ->> 13,4 ¥
-TEST: il mesure {{30,3 cm}}                             ->> 30,3 cm
-TEST: il est monté à {{18 %}}                           ->> 18 %
-TEST: une température de {{22,4 °C}}                    ->> 22,4 °C
-TEST: il en veut {{18kg}}                               ->> 18 kg
-TEST: il me le propose pour {{243 gCO2/kWh}}            ->> 243 gCO2/kWh
-TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
-TEST: en l’an 2000 Urgondorletroll eut une idée
-TEST: 1998 s’annonce grandiose.
-TEST: il y en a 3,43 milliards.
-TEST: je veux 200 euros.
 
 
 !!
