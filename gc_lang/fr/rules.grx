@@ -1191,12 +1191,12 @@ TEST: il y en a 3,43 milliards.
 TEST: je veux 200 euros.
 
 
-__[s]/nbsp(nbsp_math)__
-    (?:cos|sin|tan|cotan)²? [2-9]?[a-zA-Zα-ωΑ-Ω]
-        <<- ->> =\0.replace(" ", " ")+"|"+\0.replace(" ", "(")+")"          && Mettez un espace insécable ou, plus strictement, des parenthèses.
+__[s]/typo(typo_math)__
+    (?:cos|sin|tan|cotan|log|ln)²? [2-9]?[a-zA-Zα-ωΑ-Ω]
+        <<- ->> =\0.replace(" ", "(")+")|"+\0.replace(" ", " ")             && Mettez des parenthèses (ou éventuellement un espace insécable).
 
-TEST: {{cos ω}}                                         ->> cos ω|cos(ω)
-TEST: {{sin γ}}                                         ->> sin γ|sin(γ)
+TEST: {{cos ω}}                                         ->> cos(ω)|cos ω
+TEST: {{sin γ}}                                         ->> sin(γ)|sin γ
 
 
 !!
@@ -1210,9 +1210,10 @@ __<s>/typo(typo_tiret_début_ligne)__    ^[-_][  ] <<- ->> "— |– "       
 __<s>/typo(typo_tiret_dans_dialogue)__  ^ *«[  ](-[  ]) @@$ <<- -1>> "— |– "
     && Dialogues : un tiret cadratin [1] ou demi-cadratin [2], suivi d’un espace insécable, est requis. (Attention : à moins qu’il s’agisse d’un dialogue inclus dans un autre dialogue, cette manière d’écrire est erronée.)
 __<s>/nbsp(nbsp_après_tiret1)__          ^([—–]) +  @@0  <<- ->> "\1 "      && Dialogues et énumérations : ce tiret doit être suivi d’un espace insécable.
-__<s>/nbsp(nbsp_après_tiret2)__  ^([—–-])\d  @@0  <<- -1>> "— |– |−"        && Dialogues et énumérations : il faut tiret cadratin [1] ou demi-cadratin [2] suivi d’un espace insécable. S’il s’agit du signe “moins” indiquant un nombre négatif, utilisez le signe “moins” [3].
+__<s>/nbsp(nbsp_après_tiret2)__  ^([—–-])\d  @@0  <<- -1>> "— |– |−"        && Dialogues et énumérations : il faut tiret cadratin [1] ou demi-cadratin [2] suivi d’un espace insécable. S’il s’agit de représenter un nombre négatif, utilisez le signe “moins” [3].
 __<s>/nbsp(nbsp_après_tiret3)__  ^([—–-])[\w«“‘]  @@0  <<- -1>> "— |– "     && Dialogues et énumérations : il faut tiret cadratin [1] ou demi-cadratin [2] suivi d’un espace insécable.
-__<s>/typo(typo_tiret_incise)__         " - " <<- ->> " – | — "             && Tiret d’incise : un tiret demi-cadratin [1] ou cadratin [2] est requis.
+__<s>/typo(typo_tiret_incise1)__        " - (?=[0-9])" <<- ->> " – | — | − | −"     && Tiret d’incise : un tiret demi-cadratin [1] ou cadratin [2] est requis. (Ou éventuellement le signe “moins” s’il s’agit d’une soustraction [3] ou de représenter un nombre négatif [4].)
+__<s>/typo(typo_tiret_incise2)__        " - (?![0-9])" <<- ->> " – | — | − "        && Tiret d’incise : un tiret demi-cadratin [1] ou cadratin [2] est requis. (Ou éventuellement le signe “moins” [3], s’il s’agit d’une soustraction.)
 
 TEST: {{- }}Ce tiret n’est correct nulle part.                              ->> "— |– "
 TEST: {{– }}Il manque toujours un espace insécable !                        ->> "– "
@@ -1220,8 +1221,9 @@ TEST: {{— }}Idem ! etc.                                                     -
 TEST: {{_ }}C’est long !                                                    ->> "— |– "
 TEST: {{—}}Viens là.                                                        ->> "— |– "
 TEST: {{-}}200 degrés                                                       ->> "— |– |−"
-TEST: Cette phrase contient{{ - }}c’est certain – des tirets d’incise.      ->> " – | — "
 TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. ->> "— |– "
+TEST: Cette phrase contient{{ - }}c’est certain – des tirets d’incise.      ->> " – | — | − "
+TEST: x{{ - }}200                                                           ->> " – | — | − | −"
 
 
 !!
