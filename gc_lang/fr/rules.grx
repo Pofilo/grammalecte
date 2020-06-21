@@ -36,7 +36,7 @@
 !!
 !!
 
-OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj, num nf, virg poncfin, ocr chim, liga mapos
+OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj minis, num nf, virg poncfin, ocr chim, liga mapos
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
 OPTGROUP/style: bs pleo, eleu neg, redon1 redon2
@@ -53,6 +53,7 @@ OPT/tab:            False       True        False       False       False       
 OPT/nbsp:           True        True        True        False       False       False
 OPT/tu:             True        True        True        True        True        True
 OPT/maj:            True        True        True        True        True        True
+OPT/minis:          True        True        True        True        True        True
 OPT/num:            True        True        True        True        True        True
 #OPT/romain:         False       False       False       False       False       False
 OPT/virg:           True        True        True        True        True        True
@@ -116,6 +117,7 @@ OPTCOLOR/tab:       orange      orange_vif
 OPTCOLOR/nbsp:      orange      orange_vif
 OPTCOLOR/tu:        orange      orange_vif
 OPTCOLOR/maj:       orange      orange_vif
+OPTCOLOR/minis:     orange      orange_vif
 OPTCOLOR/num:       orange      orange_vif
 #OPTCOLOR/romain:    orange      orange_vif
 OPTCOLOR/virg:      orange      orange_vif
@@ -162,6 +164,7 @@ OPTLABEL/esp:       Espaces surnuméraires|Signale les espaces inutiles entre le
 OPTLABEL/tab:       Tabulations surnuméraires|Signale les tabulations inutiles en début et en fin de ligne.
 OPTLABEL/nbsp:      Espaces insécables|Vérifie les espaces insécables avec les ponctuations « ! ? : ; » (à désactiver si vous utilisez une police Graphite)
 OPTLABEL/maj:       Majuscules|Vérifie l’utilisation des majuscules et des minuscules (par exemple, « la raison d’État », « les Européens »).
+OPTLABEL/minis:     Majuscules pour ministères|Majuscules pour les intitulés des ministères.
 OPTLABEL/virg:      Virgules|Virgules manquantes avant “mais”, “car” et “etc.”.
 #OPTLABEL/romain:    Nombres romains|Utilise les caractères dédiés (petites majuscules) pour les nombres romains.
 OPTLABEL/poncfin:   Ponctuation finale [!]|Vérifie s’il manque une ponctuation finale au paragraphe (seulement pour les paragraphes constitués de plusieurs phrases).
@@ -212,6 +215,7 @@ OPTLABEL/esp:       Useless spaces|Checks spaces within words and at the beginni
 OPTLABEL/tab:       Useless tabulations|Checks tabulations at the beginning and the end of lines.
 OPTLABEL/nbsp:      Non-breakable spaces|Checks the use of non-breakable spaces with the following punctuation marks: « ! ? : ; » (deactivate it if you use a Graphite font).
 OPTLABEL/maj:       Capitals|Checks the use of uppercase and lowercase letters (i.e. « la raison d’État », « les Européens »).
+OPTLABEL/minis:     Capitals for ministry|Capital letters for ministry.
 OPTLABEL/virg:      Commas|Missing commas before “mais”, “car” and “etc.”.
 OPTLABEL/poncfin:   Ending punctuation [!]|Checks if an ending punctuation is missing on paragraphs (only for multi-sentences paragraphs).
 #OPTLABEL/romain:    Roman numerals|Use dedicated characters (small caps) for roman numerals.
@@ -1962,16 +1966,16 @@ __da_mots_grammaticaaux__
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
-    [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
+    [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
-    [la|ma|ta|sa|les|des|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
+    [la|ma|ta|sa|les|des|nos|vos|leur|leurs|chaque|quel|quelle|quels|quelles] personne
         <<- =>> select(\2, ":N")
 
-    [le|la|l’|les|du|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
+    [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
-    [le|l’|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
+    [le|l’|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
     puis
@@ -6430,7 +6434,7 @@ __conf_déterminant_mas_sing_verbe__
             and not value(\2, "|faire|sont|soit|fut|fût|serait|sera|seront|soient|furent|fussent|seraient|peut|pouvait|put|pût|pourrait|pourra|doit|dut|dût|devait|devrait|devra|") and hasSimil(\2)
         -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                && Incohérence avec “\1” : “\2” est un verbe.
 
-    mon  @:(?:Y|[123][sp])¬:[NAQ]
+    [mon|chaque]  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower()
         -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                   && Incohérence avec “\1” : “\2” est un verbe.
 
@@ -6443,12 +6447,13 @@ __conf_déterminant_mas_sing_verbe__
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               && Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
 TEST: un {{maintient}} difficile.
-TEST: quelqu’un arrive.
 TEST: cet {{plaît}} est infectée.
 TEST: {{ce}} {{rappelle}} n’en finit pas.
 TEST: mon {{rackette}} n’a pas porté les fruits espérés.
 TEST: ton {{recèle}} avait été dévoilé
 TEST: quel {{impacte}} cela aura-t-il ?
+TEST: chaque {{désire}} importe.
+TEST: quelqu’un arrive.
 TEST: Belle qui tient mon vit captif entre tes doigts.
 TEST: Quel serait l’homme capable d’une telle horreur ?
 
@@ -7610,7 +7615,7 @@ __conf_a_à_substantifs__
     >rouge a >lèvre
     >sac a [dos|main|langer|merde|foutre]
     >serpent a >sonnette
-    >sujet a [>caution|>interprétation]
+    >sujet a [>débat|>caution|>interprétation]
     >silo a [>grain|blé]
     >soue a >cochon
     >table a repasser
@@ -11860,7 +11865,7 @@ __maj_ministères__
     [>ministre|>ministère] des anciens combattants
     [>ministre|>ministère] des [armées|droits|finances|postes|solidarités|sports|sciences]
     [>ministre|>ministère] du [bonheur|budget|commerce|logement|travail]
-        <<- /maj/ \3.islower() -3>> =\3.capitalize()                    && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+        <<- /minis/ \3.islower() -3>> =\3.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
 
     [>ministre|>ministère] de l’ action [publique|territoriale]
     [>ministre|>ministère] de l’ aménagement territorial
@@ -11871,7 +11876,7 @@ __maj_ministères__
     [>ministre|>ministère] de la coopération internationale
     [>ministre|>ministère] de la transition écologique
     [>ministre|>ministère] de la [culture|défense|guerre|jeunesse|justice|mer|propagande|recherche|santé|solidarité|ville]
-        <<- /maj/ \4.islower() -4>> =\4.capitalize()                    && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+        <<- /minis/ \4.islower() -4>> =\4.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
 
 TEST: Le ministre du {{commerce}}                                       ->> Commerce
 TEST: ministère de la {{culture}}                                       ->> Culture
@@ -12841,7 +12846,7 @@ __purge_horaires_et_durée__
     à toute heure de la nuit et du jour
     à toute heure du jour
     à toute heure du jour et de la nuit
-    à une heure [décente|indue|tardive]
+    à une heure ?[aussi|très|trop]¿ [décente|indue|tardive]
     au jour et à l’ heure dits
     au cours de la [dernière|précédente|prochaine] [seconde|minute|heure]
     au cours de l’ heure ?[dernière|passée|précédente|prochaine]¿
@@ -15145,6 +15150,7 @@ __substantifs_multi_mots__
     >cap à suivre
     >carabine à plomb
     >carburant [de|d’] synthèse
+    >carte à jouer
     >carte [de|d’] presse
     >carton d’ emballage
     cas [de|d’] figure
@@ -15257,6 +15263,7 @@ __substantifs_multi_mots__
     >ennemi d’ État
     ennemi public numéro [un|deux|trois|1|2|3]
     >ennui [de|d’] santé
+    >enregistreur [de|d’] vol
     >enterrement [de|d’] vie [de|d’] garçon
     >enterrement [de|d’] vie [de|d’] jeune fille
     >entrée [de|d’] service
@@ -15416,6 +15423,7 @@ __substantifs_multi_mots__
     >motion [de|d’] [censure|défiance] ?constructive¿
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >moulin à [café|eau|paroles|poivre|prières|vent]
+    >nerf à vif
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nounou à domicile
@@ -15651,7 +15659,7 @@ __substantifs_multi_mots__
     >sain [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     [secret+s] défense
     >sourd comme un pot
-    >sujet à interprétation
+    >sujet à [caution|débat|interprétation]
     >sujet à interprétations diverses
     >têtu comme une [bourrique|mule]
     >têtu comme un [âne|bourriquot|mulet]
@@ -16577,6 +16585,7 @@ __da_locutions_verbales__
     [>donner|>redonner] [naissance|sens|suite|vie]
     [>donner|>redonner] quartier libre
     >élire domicile
+    >entendre raison
     >étouffer dans l’ œuf
     >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|scandale|sens|sensation|signe|surface|usage|volte-face]
     >faire amende honorable
@@ -16625,7 +16634,7 @@ __da_locutions_verbales__
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] bon ordre
     [>mettre|>remettre] [de|d’] côté
-    [>mettre|>remettre] en [avant|branle|bouche|demeure|évidence|garde|jeu|lumière|marche|mouvement|œuvre|place|route|scène|terre]
+    [>mettre|>remettre] en [avant|branle|bouche|demeure|évidence|garde|jeu|lumière|marche|mouvement|œuvre|place|route|scène|terre|veilleuse]
     >monter [de|d’] toutes pièces
     >mourir [de|d’] [ma|ta|sa|notre|votre|leur] belle mort
     >mourir jeune
@@ -16674,7 +16683,7 @@ __da_locutions_verbales__
     >suivre ?[ça|cela|ceci]¿ [de|d’] près
     >tenir à [carreau|cœur]
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
-    >tenir [compte|compagnie]
+    >tenir [compte|compagnie|parole]
     >tenir au courant
     >tenir en haute estime
     >tirer [avantage|profit]
