@@ -1162,7 +1162,7 @@ TEST: {{» }}C’est ce qu’on croit savoir.                                   
 
 
 __[s]/unit(unit_nbsp_avant_unités1)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKVΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|px|MHz|°C|℃)(?![’'])  @@0,0,$
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)([kcmµn]?(?:[slgJKVΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|jours?|semaines|mois|ans?|euros?|heures?|px|MHz|°C|℃)(?![’'])  @@0,0,$
         <<- option("num") ->> =formatNumber(\2) + " " + \3          && Avec une unité de mesure, mettez un espace insécable.
         <<- __else__ ->> "\2 \3"                                    && Avec une unité de mesure, mettez un espace insécable.
 
@@ -1189,10 +1189,12 @@ TEST: une température de {{22,4 °C}}                    ->> 22,4 °C
 TEST: il en veut {{18kg}}                               ->> 18 kg
 TEST: il me le propose pour {{243 gCO2/kWh}}            ->> 243 gCO2/kWh
 TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
+TEST: {{40 MHz}}                                        ->> 40 MHz
+TEST: {{100 Ah}}                                        ->> 100 Ah
 TEST: en l’an 2000 Urgondorletroll eut une idée
 TEST: 1998 s’annonce grandiose.
 TEST: il y en a 3,43 milliards.
-TEST: je veux 200 euros.
+TEST: je veux 200 euros.
 
 
 __[s]/typo(typo_math)__
@@ -1390,7 +1392,7 @@ __[s](num_grand_nombre_avec_espaces)__
         <<- option("num") ->> =\0.replace(" ", " ")                                                 && Grands nombres : utilisez des espaces insécables.
         <<- ~>> =\0.replace(" ", "_")
 
-TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
+TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
 
 !!
@@ -2671,7 +2673,7 @@ TEST: __ocr__ si vous {{La}} désirez                                           
 TEST: __ocr__ sa main se referme sur {{Je}} livre                               ->> je
 TEST: __ocr__ Ils étaient portés à croire que Danton et Robespierre ne mettraient aucun obstacle. Le 8 au soir, Robespierre était allé à la section {{Bonne-Nouvelle}}, avait invectivé violemment contre la Gironde. Pendant son discours, un des siens, qui l’attendait à la porte, disait qu’on devrait massacrer non les Girondins seulement, mais tous les signataires des fameuses pétitions.
 TEST: __ocr__ Prends cette pelle et creuse.
-TEST: __ocr__ Roland, 87 ans, amoureux depuis cinq ans : « J’ai l’impression que je vais vivre encore longtemps »
+TEST: __ocr__ Roland, 87 ans, amoureux depuis cinq ans : « J’ai l’impression que je vais vivre encore longtemps »
 TEST: __ocr__ QUE FAIRE D’APRÈS EUX ?
 
 
@@ -3050,8 +3052,8 @@ TEST: __ocr__ {{U}} arrive
 TEST: __ocr__ {{Us}} arrive demain.
 TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
 TEST: __ocr__ {{11}} n’en sait rien
-TEST: __ocr__ elle a 11 ans.
-TEST: __ocr__ 11 jours de souffrance
+TEST: __ocr__ elle a 11 ans.
+TEST: __ocr__ 11 jours de souffrance
 TEST: __ocr__ nous sommes le 11 septembre
 
 
@@ -7353,6 +7355,7 @@ __conf_à_a_locutions__
     a géométrie variable
     a gorge déployée
     a grand-peine
+    a ?[si|très|trop|plus|moins]¿ grand bruit
     a ?[si|très|trop|plus|moins]¿ grande échelle
     a grands frais
     a ?[si|très|trop]¿ haut risque
@@ -8471,11 +8474,17 @@ __conf_coup_cout_cou1__
     après [>cou|>coût|>coût]
         <<- /conf/ -2>> coup            && Confusion probable. Locution “après coup” qui signifie “une fois que c’est terminé”.|https://fr.wiktionary.org/wiki/apr%C3%A8s_coup
 
+    sous le [cout|cout|cou] [de|d’] l’ [émotion|étonnement]
+    sous le [cout|cout|cou] [de|d’] la [colère|joie|rage|stupeur|surprise]
+    sous le [cout|cout|cou] du [bonheur]
+        <<- /conf/ -3>> coup            && Confusion probable. Locution “sous le coup de…”|https://fr.wiktionary.org/wiki/sous_le_coup_de
+
 TEST: J’ai pris un {{cou}} de bâton.
 TEST: Encore un {{cou}} dur.
 TEST: Merci de calculer le {{coup}} de production avant d’établir une facture.
 TEST: Elle a un {{coût}} très gracile.
 TEST: Après {{coût}} on a compris notre erreur.
+TEST: sous le {{cout}} de la colère
 
 
 # cour / cours / court
@@ -8685,7 +8694,7 @@ __conf_dès_des_dés__
         -1>> dès                                                                                    && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM heures
-        <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|") and \2 != "35"
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles|au-delà)/") and not value(>1, "|de|du|des|d’|") and not value(\2, "|35|39|40|48|")
         -1>> dès                                                                                    && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] $:B:e:p heures
@@ -8715,8 +8724,8 @@ TEST: Dieu ne joue pas aux {{dès}}.
 TEST: J’apporte mes {{dès}}.
 TEST: {{Des}} 1980, le pays était en crise.
 TEST: {{Des}} dix-huit ans.
-TEST: {{Des}} 4 ans.
-TEST: Viens {{des}} 9 heures
+TEST: {{Des}} 4 ans.
+TEST: Viens {{des}} 9 heures
 TEST: {{Des}} l’arrivée, ça a commencé à dégénérer
 TEST: c’était {{dés}} trois heures.
 TEST: {{dés}} que nous sommes partis, il a piqué une crise
@@ -8730,32 +8739,33 @@ TEST: Des 2000 participants, seuls 1000 sont venus.
 TEST: Des 2000 invités, seuls 1000 sont venus.
 TEST: Dieu ne joue pas aux dés.
 TEST: Dès dix-huit ans.
-TEST: L’anniversaire des 30 ans de la libération.
-TEST: Le cap des 35 ans.
+TEST: L’anniversaire des 30 ans de la libération.
+TEST: Le cap des 35 ans.
 TEST: Elle approche des cinquante ans.
 TEST: À l’occasion des vingt ans du groupe.
-TEST: Le congrès des 20 ans de l’association.
-TEST: L’album des 15 ans du groupe.
+TEST: Le congrès des 20 ans de l’association.
+TEST: L’album des 15 ans du groupe.
 TEST: Dès à présent
 TEST: Donne-moi tes dés à présent.
-TEST: le diagnostic se pose autour des 20 ans
-TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
+TEST: le diagnostic se pose autour des 20 ans
+TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
 TEST: sous la barre des 500
-TEST: En plus des 400 à 500 euros mensuels que touche une personne
-TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
-TEST: au lieu des 20 heures réglementaires.
-TEST: celle des 20 ans.
+TEST: En plus des 400 à 500 euros mensuels que touche une personne
+TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
+TEST: au lieu des 20 heures réglementaires.
+TEST: celle des 20 ans.
 TEST: sous le seuil des 10 %
 TEST: notre revue des 24 et 25 décembre
 TEST: J’ai des X230.
-TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
-TEST: C’est la fin des 35 heures.
-TEST: 98 % des 18‑29 ans considéraient cela comme évident
+TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
+TEST: C’est la fin des 35 heures.
+TEST: 98 % des 18‑29 ans considéraient cela comme évident
 TEST: Gagnez trois dés lors d’un test
 TEST: aucun des 19 peuples concernés n’en veut
 TEST: un des 18 sera bientôt là.
 TEST: Le délai des cinq ans pourra-t-il être tenu pour une réouverture ?
 TEST: Les dires de la sportive vont dans le sens des déclarations d’un autre des 281 autres athlètes français membres de la délégation.
+TEST: voire au-delà même des 48 heures
 
 
 # diagnostic/diagnotique, pronostic/pronostique, public/publique
@@ -9298,7 +9308,7 @@ TEST: Il n’y en a {{guerre}}.
 TEST: Je n’aime plus {{guerre}} le sport.
 TEST: Il n’y en a plus {{guerre}}.
 TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
-TEST: elles sont sur le pied de {{guère}} depuis 10 jours.
+TEST: elles sont sur le pied de {{guère}} depuis 10 jours.
 TEST: Je hais la {{guère}}.
 TEST: je n’en aimais certains guère.
 TEST: ce que nous appelons Guerre psychologique
@@ -10388,7 +10398,7 @@ __conf_près_prêt_pré__
     si [>prêt|>pré] [du|de|d’|des]
         <<- /conf/ -2>> près                                                && Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    [>raser|>suivre] de [>prêt|>pré]
+    [>espionner|>étudier|>raser|>suivre|>surveiller] de [>prêt|>pré]
         <<- /conf/ --1>> près                                               && Confusion probable : de près, c’est-à-dire proche de quelque chose ou quelqu’un.
 
     à la [virgule|nanoseconde|milliseconde|seconde|minute] [>prêt|>pré]
@@ -10413,7 +10423,7 @@ __conf_près_prêt_pré__
     depuis [>prêt|>pré] [de|d’] $:B:e:p  *WORD
         <<- /conf/ -2>> près                                && Confusion. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
 
-TEST: depuis {{prêt}} de 15 ans
+TEST: depuis {{prêt}} de 15 ans
 TEST: approche très {{prêt}}
 TEST: ils se sont approchés très {{prêts}}.
 TEST: Je suis si {{prêt}} d’y arriver.
@@ -13458,7 +13468,7 @@ TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
 TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 TEST: Une étude de 2005 publiée dans le Journal
 TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consacrée à Silicon Valley.
-TEST: c’est donc la cinquième en 50 ans
+TEST: c’est donc la cinquième en 50 ans
 TEST: profanation de plusieurs églises françaises début février.
 
 
@@ -13593,6 +13603,7 @@ __purge_locutions__
     à glacer le sang
     à glacer les sangs
     à gorge déployée
+    à ?[si|très|trop|plus|moins]¿ grand bruit
     à ?[si|très|trop|plus|moins]¿ grande échelle
     à ?[si|très|trop]¿ grands frais
     à grands traits ?[imprécis|rageurs|précis|vagues]¿
@@ -15270,7 +15281,7 @@ __substantifs_multi_mots__
     >épée à deux mains
     >épingle à cravate
     >épreuve [de|d’] force
-    >erreur [de|d’] [calcul|jugement]
+    >erreur [de|d’] [calcul|jeunesse|jugement]
     >erreur d’ appréciation
     >escroquerie à l’ assurance
     >espérance [de|d’] vie
@@ -15334,6 +15345,7 @@ __substantifs_multi_mots__
     >grève [de|d’] la faim
     >groupe [de|d’] [discussion|parole|prière|pression|travail]
     >guerre éclair
+    >guerre à outrance
     >hall d’ entrée
     >harcèlement [de|d’] rue
     >heure [sup|sup’]
@@ -20678,11 +20690,11 @@ __gn_nombre_chiffres_1m__
         -3>> =suggPlur(\3)                                                                          && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
 TEST: il a adopté 1 {{chiens}}.
-TEST: 22 {{heure}}
-TEST: 3 {{heure}}
+TEST: 22 {{heure}}
+TEST: 3 {{heure}}
 TEST: Environ 10 essais {{nucléaire}} ont été réalisés
 TEST: 20 {{grandes}} {{animaux}}
-TEST: 00 heure, 01 heure
+TEST: 00 heure, 01 heure
 TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 TEST: ils gagneront 300 € maximum.
 TEST: il revint en 2005 complètement dévoré par la culpabilité.
@@ -25755,7 +25767,7 @@ __ppas_adj_accord_il__
 
 TEST: — {{Déçue}}, il s’en est allé.
 TEST: — Désolée, il va partir bientôt.
-TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
+TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
 TEST: Si délégués il doit y avoir, ce sera uniquement des gens choisis parmi nous.
 TEST: Étudiante, il s’agissait de s’inventer des parents riches.
 
@@ -29017,7 +29029,7 @@ TODO: Les créatures de l’enfer que nous avions rencontrées…
 TODO: Étaient-ils vraiment frère et sœur
 TODO: Cela fait des années qu’elle n’a pas donné signe de vie.
 TODO: Ce qu’ils sont influence leur regard sur moi.
-TODO: Ils sont âgés de 4 et 1 ans.
+TODO: Ils sont âgés de 4 et 1 ans.
 TODO: Mille neuf cent quatre-vingt. (dépend du contexte)
 TODO: La Mustang est une voiture.
 TODO: Il faut se bien connaître soi-même.
@@ -29104,7 +29116,7 @@ TEST: Ceux de l’Université sont plus perfectionnés
 TEST: Celles de l’Institut sont plus perfectionnées
 TEST: Judith A. Allan a aussi constaté que les études sur les crises de la masculinité ne proposent pas ou que très rarement d’indicateurs pour déterminer si une société est (trop) féminisée et si les hommes sont (réellement) en crise.
 TEST: une procédure abusive pour fermer la porte qu’elles ont essayé d’ouvrir
-TEST: En France, les hauts fonctionnaires gagnent en moyenne 7850 euros net
+TEST: En France, les hauts fonctionnaires gagnent en moyenne 7850 euros net
 TEST: Il faut avoir du pouvoir et des ressources
 TEST: Le con de jadis ne dérangeait personne, maintenant il répand sa haine et son inculture sur les réseaux sociaux.
 TEST: Les hommes qui se servaient de lui espéraient l’amadouer…
@@ -29127,7 +29139,7 @@ TEST: Ne pense pas à ce sur quoi tu poses les pieds et tout ira bien
 TEST: les nerfs du vieux Paul lâchent
 TEST: Il sortit de sa léthargie, épuisé et trempé
 TEST: Les étrangers étaient à ce point dévisagés qu’ils en devenaient invisibles.
-TEST: Si Leila Khaled est surtout connue pour des détournements ayant eu lieu il y a plus de 40 ans.
+TEST: Si Leila Khaled est surtout connue pour des détournements ayant eu lieu il y a plus de 40 ans.
 TEST: Seuls le patron et le vieux Félix disposent d’une crèche individuelle
 TEST: Il ou elle ne conçoivent même plus qu’on veuille empiéter sur la liberté des choix.
 TEST: La fusion entre eux et les Espagnols arabisés affaiblit
@@ -30239,7 +30251,7 @@ TEST: Il a été libéré sans contre-partie.
 TEST: Quelles sont les contreparties ?
 TEST: Il ne me reste que huit centimes.
 TEST: Elle est enceinte de trois mois.
-TEST: Elle est enceinte de 3 mois.
+TEST: Elle est enceinte de 3 mois.
 TEST: Le mois de mai a été froid.
 TEST: Le mois d’avril a été froid.
 TEST: Quel âge as-tu ?
@@ -30361,7 +30373,7 @@ TEST: Quarante pour cent des femmes
 TEST: Vos nom et prénom, s’il vous plaît.
 TEST: Des fautes.
 TEST: Les ayants droit.
-TEST: Nous aurons les résultats dans 4 heures maximum.
+TEST: Nous aurons les résultats dans 4 heures maximum.
 TEST: Critique des cent jours du président.
 TEST: Un dispositif moins ambitieux mais applicable.
 TEST: Ces analyses bidon.
@@ -30409,7 +30421,7 @@ TEST: Les dossiers triés par ordre alphabétique.
 TEST: Les soldats abasourdis par le chaos.
 TEST: Une bouteille fut apportée.
 TEST: L’homme présente une amie.
-TEST: Une réduction des coûts comprise entre 10 et 20 euros.
+TEST: Une réduction des coûts comprise entre 10 et 20 euros.
 #TEST: Une omelette au jambon relevée d’oseille.
 TEST: Des bouteilles non vidées
 TEST: La détention provisoire illimitée
@@ -31049,7 +31061,7 @@ TEST: Quel genre de musique j’écoute
 TEST: Que manges-tu ?
 TEST: Que prend-il ?
 TEST: Notre point de départ on pouvait le voir d’ici.
-TEST: Ce prédateur réintroduit il y a 30 ans.
+TEST: Ce prédateur réintroduit il y a 30 ans.
 TEST: L’auditoire était on ne peut plus ravi.
 TEST: Que prend-elle ?
 TEST: C’est elle qui vient.
@@ -31733,7 +31745,7 @@ TEST: Je m’appelle Pierre-Yves.
 TEST: Je m’appelle Charles-Édouard.
 TEST: Je m’appelle Marie-Laure.
 TEST: Je m’appelle Anne-Sophie.
-TEST: Mon grand-père a 100 ans.
+TEST: Mon grand-père a 100 ans.
 TEST: J’ai ouï-dire qu’il ne viendra pas.
 TEST: C’est un chef-d’œuvre.
 TEST: Il habite en Franche-Comté.
@@ -32191,7 +32203,7 @@ TEST: J’ai dormi, pourtant.
 TEST: 9 août. — Rien, mais j’ai peur.
 TEST: 10 août. — Rien ; qu’arrivera-t-il demain ?
 TEST: 11 août. — Toujours rien ; je ne puis plus rester chez moi avec cette crainte et cette pensée entrées en mon âme ; je vais partir.
-TEST: 12 août, 10 heures du soir. — Tout le jour j’ai voulu m’en aller ; je n’ai pas pu.
+TEST: 12 août, 10 heures du soir. — Tout le jour j’ai voulu m’en aller ; je n’ai pas pu.
 TEST: J’ai voulu accomplir cet acte de liberté si facile, si simple, — sortir — monter dans ma voiture pour gagner Rouen — je n’ai pas pu. Pourquoi ?
 TEST: 13 août. — Quand on est atteint par certaines maladies, tous les ressorts de l’être physique semblent brisés, toutes les énergies anéanties, tous les muscles relâchés, les os devenus mous comme la chair et la chair liquide comme de l’eau.
 TEST: J’éprouve cela dans mon être moral d’une façon étrange et désolante.
