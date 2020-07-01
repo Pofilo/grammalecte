@@ -15103,6 +15103,7 @@ __substantifs_multi_mots__
     >aide [de|d’] camp
     >aire d’ atterrissage
     >animal [de|d’] compagnie
+    >appartement à louer
     >appât du gain ?[facile|rapide]¿
     >appel au secours
     >appel à l’ aide ?humanitaire¿
@@ -15329,6 +15330,7 @@ __substantifs_multi_mots__
     >fosse aux lions
     >fou à lier
     [>fourgon|>fourgonnette] [de|d’] location
+    frais de scolarité
     >frayeur [de|d’] tous les diables
     >frein à >tambour
     >frousse [de|d’] tous les diables
@@ -15391,6 +15393,7 @@ __substantifs_multi_mots__
     >livre [de|d’] [poche|chevet]
     >livret A
     >livret d’ épargne ?[bancaire|populaire|salariale]¿
+    >local à louer
     >loi d’ airain
     >longueur d’ avance
     >lune [de|d’] miel
@@ -15539,10 +15542,12 @@ __substantifs_multi_mots__
     >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
     >salon [de|d’] coiffure
     sas [de|d’] [confinement|décompression|décontamination|désinfection|livraison|protection|secours|sécurité]
+    >scène [de|d’] crime
     >sclérose en plaques
     >seconde d’ arc
     >sel [de|d’] [aluminium|ammonium|mer]
     >serpent à sonnette
+    >service clientèle
     >service d’ ordre
     >seuil [de|d’] tolérance
     >seuil [de|d’] tolérance à la douleur
@@ -15609,7 +15614,7 @@ __substantifs_multi_mots__
     >vague à l’ âme
     >vecteur [>accélération|>position|>rotation|>vitesse]
     >véhicule [de|d’] location
-    >vente à domicile
+    >vente à [domicile|emporter]
     >vente aux enchères
     >vérification [de|d’] routine
     vernis à ongles
@@ -20264,7 +20269,7 @@ TEST: ils disent finalement tous les deux la même chose
 
 __gn_des_2m__
     des  *WORD  *WORD
-        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs|LV)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
+        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs|LV)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not morph(\3, ">(?:seul|minimum|maximum)/") >>>
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 && Accord de genre erroné avec « \3 ».
@@ -23739,8 +23744,8 @@ __ppas_je_tu_verbe_état__
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿   /_LVED_verbe_de_verbeétat_  [de|d’] ?[ne|n’]¿ ?[en|y]¿  /_LVEF_verbe_de_verbeétat_  @:[NAQ].*:p¬:[GWYsi]
         <<- /ppas/ not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggSing(\-1)                                  && Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
-    [je|j’] ?[ne|n’]¿ [me|m’]  ?[en|y]¿ >faire                                                                                                 @:[NA].*:p¬:[GWYQsi]
-    tu      ?[ne|n’]¿ [te|t’]  ?[en|y]¿ >faire                                                                                                 @:[NA].*:p¬:[GWYQsi]
+    [je|j’] ?[ne|n’]¿ [me|m’]  ?[en|y]¿ >faire                                                                          @:[NA].*:p¬:[GWYQsi]
+    tu      ?[ne|n’]¿ [te|t’]  ?[en|y]¿ >faire                                                                          @:[NA].*:p¬:[GWYQsi]
     [je|j’] ?[ne|n’]¿ m’ ?[en|y]¿   >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  @:[NAQ].*:p¬:[GWYsi]
     tu      ?[ne|n’]¿ t’ ?[en|y]¿   >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]  @:[NAQ].*:p¬:[GWYsi]
         <<- /ppas/ not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggSing(\-1)                                  && Accord avec le sujet “\1” : “\-1” devrait être au singulier.
@@ -25147,31 +25152,33 @@ TEST: ayant été elles-mêmes {{ignorés}} par leur hiérarchie         ->> ign
 !!
 
 __ppas_je_me_verbe__
-    [je|j’]  ?[ne|n’]¿  [me|m’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
 TEST: je me savais {{implacables}} avec eux
 TEST: je ne m’avouais pas {{vaincus}}
+TEST: je me tenais {{informées}} des derniers évènements
 
 
 __ppas_tu_te_verbe__
-    tu  ?[ne|n’]¿  [te|t’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+    tu  ?[ne|n’]¿  [te|t’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le sujet “tu” : “\-1” devrait être au singulier.
 
 TEST: quand tu te montres {{infaillibles}}
+TEST: tu te tiens {{prêts}}
 
 
 __ppas_3sg_mas_se_verbe__
-    [il|quiconque]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
+    [il|quiconque]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ --1>> =suggMasSing(\-1)                              && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [lui|ça|ceci|cela|celui-ci|celui-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
+    [lui|ça|ceci|cela|celui-ci|celui-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggMasSing(\-1)       && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
+    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ morph(\-2, ":[123]s") --1>> =suggMasSing(\-1)        && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    lequel  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
+    lequel  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)          && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: il se révéla totalement {{incapables}} d’y parvenir.
@@ -25181,13 +25188,13 @@ TEST: lequel se veut {{imbattables}} ?
 
 
 __ppas_3sg_fem_se_verbe__
-    [elle|celle-ci|celle-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
+    [elle|celle-ci|celle-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggFemSing(\-1)       && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    [elle|celle|celle-ci|celle-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
+    [elle|celle|celle-ci|celle-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ morph(\-2, ":[123]s") --1>> =suggFemSing(\-1)        && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    laquelle  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
+    laquelle  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)          && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: Elle se sait plus {{fortes}} qu’eux tous.
@@ -25198,23 +25205,23 @@ TEST: elle se sent vide.
 
 
 __ppas_1pl_nous_verbe__
-    nous  ?[ne|n’]¿  nous  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:s¬:(?:[GWpi]|V0)
+    nous  ?[ne|n’]¿  nous  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:s¬:(?:[GWpi]|V0)
         <<- /ppas/ morph(\-2, ":1p") --1>> =suggPlur(\-1)               && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
 TEST: nous nous pensions {{invincible}} jusqu’au jour où tout a basculé.
 
 
 __ppas_3pl_mas_se_verbe__
-    ils  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
+    ils  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ --1>> =suggMasPlur(\-1)                              && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [ceux-ci|ceux-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
+    [ceux-ci|ceux-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggMasPlur(\-1)       && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [eux|ceux|ceux-ci|ceux-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
+    [eux|ceux|ceux-ci|ceux-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ morph(\-2, ":3p") --1>> =suggMasPlur(\-1)            && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    lesquels  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
+    lesquels  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasPlur(\-1)          && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: ils se montrent {{exigeantes}}
@@ -25224,13 +25231,13 @@ TEST: lesquels se pensent encore {{anonyme}}
 
 
 __ppas_3pl_fem_se_verbe__
-    [elles|celles-ci|celles-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
+    [elles|celles-ci|celles-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggFemPlur(\-1)       && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    [elles|celles|celles-ci|celles-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
+    [elles|celles|celles-ci|celles-là]  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ morph(\-2, ":3p") --1>> =suggFemPlur(\-1)            && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    lesquelles  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
+    lesquelles  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>avouer|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemPlur(\-1)          && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: elles se sentent {{perdu}}                                                    ->> perdues
@@ -25239,20 +25246,20 @@ TEST: Lesquelles s’y montraient {{dure}}.                                     
 
 
 __ppas_part_présent_infinitif__
-    [me|m’|te|t’|l’]  ?[en|y]¿  [avouant|montrant|pensant|révélant|sachant|sentant|voyant|voulant]  @:[NA].*:p¬:(?:[GWYsi]|V0)
-    [me|m’|te|t’|l’]  ?[en|y]¿  [avouer|montrer|penser|révéler|savoir|sentir|voir|vouloir]          @:[NA].*:p¬:(?:[GWYsi]|V0)
+    [me|m’|te|t’|l’]  ?[en|y]¿  [avouant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+    [me|m’|te|t’|l’]  ?[en|y]¿  [avouer|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]           @:[NA].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le pronom objet “\1” : “\-1” devrait être au singulier.
 
-    le                          [avouant|montrant|pensant|révélant|sachant|sentant|voyant|voulant]  @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
-    le                          [avouer|montrer|penser|révéler|savoir|sentir|voir|vouloir]          @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
+    le                          [avouant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
+    le                          [avouer|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]           @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
         <<- /ppas/ --1>> =suggMasSing(\-1)                              && Accord avec le pronom objet “\1” : “\-1” devrait être au masculin singulier.
 
-    la                          [avouant|montrant|pensant|révélant|sachant|sentant|voyant|voulant]  @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
-    la                          [avouer|montrer|penser|révéler|savoir|sentir|voir|vouloir]          @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
+    la                          [avouant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
+    la                          [avouer|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]           @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
         <<- /ppas/ --1>> =suggFemSing(\-1)                              && Accord avec le pronom objet “\1” : “\-1” devrait être au féminin singulier.
 
-    les                         [avouant|montrant|pensant|révélant|sachant|sentant|voyant|voulant]  @:[NA].*:s¬:(?:[GWY]|V0|[pi])
-    les                         [avouer|montrer|penser|révéler|savoir|sentir|voir|vouloir]          @:[NA].*:s¬:(?:[GWY]|V0|[pi])
+    les                         [avouant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:s¬:(?:[GWY]|V0|[pi])
+    les                         [avouer|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]           @:[NA].*:s¬:(?:[GWY]|V0|[pi])
         <<- /ppas/ --1>> =suggPlur(\-1)                                 && Accord avec le pronom objet “\1” : “\-1” devrait être au pluriel.
 
 TEST: me sachant {{libres}}, elle renonça.                                          ->> libre
@@ -25260,6 +25267,7 @@ TEST: te voyant {{dégagées}} de toute occupation, il crut bon de t’importune
 TEST: le sentant {{incomprise}}                                                     ->> incompris
 TEST: la voir {{persécuté}} ainsi me fit mal au cœur                                ->> persécutée
 TEST: les montrer {{inflexible}} nous aidera à les convaincre.                      ->> inflexibles
+TEST: la tenant {{prêt}} à bondir                                                   ->> prête
 
 
 __ppas_le_verbe_pensée__
