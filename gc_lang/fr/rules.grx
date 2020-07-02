@@ -2010,6 +2010,9 @@ __da_autre_chose_quelque_chose__
 
 
 __da_groupe_nominal__
+    [au|aux] alentour
+        <<- =>> select(\2, ":N")
+
     aucun  @:[NA].*:[me]
         <<- =>> exclude(\2, ":V")
 
@@ -7782,6 +7785,15 @@ __conf_acquit_acquis__
 
 TEST: par {{acquis}} de conscience
 TEST: tout ce qu’on fait par acquit de conscience
+
+
+# aux alentours
+__conf_aux_alentours__
+    au alentours
+    [au|aux] alentour
+        <<- /conf/ ->> aux alentours                    && Locutions “aux alentours”.|https://fr.wiktionary.org/wiki/alentours
+
+TEST: {{au alentour}}                       ->> aux alentours
 
 
 # accès / axé
@@ -13758,7 +13770,6 @@ __purge_locutions__
     advienne que pourra
     ah
     ailleurs
-    alentour
     alors
     après [moi|toi|soi|lui|eux]
     après coup
@@ -14636,6 +14647,9 @@ __gestion_mots_grammaticaux__
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
 
+    alentour
+        <<- not morph(<1, ":D") ~>> *
+
     au moins  @:[DB]
         <<- ~1:2>> *
 
@@ -15323,6 +15337,7 @@ __substantifs_multi_mots__
     >flocon [de|d’] neige ?électronique¿
     >foire d’ >empoigne
     fonds d’ investissement
+    fonds [de|d’] pension
     >fontaine à eau
     >force d’ assaut
     >force [de|d’] caractère
@@ -15655,6 +15670,7 @@ __substantifs_multi_mots__
     >droit comme un i
     >fort en gueule
     >fou [de|d’] rage ?[contenue|retenue]¿
+    >frais comme un gardon
     >élu à la majarité absolue
     gauche caviar
     >haut comme [trois|3] pommes
@@ -16675,7 +16691,7 @@ __da_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre ?[ça|cela|ceci]¿ au pied [de|d’] la lettre
     >prendre bonne note
-    >prendre [acte|congé|conscience|contact|ombrage|note|part|peur|position|possession|racine|soin|vie]
+    >prendre [acte|chaud|congé|conscience|contact|froid|ombrage|note|part|peur|position|possession|racine|soin|vie]
     >prendre d’ assaut
     >prendre [de|d’] [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en [charge|main]
@@ -20109,11 +20125,12 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 __gn_det_sing_3m__
     [ledit|ladite|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|au|quel|quelle|dudit]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: un gros connard {{pathétiques}}
 TEST: servi pas un style et une exigence historique remarquables
+TEST: ils eurent besoins d’au minimum cent ans pour s’en remettre
 
 
 ## Pluriels
