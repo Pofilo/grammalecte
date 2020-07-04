@@ -11321,6 +11321,16 @@ TEST: Elle l’a observé par un miroir sans {{teint}}.
 TEST: Elle a acheté un nouveau fond de {{tain}}.
 
 
+# tandis que
+__conf_tandis_que__
+    tendis [que|qu’]
+        <<- /conf/ not value(<1, "|je|tu|il|elle|iel|on|ne|n’|le|la|les|l’|me|m’|te|t’|se|s’|")
+        ->> tandis \2           && Confusion probable. Écrivez “tandis que” s’il s’agit bien de la locution conjonctive exprimant concomitance ou opposition.|https://fr.wiktionary.org/wiki/tandis_que
+
+TEST: mais {{tendis que}} le policier examinait nos papiers             ->> tandis que
+
+
+# taule / tôle
 __conf_taule_tôle1__
     [>taule] [de|d’|en] [>acier|>alu|>aluminium|>bardage|>cuivre|>étanchéité|>fer|>festonnage|inox|>laiton|>métal|>trapèze|>zinc|>éverite|>fibrociment|>fibro-ciment|>plastique|>polycarbonate|PVC]
         <<- /conf/ -1>> =\1.replace("au", "ô").replace("AU", "Ô")   && Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
