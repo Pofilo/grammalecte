@@ -120,6 +120,13 @@ def copyAndFileTemplate (spfSrc, spfDst, dVars):
     open(spfDst, "w", encoding="utf-8", newline="\n").write(sText)
 
 
+def addFileToZipAndFileFile (hZip, spfSrc, spfDst, dVars):
+    if spfSrc.endswith((".py", ".js", ".json", ".html", ".htm", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
+        hZip.writestr(spfDst, fileFile(spfSrc, dVars))
+    else:
+        hZip.write(spfSrc, spfDst)
+
+
 def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
     "add folder content to zip archive and file files with <dVars>"
     # recursive function
@@ -132,7 +139,4 @@ def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
             if bRecursive:
                 addFolderToZipAndFileFile(hZip, spfSrc, spfDst, dVars, bRecursive)
         else:
-            if spfSrc.endswith((".py", ".js", ".json", ".html", ".htm", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
-                hZip.writestr(spfDst, fileFile(spfSrc, dVars))
-            else:
-                hZip.write(spfSrc, spfDst)
+            addFileToZipAndFileFile(hZip, spfSrc, spfDst, dVars)
