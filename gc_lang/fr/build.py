@@ -13,6 +13,7 @@ import helpers
 
 def build (sLang, dVars):
     "complementary build launched from make.py"
+    dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
     createWebExtension(sLang, dVars)
     convertWebExtensionForChrome(sLang, dVars)
     createMailExtension(sLang, dVars)
@@ -25,7 +26,6 @@ def createWebExtension (sLang, dVars):
     helpers.createCleanFolder("_build/webext/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
-    dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/manifest.json", "_build/webext/"+sLang+"/manifest.json", dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
     with helpers.CD("_build/webext/"+sLang):
@@ -74,6 +74,12 @@ def createMailExtension (sLang, dVars):
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/_locales", "_locales", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/content_scripts", "content_scripts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/fonts", "fonts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/img", "img", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/panel", "panel", dVars, True)
     hZip.close()
     #spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
     #if os.path.isdir(spExtension):

@@ -3,17 +3,46 @@
   "applications": {
     "gecko": {
       "id": "${tb_identifier}",
-      "strict_min_version": "68.0a1"
+      "strict_min_version": "78.0a1"
     }
   },
   "name": "${tb_name}",
+  "short_name": "${tb_name}",
   "description": "${description}",
   "version": "${version}",
 
   "author": "${author}",
   "homepage_url": "${link}",
 
+  "default_locale": "fr",
 
+  "icons": { "16": "img/logo-16.png",
+             "32": "img/logo-32.png",
+             "48": "img/logo-48.png",
+             "64": "img/logo-64.png",
+             "80": "img/logo-80.png",
+             "96": "img/logo-96.png" },
 
+  "browser_action": {
+    "default_icon": "img/logo-32.png",
+    "default_popup": "panel/main.html",
+    "default_title": "Grammalecte [fr]",
+    "browser_style": false
+  },
+
+  "compose_action": {
+    "default_icon": "img/logo-32.png",
+    "default_area": "maintoolbar",
+    "default_popup": "panel/main.html",
+    "default_title": "Analyser",
+    "browser_style": false
+  },
+
+  "background": {
+    "scripts": [
+      "grammalecte/graphspell/helpers.js",
+      "background.js"
+    ]
+  }
 
 }
