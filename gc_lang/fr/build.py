@@ -72,8 +72,9 @@ def createMailExtension (sLang, dVars):
     _copyGrammalecteJSPackageInZipFile(hZip, sLang)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js")
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js", "gce_worker.js", dVars)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/README.md", "README.md", dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/_locales", "_locales", dVars, True)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/content_scripts", "content_scripts", dVars, True)

@@ -27,8 +27,12 @@ if (typeof(browser) !== "object") {
     var browser = chrome;
     bChrome = true;
 }
-if (typeof(messenger) === "object") {
+if (typeof(messenger) === "object" || browser.hasOwnProperty("composeAction")) {
+    // JS sucks again.
+    // In Thunderbird, <browser> exists in content-scripts, but not <messenger>
+    // <browner> has property <composeAction> but is undefined...
     bThunderbird = true;
+    //console.log("[Grammalecte] Thunderbird...");
 }
 
 /*
@@ -469,6 +473,13 @@ const oGrammalecteBackgroundPort = {
                         oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
                     }
                     break;
+                /*
+                    composeAction
+                    (Thunderbird only)
+                */
+                case "grammar_checker_compose_window":
+                    oGrammalecte.startGCPanel("__ThunderbirdComposeWindow__");
+                    break;
                 default:
                     console.log("[Grammalecte] Content-script. Unknown command: ", sActionDone);
             }
@@ -503,24 +514,6 @@ const oGrammalecteBackgroundPort = {
 
 oGrammalecteBackgroundPort.start();
 
-
-/*
-    ComposeAction
-    (Thunderbird only)
-*/
-if (bThunderbird) {
-    console.log("Listen...");
-    try {
-        browser.composeAction.onClicked.addListener(function (oTab, oData) {
-            console.log("START");
-            oGrammalecte.startGCPanel("J'en aie mare...");
-        });
-    }
-    catch (e) {
-        showError(e)
-    }
-    console.log("Done.");
-}
 
 
 /*

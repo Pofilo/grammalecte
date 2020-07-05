@@ -121,6 +121,7 @@ def copyAndFileTemplate (spfSrc, spfDst, dVars):
 
 
 def addFileToZipAndFileFile (hZip, spfSrc, spfDst, dVars):
+    "add a file to zip archive and file it with <dVars>"
     if spfSrc.endswith((".py", ".js", ".json", ".html", ".htm", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
         hZip.writestr(spfDst, fileFile(spfSrc, dVars))
     else:

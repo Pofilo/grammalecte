@@ -267,14 +267,6 @@ browser.runtime.onInstalled.addListener(function (oDetails) {
 });
 
 
-
-/*
-    Ports from content-scripts
-*/
-
-let dConnx = new Map();
-
-
 /*
     Messages from the extension (not the Worker)
 */
@@ -318,6 +310,11 @@ function handleMessage (oRequest, xSender, sendResponse) {
 
 browser.runtime.onMessage.addListener(handleMessage);
 
+
+/*
+    Ports from content-scripts
+*/
+let dConnx = new Map();
 
 function handleConnexion (xPort) {
     // Messages from tabs
@@ -365,6 +362,22 @@ function handleConnexion (xPort) {
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
+
+
+
+/*
+    ComposeAction
+    (Thunderbird only)
+*/
+if (bThunderbird) {
+    console.log("[Grammalecte] Thunderbird: listening compose action...");
+    browser.composeAction.onClicked.addListener(function (xTab, xData) {
+        console.log("ComposeAction clicked");
+        console.log(xTab);
+        console.log(xData);
+        browser.tabs.sendMessage(xTab.id, {sActionRequest: "grammar_checker_compose_window"});
+    });
+}
 
 
 /*
