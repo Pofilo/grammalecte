@@ -21722,11 +21722,13 @@ TEST: elles sont vites.
 # voir clair
 __sgpl_voir_clair__
     >voir >clair
-        <<- /sgpl/ \2 != "clair" and \2 != "Claire" -2>> clair      && Dans la locution “voir clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
+        <<- /sgpl/ \2 != "clair" and \2 != "Claire" and morph(\1, ":(?:[123][sp]|P|Y)")
+        -2>> clair      && Dans la locution “voir clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
 
 TEST: Ils y voient {{clairs}}.
 TEST: Il vit Claire au théâtre.
 TEST: J’y vois clair, mec.
+TEST: rendant leur vue peu claire
 
 
 # vu / vue
