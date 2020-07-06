@@ -385,6 +385,7 @@ const oGrammalecteBackgroundPort = {
             let { sActionDone, result, oInfo, bEnd, bError } = oMessage;
             switch (sActionDone) {
                 case "init":
+                    //console.log("[Grammalecte] content-script: init");
                     this.bConnected = true;
                     oGrammalecte.sExtensionUrl = oMessage.sUrl;
                     oGrammalecte.listen();

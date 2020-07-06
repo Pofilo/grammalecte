@@ -358,6 +358,7 @@ function handleConnexion (xPort) {
         }
     });
     //xPort.postMessage({sActionDone: "newId", result: iPortId});
+    //console.log("[Grammalecte] init connection to content-script");
     xPort.postMessage({sActionDone: "init", sUrl: browser.extension.getURL("")});
 }
 
@@ -370,12 +371,8 @@ browser.runtime.onConnect.addListener(handleConnexion);
     (Thunderbird only)
 */
 if (bThunderbird) {
-    console.log("[Grammalecte] Thunderbird: listening compose action...");
     browser.composeAction.onClicked.addListener(function (xTab, xData) {
-        console.log("ComposeAction clicked");
-        console.log(xTab);
-        console.log(xData);
-        browser.tabs.sendMessage(xTab.id, {sActionRequest: "grammar_checker_compose_window"});
+        sendCommandToTab(xTab.id, "grammar_checker_compose_window");
     });
 }
 
