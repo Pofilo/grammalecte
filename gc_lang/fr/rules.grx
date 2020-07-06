@@ -9004,6 +9004,20 @@ TEST: il faut emballer, c’est pesé
 TEST: c’est emballé, c’est pesé.
 
 
+# entrée / entrer
+__conf_entrée__
+    [l’|cet|mon|ton|son|notre|votre|leur|chaque|quel] entré
+        <<- /conf/ --1>> entrée                                         && Confusion. Écrivez “entrée” pour évoquer l’arrivée ou le passage par lequel on entre.
+
+    [les|des|des|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs] entrés
+        <<- /conf/ --1>> entrées                                        && Confusion. Écrivez “allers” pour évoquer un voyage. Écrivez “allées” pour évoquer une voie de passage.
+
+TEST: à l’{{entré}} en guerre                               ->> entrée
+TEST: Des {{entrés}}                                        ->> entrées
+TEST: à l’{{entré}} de la grotte                            ->> entrée
+TEST: les entrées sont toutes verrouillées
+
+
 # et / est
 __conf_et_est1__
     entre  $:M  est  $:M
