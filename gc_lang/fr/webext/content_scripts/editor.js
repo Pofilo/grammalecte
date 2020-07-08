@@ -13,17 +13,19 @@ class HTMLPageEditor {
 
 	constructor (xDocument, bCheckSignature=false) {
         this.xDocument = xDocument;
-        this.xRootNode = xDocument.rootElement;
+        this.xRootNode = xDocument.body;
+        //console.log(xDocument.body);
+        //console.log(xDocument.body.innerHTML);
         this.lNode = [];
         this.bCheckSignature = bCheckSignature;
         this._lParsableNodes = ["P", "LI", "H1", "H2", "H3", "H4", "H5"];
         this._lRootNodes = ["DIV", "UL", "OL"];
     }
 
-    * _getParsableNodes () {
+    * _getParsableNodes (xRootNode) {
         // recursive function
         try {
-            for (let xNode of this.xRootNode.childNodes) {
+            for (let xNode of xRootNode.childNodes) {
                 if (xNode.className !== "moz-cite-prefix" && xNode.tagName !== "BLOCKQUOTE"
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
@@ -50,7 +52,7 @@ class HTMLPageEditor {
     * getParagraphs () {
         try {
             let i = 0;
-            for (let xNode of this._getParsableNodes()) {
+            for (let xNode of this._getParsableNodes(this.xRootNode)) {
                 this.lNode.push(xNode);
                 yield [i, xNode.textContent];
                 i += 1;
