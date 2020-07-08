@@ -525,7 +525,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             const t1 = Date.now();
             this.xParent.getElementById('grammalecte_tf_time_res').textContent = this.getTimeRes((t1-t0)/1000);
             oGrammalecte.oGCPanel.oTextControl.loadText(sText);
-            oGrammalecte.oGCPanel.oTextControl.write();
             this.bTextChanged = true;
         }
         catch (e) {

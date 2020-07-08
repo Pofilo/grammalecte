@@ -59,8 +59,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
         this.oTooltip = new GrammalecteTooltip(this.xParent, this.xGCPanelContent);
         this.xPanelContent.appendChild(this.xGCPanelContent);
-        this.xNode = null;
-        this.oTextControl = new GrammalecteTextControl();
+        this.oTextControl = null;
         this.nLastResult = 0;
         this.iLastEditedParagraph = -1;
         // Lexicographer
@@ -138,16 +137,13 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.clear();
         this.hideMessage();
         this.resetTimer();
-        if (typeof(what) === "string") {
-            // text
-            this.xNode = null;
-            this.oTextControl.setResultNode(xResultNode);
-            this.oTextControl.setText(what);
+        if (typeof(what) === "string" && what === "__ThunderbirdComposeWindow__") {
+            // Thunderbird compose window
+            this.oTextControl = new HTMLPageEditor(document);
         }
-        else if (what.nodeType && what.nodeType === 1) { // 1 = Node.ELEMENT_NODE
-            // node
-            this.xNode = what;
-            this.oTextControl.setNode(this.xNode);
+        else if (typeof(what) === "string" || (what.nodeType && what.nodeType === 1)) {
+            // Text or node
+            this.oTextControl = new TextNodeEditor(what, xResultNode);
         }
         else {
             // error
@@ -245,7 +241,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     }
                     // write text
                     this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), this.purgeText(xEvent.target.textContent));
-                    this.oTextControl.write();
                 }.bind(this)
                 , true);
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
@@ -415,7 +410,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xNodeErr.removeAttribute("style");
             let iParaNum = parseInt(sErrorId.slice(0, sErrorId.indexOf("-")), 10);
             this.oTextControl.setParagraph(iParaNum, this.purgeText(this.xParent.getElementById("grammalecte_paragraph" + iParaNum).textContent));
-            this.oTextControl.write();
             this.oTooltip.hide();
             this.recheckParagraph(iParaNum);
             this.iLastEditedParagraph = iParaNum;
@@ -937,136 +931,6 @@ class GrammalecteTooltip {
             let xSuggBlock = this.xParent.getElementById("grammalecte_tooltip_sugg_block");
             xSuggBlock.appendChild(document.createTextNode("# Oups. Le mécanisme de suggestion orthographique a rencontré un bug… (Ce module est encore en phase β.)"));
             showError(e);
-        }
-    }
-}
-
-
-class GrammalecteTextControl {
-
-    constructor () {
-        this.xNode = null;
-        this.dParagraph = new Map();
-        this.bTextArea = false;
-        this.bIframe = false;
-        this.bResultInEvent = false; // if true, the node content is not modified, but an event is dispatched on the node with the modified text
-        this.xResultNode = null; // only useful if for text analysed without node
-    }
-
-    setNode (xNode) {
-        this.clear();
-        this.xNode = xNode;
-        this.bResultInEvent = Boolean(xNode.dataset.grammalecte_result_via_event && xNode.dataset.grammalecte_result_via_event == "true");
-        this.bTextArea = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT");
-        this.bIframe = (xNode.tagName == "IFRAME");
-        if (this.bTextArea) {
-            this.xNode.disabled = true;
-            this.loadText(this.xNode.value);
-        }
-        else if (this.bIframe) {
-            // iframe
-            if (!this.bResultInEvent) {
-                oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ La zone analysée est un cadre contenant une autre page web (“iframe”). Les changements faits ne peuvent être pas répercutés dans cette zone.");
-            }
-            this.loadText(this.xNode.contentWindow.document.body.innerText);
-        }
-        else {
-            // editable node
-            oGrammalecte.oGCPanel.addMessageToGCPanel("❗ La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
-            this.loadText(this.xNode.innerText);
-        }
-    }
-
-    setResultNode (xNode) {
-        if (xNode instanceof HTMLElement) {
-            this.xResultNode = xNode;
-            this.bResultInEvent = true;
-        }
-    }
-
-    setText (sText) {
-        this.clear();
-        if (!this.xResultNode) {
-            oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
-        }
-        this.loadText(sText);
-    }
-
-    loadText (sText) {
-        // function also used by the text formatter
-        if (typeof(sText) === "string") {
-            this.dParagraph.clear();
-            let i = 0;
-            let iStart = 0;
-            let iEnd = 0;
-            sText = sText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").normalize("NFC");
-            while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
-                this.dParagraph.set(i, sText.slice(iStart, iEnd));
-                i++;
-                iStart = iEnd+1;
-            }
-            this.dParagraph.set(i, sText.slice(iStart));
-            //console.log("Paragraphs number: " + (i+1));
-        }
-    }
-
-    clear () {
-        if (this.xNode !== null) {
-            this.xNode.disabled = false;
-            this.bTextArea = false;
-            this.bIframe = false;
-            this.bResultInEvent = false;
-            this.xNode = null;
-            this.xResultNode = null;
-        }
-        this.dParagraph.clear();
-    }
-
-    getText () {
-        return [...this.dParagraph.values()].join("\n").normalize("NFC");
-    }
-
-    setParagraph (iParagraph, sText) {
-        this.dParagraph.set(iParagraph, sText);
-    }
-
-    getParagraph (iParaNum) {
-        return this.dParagraph.get(iParaNum);
-    }
-
-    eraseNodeContent () {
-        while (this.xNode.firstChild) {
-            this.xNode.removeChild(this.xNode.firstChild);
-        }
-    }
-
-    write () {
-        if (this.xNode !== null) {
-            if (this.bResultInEvent) {
-                const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
-                this.xNode.dispatchEvent(xEvent);
-                //console.log("[Grammalecte debug] Text sent to xNode via event:", xEvent.detail);
-            }
-            else if (this.bTextArea) {
-                this.xNode.value = this.getText();
-                //console.log("[Grammalecte debug] text written in textarea:", this.getText());
-            }
-            else if (this.bIframe) {
-                //console.log(this.getText());
-            }
-            else {
-                this.eraseNodeContent();
-                this.dParagraph.forEach((val, key) => {
-                    this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
-                    this.xNode.appendChild(document.createElement("br"));
-                });
-                //console.log("[Grammalecte debug] text written in editable node:", this.getText());
-            }
-        }
-        else if (this.xResultNode !== null) {
-            const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
-            this.xResultNode.dispatchEvent(xEvent);
-            //console.log("[Grammalecte debug] Text sent to xResultNode via event:", xEvent.detail);
         }
     }
 }

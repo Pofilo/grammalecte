@@ -167,6 +167,7 @@ const oInitHandler = {
                 js: [
                     // Any number of code or file objects could be listed here.
                     //{ code: `document.body.textContent = "Hey look, the script ran!";` },
+                    { file: "content_scripts/editor.js" },
                     { file: "content_scripts/html_src.js" },
                     { file: "content_scripts/panel.js" },
                     { file: "grammalecte/fr/textformatter.js" },
