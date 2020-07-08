@@ -101,6 +101,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
         };
         this.xAutoRefresh.onclick = () => {
+            if (bThunderbird) {
+                oGrammalecte.showMessage("À cause d’une limitation de Thunberbird, l’auto-rafraîchissement est indisponible. Si vous modifiez le texte dans ce panneau, cliquez sur le bouton ↻ pour relancer l’analyse grammaticale du paragraphe.")
+                return;
+            }
             this.bAutoRefresh = !this.bAutoRefresh;
             oGrammalecte.bAutoRefresh = this.bAutoRefresh;
             browser.storage.local.set({"autorefresh_option": this.bAutoRefresh});
@@ -240,7 +244,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                         this.iLastEditedParagraph = oResult.iParaNum;
                     }
                     // write text
-                    this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), this.purgeText(xEvent.target.textContent));
+                    this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), xEvent.target.textContent);
                 }.bind(this)
                 , true);
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
@@ -278,7 +282,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let sParagraphId = "grammalecte_paragraph" + iParaNum;
         let xParagraph = this.xParent.getElementById(sParagraphId);
         this._blockParagraph(xParagraph);
-        //let sText = this.purgeText(xParagraph.textContent);
+        if (bThunderbird) {
+            // WORKAROUND: input event isn’t triggered by key input, so as textContent isn’t up to date, we do it now
+            this.oTextControl.setParagraph(iParaNum, xParagraph.textContent);
+        }
         let sText = this.oTextControl.getParagraph(iParaNum);
         oGrammalecteBackgroundPort.parseAndSpellcheck1(sText, "__GrammalectePanel__", sParagraphId);
     }
@@ -409,7 +416,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xNodeErr.className = "grammalecte_error_corrected";
             xNodeErr.removeAttribute("style");
             let iParaNum = parseInt(sErrorId.slice(0, sErrorId.indexOf("-")), 10);
-            this.oTextControl.setParagraph(iParaNum, this.purgeText(this.xParent.getElementById("grammalecte_paragraph" + iParaNum).textContent));
+            this.oTextControl.setParagraph(iParaNum, this.xParent.getElementById("grammalecte_paragraph" + iParaNum).textContent);
             this.oTooltip.hide();
             this.recheckParagraph(iParaNum);
             this.iLastEditedParagraph = iParaNum;
@@ -431,10 +438,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         catch (e) {
             showError(e);
         }
-    }
-
-    purgeText (sText) {
-        return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
     }
 
     addSummary () {

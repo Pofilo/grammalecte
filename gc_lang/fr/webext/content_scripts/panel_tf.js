@@ -77,16 +77,18 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xMisc.appendChild(this._createBlockOption("o_missing_hyphens", true, "Traits d’union manquants"));
             xMisc.appendChild(this._createBlockOption("o_ma_word", true, "Apostrophes manquantes"));
             xMisc.appendChild(this._createSingleLetterOptions());
-            let xStruct = this._createFieldset("group_struct", false, "Restructuration [!]");
-            xStruct.appendChild(this._createBlockOption("o_remove_hyphens_at_end_of_paragraphs", false, "Enlever césures en fin de ligne/paragraphe [!]"));
-            xStruct.appendChild(this._createBlockOption("o_merge_contiguous_paragraphs", false, "Fusionner les paragraphes contigus [!]"));
             xColumn1.appendChild(xSSP);
             xColumn1.appendChild(xSpace);
             xColumn1.appendChild(xNBSP);
             xColumn1.appendChild(xDelete);
             xColumn2.appendChild(xTypo);
             xColumn2.appendChild(xMisc);
-            xColumn2.appendChild(xStruct);
+            if (!bThunderbird) {
+                let xStruct = this._createFieldset("group_struct", false, "Restructuration [!]");
+                xStruct.appendChild(this._createBlockOption("o_remove_hyphens_at_end_of_paragraphs", false, "Enlever césures en fin de ligne/paragraphe [!]"));
+                xStruct.appendChild(this._createBlockOption("o_merge_contiguous_paragraphs", false, "Fusionner les paragraphes contigus [!]"));
+                xColumn2.appendChild(xStruct);
+            }
             xOptions.appendChild(xColumn1);
             xOptions.appendChild(xColumn2);
             // Actions

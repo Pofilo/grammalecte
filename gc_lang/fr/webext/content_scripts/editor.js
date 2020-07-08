@@ -18,7 +18,7 @@ class HTMLPageEditor {
         //console.log(xDocument.body.innerHTML);
         this.lNode = [];
         this.bCheckSignature = bCheckSignature;
-        this._lParsableNodes = ["P", "LI", "H1", "H2", "H3", "H4", "H5"];
+        this._lParsableNodes = ["P", "LI", "H1", "H2", "H3", "H4", "H5", "H6"];
         this._lRootNodes = ["DIV", "UL", "OL"];
     }
 
@@ -87,7 +87,7 @@ class HTMLPageEditor {
 
     setParagraph (iPara, sText) {
         try {
-            return this.lNode[iPara].textContent = sText;
+            return this.lNode[iPara].textContent = oGrammalecte.purgeText(sText);
         }
         catch (e) {
             showError(e);
@@ -191,7 +191,7 @@ class TextNodeEditor {
     }
 
     setParagraph (iParagraph, sText) {
-        this.dParagraph.set(iParagraph, sText);
+        this.dParagraph.set(iParagraph, oGrammalecte.purgeText(sText));
         this.write();
     }
 

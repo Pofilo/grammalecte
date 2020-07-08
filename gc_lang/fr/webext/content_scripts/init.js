@@ -70,7 +70,7 @@ const oGrammalecte = {
 
     oOptions: null,
 
-    bAutoRefresh: true,
+    bAutoRefresh: (bThunderbird) ? false : true,
 
     listen: function () {
         document.addEventListener("click", (xEvent) => {
@@ -144,6 +144,10 @@ const oGrammalecte = {
             sPageText = sPageText.slice(0, nPos).normalize("NFC");
         }
         return sPageText;
+    },
+
+    purgeText: function (sText) {
+        return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
     },
 
     createNode: function (sType, oAttr, oDataset=null) {
@@ -268,6 +272,9 @@ const oGrammalecte = {
 
 function autoRefreshOption (oSavedOptions=null) {
     // auto recallable function
+    if (bThunderbird) {
+        return;
+    }
     if (oSavedOptions === null) {
         if (bChrome) {
             browser.storage.local.get("autorefresh_option", autoRefreshOption);
