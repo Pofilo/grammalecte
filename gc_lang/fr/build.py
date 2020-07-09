@@ -73,6 +73,7 @@ def createMailExtension (sLang, dVars):
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/background.js", "background.js", dVars)
     helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js", "gce_worker.js", dVars)
     helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/README.md", "README.md", dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
