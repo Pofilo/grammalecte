@@ -476,7 +476,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 (res) => { window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000); }
             )
             .catch(
-                (e) => { console.error(e); this._sendTextToClipboard(sText); }
+                (e) => { showError(e); this._sendTextToClipboard(sText); }
             );
         } else {
             this._sendTextToClipboardFallback(sText);
@@ -499,7 +499,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000);
         }
         catch (e) {
-            console.error(e);
+            showError(e);
         }
     }
 
@@ -593,62 +593,109 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             // text field
             this.xParent.getElementById('grammalecte_conj_verb').addEventListener("change", (e) => { this.conjugateVerb(); });
             // options
-            this.xParent.getElementById('grammalecte_conj_oneg').addEventListener("click", (e) => { this.updateConj(); });
-            this.xParent.getElementById('grammalecte_conj_opro').addEventListener("click", (e) => { this.updateConj(); });
-            this.xParent.getElementById('grammalecte_conj_oint').addEventListener("click", (e) => { this.updateConj(); });
-            this.xParent.getElementById('grammalecte_conj_ofem').addEventListener("click", (e) => { this.updateConj(); });
-            this.xParent.getElementById('grammalecte_conj_otco').addEventListener("click", (e) => { this.updateConj(); });
+            this.xParent.getElementById('grammalecte_conj_oneg').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_oneg'); this.updateConj(); });
+            this.xParent.getElementById('grammalecte_conj_opro').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_opro'); this.updateConj(); });
+            this.xParent.getElementById('grammalecte_conj_oint').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_oint'); this.updateConj(); });
+            this.xParent.getElementById('grammalecte_conj_ofem').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_ofem'); this.updateConj(); });
+            this.xParent.getElementById('grammalecte_conj_otco').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_otco'); this.updateConj(); });
             this.bListenConj = true;
         }
+    }
+
+    purgeInputText () {
+        // Thunderbird don’t accept input fields
+        // So we use editable node and we purge it
+        let sVerb = this.xParent.getElementById('grammalecte_conj_verb').innerText;
+        let nIndexCut = sVerb.indexOf("\n");
+        if (nIndexCut != -1) {
+            sVerb = sVerb.slice(0, nIndexCut);
+        };
+        this.xParent.getElementById('grammalecte_conj_verb').textContent = sVerb.trim();
+    }
+
+    switchOption (sOption) {
+        if (this.xParent.getElementById(sOption).dataset.disabled == "off") {
+            this.xParent.getElementById(sOption).dataset.selected = (this.xParent.getElementById(sOption).dataset.selected == "off") ? "on" : "off";
+            this.xParent.getElementById(sOption).className = (this.xParent.getElementById(sOption).dataset.selected == "on") ? "grammalecte_conj_option_on" : "grammalecte_conj_option_off";
+        }
+    }
+
+    resetOption (sOption) {
+        this.xParent.getElementById(sOption).dataset.selected = "off";
+        this.xParent.getElementById(sOption).dataset.disabled = "off";
+        this.xParent.getElementById(sOption).style.color = "";
+        this.xParent.getElementById(sOption).className = "grammalecte_conj_option_off";
+    }
+
+    selectOption (sOption) {
+        this.xParent.getElementById(sOption).dataset.selected = "on";
+        this.xParent.getElementById(sOption).className = "grammalecte_conj_option_on";
+    }
+
+    unselectOption (sOption) {
+        this.xParent.getElementById(sOption).dataset.selected = "off";
+        this.xParent.getElementById(sOption).className = "grammalecte_conj_option_off";
+    }
+
+    enableOption (sOption) {
+        this.xParent.getElementById(sOption).dataset.disabled = "off";
+        this.xParent.getElementById(sOption).style.color = "";
+    }
+
+    disableOption (sOption) {
+        this.xParent.getElementById(sOption).dataset.disabled = "on";
+        this.xParent.getElementById(sOption).style.color = "#CCC";
     }
 
     conjugateVerb (sVerb="") {
         try {
             if (!sVerb) {
-                sVerb = this.xParent.getElementById('grammalecte_conj_verb').value;
+                this.purgeInputText();
+                sVerb = this.xParent.getElementById('grammalecte_conj_verb').textContent;
             }
-            this.xParent.getElementById('grammalecte_conj_oneg').checked = false;
-            this.xParent.getElementById('grammalecte_conj_opro').checked = false;
-            this.xParent.getElementById('grammalecte_conj_oint').checked = false;
-            this.xParent.getElementById('grammalecte_conj_otco').checked = false;
-            this.xParent.getElementById('grammalecte_conj_ofem').checked = false;
+            this.resetOption('grammalecte_conj_oneg');
+            this.resetOption('grammalecte_conj_opro');
+            this.resetOption('grammalecte_conj_oint');
+            this.resetOption('grammalecte_conj_otco');
+            this.resetOption('grammalecte_conj_ofem');
             // request analyzing
             sVerb = sVerb.trim().toLowerCase().replace(/’/g, "'").replace(/  +/g, " ");
             if (sVerb) {
                 if (sVerb.startsWith("ne pas ")) {
-                    this.xParent.getElementById('grammalecte_conj_oneg').checked = true;
-                    sVerb = sVerb.slice(7);
+                    this.selectOption('grammalecte_conj_oneg');
+                    sVerb = sVerb.slice(7).trim();
                 }
                 if (sVerb.startsWith("se ")) {
-                    this.xParent.getElementById('grammalecte_conj_opro').checked = true;
-                    sVerb = sVerb.slice(3);
-                } else if (sVerb.startsWith("s'")) {
-                    this.xParent.getElementById('grammalecte_conj_opro').checked = true;
-                    sVerb = sVerb.slice(2);
+                    this.selectOption('grammalecte_conj_opro');
+                    sVerb = sVerb.slice(3).trim();
+                }
+                else if (sVerb.startsWith("s'")) {
+                    this.selectOption('grammalecte_conj_opro');
+                    sVerb = sVerb.slice(2).trim();
                 }
                 if (sVerb.endsWith("?")) {
-                    this.xParent.getElementById('grammalecte_conj_oint').checked = true;
+                    this.selectOption('grammalecte_conj_oint');
                     sVerb = sVerb.slice(0,-1).trim();
                 }
                 if (sVerb) {
                     this.sVerb = sVerb;
                     this.updateConj(true);
                 } else {
-                    this.xParent.getElementById('grammalecte_conj_verb').value = "";
+                    this.xParent.getElementById('grammalecte_conj_verb').textContent = "";
                 }
             }
         }
         catch (e) {
-            console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+            showError(e);
         }
     }
 
     updateConj (bStart=false) {
-        let bPro = this.xParent.getElementById('grammalecte_conj_opro').checked;
-        let bNeg = this.xParent.getElementById('grammalecte_conj_oneg').checked;
-        let bTpsCo = this.xParent.getElementById('grammalecte_conj_otco').checked;
-        let bInt = this.xParent.getElementById('grammalecte_conj_oint').checked;
-        let bFem = this.xParent.getElementById('grammalecte_conj_ofem').checked;
+        let bPro = this.xParent.getElementById('grammalecte_conj_opro').dataset.selected == "on";
+        let bNeg = this.xParent.getElementById('grammalecte_conj_oneg').dataset.selected == "on";
+        let bTpsCo = this.xParent.getElementById('grammalecte_conj_otco').dataset.selected == "on";
+        let bInt = this.xParent.getElementById('grammalecte_conj_oint').dataset.selected == "on";
+        let bFem = this.xParent.getElementById('grammalecte_conj_ofem').dataset.selected == "on";
         if (this.sVerb) {
             oGrammalecteBackgroundPort.getVerb(this.sVerb, bStart, bPro, bNeg, bTpsCo, bInt, bFem);
         }
@@ -658,33 +705,26 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         // function called when results come from the Worker
         if (oVerb) {
             this.xParent.getElementById('grammalecte_conj_verb').style.color = "#999999";
-            this.xParent.getElementById('grammalecte_conj_verb').value = "";
+            this.xParent.getElementById('grammalecte_conj_verb').textContent = "";
             this.xParent.getElementById('grammalecte_conj_verb_title').textContent = oVerb.sVerb;
             this.xParent.getElementById('grammalecte_conj_verb_info').textContent = oVerb.sInfo;
-            this.xParent.getElementById('grammalecte_conj_opro_lbl').textContent = oVerb.sProLabel;
+            this.xParent.getElementById('grammalecte_conj_opro').textContent = oVerb.sProLabel;
             if (oVerb.bUncomplete) {
-                this.xParent.getElementById('grammalecte_conj_opro').checked = false;
-                this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
-                this.xParent.getElementById('grammalecte_conj_otco').checked = false;
-                this.xParent.getElementById('grammalecte_conj_otco').disabled = true;
-                this.xParent.getElementById('grammalecte_conj_otco_lbl').style.color = "#CCC";
+                this.unselectOption('grammalecte_conj_opro');
+                this.disableOption('grammalecte_conj_opro');
+                this.unselectOption('grammalecte_conj_otco');
+                this.disableOption('grammalecte_conj_otco');
                 this.xParent.getElementById('grammalecte_conj_note').textContent = "Ce verbe n’a pas encore été vérifié. C’est pourquoi les options “pronominal” et “temps composés” sont désactivées.";
             } else {
-                this.xParent.getElementById('grammalecte_conj_otco').disabled = false;
-                this.xParent.getElementById('grammalecte_conj_otco_lbl').style.color = "#000";
+                this.enableOption('grammalecte_conj_otco');
                 if (oVerb.nPronominable == 0) {
-                    this.xParent.getElementById('grammalecte_conj_opro').checked = false;
-                    this.xParent.getElementById('grammalecte_conj_opro').disabled = false;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#000";
+                    this.enableOption('grammalecte_conj_opro');
                 } else if (oVerb.nPronominable == 1) {
-                    this.xParent.getElementById('grammalecte_conj_opro').checked = true;
-                    this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
-                } else { // -1 or 1 or error
-                    this.xParent.getElementById('grammalecte_conj_opro').checked = false;
-                    this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
+                    this.selectOption('grammalecte_conj_opro');
+                    this.disableOption('grammalecte_conj_opro');
+                } else { // -1 or error
+                    this.unselectOption('grammalecte_conj_opro');
+                    this.disableOption('grammalecte_conj_opro');
                 }
                 this.xParent.getElementById('grammalecte_conj_note').textContent = "❦";
             }
@@ -700,7 +740,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             return;
         }
         try {
-            this.xParent.getElementById('grammalecte_conj_verb').Text = "";
+            this.xParent.getElementById('grammalecte_conj_verb').textContent = "";
             // infinitif
             this.xParent.getElementById('grammalecte_conj_infi').textContent = oConjTable["infi"] || " "; // something or nbsp
             // participe présent
@@ -780,7 +820,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             this.xParent.getElementById('grammalecte_conj_simp6').textContent = oConjTable["simp6"] || " ";
         }
         catch (e) {
-            console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+            showError(e);
         }
     }
 }
