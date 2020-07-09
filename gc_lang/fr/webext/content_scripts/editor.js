@@ -69,7 +69,7 @@ class HTMLPageEditor {
             for (let [i, sLine] of this.getParagraphs()) {
                 sPageText += sLine + "\n";
             }
-            return sPageText;
+            return sPageText.slice(0,-1).normalize("NFC");
         }
         catch (e) {
             showError(e);
@@ -87,7 +87,9 @@ class HTMLPageEditor {
 
     setParagraph (iPara, sText) {
         try {
-            return this.lNode[iPara].textContent = oGrammalecte.purgeText(sText);
+            if (iPara < this.lNode.length) {
+                this.lNode[iPara].textContent = oGrammalecte.purgeText(sText).normalize("NFC");
+            }
         }
         catch (e) {
             showError(e);
@@ -97,6 +99,13 @@ class HTMLPageEditor {
     changeParagraph (iPara, sModif, iStart, iEnd) {
         let sText = this.getParagraph(iPara);
         this.writeParagraph(iPara, sText.slice(0, iStart) + sModif + sText.slice(iEnd));
+    }
+
+    loadText (sText) {
+        let lParagraphs = sText.split("\n");
+        for (let iPara = 0;  iPara < lParagraphs.length;  iPara++) {
+            this.setParagraph(iPara, lParagraphs[iPara]);
+        }
     }
 
     clear () {
@@ -191,7 +200,7 @@ class TextNodeEditor {
     }
 
     setParagraph (iParagraph, sText) {
-        this.dParagraph.set(iParagraph, oGrammalecte.purgeText(sText));
+        this.dParagraph.set(iParagraph, oGrammalecte.purgeText(sText).normalize("NFC"));
         this.write();
     }
 
