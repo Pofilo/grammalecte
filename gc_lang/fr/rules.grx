@@ -11449,17 +11449,20 @@ TEST: ce serait, toutes choses égales par ailleurs, la meilleure solution possi
 
 # très / trait
 __conf_très_trait__
-    [un|le|ce|mon|ton|son|notre|votre|leur]  [trait|traits|trais|traie|traies|traient]  @:A.*:[me]:[si]¬:G  @:N.*:[me]:[si]¬:(?:G|3[sp])
-        <<- /conf/ -2>> très            && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que le “\4” est beaucoup “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
+    [un|le|ce|mon|ton|son|notre|votre|leur]  [trait|traits|trais|traie|traies|traient]  @:A.*:[me]:[si]¬:G  @:N.*:[me]:[si]¬:(?:G|3[sp]|A)
+        <<- /conf/ not (morph(\2, ">trait/") and morph(\3, ">(?:facial|vertical|horizontal|oblique|diagonal)/")) -2>> très
+        && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que le “\4” est fort “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
 
-    [des|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  [trait|traits|trais|traie|traies|traient]  @:A.*:[me]:[pi]¬:G  @:N.*:[me]:[pi]¬:(?:G|3[sp])
-        <<- /conf/ -2>> très            && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que les “\4” sont beaucoup “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
+    [des|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  [trait|traits|trais|traie|traies|traient]  @:A.*:[me]:[pi]¬:G  @:N.*:[me]:[pi]¬:(?:G|3[sp]|A)
+        <<- /conf/ not (morph(\2, ">trait/") and morph(\3, ">(?:facial|vertical|horizontal|oblique|diagonal)/")) -2>> très
+        && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que les “\4” sont fort “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
 
 TEST: un {{trait}} petit homme
 TEST: les {{traits}} mauvais choix du patron nous ont conduits à la ruine.
 TEST: je ne les trais pas, mais il le faudrait.
 TEST: un trait mal dessiné
 TEST: je lui lançais un trait bien piquant
+TEST: La jeune femme en noir avait des traits faciaux froids et anguleux
 
 
 # un tant soit peu
