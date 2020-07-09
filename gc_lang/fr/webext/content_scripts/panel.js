@@ -68,7 +68,7 @@ class GrammalectePanel {
     _createButtons () {
         let xButtonLine = oGrammalecte.createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
-        if (this.sId === "grammalecte_gc_panel") {
+        if (this.sId === "grammalecte_gc_panel"  &&  !bThunderbird) {
             this.xClipboardButton = this._createCopyButton();
             xButtonLine.appendChild(this.xClipboardButton);
         }
