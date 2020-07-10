@@ -608,7 +608,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             // button
             this.xParent.getElementById('grammalecte_conj_button').addEventListener("click", (e) => { this.conjugateVerb(); });
             // text field
-            this.xParent.getElementById('grammalecte_conj_verb').addEventListener("change", (e) => { this.conjugateVerb(); });
+            //this.xParent.getElementById('grammalecte_conj_verb').addEventListener("input", (e) => { this.conjugateVerb(); });
             // options
             this.xParent.getElementById('grammalecte_conj_oneg').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_oneg'); this.updateConj(); });
             this.xParent.getElementById('grammalecte_conj_opro').addEventListener("click", (e) => { this.switchOption('grammalecte_conj_opro'); this.updateConj(); });
