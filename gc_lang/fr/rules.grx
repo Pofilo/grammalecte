@@ -2119,6 +2119,17 @@ __da_couleurs_invariables__
         <<- morph(\1, ":(D.*:p|B)") =>> exclude(\2, ":A:e:i")
 
 
+__da_noms_propres__
+    Concorde
+        <<- not morph(<1, ":D.*:f") =>> add_morph(\1, ">Concorde/:MP:m:i")
+
+    Mustang
+        <<- not morph(<1, ":D.*:m") =>> add_morph(\1, ">Mustang/:MP:f:i")
+
+TEST: le crash du Concorde
+TEST: elle a acheté une Mustang
+
+
 
 !!!
 !!!
@@ -16768,6 +16779,18 @@ __da_locutions_verbales__
         <<- =>> define(\2, ":LV")
 
 
+__passer_temps_adj__
+    >passer ?toute¿ [la|cette|ma|ta|sa] [journée|semaine]                       @:A¬:A.*:[fe]:[si]
+    >passer ?toute¿ [l’|cette|mon|ton|son] [heure|année]                        @:A¬:A.*:[fe]:[si]
+    >passer ?toutes¿ [ces|ses|nos|vos|leurs] [heures|journées|semaines|années]  @:A¬:A.*:[fe]:p
+        <<- ~2:-2>> *
+
+TEST: il avait passé toutes ces années enterré dans son appartement
+TEST: Il passe toutes ses journées couché.
+TEST: Les visiteurs passent donc leurs journées agglutinés…
+TEST: il avait passé toute l’heure avachi sur sa chaise.
+
+
 __da_participe_passé__
     >avoir  $:Q
         <<- not value(\1, "|avoir|avoirs|") and not morph(<1, ":D") =>> rewrite(\2, ":A", "")
@@ -16988,6 +17011,7 @@ TEST: les délices nouvelles
 TEST: il lui faut composer avec un électorat bête à manger du foin
 TEST: l’homme d’un mètre soixante-dix appelé “général”
 TEST: tout mon être tendu vers la victoire
+TEST: Pierre et elle n’étaient plus mari et femme
 
 
 @@@@
@@ -22709,7 +22733,7 @@ __infi_verbes__
         -2>> =suggVerbInfi(\2)                                                                      && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
     [>aller|>envoyer|>venir|>revenir|>partir]  ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|déguiser)/") and not value(>1, "|par|")
+        <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|débrailler|déguiser|épuiser)/") and not value(>1, "|par|")
         --1>> =suggVerbInfi(\2)                                                                     && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: elle préférait {{mangée}} seule.                                                  ->> manger
@@ -22735,6 +22759,9 @@ TEST: D’ailleurs j’irai armé.
 TEST: J’irai armé de mon épée.
 TEST: Si possible, venez accompagné.
 TEST: Elle vint accompagnée de son père.
+TEST: Ils étaient venus débraillés comme leurs aînés les vaincus.
+TEST: Il était venu poussé par la curiosité.
+
 
 
 __infi_avoir_beau__
@@ -26809,7 +26836,8 @@ TEST: un homme humble et doux, quel être le deviendrait en de telles circonstan
 
 __vmode_l_eût_suj_voulu_que__
     l’ [eut-il|eut-elle|eut-on] [désiré|envisagé|exigé|demandé|imaginé|rêvé|souhaité|voulu] [que|qu’]
-        <<- /vmode/ -2>> =\2.replace("ut", "ût").replace("UT", "ÛT")    && Mode verbal. Dans cette locution (comme “l’eût-il voulu que…”), utilisez le subjonctif, car il s’agit d’une spéculation sur ce qui est “\-2”.
+        <<- /vmode/ -2>> =\2.replace("ut", "ût").replace("UT", "ÛT")
+        && Mode verbal. Dans cette locution (comme “l’eût-il voulu que…”), utilisez le subjonctif, car il s’agit d’une spéculation sur ce qui est “\-2”.
 
 TEST: l’{{eut-il}} voulu que ça n’aurait rien changé            ->> eût-il
 
@@ -28811,6 +28839,22 @@ __vmode_verbe_que_subjonctif__
     [il|ça|cela]  [peut|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
+    il          [arrive|arriva|arrivait]            [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
+    il          [est|était] arrivé                  [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)
+        && Après “il arrive que”, le verbe se met au subjonctif s’il s’agit d’une éventualité (mais la construction à l’indicatif est aussi possible s’il y a certitude).
+
+    il          [est|était] possible                [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    si          tant        est                     [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
+
+    peu         [est|était] fallu                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
+
+    >valoir mieux                                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    mieux >valoir                                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/  --1>> =suggVerbMode(\-1, ":S", \-2)                                            && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
+
 TEST: Il suffit qu’il {{court}} plus
 TEST: j’attends que tu {{viens}}.
 TEST: Je veux qu’il {{finit}} son repas.
@@ -28823,9 +28867,14 @@ TEST: je m’étonne qu’il {{est}} aussi fragile
 TEST: elle a envie qu’il {{est}} intelligent.
 TEST: il importera que nous {{devenons}} prêts.
 TEST: prends garde que vous {{revenez}} en un seul morceau.
+TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.
 TEST: faites attention à ce qu’elle ne {{devient}} pas timorée.
 TEST: je tiens à ce que vous {{devenez}} grands.
 TEST: Veille à ce qu’il y {{est}} des gâteaux.
+TEST: il arrive qu’il {{vient}}, mais rarement
+TEST: Vaudrait mieux qu’elle {{meurt}}
+TEST: il aurait mieux valu qu’elle {{meurt}}
+TEST: il est possible qu’il {{est}} parti
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
 TEST: Je me doutais bien qu’elle me détestait
@@ -28842,6 +28891,8 @@ TEST: pas grand-chose à proposer à part faire attention à ce qu’on fait.
 TEST: La crainte que nous nourrissons à l’égard d’une société libre tient à notre méconnaissance des vertus de l’action individuelle
 TEST: Je sais qu’il nous faut l’aide de mon ami.
 TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
+TEST: J’irai si tant est que je puisse.
+TEST: J’irai si tant est que je le puisse.
 
 
 __vmode_qqch_que_subjonctif__
@@ -28885,20 +28936,8 @@ __vmode_qqch_que_subjonctif__
     [<start>|,|(]  encore                           [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If)
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                && Après « \2 que », le verbe s’emploie au subjonctif.
 
-    il          arrive                              [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “il arrive que”, le verbe se met au subjonctif s’il s’agit d’une éventualité (mais la construction à l’indicatif est aussi possible s’il y a certitude).
-
-    il          est         possible                [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     jusqu’      à           ce                      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    si          tant        est                     [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
-
-    peu         [est|était] fallu                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
-
-    >valoir mieux                                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    mieux >valoir                                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/  --1>> =suggVerbMode(\-1, ":S", \-2)                                            && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
 
 TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
 TEST: quoi qu’il en {{conclut}}
@@ -28914,19 +28953,16 @@ TEST: pour peu qu’il {{prend}} son devoir sérieux…
 TEST: Fais en sorte qu’elle {{court}} à sa perte
 TEST: Nous œuvrons silencieusement de crainte qu’il nous {{entend}}.
 TEST: En admettant qu’il {{devient}} juste.
-TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.
 TEST: à condition qu’elle l’{{est}} jamais été
 TEST: non qu’il {{prend}} son temps
 TEST: si tant est que nous {{prenons}} notre temps
 TEST: moyennant qu’elle {{vient}} demain
 TEST: en attendant qu’il {{devient}} plus raisonnable
-TEST: il arrive qu’il {{vient}}, mais rarement
 TEST: {{où}} qu’il {{est}}, on le trouvera
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
 TEST: encore qu’il {{sait}} s’y prendre
-TEST: Vaudrait mieux qu’elle {{meurt}}
-TEST: il aurait mieux valu qu’elle {{meurt}}
+TEST: jusqu’à ce qu’elle {{vient}} avec nous
 TEST: C’est un joli bien. Bien qu’il a hérité de son oncle, notez bien.
 TEST: Bien qu’il avait donné à ses enfants.
 TEST: si bien que je me suis toujours demandée si cela ne m’avait pas un peu bousillé les yeux
@@ -28951,8 +28987,6 @@ TEST: Je travaille de façon qu’il puisse vivre.
 TEST: En admettant qu’il soit allé
 TEST: Demander jusqu’à ce qu’il réponde.
 TEST: Demander jusqu’à ce qu’il me réponde.
-TEST: J’irai si tant est que je puisse.
-TEST: J’irai si tant est que je le puisse.
 TEST: Quoique je dise.
 TEST: Quoique je te dise.
 TEST: Ça signifie qu’il est parti ou qu’il est mort.
@@ -29226,6 +29260,9 @@ TEST: Du côté de ceux sans qui le cinéma se réduirait à pas grand-chose
 TEST: Il commence à monter sur scène au Club Méditerranée
 TEST: Je n’en avais cure.
 TEST: À toute chose malheur est bon.
+TEST: Les 5 outils sont fixés sur le porte-outils.
+TEST: Pourquoi s’était-elle laissé emporter ?
+TEST: elle s’était laissé emporter
 
 
 
