@@ -10,9 +10,13 @@
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
 let bChrome = false;
+let bThunderbird = false;
 if (typeof(browser) !== "object") {
     var browser = chrome;
     bChrome = true;
+}
+if (typeof(messenger) === "object") {
+    bThunderbird = true;
 }
 
 
@@ -148,6 +152,34 @@ const oInitHandler = {
         browser.storage.local.get("sc_options").then(this._initSCOptions, showError);
     },
 
+    registerComposeScripts: async function () {
+        // For Thunderbird only
+        if (bThunderbird) {
+            let xRegisteredScripts = await browser.composeScripts.register({
+                /*css: [
+                    // Any number of code or file objects could be listed here.
+                    { code: "body { background-color: red; }" },
+                    { file: "compose.css" },
+                ],*/
+                js: [
+                    // Any number of code or file objects could be listed here.
+                    //{ code: `document.body.textContent = "Hey look, the script ran!";` },
+                    { file: "content_scripts/editor.js" },
+                    { file: "content_scripts/html_src.js" },
+                    { file: "content_scripts/panel.js" },
+                    { file: "grammalecte/fr/textformatter.js" },
+                    { file: "content_scripts/panel_tf.js" },
+                    { file: "content_scripts/panel_gc.js" },
+                    { file: "content_scripts/message_box.js" },
+                    { file: "content_scripts/menu.js" },
+                    { file: "content_scripts/init.js" }
+                ]
+            });
+            // To unregister scripts:
+            // await xRegisteredScripts.unregister();
+        }
+    },
+
     _initUIOptions: function (oSavedOptions) {
         if (!oSavedOptions.hasOwnProperty("ui_options")) {
             browser.storage.local.set({"ui_options": {
@@ -210,7 +242,7 @@ const oInitHandler = {
             oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, oInfo: {} });
             oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, oInfo: {} });
         }
-    }
+    },
 }
 
 // start the Worker for the GC
@@ -219,6 +251,7 @@ oWorkerHandler.start();
 // init the options stuff and start the GC
 oInitHandler.initUIOptions();
 oInitHandler.initGrammarChecker();
+oInitHandler.registerComposeScripts(); // Thunderbird only
 
 
 // When the extension is installed or updated
@@ -230,14 +263,6 @@ browser.runtime.onInstalled.addListener(function (oDetails) {
         //browser.tabs.create({url: "http://grammalecte.net"});
     }
 });
-
-
-
-/*
-    Ports from content-scripts
-*/
-
-let dConnx = new Map();
 
 
 /*
@@ -284,6 +309,11 @@ function handleMessage (oRequest, xSender, sendResponse) {
 browser.runtime.onMessage.addListener(handleMessage);
 
 
+/*
+    Ports from content-scripts
+*/
+let dConnx = new Map();
+
 function handleConnexion (xPort) {
     // Messages from tabs
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
@@ -326,63 +356,79 @@ function handleConnexion (xPort) {
         }
     });
     //xPort.postMessage({sActionDone: "newId", result: iPortId});
+    //console.log("[Grammalecte] init connection to content-script");
     xPort.postMessage({sActionDone: "init", sUrl: browser.extension.getURL("")});
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
 
 
+
+/*
+    ComposeAction
+    (Thunderbird only)
+*/
+if (bThunderbird) {
+    browser.composeAction.onClicked.addListener(function (xTab, xData) {
+        sendCommandToTab(xTab.id, "grammar_checker_compose_window");
+    });
+}
+
+
 /*
     Context Menu
+    (not for MailExtension)
 */
-// Analyze
-browser.contextMenus.create({ id: "grammar_checker_editable",   title: "Analyser cette zone de texte",              contexts: ["editable"] });
-browser.contextMenus.create({ id: "grammar_checker_selection",  title: "Analyser la sélection",                     contexts: ["selection"] });
-browser.contextMenus.create({ id: "grammar_checker_iframe",     title: "Analyser le contenu de ce cadre",           contexts: ["frame"] });
-browser.contextMenus.create({ id: "grammar_checker_page",       title: "Analyser la page",                          contexts: ["all"] });
-browser.contextMenus.create({ id: "separator_tools",            type: "separator",                                  contexts: ["all"] });
-// Tools
-browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
-browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
-//browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
-browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
+if (!bThunderbird) {
+    // Analyze
+    browser.contextMenus.create({ id: "grammar_checker_editable",   title: "Analyser cette zone de texte",              contexts: ["editable"] });
+    browser.contextMenus.create({ id: "grammar_checker_selection",  title: "Analyser la sélection",                     contexts: ["selection"] });
+    browser.contextMenus.create({ id: "grammar_checker_iframe",     title: "Analyser le contenu de ce cadre",           contexts: ["frame"] });
+    browser.contextMenus.create({ id: "grammar_checker_page",       title: "Analyser la page",                          contexts: ["all"] });
+    browser.contextMenus.create({ id: "separator_tools",            type: "separator",                                  contexts: ["all"] });
+    // Tools
+    browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
+    browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
+    //browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
+    browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 
+    browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
+        // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
+        // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
+        // confusing: no way to get the node where we click?!
+        switch (xInfo.menuItemId) {
+            // analyze
+            case "grammar_checker_editable":
+            case "grammar_checker_page":
+                sendCommandToTab(xTab.id, xInfo.menuItemId);
+                break;
+            case "grammar_checker_iframe":
+                sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.frameId);
+                break;
+            case "grammar_checker_selection":
+                sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
+                break;
+            // tools
+            case "conjugueur_window":
+                openConjugueurWindow();
+                break;
+            case "conjugueur_tab":
+                openConjugueurTab();
+                break;
+            case "lexicon_editor":
+                openLexiconEditor();
+                break;
+            case "dictionaries":
+                openDictionaries();
+                break;
+            default:
+                console.log("[Background] Unknown menu id: " + xInfo.menuItemId);
+                console.log(xInfo);
+                console.log(xTab);
+        }
+    });
+}
 
-browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
-    // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
-    // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
-    // confusing: no way to get the node where we click?!
-    switch (xInfo.menuItemId) {
-        // analyze
-        case "grammar_checker_editable":
-        case "grammar_checker_page":
-            sendCommandToTab(xTab.id, xInfo.menuItemId);
-            break;
-        case "grammar_checker_iframe":
-            sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.frameId);
-            break;
-        case "grammar_checker_selection":
-            sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
-            break;
-        // tools
-        case "conjugueur_window":
-            openConjugueurWindow();
-            break;
-        case "conjugueur_tab":
-            openConjugueurTab();
-            break;
-        case "lexicon_editor":
-            openLexiconEditor();
-            break;
-        case "dictionaries":
-            openDictionaries();
-            break;
-        default:
-            console.log("[Background] Unknown menu id: " + xInfo.menuItemId);
-            console.log(xInfo);
-            console.log(xTab);
-    }
-});
 
 
 /*

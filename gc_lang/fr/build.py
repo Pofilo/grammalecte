@@ -13,6 +13,7 @@ import helpers
 
 def build (sLang, dVars):
     "complementary build launched from make.py"
+    dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
     createWebExtension(sLang, dVars)
     convertWebExtensionForChrome(sLang, dVars)
     createMailExtension(sLang, dVars)
@@ -25,7 +26,6 @@ def createWebExtension (sLang, dVars):
     helpers.createCleanFolder("_build/webext/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
-    dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/manifest.json", "_build/webext/"+sLang+"/manifest.json", dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
     with helpers.CD("_build/webext/"+sLang):
@@ -72,34 +72,28 @@ def createMailExtension (sLang, dVars):
     _copyGrammalecteJSPackageInZipFile(hZip, sLang)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
-    dVars = _createOptionsForThunderbird(dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/background.js", "background.js", dVars)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js", "gce_worker.js", dVars)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/README.md", "README.md", dVars)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/_locales", "_locales", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/content_scripts", "content_scripts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/fonts", "fonts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/img", "img", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/panel", "panel", dVars, True)
     hZip.close()
-    #spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
-    #if os.path.isdir(spExtension):
-    #    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
-    #    print(f"TB extension copied in <{spExtension}>")
-    #spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
-    #if os.path.isdir(spExtension):
-    #    print(f"TB extension copied in <{spExtension}>")
-    #    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
-
-
-def _createOptionsForThunderbird (dVars):
-    dVars['sXULTabs'] = ""
-    dVars['sXULTabPanels'] = ""
-    # dialog options
-    for sSection, lOpt in dVars['lStructOpt']:
-        dVars['sXULTabs'] += '    <tab label="&option.label.'+sSection+';"/>\n'
-        dVars['sXULTabPanels'] += '    <tabpanel orient="vertical">\n      <label class="section" value="&option.label.'+sSection+';" />\n'
-        for lLineOpt in lOpt:
-            for sOpt in lLineOpt:
-                dVars['sXULTabPanels'] += '      <checkbox id="option_'+sOpt+'" class="option" label="&option.label.'+sOpt+';" />\n'
-        dVars['sXULTabPanels'] += '    </tabpanel>\n'
-    # translation data
-    for sLang in dVars['dOptLabel'].keys():
-        dVars['gc_options_labels_'+sLang] = "\n".join( [ "<!ENTITY option.label." + sOpt + ' "' + dVars['dOptLabel'][sLang][sOpt][0] + '">'  for sOpt in dVars['dOptLabel'][sLang] ] )
-    return dVars
+    # Note about copying Thunderbird extension directly into the profile:
+    # In Options > Configuration editor (about:config), deactivate option <xpinstall.whitelist.required>
+    # If <manifest.json> is changed, you must reinstall the extension manually
+    spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    if os.path.isdir(spExtension):
+        file_util.copy_file(spfZip, f"{spExtension}/{dVars['tb_identifier']}.xpi")  # Filename for TB is just <identifier.xpi>
+        print(f"Thunderbird extension copied in <{spExtension}>")
+    spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
+    if os.path.isdir(spExtension):
+        file_util.copy_file(spfZip, f"{spExtension}/{dVars['tb_identifier']}.xpi")  # Filename for TB is just <identifier.xpi>
+        print(f"Thunderbird extension copied in <{spExtension}>")
 
 
 def _copyGrammalecteJSPackageInZipFile (hZip, sLang, sAddPath=""):

@@ -13,7 +13,7 @@
 
 const sGrammalecteConjugueurHTML = `
     <div class="centered_bar">
-        <input type="text" id="grammalecte_conj_verb" maxlength="40" value="" placeholder="entrez un verbe" autofocus />
+        <div contenteditable="true" id="grammalecte_conj_verb" autofocus >entrez un verbe</div>
         <div id="grammalecte_conj_button">Conjuguer</div>
     </div>
 
@@ -23,11 +23,12 @@ const sGrammalecteConjugueurHTML = `
     <div id="grammalecte_conj_verb_info" class="center">&nbsp;</div>
 
     <div id="grammalecte_conj_options">
-        <label for="grammalecte_conj_oneg">Négative</label> <input type="checkbox" id="grammalecte_conj_oneg" value="ON"  />
-        · <label for="grammalecte_conj_oint">Interrogative</label> <input type="checkbox" id="grammalecte_conj_oint" value="ON"  />
-        · <label for="grammalecte_conj_ofem">Féminin</label> <input type="checkbox" id="grammalecte_conj_ofem" value="ON"  />
-        <br/><label id="grammalecte_conj_opro_lbl" for="grammalecte_conj_opro">Pronominal</label> <input type="checkbox" id="grammalecte_conj_opro" value="ON"  />
-        · <label id="grammalecte_conj_otco_lbl" for="grammalecte_conj_otco">Temps composés</label> <input type="checkbox" id="grammalecte_conj_otco" value="ON"  />
+        <div id="grammalecte_conj_oneg" class="grammalecte_conj_option_off" data-selected="off">Négation</div>
+        · <div id="grammalecte_conj_oint" class="grammalecte_conj_option_off" data-selected="off">Interrogatif</div>
+        · <div id="grammalecte_conj_ofem" class="grammalecte_conj_option_off" data-selected="off">Féminin</div>
+        <br/>
+        <div id="grammalecte_conj_opro" class="grammalecte_conj_option_off" data-selected="off">Pronominal</div>
+        · <div id="grammalecte_conj_otco" class="grammalecte_conj_option_off" data-selected="off">Temps composés</div>
     </div>
     <div id="grammalecte_conj_note">❦</div>
 

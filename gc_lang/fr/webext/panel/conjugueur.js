@@ -77,7 +77,6 @@ function createVerbAndConjugate (sVerb) {
                     document.getElementById('otco').disabled = false;
                     document.getElementById('otco_lbl').style = "color: #000;";
                     if (oVerb.nPronominable == 0) {
-                        document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = false;
                         document.getElementById('opro_lbl').style = "color: #000;";
                     } else if (oVerb.nPronominable == 1) {

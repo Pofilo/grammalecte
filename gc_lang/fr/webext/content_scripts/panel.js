@@ -68,7 +68,7 @@ class GrammalectePanel {
     _createButtons () {
         let xButtonLine = oGrammalecte.createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
-        if (this.sId === "grammalecte_gc_panel") {
+        if (this.sId === "grammalecte_gc_panel"  &&  !bThunderbird) {
             this.xClipboardButton = this._createCopyButton();
             xButtonLine.appendChild(this.xClipboardButton);
         }
@@ -195,7 +195,7 @@ class GrammalectePanel {
             this.xHeightButton.style.opacity = (this.bVertStrech) ? ".9" : "";
         }
         let nWidth = Math.min(this.nWidth, window.innerWidth-200);
-        let nHeight = Math.min(this.nHeight, window.innerHeight-100);
+        let nHeight = Math.min(this.nHeight, window.innerHeight-50);
         if (this.bFlexible) {
             // width
             if (this.bHorizStrech) {
@@ -204,7 +204,7 @@ class GrammalectePanel {
             // height
             nHeight = ([4, 5, 6].includes(this.nPosition)) ? nHeight : Math.floor(window.innerHeight*0.45);
             if (this.bVertStrech) {
-                nHeight = ([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67);
+                nHeight = ([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-50) : Math.floor(window.innerHeight*0.67);
             }
         }
         this.xPanel.style.width = `${nWidth}px`;
