@@ -108,7 +108,7 @@ if (!mfsp.bInit && typeof(process) !== 'undefined') {
     mfsp.init(helpers.loadFile(__dirname+"/mfsp_data.json"));
 } else if (!mfsp.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
-    mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
+    mfsp.init(helpers.loadFile(browser.runtime.getURL("grammalecte/fr/mfsp_data.json")));
 } else if (mfsp.bInit){
     console.log("Module mfsp déjà initialisé");
 } else {

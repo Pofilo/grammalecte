@@ -82,7 +82,7 @@ window.addEventListener(
                 browser.runtime.sendMessage({
                     sCommand: "setDictionary",
                     oParam: { sDictionary: "main", oDict: sMainDicName },
-                    oInfo: { sExtPath: browser.extension.getURL("") }
+                    oInfo: { sExtPath: browser.runtime.getURL("") }
                 });
             }
             // UI options

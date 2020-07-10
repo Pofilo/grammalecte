@@ -201,7 +201,7 @@ const oInitHandler = {
             }
             oWorkerHandler.xGCEWorker.postMessage({
                 sCommand: "init",
-                oParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+                oParam: {sExtensionPath: browser.runtime.getURL(""), dOptions: dOptions, sContext: "Firefox"},
                 oInfo: {}
             });
         }
@@ -220,7 +220,7 @@ const oInitHandler = {
             browser.storage.local.remove("oPersonalDictionary");
         }
         if (oData.hasOwnProperty("main_dic_name")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "main", oDict: oData["main_dic_name"] }, oInfo: {sExtPath: browser.extension.getURL("")} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "main", oDict: oData["main_dic_name"] }, oInfo: {sExtPath: browser.runtime.getURL("")} });
         }
         if (oData.hasOwnProperty("community_dictionary")) {
             oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, oInfo: {} });
@@ -357,7 +357,7 @@ function handleConnexion (xPort) {
     });
     //xPort.postMessage({sActionDone: "newId", result: iPortId});
     //console.log("[Grammalecte] init connection to content-script");
-    xPort.postMessage({sActionDone: "init", sUrl: browser.extension.getURL("")});
+    xPort.postMessage({sActionDone: "init", sUrl: browser.runtime.getURL("")});
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
@@ -512,12 +512,12 @@ function openLexiconEditor (sName="__personal__") {
     if (nTabLexiconEditor === null) {
         if (bChrome) {
             browser.tabs.create({
-                url: browser.extension.getURL("panel/lex_editor.html")
+                url: browser.runtime.getURL("panel/lex_editor.html")
             }, onLexiconEditorOpened);
             return;
         }
         let xLexEditor = browser.tabs.create({
-            url: browser.extension.getURL("panel/lex_editor.html")
+            url: browser.runtime.getURL("panel/lex_editor.html")
         });
         xLexEditor.then(onLexiconEditorOpened, showError);
     }
@@ -534,12 +534,12 @@ function openDictionaries () {
     if (nTabDictionaries === null) {
         if (bChrome) {
             browser.tabs.create({
-                url: browser.extension.getURL("panel/dictionaries.html")
+                url: browser.runtime.getURL("panel/dictionaries.html")
             }, onDictionariesOpened);
             return;
         }
         let xLexEditor = browser.tabs.create({
-            url: browser.extension.getURL("panel/dictionaries.html")
+            url: browser.runtime.getURL("panel/dictionaries.html")
         });
         xLexEditor.then(onDictionariesOpened, showError);
     }
@@ -556,12 +556,12 @@ function openConjugueurTab () {
     if (nTabConjugueur === null) {
         if (bChrome) {
             browser.tabs.create({
-                url: browser.extension.getURL("panel/conjugueur.html")
+                url: browser.runtime.getURL("panel/conjugueur.html")
             }, onConjugueurOpened);
             return;
         }
         let xConjTab = browser.tabs.create({
-            url: browser.extension.getURL("panel/conjugueur.html")
+            url: browser.runtime.getURL("panel/conjugueur.html")
         });
         xConjTab.then(onConjugueurOpened, showError);
     }
@@ -577,7 +577,7 @@ function onConjugueurOpened (xTab) {
 function openConjugueurWindow () {
     if (bChrome) {
         browser.windows.create({
-            url: browser.extension.getURL("panel/conjugueur.html"),
+            url: browser.runtime.getURL("panel/conjugueur.html"),
             type: "popup",
             width: 710,
             height: 980
@@ -585,7 +585,7 @@ function openConjugueurWindow () {
         return;
     }
     let xConjWindow = browser.windows.create({
-        url: browser.extension.getURL("panel/conjugueur.html"),
+        url: browser.runtime.getURL("panel/conjugueur.html"),
         type: "popup",
         width: 710,
         height: 980

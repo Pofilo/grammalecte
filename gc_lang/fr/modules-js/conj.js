@@ -606,10 +606,10 @@ if(!conj.bInit && typeof(process) !== 'undefined') {
     conj.init(helpers.loadFile(__dirname+"/conj_data.json"));
 } else if (!conj.bInit && typeof(browser) !== 'undefined') {
     // WebExtension Standard (but not in Worker)
-    conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
+    conj.init(helpers.loadFile(browser.runtime.getURL("grammalecte/fr/conj_data.json")));
 } else if (!conj.bInit && typeof(chrome) !== 'undefined') {
     // WebExtension Chrome (but not in Worker)
-    conj.init(helpers.loadFile(chrome.extension.getURL("grammalecte/fr/conj_data.json")));
+    conj.init(helpers.loadFile(chrome.runtime.getURL("grammalecte/fr/conj_data.json")));
 } else if (conj.bInit){
     console.log("Module conj déjà initialisé");
 } else {

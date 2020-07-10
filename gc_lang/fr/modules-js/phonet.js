@@ -92,7 +92,7 @@ if (!phonet.bInit && typeof(process) !== 'undefined') {
     phonet.init(helpers.loadFile(__dirname+"/phonet_data.json"));
 } else if (!phonet.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
-    phonet.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/phonet_data.json")));
+    phonet.init(helpers.loadFile(browser.runtime.getURL("grammalecte/fr/phonet_data.json")));
 } else if (phonet.bInit){
     console.log("Module phonet déjà initialisé");
 } else {

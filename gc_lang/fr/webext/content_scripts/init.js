@@ -38,7 +38,7 @@ if (typeof(messenger) === "object" || browser.hasOwnProperty("composeAction")) {
 /*
 function loadImage (sContainerClass, sImagePath) {
     let xRequest = new XMLHttpRequest();
-    xRequest.open('GET', browser.extension.getURL("")+sImagePath, false);
+    xRequest.open('GET', browser.runtime.getURL("")+sImagePath, false);
     xRequest.responseType = "arraybuffer";
     xRequest.send();
     let blobTxt = new Blob([xRequest.response], {type: 'image/png'});
@@ -585,7 +585,7 @@ if (!bThunderbird) {
 
     // The API script must be injected this way to be callable by the page
     let xScriptGrammalecteAPI = document.createElement("script");
-    xScriptGrammalecteAPI.src = browser.extension.getURL("content_scripts/api.js");
+    xScriptGrammalecteAPI.src = browser.runtime.getURL("content_scripts/api.js");
     document.documentElement.appendChild(xScriptGrammalecteAPI);
 }
 
