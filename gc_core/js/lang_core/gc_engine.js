@@ -12,17 +12,12 @@ ${map}
 
 
 if (typeof(process) !== 'undefined') {
+    // NodeJS
     var gc_options = require("./gc_options.js");
     var gc_rules = require("./gc_rules.js");
     var gc_rules_graph = require("./gc_rules_graph.js");
     var cregex = require("./cregex.js");
     var text = require("../text.js");
-} else if (typeof(require) !== 'undefined') {
-    var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
-    var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
-    var gc_rules_graph = require("resource://grammalecte/${lang}/gc_rules_graph.js");
-    var cregex = require("resource://grammalecte/${lang}/cregex.js");
-    var text = require("resource://grammalecte/text.js");
 }
 
 
