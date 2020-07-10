@@ -62,6 +62,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.oTextControl = null;
         this.nLastResult = 0;
         this.iLastEditedParagraph = -1;
+        this.nParagraph = 0;
         // Lexicographer
         this.nLxgCount = 0;
         this.xLxgPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
@@ -151,7 +152,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
         else {
             // error
-            oGrammalecte.oMessageBox.showMessage("[BUG] Analyse d’un élément inconnu…");
+            oGrammalecte.showMessage("[BUG] Analyse d’un élément inconnu…");
             console.log("[Grammalecte] Unknown element:", what);
         }
     }
@@ -216,6 +217,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     hide () {
+        if (bThunderbird) {
+            oGrammalecte.showMessage("Veuillez patienter…");
+            this.copyAllParagraphsToComposeWindow();
+        }
         if (oGrammalecte.oTFPanel) { oGrammalecte.oTFPanel.hide(); }
         if (oGrammalecte.oMessageBox) { oGrammalecte.oMessageBox.hide(); }
         oGrammalecte.clearRightClickedNode();
@@ -252,6 +257,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xNodeDiv.appendChild(xActionsBar);
                 xNodeDiv.appendChild(xParagraph);
                 this.xParagraphList.appendChild(xNodeDiv);
+                this.nParagraph += 1;
             }
         }
         catch (e) {
@@ -442,6 +448,17 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     addSummary () {
         // todo
+    }
+
+    copyAllParagraphsToComposeWindow () {
+        // Thunderbird only
+        // When closing the window, we change all nodes according to the content of paragraphs in the gc panel
+        for (let iPara = 0;  iPara < this.nParagraph;  iPara++) {
+            let sParagraphId = "grammalecte_paragraph"+iPara;
+            if (this.xParent.getElementById(sParagraphId)) {
+                this.oTextControl.setParagraph(iPara, this.xParent.getElementById(sParagraphId).textContent);
+            }
+        }
     }
 
     addMessageToGCPanel (sMessage) {

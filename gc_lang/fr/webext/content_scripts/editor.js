@@ -20,6 +20,9 @@ class HTMLPageEditor {
         this.bCheckSignature = bCheckSignature;
         this._lParsableNodes = ["P", "LI", "H1", "H2", "H3", "H4", "H5", "H6"];
         this._lRootNodes = ["DIV", "UL", "OL"];
+        if (bThunderbird) {
+            oGrammalecte.oGCPanel.addMessageToGCPanel("❗ Interface pour Thunderbird en version bêta.");
+        }
     }
 
     * _getParsableNodes (xRootNode) {
