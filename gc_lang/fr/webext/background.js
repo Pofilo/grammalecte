@@ -155,7 +155,7 @@ const oInitHandler = {
     registerComposeScripts: async function () {
         // For Thunderbird only
         if (bThunderbird) {
-            let xRegisteredScripts = await browser.composeScripts.register({
+            let xRegisteredScripts = await messenger.composeScripts.register({
                 /*css: [
                     // Any number of code or file objects could be listed here.
                     { code: "body { background-color: red; }" },
@@ -369,7 +369,7 @@ browser.runtime.onConnect.addListener(handleConnexion);
     (Thunderbird only)
 */
 if (bThunderbird) {
-    browser.composeAction.onClicked.addListener(function (xTab, xData) {
+    messenger.composeAction.onClicked.addListener(function (xTab, xData) {
         sendCommandToTab(xTab.id, "grammar_checker_compose_window");
     });
 }
