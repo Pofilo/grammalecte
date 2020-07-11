@@ -4306,6 +4306,10 @@ __tu_locutions__
     en sous main
         <<- /tu/ ->> en sous-main                               && Il manque un trait d’union.
 
+    entre temps
+        <<- /tu/ not (value(>1, "|et|") and morph(>2, ":N"))
+        ->> entre-temps                                         && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/entre-temps
+
     grand chose
         <<- /tu/ ->> grand-chose                                && Il manque un trait d’union.
 
@@ -4348,6 +4352,7 @@ TEST: {{en contre bas}}
 TEST: {{en contre point}},
 TEST: être {{en porte à faux}}
 TEST: des tractations {{en sous main}}
+TEST: il s’était amélioré {{entre temps}}                                       ->> entre-temps
 TEST: Il ne connaît pas {{grand chose}} à tout ça.
 TEST: {{ici bas}}, n’attends rien de bon, à moins que…
 TEST: {{jusque là}}, tout va bien
@@ -6460,7 +6465,7 @@ __conf_déterminant_mas_sing_verbe__
         -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                && Incohérence avec “\2” : “\3” est un verbe.
 
     [un|une]  @:(?:Y|[123][sp])¬:[GNA]  ?$:W¿  @:A¬:[GM]
-        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|excepté|") and not before("(?i)\\bun à +$")
+        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|excepté|qu’|") and not before("(?i)\\bun à +$") and not morph(\2, ":V0")
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               && Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
 TEST: un {{maintient}} difficile.
@@ -6473,6 +6478,7 @@ TEST: chaque {{désire}} importe.
 TEST: quelqu’un arrive.
 TEST: Belle qui tient mon vit captif entre tes doigts.
 TEST: Quel serait l’homme capable d’une telle horreur ?
+TEST: Une était plus courte que l’autre.
 
 
 __conf_déterminant_plur_verbe__
@@ -10049,8 +10055,12 @@ __conf_par_dessus__
         <<- /conf/ not morph(<1, ":D.*:[me]|>(?:grande|petite)/")
         -1>> par-dessus                                                     && Confusion probable. Un pardessus est un vêtement. Pour la préposition, écrivez “par-dessus”.
 
+    [pare-dessus|pares-dessus|part-dessus|parts-dessus]
+        <<- /conf/ ->> pardessus|par-dessus                                 && Confusion. Pour le manteau, écrivez “pardessus”. Pour la locution adverbiale, écrivez “par-dessus”.
+
 TEST: {{Pardessus}} les montagnes.
 TEST: Il passa {{pardessus}} les collines.
+TEST: un {{pare-dessus}}
 TEST: Mets ton pardessus ce matin.
 
 
@@ -14109,6 +14119,7 @@ __purge_locutions__
     du même [acabit|coup|ordre|tonneau]
     du moins ?,¿ pas
     du [nord|sud] au [nord|sud]
+    du tac au tac
     du tout au tout
     eh bien
     en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
