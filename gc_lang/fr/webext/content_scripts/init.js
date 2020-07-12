@@ -583,7 +583,10 @@ if (!bThunderbird) {
         }
     });
 
-    // The API script must be injected this way to be callable by the page
+    // The API script must be injected this way to be callable by the page.
+    // Note: Firefox offers another way to give access to webpage, via “user scripts”
+    //       https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/userScripts
+    //       (Firefox only feature for now)
     let xScriptGrammalecteAPI = document.createElement("script");
     xScriptGrammalecteAPI.src = browser.runtime.getURL("content_scripts/api.js");
     document.documentElement.appendChild(xScriptGrammalecteAPI);
