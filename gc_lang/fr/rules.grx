@@ -2297,11 +2297,17 @@ __fusions_noms_communs__
         <<- ~>> ␣
         <<- =>> change_meta(\1, "WORD")
 
+    terra incognita
+        <<- ~>> ␣
+
     *NUM : *NUM
         <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
 
     *NUM  ~^h[0-9][0-9]$
         <<- space_after(\1, 0, 0) ~>> ␣
+
+
+TEST: mais nous avancions en terra incognita
 
 
 __fusions_noms_communs_séparés_slah__
@@ -11533,7 +11539,12 @@ __conf_ver_vers_verre_vert__
         <<- /conf/ -1>> verre|verres
         && Confusion probable. Verre = matière. Vert = couleur. Ver = animal invertébré rampant. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
-    >tirer ?[pas|jamais]¿ les [>verre|verts] du nez
+    en route [>vert|ver|>verre]
+    >faire ?@[WX]¿ route [>vert|ver|>verre]
+        <<- /conf/ --1>> vers
+        && Confusion. Pour dire “en direction de” écrivez “vers”.
+
+    >tirer ?@[WX]¿  les [>verre|verts] du nez
         <<- /conf/ --3>> vers
         && Confusion. Verre = matière. Vert = couleur. L’animal s’écrit “ver”.
 
@@ -11543,6 +11554,8 @@ TEST: un immonde {{vert}} de terre
 TEST: Un {{ver}} de bière fraîche.
 TEST: On va lui tirer les {{verts}} du nez
 TEST: plafond de {{ver}}
+TEST: faire route {{verre}} Marseille
+TEST: en route {{ver}} la Russie
 
 
 # voix / voie / vois / voit
@@ -14007,6 +14020,7 @@ __purge_locutions__
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
+    [de|d’] basse extraction
     [de|d’] bouche en bouche
     [de|d’] bric et [de|d’] broc
     [de|d’] but en blanc
@@ -14943,10 +14957,6 @@ __purge_conditionnelle__
     bordel de merde
         <<- not morph(<1, ":D") ~>> *
 
-    que , ce [jour|matin|soir]          , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
-    que , cette [journée|nuit|soirée]   , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
-        <<- ~3:4>> *
-
     comme [moi|toi]
         <<- morph(<1, ":[NA]", ":V0") ~>> *
 
@@ -15306,12 +15316,13 @@ __substantifs_multi_mots__
     >coureur [de|d’] >jupon
     >courroie [de|d’] transmission
     >course contre la montre
-    >crayon à [lèvres|sourcils]
     >cour d’ assises
     [>coût|>cout] [de|d’] revient
     >couteau à cran d’ arrêt
+    >crayon à [lèvres|sourcils]
     >crime [de|d’] guerre
     >crise de >nerf
+    >crotte [de|d’] nez
     >cuillère à [café|soupe]
     >cure [de|d’] [désintoxication|désintox]
     >déclaration sur l’ honneur
@@ -16346,6 +16357,11 @@ __purge_locutions_potentielles__
     [<start>|,|(] ben voyons
         <<- ~2:3>> *
 
+    que , ce [jour|matin|soir|mois|trimestre|semestre|siècle|millénaire]                                                                    , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
+    que , cette [seconde|décennie|matinée|minute|heure|journée|nuit|semaine|soirée]                                                         , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
+    que , ces [heures|matins|matinées|soirées|nuits|jours|journées|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
+        <<- ~3:4>> *
+
     chaque [seconde|minute|heure|journée|semaine|année|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
     chaque [seconde|minute|heure|journée|semaine|année|décennie]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:2>> *
@@ -16678,7 +16694,7 @@ __da_locutions_verbales__
     >élire domicile
     >entendre raison
     >étouffer dans l’ œuf
-    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|scandale|sens|sensation|signe|surface|usage|volte-face]
+    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|route|scandale|sens|sensation|signe|surface|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -16765,6 +16781,7 @@ __da_locutions_verbales__
     >refaire surface
     >remettre en cause
     >rendre [compte|gorge|hommage|service|visite]
+    >répandre comme une [traînée|trainée] [de|d’] poudre
     >reprendre haleine
     >rester lettre morte
     >rester lettres mortes
@@ -17028,6 +17045,7 @@ TEST: l’homme d’un mètre soixante-dix appelé “général”
 TEST: tout mon être tendu vers la victoire
 TEST: Pierre et elle n’étaient plus mari et femme
 TEST: La formule que, ce jour, vous avez trouvée
+TEST: La galette que, cette nuit-là, nous avons mangée.
 
 
 @@@@
