@@ -22,7 +22,7 @@ the webpages.
 * panel: browser_action panel, and other webpages (lexicon editor, conjugueur and other stuff).
 
 
-### Building the extension
+### Building the extension with the source code
 
 Extensions for LibreOffice, Firefox/Chrome and Thunderbird are generated in the folder `_build`.
 
