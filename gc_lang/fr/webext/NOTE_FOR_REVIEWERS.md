@@ -1,23 +1,21 @@
 # Grammalecte for Firefox and Chrome and for Thunderbird
 
+* [Website](https://grammalecte.net)
+* [Source code](http://code.grammalecte.net:8080/home)
 
-[Website](https://grammalecte.net)
-[Code](http://code.grammalecte.net:8080/home)
+This extension offers a grammar checking tool for the French Language.
 
 
 ## WebExtension
-
-This extension offers a grammar checking tool for the French Language.
 
 The grammar checker runs in a Worker launched from the background script.
 And text are analysed at users request. Results are displayed within
 the webpages.
 
+    Content-scripts <---> Background <---> Worker: Grammar checker (gce_worker.js)
 
-    Content-scripts <---> Background <---> Grammar checker (Worker)
 
-
-### Folders in the addon
+### Folders
 
 * grammalecte: the grammar checker (receive texts, analyse it and send back results).
 * content_scripts (what is run in content-scripts).
@@ -45,11 +43,11 @@ Build and rebuild data (may be not deterministic):
 
 If you got the source code from a zip archive, you must first uncompress the archive
 in `gc_lang/fr/dictionnaire/lexique/corpus_data`. (It isn’t possible to upload the
-source code as is to Mozilla website, as these files are considered too big).
+source code as is to Mozilla website, as these files are considered too big.)
 
 
 ## MailExtension
 
-The MailExtension is built upon the Grammalecte [WebExtension](https://addons.mozilla.org/fr/firefox/addon/grammalecte-fr/)
+The MailExtension is built upon the Grammalecte [WebExtension](https://addons.mozilla.org/fr/firefox/addon/grammalecte-fr/).
 
 Both extensions use the same code. Only one file differs: manifest.json
