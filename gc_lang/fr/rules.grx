@@ -9002,15 +9002,6 @@ __conf_en_général__
 TEST: On n’en sait {{en générale}} pas assez.
 
 
-# en roue libre
-__conf_en_roue_libre__
-    en roux libre
-        <<- /conf/ ->> en roue libre                            && Locution “en roue libre”.|https://fr.wiktionary.org/wiki/en_roue_libre
-
-TEST: ces cons sont constamment {{en roux libre}}
-TEST: elle est en roue libre depuis le début.
-
-
 # emballé, c’est pesé
 __conf_emballé_c_est_pesé__
     >emballer [c|sais|sait] >peser
@@ -10354,9 +10345,15 @@ TEST: c’est la {{paume}} de discorde
 
 # porc / pore / port
 __conf_porc_port_pore__
+    ## pore
     [>porc|>port] de la peau
         <<- /conf/ -1>> pore|pores                                          && Confusion. Les pores de la peau .|https://fr.wiktionary.org/wiki/pore
 
+    [>transpirer|>exsuder] ?@:[WX]¿ par ?tous¿ les [ports|porcs]
+    [>transpirer|>exsuder] ?@:[WX]¿ [de|d’] [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels] par ?tous¿ les [ports|porcs]
+        <<- /conf/ --1>> pores                                              && Confusion. Les pores de la peau.|https://fr.wiktionary.org/wiki/pore
+
+    ## porc
     [>pore|>port] [braisé+ses|caramélisé+ses|confit+s|cuit+s|farci+ses|grillé+ses|laqué+ses|mariné+ses|mijoté+ses|poêlé+ses]
     [>pore|>port] au [caramel|cognac|cidre|citron|chorizo|cumin|curry|four|fenouil|gingembre|lait|miel|roquefort|vin|vinaigre]
     [>pore|>port] aux [abricots|cèpes|champignons|carottes|épices|fèves|figues|fruits|girolles|haricots|herbes|lardons|légumes|lentilles|marrons|morilles|noisettes|nouilles|oignons|ognons|pâtes|poires|pommes|patates|pruneaux]
@@ -10375,6 +10372,7 @@ __conf_porc_port_pore__
     >élevage [de|d’] [>pore|>port]
         <<- /conf/ --1>> porc|porcs                                         && Confusion. Pour évoquer l’animal, écrivez “porc”.|https://fr.wiktionary.org/wiki/porc
 
+    ## port
     [>pore|>porc] [de|d’] [plaisance|pêche]
     [>pore|>porc] [>maritime|>spatial]
         <<- /conf/ -1>> port|ports                                          && Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
@@ -10404,6 +10402,7 @@ TEST: nous parvenons enfin à bon {{pore}}
 TEST: Accoste au {{porc}}
 TEST: le {{pore}} de La Rochelle
 TEST: Connecte le {{pore}} USB
+TEST: transpirer par tous les {{porcs}}
 TEST: je transporte des porcs de Calais à Londres.
 
 
@@ -10870,6 +10869,19 @@ __conf_ris_de_veau_agneau__
 TEST: Elles ont préparé un {{riz}} de veau.
 TEST: Elle adore le {{ri}} au lait.
 TEST: Tous adorent le {{ri}} basmati.
+
+
+# roue / roux
+__conf_roue_roux__
+    en roux >libre
+        <<- /conf/ ->> en roue libre                            && Locution “en roue libre”.|https://fr.wiktionary.org/wiki/en_roue_libre
+
+    >bâton dans les roux
+        <<- /conf/ --1>> roues                                  && Confusion. Vous confondez l’objet rond avec la couleur.|https://fr.wiktionary.org/wiki/roue
+
+TEST: ces cons sont constamment {{en roux libre}}
+TEST: cesse de nous mettse des bâtons dans les {{roux}}
+TEST: elle est en roue libre depuis le début.
 
 
 # saint / sain / sein / seing
@@ -11540,22 +11552,25 @@ __conf_ver_vers_verre_vert__
         && Confusion probable. Verre = matière. Vert = couleur. Ver = animal invertébré rampant. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
     en route [>vert|ver|>verre]
-    >faire ?@[WX]¿ route [>vert|ver|>verre]
+    >faire ?@:[WX]¿ route [>vert|ver|>verre]
         <<- /conf/ --1>> vers
         && Confusion. Pour dire “en direction de” écrivez “vers”.
 
-    >tirer ?@[WX]¿  les [>verre|verts] du nez
-        <<- /conf/ --3>> vers
-        && Confusion. Verre = matière. Vert = couleur. L’animal s’écrit “ver”.
+    !! >tirer ?@:[WX]¿  les vers du nez ¡¡
+    >tirer ?@:[WX]¿  les [>verre|verts|vers] du [nez|né]
+        <<- /conf/ --3:0>> vers du nez
+        && Confusion. Locution “tirer les vers du nez”.|https://fr.wiktionary.org/wiki/tirer_les_vers_du_nez
 
 TEST: ce {{vert}} quoi nous allons, c’est une catastrophe à l’échelle planétaire.
 TEST: en finir avec le {{vert}} qui était dans le fruit.
 TEST: un immonde {{vert}} de terre
 TEST: Un {{ver}} de bière fraîche.
-TEST: On va lui tirer les {{verts}} du nez
+TEST: On va lui tirer les {{verts du nez}}
+TEST: tirer les {{vers du né}}
 TEST: plafond de {{ver}}
 TEST: faire route {{verre}} Marseille
 TEST: en route {{ver}} la Russie
+TEST: on va lui tirer les vers du nez
 
 
 # voix / voie / vois / voit
@@ -14021,6 +14036,7 @@ __purge_locutions__
     [de|d’] bas en haut
     [de|d’] bas étage
     [de|d’] basse extraction
+    [de|d’] belle prestance
     [de|d’] bouche en bouche
     [de|d’] bric et [de|d’] broc
     [de|d’] but en blanc
@@ -15320,6 +15336,7 @@ __substantifs_multi_mots__
     [>coût|>cout] [de|d’] revient
     >couteau à cran d’ arrêt
     >crayon à [lèvres|sourcils]
+    >crêpage de >chignon
     >crime [de|d’] guerre
     >crise de >nerf
     >crotte [de|d’] nez
@@ -22012,6 +22029,16 @@ TEST: La puissance publique s’en est-elle rendu compte ?
 TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
 
 
+## désolé pour
+__ppas_désoler__
+    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir] désoler [<end>|,|)]
+    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir] désoler pour @:(?:[DM]|Oo)
+        <<- /ppas/ -2>> désolé|désolée                                                              && Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
+
+TEST: {{Désoler}} pour la soupe froide.
+TEST: {{désoler}} pour Patrick, mais il l’a mérité.
+TEST: elle restait {{désoler}} pour la pauvre Claire
+
 
 !!
 !!
@@ -22037,7 +22064,7 @@ __infi_à_verbe__
     à  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[st]?)$
     à  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[st]?)$
     à  ?[ne|n’]¿  [lui|leur]                     en                         ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             && Après le pronom “à”, le verbe devrait être à l’infinitif.
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         && Après le pronom “à”, le verbe devrait être à l’infinitif.
 
 TEST: on ne gagne rien {{à les}} {{poussés}} dans leurs derniers retranchements
 TEST: à en {{parlé}} sans cesse
@@ -22259,13 +22286,22 @@ __infi_qqch_de__
     >avoir ?toute¿ hâte                         [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir hâte de”, le verbe devrait être à l’infinitif.
 
+    >avoir ?tout¿ lieu                          [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir lieu de”, le verbe devrait être à l’infinitif.
+
     >avoir ?tout¿ loisir                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir loisir de”, le verbe devrait être à l’infinitif.
 
-    >avoir [besoin|peur|raison]                 [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+    >avoir besoin                               [de|d’]  [le|les|nous|vous|lui]    ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
+
+    >avoir besoin                               [de|d’]  ?[l’|la|leur]¿            ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
+
+    >avoir [peur|raison]                        [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
-    >avoir [besoin|peur|raison]                 [de|d’]  [l’|la|leur]              ~..ée?s?$
+    >avoir [peur|raison]                        [de|d’]  [l’|la|leur]              ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     point [ne|n’] >être besoin                  [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
@@ -22346,6 +22382,8 @@ TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrent
 TEST: il a l’air de {{pensée}} qu’on est des crétins                                                ->> penser
 TEST: tu avais raison de {{pensée}} ça                                                              ->> penser
 TEST: point n’était besoin de {{données}} sans cesse des nouvelles                                  ->> donner
+TEST: avoir besoin de nous {{donné}} du temps                                                       ->> donner
+TEST: avoir besoin de la {{trouvée}} vite                                                           ->> trouver
 TEST: point n’était besoin de leur {{avancé}} de l’argent.                                          ->> avancer
 TEST: nous eûmes la chance de la {{trouvée}} facilement                                             ->> trouver
 TEST: avoir raison de la {{considérée}} ainsi                                                       ->> considérer
@@ -22353,6 +22391,7 @@ TEST: vous avez le droit de lui {{craché}} à la gueule                        
 TEST: ils ont vite fait de nous {{poussée}} à bout                                                  ->> pousser
 TEST: elle est en train de {{mangée}}                                                               ->> manger
 TEST: nous nous faisons fort de {{pensée}} tous les jours                                           ->> penser
+TEST: il y a tout lieu de {{donnée}} l’alerte                                                       ->> donner
 TEST: nous avions tout loisir de nous {{consacré}} à cela                                           ->> consacrer
 TEST: elle n’avait de cesse de la {{poussée}} dans ses derniers retranchements                      ->> pousser
 TEST: je déteste sa manière de la {{rabaissée}} en permanence.                                      ->> rabaisser
@@ -22372,6 +22411,7 @@ TEST: non content de {{damnés}} pour l’éternité                            
 TEST: non contente de l’{{ignorée}}, elle en était fière.                                           ->> ignorer
 TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements                        ->> pousser
 TEST: d’crainte d’l’{{touché}}, m’sieur…                                                            ->> toucher
+TEST: il avait besoin d’alliés.
 
 
 #### Infinitif après divers
@@ -23778,12 +23818,7 @@ TEST: elles se sont prises en main.
 TEST: elles s’étaient aimées ce matin.
 
 
-__ppas_désoler__
-    [<start>|,|(] désoler [<end>|,|)]
-    [<start>|,|(] désoler pour $:D
-        <<- /ppas/ -2>> désolé|désolée          && Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
 
-TEST: {{Désoler}} pour la soupe froide.
 
 
 
@@ -29297,6 +29332,8 @@ TEST: À toute chose malheur est bon.
 TEST: Les 5 outils sont fixés sur le porte-outils.
 TEST: Pourquoi s’était-elle laissé emporter ?
 TEST: elle s’était laissé emporter
+TEST: avec force regards méfiants
+TEST: il faut que les sommes ainsi débloquées soient employées au mieux
 
 
 
