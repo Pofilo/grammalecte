@@ -76,6 +76,7 @@ def createMailExtension (sLang, dVars):
     helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/background.js", "background.js", dVars)
     helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js", "gce_worker.js", dVars)
     helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/README.md", "README.md", dVars)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/NOTE_FOR_REVIEWERS.md", "NOTE_FOR_REVIEWERS.md", dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/_locales", "_locales", dVars, True)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/content_scripts", "content_scripts", dVars, True)
