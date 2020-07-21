@@ -88,7 +88,21 @@ class GrammalecteMessageBox {
     }
 
     setMessage (sMessage) {
-        this.xMessageBoxContent.textContent = sMessage;
+        if (!sMessage.includes("\n")) {
+            // one line message
+            this.xMessageBoxContent.textContent = sMessage;
+        }
+        else {
+            // multi-line message
+            let lLines = sMessage.split("\n");
+            for (let sLine of lLines) {
+                this.xMessageBoxContent.appendChild(oGrammalecte.createNode("p", { textContent: sLine }));
+            }
+        }
+        //let nOffset = Math.min(this.xMessageBox.clientHeight / 2);
+        //console.log(nOffset);
+        //this.xMessageBox.style.marginTop = `-${nOffset}px`;
+        this.xMessageBox.style.marginTop = `-150px`;
     }
 
     clear () {

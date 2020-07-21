@@ -128,6 +128,9 @@ const oGrammalecte = {
         this.oGCPanel.start(what, xResultNode);
         this.oGCPanel.startWaitIcon();
         let sText = this.oGCPanel.oTextControl.getText();
+        if (bThunderbird && sText.trim() === "") {
+            oGrammalecte.showMessage("❓ Le message ne semble contenir aucune réponse. Si vous écrivez votre réponse avant le message auquel vous répondez, celle-ci ne peut être vue de Grammalecte que si vous avez réglé votre compte pour répondre au-dessus du message cité.\n➜ Pour modifier ce réglage, allez dans vos paramètres de compte et, dans la section [Rédaction et adressage], sélectionnez [La réponse commence avant la citation].\n❗ Si vous ne modifiez pas ce réglage, seul le texte écrit après les passages cités sera vu et analysé par Grammalecte.");
+        }
         oGrammalecteBackgroundPort.parseAndSpellcheck(sText, "__GrammalectePanel__");
     },
 
