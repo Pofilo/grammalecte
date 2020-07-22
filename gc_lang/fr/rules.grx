@@ -2192,6 +2192,7 @@ __tag_sujets__
     vous-mêmes
     vous [seul|seule|seuls|seules]
     vous autres
+    ni vous
         <<- not morph(<1, ">ne/|:R") />> _2p_
 
 
@@ -4067,6 +4068,42 @@ TEST: {{jeudi}} 17 aout 1912                                              ->> sa
 TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
 TEST: {{jeudi}}, 18 août 1563 : mort de La Boétie (calendrier julien)     ->> mercredi
 TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
+
+
+__date_nuits_soirées_matinées__
+    !! dans la [matinée|nuit|soirée] de dimanche à lundi ¡¡
+    !! dans la [matinée|nuit|soirée] de lundi à mardi ¡¡
+    !! dans la [matinée|nuit|soirée] de mardi à mercredi ¡¡
+    !! dans la [matinée|nuit|soirée] de mercredi à jeudi ¡¡
+    !! dans la [matinée|nuit|soirée] de jeudi à vendredi ¡¡
+    !! dans la [matinée|nuit|soirée] de vendredi à samedi ¡¡
+    !! dans la [matinée|nuit|soirée] de samedi à dimanche ¡¡
+    dans la [matinée|nuit|soirée] de [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] à [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
+        <<- --4:0>> de dimanche à lundi|de lundi à mardi|de mardi à mercredi|de mercredi à jeudi|de jeudi à vendredi|de vendredi à samedi|de samedi à dimanche
+        && Cette \3 n’existe pas, les deux journées ne se succédant pas.
+
+TEST: dans la nuit {{de jeudi à mardi}}
+TEST: dans la nuit de dimanche à lundi
+TEST: dans la nuit de lundi à mardi
+TEST: dans la nuit de mardi à mercredi
+TEST: dans la nuit de mercredi à jeudi
+TEST: dans la nuit de jeudi à vendredi
+TEST: dans la nuit de vendredi à samedi
+TEST: dans la nuit de samedi à dimanche
+TEST: dans la soirée de dimanche à lundi
+TEST: dans la soirée de lundi à mardi
+TEST: dans la soirée de mardi à mercredi
+TEST: dans la soirée de mercredi à jeudi
+TEST: dans la soirée de jeudi à vendredi
+TEST: dans la soirée de vendredi à samedi
+TEST: dans la soirée de samedi à dimanche
+TEST: dans la matinée de dimanche à lundi
+TEST: dans la matinée de lundi à mardi
+TEST: dans la matinée de mardi à mercredi
+TEST: dans la matinée de mercredi à jeudi
+TEST: dans la matinée de jeudi à vendredi
+TEST: dans la matinée de vendredi à samedi
+TEST: dans la matinée de samedi à dimanche
 
 
 !!
@@ -6198,7 +6235,7 @@ __loc_notre_père_qui_es_au_cieux__
 
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
 
-__conj_xxxai__sans_sujet!3__
+__conj_1s_sans_sujet_xxxai!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~ai$
         <<- /conj/ not tag_before(\1, "_1s_") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
         --1>> =suggVerb(\-1, ":3s")                                                                 && Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
@@ -6225,7 +6262,7 @@ TEST: {{dansai}} puis oubliait
 TEST: ce qui, dans le meilleur des cas, peut-être, oui, c’est vrai, vous {{donnerai}} l’avantage.
 
 
-__conj_xxxas_xxxes__sans_sujet!3__
+__conj_2s_sans_sujet_xxxas_xxxes!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[ae]s$
         <<- /conj/ not tag_before(\1, "_2s_") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 && Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
@@ -6254,7 +6291,7 @@ TEST: n’est-ce pas, indubitablement, nous la {{contestes}}
 TEST: nous laisserons derrière nous les empires de la Terre.
 
 
-__conj_xxxxxs_sans_sujet!3__
+__conj_1s_2s_sans_sujet_xxxs!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[iudnrtpcï]s$
         <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 && Incohérence. Le sujet de cette forme verbale est introuvable.
@@ -6322,12 +6359,12 @@ TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équiva
 
 
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
-__conj_xxxons_sans_sujet!3__
+__conj_1p_sans_sujet!3__
     ~ons$
         <<- /conj/ morph(\1, ":1p", ":[EGMNAJ]") and not tag_before(\1, "_1p_") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     && Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 
-__conj_xxxez_sans_sujet!3__
+__conj_2p_sans_sujet!3__
     ~ez$
         <<- /conj/ morph(\1, ":2p", ":[EGMNAJ]") and not tag_before(\2, "_2p_") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     && Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
@@ -6341,6 +6378,7 @@ TEST: mes supérieurs et moi-même avons pris la décision de ne pas vendre
 TEST: Ni lui ni moi n’avions mangé
 TEST: Mon épouse et moi-même avons toujours dit
 TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du tout le même sens
+TEST: ni vous ni personne ne le retrouverez
 
 
 # Confusion futur / conditionnel
@@ -12909,6 +12947,9 @@ __purge_horaires_et_durée__
     [avant|après|dès|depuis] le crépuscule
         <<- ~>> *
 
+    dans la [matinée|nuit|soirée] de [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] à [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
+        <<- ~>> *
+
     à la fin de [la|l’]             [après-midi|matinée|nuit|soirée]
     au [début|milieu] de [la|l’]    [après-midi|matinée|nuit|soirée]
     en [début|milieu|fin] [de|d’]   [après-midi|matinée|soirée]
@@ -13225,6 +13266,7 @@ __purge_locutions_temps__
     dans peu de temps
     dans très peu de temps
     dans un [premier|second|troisième|quatrième] temps
+    depuis ce temps-là
     depuis peu
     depuis ?[assez|si|très|trop]¿ peu de temps
     depuis la nuit des temps
@@ -13287,8 +13329,9 @@ __purge_locutions_temps__
         <<- ~>> *
 
 __purge_locutions_instant_moment__
-    à ce moment ?[exact|particulier|précis]¿
-    à cet instant ?[exact|particulier|précis]¿
+    à aucun moment
+    à ce [moment|moment-là] ?[exact|particulier|précis]¿
+    à cet [instant|instant-là] ?[exact|particulier|précis]¿
     à chaque [instant|moment] ?passé¿
     à un moment donné
     à un moment ou à un autre
@@ -13297,7 +13340,7 @@ __purge_locutions_instant_moment__
     dans ces moments-là
     d’ instant en instant
     d’ un [instant|moment] à l’ autre
-    en ce moment ?[particulier]¿
+    en ce [moment|moment-là] ?[particulier]¿
     en ces [temps-là|temps-ci]
     en cet instant ?[particulier|précis]¿
     le moment venu
@@ -13632,7 +13675,7 @@ __purge_locutions__
     à air comprimé
     à angle droit
     à armes égales
-    à aucun [moment|prix]
+    à aucun prix
     à autre chose
     à ?[si|très|trop]¿ bas [bruit|cout|coût|prix]
     à bâtons rompus
@@ -14208,6 +14251,8 @@ __purge_locutions__
     en l’ absence [de|d’] preuve suffisante du contraire
     en l’ absence [de|d’] preuves suffisantes
     en l’ absence [de|d’] preuves suffisantes du contraire
+    en l’ état actuel
+    en l’ état actuel des choses
     en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
@@ -17063,6 +17108,9 @@ TEST: tout mon être tendu vers la victoire
 TEST: Pierre et elle n’étaient plus mari et femme
 TEST: La formule que, ce jour, vous avez trouvée
 TEST: La galette que, cette nuit-là, nous avons mangée.
+TEST: Si vous devez partir ou rester
+TEST: Si Rosanna est venue ici, elle y est venue fatiguée par la vie
+TEST: ceux de modeste condition n’ont pas semblable privilège
 
 
 @@@@
@@ -27860,7 +27908,7 @@ TEST: Une société a vendu un terrain à bâtir à un acquéreur, lequel entrep
 
 __conj_personne__
     personne  @:V¬:(?:3s|P|G|[QA].*:f:s)
-        <<- /conj/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
+        <<- /conj/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)|>ni/")
         --1>> =suggVerb(\-1, ":3s")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     personne  qui  @:V¬:(?:3s|P|G)
