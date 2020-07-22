@@ -47,7 +47,7 @@ def unzip (spfZip, spDest, bCreatePath=False):
         print("> unzip in: "+ spDest)
         spInstall = os.path.abspath(spDest)
         if os.path.isdir(spInstall):
-            eraseFolder(spInstall)
+            eraseFolderContent(spInstall)
             with zipfile.ZipFile(spfZip) as hZip:
                 hZip.extractall(spDest)
         else:
@@ -56,7 +56,7 @@ def unzip (spfZip, spDest, bCreatePath=False):
         print("path destination is empty")
 
 
-def eraseFolder (sp):
+def eraseFolderContent (sp):
     "erase content of a folder"
     for sf in os.listdir(sp):
         spf = os.path.join(sp, sf)
@@ -74,7 +74,7 @@ def createCleanFolder (sp):
     if not os.path.exists(sp):
         os.makedirs(sp, exist_ok=True)
     else:
-        eraseFolder(sp)
+        eraseFolderContent(sp)
 
 
 def copyFolder (spSrc, spDst):
