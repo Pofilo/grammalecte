@@ -6903,7 +6903,7 @@ TEST: Aussi {{désobligeante}} que furent ces réponses, il fallut trouver un te
 # a / à
 
 __conf_a_à_incohérences__
-    à [afin|alors|après|auprès|avant|avec|au-dedans|au-dehors|au-delà|au-dessous|au-dessus|au-devant|chez|dans|devant|dès|déjà|donc|durant|lorsque|lorsqu’|malgré|parce|parmi|pendant|pour|puisque|puisqu’|quoique|quoiqu’|que|qu’|sur|tandis]
+    à [afin|alors|après|auprès|avant|avec|au-dedans|au-dehors|au-delà|au-dessous|au-dessus|au-devant|chez|dans|devant|dès|déjà|donc|durant|envers|lorsque|lorsqu’|malgré|parce|parmi|pendant|pour|puisque|puisqu’|quoique|quoiqu’|que|qu’|sur|tandis|vis-à-vis]
         <<- /conf/ -1>> a                                           && Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
 
     à [au|aux]
@@ -12557,10 +12557,11 @@ TEST: Qui ne {{créer}} aucune valeur ajoutée
 
 !!
 !!
-!!!! Après celui, celle, ceux, celles                                                             !!
+!!!! Confusions avec participes passés                                                            !!
 !!
 !!
 
+# Après celui, celle, ceux, celles
 __conf_celui_celle_ceux_celles_verbe__
     celui  ~.e[rz]$
         <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:s")                                 && Confusion. Après “\1”, il faut un adjectif.
@@ -12595,6 +12596,15 @@ TEST: celle {{attaquait}}
 TEST: ceux {{sidérait}}
 TEST: celles {{déjantait}}
 TEST: celui d’Obéron était différent
+
+
+## une fois +det +nom +V1_infi
+__ppas_une_fois_det_nom_adj__
+    une fois  $:D  $:N  @:V1.*:Y¬*
+        <<- /conf/ --1>> =suggVerbPpas(\-1)                                         && Confusion probable. Si “\-1” est bien un adjectif pour “\-3 \-2”, alors n’utilisez pas un verbe à l’infinitif.
+
+TEST: une fois le petit {{accepter}} par l’école, nous pûmes nous reposer.
+
 
 
 !!
@@ -13379,10 +13389,11 @@ __purge_locutions_temporelles_diverses__
     depuis lors
     depuis toujours
     depuis un bail
+    dès à présent
     dès [demain|hier] ?[soir|matin|après-midi]¿
     dès [maintenant|lors|aujourd’hui]
+    dès [mon|ton|son|notre|votre|leur] plus jeune âge
     dès que possible
-    dès à présent
     déjà
     désormais
     dorénavant
@@ -16425,6 +16436,10 @@ __purge_locutions_potentielles__
     [<start>|,|(] ben voyons
         <<- ~2:3>> *
 
+    bien sous tout rapport
+    bien sous tous rapports
+        <<- morph(<1, ":N", ":D") ~>> *
+
     que , ce [jour|matin|soir|mois|trimestre|semestre|siècle|millénaire]                                                                    , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
     que , cette [seconde|décennie|matinée|minute|heure|journée|nuit|semaine|soirée]                                                         , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
     que , ces [heures|matins|matinées|soirées|nuits|jours|journées|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
@@ -18675,7 +18690,7 @@ __conf_jeûne_jeune__
     >jeune [alimentaire|eucharistique|rituel|sacramentel]
         <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")         && Confusion. Pour les privations alimentaires, écrivez “jeûne”.|https://fr.wiktionary.org/wiki/je%C3%BBne
 
-    >jeûne [>adolescent|>adulte|>âge|>épousé|>époux|>femme|>fille|gars|>garçon|gens|>homme|>marié|>mari|>enfant|>bébé|>chien|>chiot|>chat|>célibataire|>étudiant|>lycéen|>élève|>écolier|>diplômé|>prodige|>couple|>papa|>maman|>père|>mère|>con|>génération|>médecin|>travailleur]
+    >jeûne [>age|>âge|>adolescent|>adulte|>âge|>épousé|>époux|>femme|>fille|gars|>garçon|gens|>homme|>marié|>mari|>enfant|>bébé|>chien|>chiot|>chat|>célibataire|>étudiant|>lycéen|>élève|>écolier|>diplômé|>prodige|>couple|>papa|>maman|>père|>mère|>con|>génération|>médecin|>travailleur]
         <<- /conf/ -1>> =\1.replace("û", "u").replace("Û", "U")         && Confusion. Le jeûne est une privation alimentaire.|https://fr.wiktionary.org/wiki/jeune
 
 TEST: Elle est restée {{jeûne}}.
@@ -22056,6 +22071,7 @@ TEST: {{puisque}} la fête {{finie}}, je vais partir.
 TEST: {{lorsque}} l’horloge {{sonnée}}, nous nous levions à la hâte
 TEST: {{quand}} les croissants {{arrivés}}, on se jetait dessus
 TEST: {{lorsque}} certains idiots {{oubliés}}, on riait aux éclats
+TEST: {{lorsque}} ton code {{grossi}}, il faut le factoriser
 TEST: quand le jour venu, il fallut se battre, nous étions prêts.
 
 
@@ -22099,6 +22115,7 @@ __ppas_désoler__
 TEST: {{Désoler}} pour la soupe froide.
 TEST: {{désoler}} pour Patrick, mais il l’a mérité.
 TEST: elle restait {{désoler}} pour la pauvre Claire
+
 
 
 !!
