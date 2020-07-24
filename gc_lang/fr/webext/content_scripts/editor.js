@@ -140,7 +140,7 @@ class TextNodeEditor {
             if (!this.xResultNode) {
                 oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
             }
-            this.loadText(sText);
+            this.loadText(what);
         }
         else if (what.nodeType && what.nodeType === 1) {
             // NODE
