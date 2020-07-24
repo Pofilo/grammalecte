@@ -4563,7 +4563,8 @@ __tu_substantifs__
         <<- /tu/ morph(<1, ":D") ->> \1-à-porter                && Il manque les traits d’union.
 
     quelques [un|uns|une|unes]
-        <<- /tu/ ->> quelques-\2                                && Il manque un trait d’union.
+        <<- /tu/ \2.endswith("s") or \2.endswith("S") ->> quelques-\2       && Il manque un trait d’union.
+        <<- /tu/ __else__ ->> quelques-\2s                                  && Il manque un trait d’union.
 
     [plus|moins] [value|values]
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/plus-value
@@ -4937,6 +4938,7 @@ __tu_pas_de_trait_d_union__
     d’ entre-vous
     d’ entre-eux
     d’ entre-elles
+    d’ entre-iels
         <<- /tu/ -2>> =\2.replace("-", " ")                                     && Pas de trait d’union.
 
 TEST: Il est {{en-dessous}} de tout.                                            ->> en dessous
