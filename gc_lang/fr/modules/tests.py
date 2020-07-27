@@ -204,13 +204,16 @@ class TestGrammarChecking (unittest.TestCase):
             if nError:
                 print("Unexpected errors:", nError)
         # untested rules
-        i = 0
+        aUntestedRules = set()
         for _, sOpt, sLineId, sRuleId in gce.listRules():
-            if sOpt != "@@@@" and sRuleId.rstrip("0123456789") not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
-                echo(f"# untested rule: {sLineId}/{sRuleId}")
-                i += 1
-        if i:
-            echo("  [{} untested rules]".format(i))
+            sRuleId = sRuleId.rstrip("0123456789")
+            if sOpt != "@@@@" and sRuleId not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
+                aUntestedRules.add(f"{sLineId}/{sRuleId}")
+        if aUntestedRules:
+            print()
+            for sRule in aUntestedRules:
+                echo(sRule)
+            echo("  [{} untested rules]".format(len(aUntestedRules)))
 
     def _splitTestLine (self, sLine):
         sText, sSugg = sLine.split("->>")
