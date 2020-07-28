@@ -1971,8 +1971,8 @@ __da_mots_grammaticaaux__
     [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
-    [la|ma|ta|sa|les|des|nos|vos|leur|leurs|chaque|quel|quelle|quels|quelles] personne
-        <<- =>> select(\2, ":N")
+    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
+        <<- =>> select(\-1, ":N")
 
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
@@ -2090,9 +2090,6 @@ __da_groupe_nominal__cas_particuliers__
     l’ une comme l’ autre
         <<- ~>> ␣
         <<- =>> define(\1, ":LN:f:p")
-
-    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
-        <<- =>> select(\-1, ":N")
 
     en peine
         <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
@@ -11170,7 +11167,7 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 __conf_soi_soit_soie__
     [chez|sur|avec|pour|devant|derrière] [soit|sois]
     don de [soit|sois]
-    estime de [soit|sois|>soie]
+    [dépassement|estime] de [soit|sois|>soie]
     >repli sur [soit|sois|>soie]
         <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
@@ -15475,7 +15472,7 @@ __substantifs_multi_mots__
     >eau [de|d’] noix [de|d’] coco
     >écart [de|d’] conduite
     >économie [de|d’] >bout [de|d’] >chandelle
-    >économie [de|d’] guerre
+    >économie [de|d’] [échelle|guerre]
     >écran [de|d’] fumée
     >éditeur [de|d’] presse
     >effet [de|d’] bord
@@ -16417,6 +16414,11 @@ __purge_adverbes__
 @@@@
 @@@@
 @@@@
+
+__da_le_montre__
+    le  montre  $:D
+        <<- morph(<1, ":C") =>> select(\2, ":V")
+
 
 ## Seconde passe (il faut réorganiser tout le cycle de simplification)
 
@@ -19802,6 +19804,7 @@ __gn_l_1m__
 TEST: le gouvernement, l’{{états}} tout entier
 TEST: toute l’importance de l’{{accords}} musical.
 TEST: L’{{arrivées}} était prévue demain.
+TEST: ce que laisse penser l’{{entretiens}} que j’avais fait.
 
 
 __gn_l_2m__
@@ -28620,9 +28623,13 @@ __conj_des_nom__
     [<start>|,|(]  des  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|G)
         <<- /conj/ -5>> =suggVerb(\5, ":3p")                                                        && Conjugaison erronée. Accord avec “\2 \3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
+    *WORD  des  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|G)
+        <<- /conj/ morph(\1, ":[VR]", ":[NA]") --1>> =suggVerb(\-1, ":3p")                          && Conjugaison erronée. Accord avec “\2 \3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
 TEST: Des hommes {{arrive}}.
 TEST: Des femmes ne {{demande}} rien.
 TEST: des femmes qui {{conduise}} la marche du monde.
+TEST: j’en ai marre de faire des choses qui ne m’{{amuse}} pas.
 TEST: des démocrates geindre à propos de l’absence pourtant parlante de délégation
 TEST: On vit très vite, en quelques jours, les gens installer des jeux d’argent sur les trottoirs, des femmes se prostituer, des commerces illicites…
 
