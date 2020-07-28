@@ -2010,24 +2010,15 @@ __da_autre_chose_quelque_chose__
 
 
 __da_groupe_nominal__
-    [au|aux] alentour
-        <<- =>> select(\2, ":N")
+    à                [la|l’]         @:[NA]¬:Y
+    [sans|pour|par]  [la|l’|le|les]  @:[NA]¬:Y
+        <<- =>> exclude(\-1, ":V")
+
+    de  ?[la|l’]¿  @:¬:[YD]
+        <<- not value(<1, "|semblant|") =>> exclude(\-1, ":V")
 
     aucun  @:[NA].*:[me]
         <<- =>> exclude(\2, ":V")
-
-    avions
-        <<- not tag_before(\1, "_1p_") and not value(<1, "|n’|") and not value(>1, "|nous|") =>> select(\-1, ":N")
-
-    l’ avions
-        <<- morph(<1, ":Y") =>> select(\-1, ":N")
-
-    bac + ~^\d\d?$
-        <<- ~>> ␣
-        <<- =>> define(\1, ":N:e:i")
-
-    [de|d’]  @:¬:[YD]
-        <<- =>> exclude(\2, ":(?:[123][sp]|P)")
 
     d’ [un|une]  *WORD
         <<- =>> exclude(\3, ":V")
@@ -2035,16 +2026,8 @@ __da_groupe_nominal__
     l’ [un|une]  *WORD
         <<- not value(\3, "|plus|") =>> select(\3, ":[123][sp]")
 
-    l’ un comme l’ autre
-        <<- ~>> ␣
-        <<- =>> define(\1, ":LN:m:p")
-
-    l’ une comme l’ autre
-        <<- ~>> ␣
-        <<- =>> define(\1, ":LN:f:p")
-
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
-        <<- not morph(\-1, ":V0") =>> exclude(\2, ":V")
+        <<- not morph(\-1, ":V0") =>> exclude(\-1, ":V")
 
     sa  *WORD
         <<- not morph(\-1, ":V0") and not morph(\-1, ":3s") =>> exclude(\2, ":V")
@@ -2056,12 +2039,6 @@ __da_groupe_nominal__
     [un|une]  *WORD
         <<- not value(<1, "|l’|quelqu’|quelqu|") and not value(\2, "|a|fut|fût|est|fait|") and not morph(\2, ":P") =>> exclude(\2, ":V")
 
-    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
-        <<- =>> select(\-1, ":N")
-
-    de  [la|l’]  $:¬:Y
-        <<- not value(<1, "|semblant|") =>> exclude(\3, ":V")
-
     [/_VCint_|/_VCimp_]  [le|la|l’|leur|les]  $:¬:Y
         <<- =>> select(\2, ":D")
 
@@ -2072,13 +2049,7 @@ __da_groupe_nominal__
         <<- =>> select(\4, ":[NA]")
 
     en tant que  *WORD
-        <<- =>> exclude(\4, ":[123][sp]")
-
-    en peine
-        <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
-
-    m’ [dame|sieur]
-        <<- ~>> ␣
+        <<- =>> exclude(\4, ":V")
 
     nombre  [de|d’|des]  [@:[NA]|<end>|,]
         <<- not morph(<1, ":D") >>>
@@ -2094,12 +2065,44 @@ __da_groupe_nominal__
     source [de|d’]
         <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, ":LV")
 
+    très  *WORD
+        <<- =>> exclude(\2, ":[123][sp]")
+
+
+__da_groupe_nominal__cas_particuliers__
+    [au|aux] alentour
+        <<- =>> select(\2, ":N")
+
+    avions
+        <<- not tag_before(\1, "_1p_") and not value(<1, "|n’|") and not value(>1, "|nous|") =>> select(\-1, ":N")
+
+    l’ avions
+        <<- morph(<1, ":Y") =>> select(\-1, ":N")
+
+    bac + ~^\d\d?$
+        <<- ~>> ␣
+        <<- =>> define(\1, ":N:e:i")
+
+    l’ un comme l’ autre
+        <<- ~>> ␣
+        <<- =>> define(\1, ":LN:m:p")
+
+    l’ une comme l’ autre
+        <<- ~>> ␣
+        <<- =>> define(\1, ":LN:f:p")
+
+    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
+        <<- =>> select(\-1, ":N")
+
+    en peine
+        <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
+
+    m’ [dame|sieur]
+        <<- ~>> ␣
+
     tout feu ?,¿ tout >flamme
         <<- ~>> ␣
         <<- =>> define(\1, ":A:e:i")
-
-    très  *WORD
-        <<- =>> exclude(\2, ":[123][sp]")
 
 TEST: il s’agit d’{{un}} {{anagramme}}
 TEST: nul ne sait qui arriva à ce pauvre Paul surpris par la pluie.
@@ -7378,7 +7381,6 @@ __conf_à_a_locutions__
     a bon [compte|escient|droit]
     a bout [de|d’] [bras|souffle|>force]
     a bout [portant|touchant]
-    a bras le corps
     a bras ouverts
     a bride abattue
     a ?[si|très|trop]¿ brève échéance
@@ -7659,6 +7661,7 @@ __conf_a_à_substantifs__
     >fusil a >pompe
     >gaz a >effet de serre
     >histoire a dormir debout
+    >instrument a [cordes|percussion|vent]
     >homme a poigne
     >homme a tout faire
     >lampe a [>huile|>pétrole]
@@ -8500,11 +8503,14 @@ TEST: non {{comptant}} de s’en prendre à eux, il s’attaqua aussi à elles
 
 # corps / cor
 __conf_corps_cor__
-    [a|à] bras le >cor
-        <<- /conf/ ->> à bras le corps                                              && Confusion. Le cor est instrument de musique.
+    !! à bras-le-corps ¡¡
+    [à|a] [bras-le-corps|bras-le-cor]
+    [à|a] [bra|bras] [le|les] [>cor|corps|>core|corre]
+        <<- /conf/ ->> à bras-le-corps              && Locution “à bras-le-corps”.|https://fr.wiktionary.org/wiki/%C3%A0_bras-le-corps
 
-    à >cor [perdu+ses]
-        <<- /conf/ ->> à corps perdu                                                && Confusion. Le cor est instrument de musique.
+    !! à corps perdu ¡¡
+    à [>cor|core] [perdu+ses]
+        <<- /conf/ ->> à corps perdu                                                && Confusion. Locution “à corps perdu”.|https://fr.wiktionary.org/wiki/%C3%A0_corps_perdu
 
     >cor [a|à] >cor
         <<- /conf/ ->> corps à corps                                                && Confusion. Le cor est instrument de musique.
@@ -8530,6 +8536,7 @@ TEST: ils se sont battus {{cor à cor}}
 TEST: L’hostie n’est pas le {{cor}} du Christ.
 TEST: elle détestait son nouveau garde du {{cor}}
 TEST: Elle souffla puissamment dans le {{corps}} de chasse.
+TEST: prendre le problème à bras-le-corps
 
 
 # cou / coup / coût
@@ -8973,19 +8980,20 @@ TEST: ce dont on parle tous les jours
 # dû / du
 __ppas_dû_du__
     du  [à|a|au|aux]
-        <<- /ppas/ \2.islower() -1>> dû                         && Confusion. Ce qui est dû.
+        <<- /ppas/ \2.islower() -1>> dû                                                 && Confusion. Ce qui est dû.
 
     [mon|notre|votre]  du
-        <<- /ppas/ -2>> dû                                      && Confusion. Ce qui est dû.
+        <<- /ppas/ -2>> dû                                                              && Confusion. Ce qui est dû.
 
     [ton|son|leur]  du
-        <<- /ppas/ not morph(>1, ":[NA].*:[me]") -2>> dû        && Confusion. Ce qui est dû.
+        <<- /ppas/ not morph(<1, ":D") and morph(>1, ":|<end>", ":[NA].*:[me]") -2>> dû       && Confusion. Ce qui est dû.
 
 TEST: L’échec {{du}} à une erreur de calcul
 TEST: que ça vous plaise ou non, c’est notre {{du}}.
 TEST: Il veut qu’on lui rende son {{du}}.
 TEST: Tu as reçu ton {{du}} pour ton travail.
 TEST: Plusieurs murs ont été recouverts du « A » anarchiste
+TEST: Xénophon nous apprend que les Athéniens faisaient leurs exercices au son du Salpinx.
 
 
 # eh bien, hé bien / et bien
@@ -10382,6 +10390,36 @@ TEST: elle n’est jamais tombée {{dans les paumes}}
 TEST: le jeu de {{pomme}} est l’ancêtre du tennis
 TEST: dans la {{pomme}} de sa main
 TEST: c’est la {{paume}} de discorde
+
+
+# point / poing
+__conf_poing_point__
+    [>arme|>coup|>oiseau] de >point
+    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] $:D >point
+        <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             && Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+    >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
+        <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
+        -1>> =\1.replace("t", "g").replace("T", "G")                        && Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+    !! à point nommé ¡¡
+    [à|a] [point+s|>poing] [nommé|+ses]
+        <<- /conf/ ->> à point nommé                                        && Locution “à point nommé”.|https://fr.wiktionary.org/wiki/%C3%A0_point_nomm%C3%A9
+
+    !! à poings fermés ¡¡
+    [à|a] [>point|poing+s] [fermé+ses]
+        <<- /conf/ ->> à poings fermés                                      && Locution “à poings fermés”.|https://fr.wiktionary.org/wiki/dormir_%C3%A0_poings_ferm%C3%A9s
+
+TEST: une arme de {{point}}
+TEST: Elles ont tapé du {{point}} sur la table.
+TEST: les {{points}} serrés
+TEST: venir {{a point nommé}}                                               ->> à point nommé
+TEST: {{a points fermés}}                                                   ->> à poings fermés
+TEST: Tu contres son coup de poing.
+TEST: Il m’a donné un coup de poing.
+TEST: Les poings serrés.
+TEST: ça arriva à point nommé
+TEST: à poings fermés
 
 
 # porc / pore / port
@@ -13711,13 +13749,19 @@ __purge_locutions__
     à bout [de|d’] [bras|souffle|force|forces|nerf|nerfs]
     à bout [portant|touchant]
     à bras ouverts
-    à bras le corps
+    à bras-le-corps
     à bride abattue
     à but ?non¿ lucratif
     à cadence forcée
     à canon [court|long|scié]
     à cause [de|d’]  [ça|cela|ceci|moi|toi|lui|nous|vous|elle|elles|eux|iel|iels]
     à ce [compte-là|moment-là|titre]
+    à ce [que|qu’] je [peux|pouvais|pus|pourrai|pourrais] en [apercevoir|comprendre|juger|percevoir|voir]
+    à ce [que|qu’] tu [peux|pouvais|pus|pourras|pourrais] en [apercevoir|comprendre|juger|percevoir|voir]
+    à ce qu’ [il|elle|on|iel] [peut|pouvait|put|pourra|pourrait] en [apercevoir|comprendre|juger|percevoir|voir]
+    à ce [que|qu’] nous [pouvons|pouvions|pûmes|pourrons|pourrions] en [apercevoir|comprendre|juger|percevoir|voir]
+    à ce [que|qu’] vous [pouvez|pouviez|pûtes|pourrez|pourriez] en [apercevoir|comprendre|juger|percevoir|voir]
+    à ce qu’ [ils|elles|iels] [pouvent|pouvaient|purent|pourront|pourraient] en [apercevoir|comprendre|juger|percevoir|voir]
     à certains égards
     à cet égard
     à ciel ouvert
@@ -13849,6 +13893,7 @@ __purge_locutions__
     à plus forte raison
     à plus d’ un titre
     à poil [court|dur|long|rêche]
+    à poings fermés
     à point nommé
     à portée [de|d’] [main|tir|voix]
     à première vue
@@ -14550,6 +14595,7 @@ __purge_locutions__
     sans aucun doute
     sans autre forme [de|d’] procès
     sans commune mesure
+    sans contredit
     sans coup férir
     sans crier gare
     sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
@@ -15260,7 +15306,7 @@ __substantifs_multi_mots__
     >âge d’ or
     >agence d’ interim
     >agence [de|d’] >voyage
-    >agent de liaison
+    >agent [de|d’] [liaison|police]
     >agité du bocal
     >aide [de|d’] camp
     >aire d’ atterrissage
@@ -15458,10 +15504,11 @@ __substantifs_multi_mots__
     >expérience [utilisateur|utilisateurs]
     >face [A|B]
     >faiblesse [de|d’] caractère
+    >faisceau [de|d’] présomptions
     faits et gestes
     farces et attrapes
     >fard à [joues|paupières]
-    >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage|pouvoir]
+    >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage|paix|pouvoir]
     >femme d’ âge mûr
     >femme à poigne
     >femme à tout faire
@@ -15476,7 +15523,7 @@ __substantifs_multi_mots__
     >feux [de|d’] la rampe
     >feuille [de|d’] route
     >fibre [de|d’] verre
-    >fiche de [paie|paye]
+    >fiche [de|d’] [paie|paye]
     >fiche S
     >file d’ attente
     >fille à [papa|maman|>soldat]
@@ -15521,7 +15568,7 @@ __substantifs_multi_mots__
     heures [de|d’] pointe
     >histoire à dormir debout
     >histoire avec un [grand|petit] h
-    >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|pouvoir]
+    >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|paix|pouvoir]
     >homme d’ âge mûr
     >homme à poigne
     >homme à tout faire
@@ -15532,6 +15579,7 @@ __substantifs_multi_mots__
     >ingénieur du son
     >inspection [de|d’] routine
     >instinct [de|d’] survie
+    >instrument à [cordes|percussion|vent]
     >interface [utilisateur+s]
     >intermittent du spectacle
     >invité d’ honneur
@@ -15628,6 +15676,7 @@ __substantifs_multi_mots__
     >parc d’ attractions
     >parc [de|d’] stationnement
     >parole en l’ air
+    >parole d’ honneur
     >partie [de|d’] jambes en l’ air
     >passage à tabac
     >passation [de|d’] pouvoir
@@ -15670,6 +15719,7 @@ __substantifs_multi_mots__
     prix [de|d’] revient
     puits [de|d’] [carbone|forage|lumière|pétrole|science]
     >puissance [de|d’] feu
+    >punaise [de|d’] lit
     QG [de|d’] campagne
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
@@ -15767,6 +15817,7 @@ __substantifs_multi_mots__
     >travail d’ intérêt général
     >travailleur au noir
     >tribunal d’ assises
+    >trombone à coulisse
     >trou à >rat
     >trouble à l’ ordre public
     >t-shirt sans >manche
@@ -18378,6 +18429,22 @@ TEST: Le bel été indien que nous avons cette année.
 TEST: Quel a été le déclencheur de cet ouvrage ?
 
 
+__conf_faisceau_vaisseau__
+    >vaisseau [de|d’] >présomption
+    >vé [>sot|>sceau|>saut] [de|d’] [>présomption|>précaution]
+    >vé [>sot|>sceau|>saut] [de|d’] [>présomption|>précaution]
+    >vé [>sot|>sceau|>saut] [de|d’] [>prêt|près|>pré] [>caution|>potion]
+    [>faisceau|>vaisseau] [de|d’] [>prêt|près|>pré] [>caution|>potion]
+        <<- /conf/ ->> faisceau de présomptions             && Confusion probable. Un faisceau de présomptions, c’est-à-dire un ensemble de présomptions concordantes.|https://fr.wiktionary.org/wiki/faisceau
+
+    >faisceau [de|d’] présomption
+        <<- /sgpl/ --1>> présomptions                       && Il y a plusieurs présomptions dans un faisceau (un ensemble de présomptions concordantes).
+
+TEST: un {{vaisseau de présomption}}                    ->> faisceau de présomptions
+TEST: un faisceau de {{présomption}}                    ->> présomptions
+TEST: un faisceau de présomptions
+
+
 __conf_ferrer_faire__
     nous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferrons      $:Y
         <<- /conf/ not morph(<1, ":R") --2>> ferons                                                 && Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
@@ -18491,6 +18558,7 @@ __conf_foi_fois_foie__
     [ma|ta|sa|notre|votre|leur] fois
     [>homme|>femme] [de|d’] peu [de|d’] [>foie|fois]
     >acte [de|d’] [>foie|fois]
+    >profession [de|d’] [>foie|fois]
         <<- /conf/ --1>> foi                                                && Confusion probable. Pour évoquer la ferveur (religieuse), écrivez “foi”.|https://fr.wiktionary.org/wiki/foi
 
     sans [fois|>foie] ?,¿ ni >loi
@@ -19242,24 +19310,6 @@ TEST: « Oui, sans doute », mais peut-être pas pour tout le monde
 TEST: La réalisation de composants (injection plastique…) peut être limitée.
 
 
-# point / poing
-__conf_poing_point__
-    [>arme|>coup|>oiseau] de >point
-    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] $:D >point
-        <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             && Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
-
-    >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
-        <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
-        -1>> =\1.replace("t", "g").replace("T", "G")                        && Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
-
-TEST: une arme de {{point}}
-TEST: Elles ont tapé du {{point}} sur la table.
-TEST: les {{points}} serrés
-TEST: Tu contres son coup de poing.
-TEST: Il m’a donné un coup de poing.
-TEST: Les poings serrés.
-
-
 # prendre son mal en patience
 __conf_prendre_son_mal_en_patience__
     >prendre [mon|ton|son|notre|votre|leur|leurs] >mâle en [>patience|patiente|patientes]
@@ -19738,10 +19788,20 @@ TEST: ce champignon {{venimeux}}.
 ## l’
 
 __gn_l_1m__
-    l’  @:[NA].*:p¬:(?:[123][sp]|[si])
-        <<- /gn/ -2>> =suggSing(\2)                                                                 && Accord de nombre erroné : “\2” devrait être au singulier.
+    ,  l’  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:p", "*") -3>> =suggSing(\3)                             && Accord de nombre erroné : après « l’ », « \3 » devrait être au singulier.
 
+    *WORD  l’  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:p", "*")
+            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+        -3>> =suggSing(\3)                                                                  && Accord de nombre erroné : après « l’ », « \3 » devrait être au singulier.
+
+    <start>  l’  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggSing(\3)                       && Accord de nombre erroné : après « l’ », « \3 » devrait être au singulier.
+
+TEST: le gouvernement, l’{{états}} tout entier
 TEST: toute l’importance de l’{{accords}} musical.
+TEST: L’{{arrivées}} était prévue demain.
 
 
 __gn_l_2m__
@@ -19779,11 +19839,11 @@ __gn_le_1m__
     *WORD  le  *WORD
         <<- /gn/ morph(\2, ":D") >>>
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
-            or ( morph(\3, ":[NA].*:f", ":[me]") and morph(\1, ":R", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:f", ":[me]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -2>> =suggLesLa(\3)                                                                         && Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            && Accord de genre erroné : « \2 » est un déterminant masculin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
-            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggMasSing(\3)                                                                       && Accord de nombre erroné : « \3 » devrait être au singulier.
         <<- /gn/ __also__ -2>> les                                                                  && Accord de nombre erroné : « \3 » est au pluriel.
 
@@ -19840,11 +19900,11 @@ __gn_la_1m__
     *WORD  la  *WORD
         <<- /gn/ morph(\2, ":D") >>>
         <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|M|[1-3][sp]|Y)")
-            or ( morph(\3, ":[NA].*:m", ":[Mfe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:m", ":[Mfe]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
         -2>> le                                                                             && Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    && Accord de genre erroné : « \2 » est un déterminant féminin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
-            or ( morph(\3, ":[NA].*:p", ":[Msi]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:p", ":[Msi]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggFemSing(\3)                                                               && Accord de nombre erroné : « \3 » devrait être au singulier.
 
     <start>  la  *WORD
@@ -19899,7 +19959,7 @@ __gn_leur_1m__
 
     *WORD  leur  *WORD
         <<- /gn/ morph(\3, ":[NA].*:p", "*")
-            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RCY]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -2>> leurs                                                                          && Accord de nombre erroné avec « \3 ».
         <<- /gn/ __also__ -3>> =suggSing(\3)                                                && Accord de nombre erroné : « \3 » devrait être au singulier.
 
@@ -19945,7 +20005,7 @@ TEST: Que ferons-nous de {{leur}} gros {{grains}}
 
 
 __gn_le_la_leur_3m__
-    [le|la|leur]  *WORD  *WORD  *WORD
+    [le|la|leur|l’]  *WORD  *WORD  *WORD
         <<- /gn/ not value(<1, "|et|ou|") and morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
@@ -29015,7 +29075,7 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
         --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “\1 que”, ce verbe devrait être au subjonctif.
 
-    [il|ça|cela]  [peut|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
     il          [arrive|arriva|arrivait]            [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
@@ -29072,6 +29132,9 @@ TEST: Je sais qu’il nous faut l’aide de mon ami.
 TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
 TEST: J’irai si tant est que je puisse.
 TEST: J’irai si tant est que je le puisse.
+TEST: il eût fallu que je vous fisse la grâce de m’expliquer
+TEST: quand bien même elle eût été différente, je doute que…
+TEST: il eût été impossible de s’en sortir avec un tel handicap
 
 
 __vmode_qqch_que_subjonctif__
