@@ -153,7 +153,6 @@ def main ():
 
     oGrammarChecker = grammalecte.GrammarChecker("fr")
     oSpellChecker = oGrammarChecker.getSpellChecker()
-    oLexicographer = oGrammarChecker.getLexicographer()
     oTextFormatter = oGrammarChecker.getTextFormatter()
     if xArgs.personal_dict:
         oJSON = loadDictionary(xArgs.personal_dict)
@@ -271,8 +270,10 @@ def main ():
                 for sWord in sText[1:].strip().split():
                     if sWord:
                         echo("* " + sWord)
-                        for sMorph in oSpellChecker.getMorph(sWord):
-                            echo("  {:<32} {}".format(sMorph, oLexicographer.formatTags(sMorph)))
+                        for sElem, aRes in oSpellChecker.analyze(sWord):
+                            echo("  - " + sElem)
+                            for sMorph, sMeaning in aRes:
+                                echo("      {:<40}  {}".format(sMorph, sMeaning))
             elif sText.startswith("!"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
