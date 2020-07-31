@@ -373,7 +373,8 @@ def main ():
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
     xParser.add_argument("-acd", "--add_community_dictionary", help="add community dictionary to the build", action="store_true")
     xParser.add_argument("-apd", "--add_personal_dictionary", help="add personal dictionary to the build", action="store_true")
-    xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
+    xParser.add_argument("-fx", "--firefox", help="Launch Firefox for WebExtension testing", action="store_true")
+    xParser.add_argument("-fxd", "--firefox_dev", help="Launch Firefox Developper for WebExtension testing", action="store_true")
     xParser.add_argument("-fxn", "--firefox_nightly", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-l", "--lint_web_ext", help="web-ext lint on the WebExtension", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
@@ -455,7 +456,11 @@ def main ():
                     os.system(r'web-ext lint -o text')
 
             # Firefox
-            if xArgs.firefox:           # Firefox Developer edition
+            if xArgs.firefox:           # Firefox
+                with helpers.CD("_build/webext/"+sLang):
+                    spfFirefox = dVars['win_fx_path']  if platform.system() == "Windows"  else dVars['linux_fx_path']
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')
+            if xArgs.firefox_dev:       # Firefox Developer edition
                 with helpers.CD("_build/webext/"+sLang):
                     spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
                     os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')
