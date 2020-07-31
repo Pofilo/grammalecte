@@ -177,8 +177,7 @@ def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sAddPath=""):
 
 def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
     "make Grammalecte for project <sLang>"
-    oNow = datetime.datetime.now()
-    print("============== MAKE GRAMMALECTE [{0}] at {1.hour:>2} h {1.minute:>2} min {1.second:>2} s ==============".format(sLang, oNow))
+    print(f">>>> MAKE GC ENGINE: {sLang} <<<<")
 
     #### READ CONFIGURATION
     print("> read configuration...")
@@ -283,6 +282,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
 
 def copyGraphspellCore (bJavaScript=False):
     "copy Graphspell package in Grammalecte package"
+    print("> Copy Graphspell package in Grammalecte package")
     helpers.createCleanFolder("grammalecte/graphspell")
     dir_util.mkpath("grammalecte/graphspell/_dictionaries")
     for sf in os.listdir("graphspell"):
@@ -302,6 +302,7 @@ def copyGraphspellCore (bJavaScript=False):
 
 def copyGraphspellDictionaries (dVars, bJavaScript=False, bCommunityDict=False, bPersonalDict=False):
     "copy requested Graphspell dictionaries in Grammalecte package"
+    print("> Copy requested Graphspell dictionaries in Grammalecte package")
     dVars["dic_main_filename_py"] = ""
     dVars["dic_main_filename_js"] = ""
     dVars["dic_community_filename_py"] = ""
@@ -318,11 +319,11 @@ def copyGraphspellDictionaries (dVars, bJavaScript=False, bCommunityDict=False, 
         spfJSDic = f"graphspell-js/_dictionaries/{sFileName}.json"
         if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
             buildDictionary(dVars, sType, bJavaScript)
-        print(spfPyDic)
+        print("  +", spfPyDic)
         file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
         dVars['dic_'+sType+'_filename_py'] = sFileName + '.bdic'
         if bJavaScript:
-            print(spfJSDic)
+            print("  +", spfJSDic)
             file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
             dVars['dic_'+sType+'_filename_js'] = sFileName + '.json'
     dVars['dic_main_filename_py'] = dVars['dic_default_filename_py'] + ".bdic"
@@ -381,6 +382,9 @@ def main ():
     xParser.add_argument("-tbb", "--thunderbird_beta", help="Launch Thunderbird Beta", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
+
+    oNow = datetime.datetime.now()
+    print("============== MAKE GRAMMALECTE at {0.hour:>2} h {0.minute:>2} min {0.second:>2} s ==============".format(oNow))
 
     if xArgs.build_data:
         xArgs.build_data_before = True
