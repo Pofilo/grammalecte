@@ -36,8 +36,8 @@ class SpellChecker ():
         self.bPersonalDic = bool(self.oPersonalDic)
         self.oTokenizer = None
         # Default suggestions
-        self.dDefaultSugg = None
-        self.loadSuggestions(sLangCode)
+        self.lexicographer = None
+        self.loadLexicographer(sLangCode)
         # storage
         self.bStorage = False
         self._dMorphologies = {}        # key: flexion, value: list of morphologies
@@ -102,14 +102,30 @@ class SpellChecker ():
 
     # Default suggestions
 
-    def loadSuggestions (self, sLangCode):
+    def loadLexicographer (self, sLangCode):
         "load default suggestion module for <sLangCode>"
         try:
-            suggest = importlib.import_module("."+sLangCode, "grammalecte.graphspell")
+            self.lexicographer = importlib.import_module(".lexgraph_"+sLangCode, "grammalecte.graphspell")
         except ImportError:
             print("No suggestion module for language <"+sLangCode+">")
             return
-        self.dDefaultSugg = suggest.dSugg
+
+    def analyze (self, sWord):
+        "returns a list of words and their morphologies"
+        if not self.lexicographer:
+            return []
+        lWordAndMorph = []
+        for sElem in self.lexicographer.split(sWord):
+            if sElem:
+                lMorph = self.getMorph(sElem)
+                sLex = self.lexicographer.analyze(sElem)
+                if sLex:
+                    aRes = [ (" | ".join(lMorph), sLex) ]
+                else:
+                    aRes = [ (sMorph, self.lexicographer.formatTags(sMorph)) for sMorph in lMorph ]
+                if aRes:
+                    lWordAndMorph.append((sElem, aRes))
+        return lWordAndMorph
 
 
     # Storage
@@ -161,6 +177,7 @@ class SpellChecker ():
                         for sLemma in self.getLemma(dToken['sValue']):
                             dWord[sLemma] = dWord.get(sLemma, 0) + 1
         return dWord
+
 
     # IBDAWG functions
 
@@ -218,11 +235,11 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
-        if self.dDefaultSugg:
-            if sWord in self.dDefaultSugg:
-                yield self.dDefaultSugg[sWord].split("|")
-            elif sWord.istitle() and sWord.lower() in self.dDefaultSugg:
-                lRes = self.dDefaultSugg[sWord.lower()].split("|")
+        if self.lexicographer.dSugg:
+            if sWord in self.lexicographer.dSugg:
+                yield self.lexicographer.dSugg[sWord].split("|")
+            elif sWord.istitle() and sWord.lower() in self.lexicographer.dSugg:
+                lRes = self.lexicographer.dSugg[sWord.lower()].split("|")
                 yield list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))
             else:
                 yield self.oMainDic.suggest(sWord, nSuggLimit, True)

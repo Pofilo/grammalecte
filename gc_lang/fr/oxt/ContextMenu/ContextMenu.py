@@ -10,7 +10,6 @@ from com.sun.star.ui import XContextMenuInterceptor
 #from com.sun.star.ui.ContextMenuInterceptorAction import IGNORED
 #from com.sun.star.ui.ContextMenuInterceptorAction import EXECUTE_MODIFIED
 
-import grammalecte.fr.lexicographe as lxg
 from grammalecte.graphspell.spellchecker import SpellChecker
 from grammalecte.graphspell.echo import echo
 import helpers
@@ -18,7 +17,6 @@ import helpers
 
 xDesktop = None
 oSpellChecker = None
-oLexicographe = None
 
 
 class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
@@ -28,8 +26,8 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
     def notifyContextMenuExecute (self, xEvent):
         sWord = self._getWord()
         try:
-            aItem, aVerb = oLexicographe.analyzeWord(sWord)
-            if not aItem:
+            lWordAndMorph = oSpellChecker.analyze(sWord)
+            if not lWordAndMorph:
                 return uno.Enum("com.sun.star.ui.ContextMenuInterceptorAction", "IGNORED") # don’t work on AOO, have to import the value
                 #return IGNORED
             xContextMenu = xEvent.ActionTriggerContainer
@@ -40,26 +38,27 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
 
                 # word analysis
                 i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
-                for item in aItem:
-                    if isinstance(item, str):
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=item, CommandURL="service:net.grammalecte.AppLauncher?None")
-                    elif isinstance(item, tuple):
-                        sRoot, lMorph = item
+                for sWord, lMorph in lWordAndMorph:
+                    if len(lMorph) == 1:
+                        sMorph, sReadableMorph = lMorph[0]
+                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : " + sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
+                    elif len(lMorph) >= 1:
                         # submenu
                         xSubMenuContainer = xContextMenu.createInstance("com.sun.star.ui.ActionTriggerContainer")
-                        for j, s in enumerate(lMorph):
-                            self._addItemToContextMenu(xSubMenuContainer, j, "ActionTrigger", Text=s, CommandURL="service:net.grammalecte.AppLauncher?None")
+                        for j, (sMorph, sReadableMorph) in enumerate(lMorph):
+                            self._addItemToContextMenu(xSubMenuContainer, j, "ActionTrigger", Text=sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
                         # create root menu entry
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sRoot, SubContainer=xSubMenuContainer)
+                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord, SubContainer=xSubMenuContainer)
                     else:
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="# erreur : {}".format(item))
+                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : [erreur] aucun résultat trouvé.")
 
                 # Links to Conjugueur
+                aVerb = { sMorph[1:sMorph.find("/")]  for sMorph in oSpellChecker.getMorph(sWord) if ":V" in sMorph }
                 if aVerb:
                     i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
                     for sVerb in aVerb:
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Conjuguer “{}”…".format(sVerb),
-                                                       CommandURL="service:net.grammalecte.AppLauncher?CJ/"+sVerb)
+                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Conjuguer “{}”…".format(sVerb), \
+                                                        CommandURL="service:net.grammalecte.AppLauncher?CJ/"+sVerb)
 
                 # Search
                 xDoc = xDesktop.getCurrentComponent()
@@ -118,7 +117,6 @@ class JobExecutor (XJob, unohelper.Base):
         self.ctx = ctx
         global xDesktop
         global oSpellChecker
-        global oLexicographe
         try:
             if not xDesktop:
                 xDesktop = self.ctx.getServiceManager().createInstanceWithContext('com.sun.star.frame.Desktop', self.ctx)
@@ -130,8 +128,6 @@ class JobExecutor (XJob, unohelper.Base):
                     oSpellChecker = oGC.getSpellChecker()
                 else:
                     oSpellChecker = SpellChecker("${lang}", "fr-allvars.bdic")
-            if not oLexicographe:
-                oLexicographe = lxg.Lexicographe(oSpellChecker)
         except:
             traceback.print_exc()
 
