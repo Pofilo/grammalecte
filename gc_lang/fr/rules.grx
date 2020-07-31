@@ -8571,13 +8571,13 @@ TEST: sous le {{cout}} de la colère
 # cour / cours / court
 __conf_cour_cours_court_courre__
     à [cour+s|courre+s|courts] [de|d’]
-        <<- /conf/ -2>> court                               && Confusion probable : écrivez “à court de” pour “manquer de”.
+        <<- /conf/ -2>> court                               && Confusion probable : écrivez “à court de” pour “en manque de”.|https://fr.wiktionary.org/wiki/%C3%A0_court_de
 
     [à|a] [cour+s|courre+s|courts] >terme
-        <<- /conf/ ->> à court terme                        && Confusion. Une cour… Un cours… Adjectif : court(e).
+        <<- /conf/ ->> à court terme                        && Confusion. Locution “à court terme”. Une cour… Un cours… Adjectif : court(e).|https://fr.wiktionary.org/wiki/%C3%A0_court_terme
 
     au [cour|court+s|courre+s] [de|d’|des|du]
-        <<- /conf/ -2>> cours                               && Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).
+        <<- /conf/ -2>> cours                               && Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).|https://fr.wiktionary.org/wiki/au_cours_de
 
     en cour [fédérale|martiale|suprême]
     en cour [de|d’] [cassation|justice]
@@ -8594,10 +8594,13 @@ __conf_cour_cours_court_courre__
         <<- /conf/ -2>> cours                               && Confusion probable : “court” signifie “de peu de longueur”. Pour un enseignement, écrivez “cours”.|https://fr.wiktionary.org/wiki/cours
 
     >couper  ?@:[WX]¿  [cour+s|courre+s|courts]
-        <<- /conf/ --1>> court                              && “Couper court” qui signifie écourter. Noms : une cour, un cours… Adjectif : court.
+        <<- /conf/ --1>> court                              && Locution “couper court” qui signifie “mettre fin à” ou “cesser”.|https://fr.wiktionary.org/wiki/couper_court
+
+    >tourner  ?@:[WX]¿  [cour+s|courre+s|courts]
+        <<- /conf/ --1>> court                              && Locution “tourner court” qui signifie “avorter” ou “finir plus tôt que prévu”.|https://fr.wiktionary.org/wiki/tourner_court
 
     >avoir ?@:[WX]¿  [cour|court+s|courre+s]
-        <<- /conf/ --1>> cours                              && Confusion. « Avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
+        <<- /conf/ --1>> cours                              && Locution « avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
 
     [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court+s|courre+s]
         <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
@@ -8612,6 +8615,7 @@ TEST: Nous allons bientôt être à {{cours}} d’argent.
 TEST: le rendement {{à cours terme}} est excellent.
 TEST: à {{cours}} d’argent
 TEST: le portage a encore {{cour}}
+TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
@@ -10040,6 +10044,8 @@ __conf_pâle_pale__
         && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|https://fr.wiktionary.org/wiki/pale
 
     >pale [>imitation|>imitatrice|>rayon]
+    >pale comme la mort
+    >pale comme un linge
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         && Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|https://fr.wiktionary.org/wiki/pale
 
@@ -11167,7 +11173,7 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 __conf_soi_soit_soie__
     [chez|sur|avec|pour|devant|derrière] [soit|sois]
     don de [soit|sois]
-    [dépassement|estime] de [soit|sois|>soie]
+    [dépassement|dépréciation|estime|respect] de [soit|sois|>soie]
     >repli sur [soit|sois|>soie]
         <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
@@ -11675,7 +11681,7 @@ __conf_voie_voix_vois_voit__
     >ouvrir ?@:[WX]¿ la voix [à|au|aux|<end>]
         <<- /conf/ --2>> voie       && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
-    en voix [de|d’] [achèvement|acquisition|décrépitude|développement|dissolution|disparition|extinction|guérison|obtention|rémission|résorption|rétablissement]
+    en voix [de|d’] [achèvement|acquisition|décrépitude|développement|dissolution|disparition|extinction|guérison|obtention|rémission|résorption|rétablissement|spécialisation]
     par voix de >conséquence
     par voix [médicamenteuse+s]
         <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
@@ -13802,7 +13808,7 @@ __purge_locutions__
     à ?[si|très|trop|plus|moins]¿ grand bruit
     à ?[si|très|trop|plus|moins]¿ grande échelle
     à ?[si|très|trop]¿ grands frais
-    à grands traits ?[imprécis|rageurs|précis|vagues]¿
+    à ?[si|très|trop]¿ grands traits ?[imprécis|rageurs|précis|vagues]¿
     à ?[si|très|trop]¿ haut risque
     à ?[si|très|trop]¿ haute [altitude|voix]
     à ?[si|très|trop]¿ haute et intelligible voix
@@ -14077,6 +14083,8 @@ __purge_locutions__
     dans [ce|ces] [cas-là|cas-ci]
     dans ce cas [précis|particulier]
     dans ces cas [précis|particuliers]
+    dans l’ état actuel
+    dans l’ état actuel des choses
     dans l’ [idéal|immédiat]
     dans la mesure du possible
     dans la dernière ligne droite
@@ -14182,6 +14190,7 @@ __purge_locutions__
     [de|d’] la veille
     [de|d’] loin
     [de|d’] loin en loin
+    [de|d’] long en large
     [de|d’] main [de|d’] [maître|maitre]
     [de|d’] mal en pis
     [de|d’] mieux en mieux
@@ -14448,11 +14457,15 @@ __purge_locutions__
     ¿[de|d’]¿ la mort dans l’ âme
     ¿[de|d’]¿ la queue entre les jambes
     ¿[de|d’]¿ la peur au ventre
+    l’ air [de|d’] rien
+    la tête entre [mes|tes|ses|nos|vos|leurs] mains
     ?le¿ dos au mur
     le cas échéant
+    le cœur battant la chamade
+    le cœur gros
     le moins du monde
     le moment venu
-    l’ air [de|d’] rien
+    les [choses|événements|évènements] suivant leur cours ?[endiablé|effréné|frénétique|implacable|inarrêtable]¿
     ?de¿ loin
     loin [de|d’] là
     loin [de|d’] tout [ça|cela|ceci]
@@ -14584,6 +14597,7 @@ __purge_locutions__
     quoi qu’ il soit [arrivé|advenu]
     quoi qu’ il en [coûte|coûtât|coute|coutât]
     ric et rac
+    rien [que|qu’] d’ y penser
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     sans ?grand¿ succès
     sans [déconner|tarder]
@@ -15345,7 +15359,7 @@ __substantifs_multi_mots__
     >billet [de|d’] [*NUM|$:B:e:p] [euros|dollars|centimes|cents|livres|shillings]
     [>bisphénol|>bisphenol] A
     [>boîte|>boite] [aux|à] lettres
-    [>boîte|>boite] à [gants|outils|sardines]
+    [>boîte|>boite] à [bijoux|gants|outils|sardines]
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
     >bombe à rayonnement renforcé
     >bonnet [de|d’] nuit
@@ -15796,6 +15810,7 @@ __substantifs_multi_mots__
     >terrain à découvert
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
+    >tir à boulets rouges
     >tir à la première personne
     >tir [de|d’] barrage
     >tiret d’ incise
@@ -15823,6 +15838,7 @@ __substantifs_multi_mots__
     >tueur en série
     >turbine à [gaz|vapeur]
     >usine à gaz
+    >usurpation d’ identité
     vacances [de|d’] [automne|printemps|Noël|pâques]
     vacances d’ [été|hiver]
     >vache à lait
@@ -15870,6 +15886,7 @@ __substantifs_multi_mots__
     >digne [de|d’] ce nom
     >droit comme un i
     >fort en gueule
+    >fou à lier
     >fou [de|d’] rage ?[contenue|retenue]¿
     >frais comme un gardon
     >élu à la majarité absolue
@@ -15885,6 +15902,8 @@ __substantifs_multi_mots__
     >nul et non >avenu
     >noir comme la nuit
     >noir comme une nuit sans lune
+    >pâle comme la mort
+    >pâle comme un linge
     >pure comme [le|du] cristal
     >rapide à la comprenette
     [réglé+ses] comme du papier à musique
@@ -16457,6 +16476,10 @@ __purge_locutions_potentielles__
     à certains endroits  [<end>|,|)]
         <<- ~1:-2>> *
 
+    à ?[si|très|trop]¿ grands pas @¬:A.*:[me]:[pi]
+    à ?[si|très|trop]¿ grands pas [<end>|,|)]
+        <<- ~1:-2>> *
+
     à [mon|ton|son|notre|votre|leur] [avis|regard|sens] @¬:A.*:[me]:[si]
     à [mon|ton|son|notre|votre|leur] [avis|regard|sens] [<end>|,|)]
         <<- ~1:-2>> *
@@ -16873,7 +16896,7 @@ __da_locutions_verbales__
     >faire tache d’ huile
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
     >fausser compagnie
-    >fermer à [clé|clef]
+    [>enfermer|>fermer|>refermer] à [clé|clef]
     >ficher S
     >finir en eau [de|d’] boudin
     >foutre en l’ air
@@ -16910,6 +16933,7 @@ __da_locutions_verbales__
     >perdre [connaissance|conscience|patience|pied|raison]
     >perdre d’ avance
     >piquer au vif
+    >pleuvoir à torrents
     >plier >bagage
     >porter [assistance|atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
     >poser problème
@@ -16997,11 +17021,7 @@ __sgpl_faire_plaisir__
 TEST: Ça me fait {{plaisirs}}.
 
 
-__conf_tourner_court__
-    >tourner  [coure|courre|cour|cours]
-        <<- /conf/ --1>> court          && Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
-TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 
 
 # Autres tests contre les faux positifs
@@ -17288,7 +17308,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >chauffer a blanc
     >chuter a terre
     >être a bloc
-    >fermer a [>clé|>clef]
+    [>enfermer|>fermer|>refermer] a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
     >mener a bien
@@ -17298,6 +17318,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >parer a toute éventualité
     >passer a tabac
     >percer a jour
+    >pleuvoir a >torrent
     >prendre a la légère
     >prêter a >confusion
     >réduire a néant
@@ -20527,6 +20548,54 @@ TEST: ces religieux inflexibles envers les femmes mais compatissants envers les 
 TEST: le bruit de nos pas étouffé par l’épais tapis.
 
 
+__gn_det_mas_plur_2m__
+    [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
+        <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
+        -3>> =suggMasPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        -3>> =suggMasPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
+
+    [et|ou|de|d’]  [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\3, ">seul/") >>>
+        <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
+        -4>> =suggMasPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
+        <<- /gn/ morph(\3, ":[NA].*:[pi]", ":G") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
+        -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+
+TEST: certains claviers {{dégueulasse}}
+TEST: certains hommes {{petite}}
+TEST: auxdits hommes {{connu}}
+TEST: quels hommes {{grandes}}
+TEST: elle se rappelle de quels rapports {{désastreuses}} il s’agit.
+TEST: de quels grands {{fou}} s’agit-il ?
+TEST: chez certains la revue Limite provoque des crises d’hystérie.
+
+
+__gn_det_fem_plur_2m__
+    [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
+        <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
+        -3>> =suggFemPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        -3>> =suggFemPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
+
+    [et|ou|de|d’]  [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
+        <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
+        -4>> =suggFemPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
+        <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
+        -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+
+TEST: certaines idioties {{stupide}}
+TEST: quelles grandes {{idiots}}
+TEST: je ne sais guère de quelles âneries {{proférés}} on parle.
+TEST: quelles étonnantes {{petits}}
+TEST: ici ou auxdites lointaines {{contrée}}
+
+
 __gn_nombre_plur_2m__
     $:B:e:p  *WORD  *WORD
         <<- /gn/ not morph(<1, ">(?:et|ou)/|:R") and not morph(\3, ">(?:seul|minimum|maximum)/") >>>
@@ -20811,54 +20880,6 @@ __gn_quelle_que_être_fem__
 
 TEST: {{Quels}} que soient ces idiotes                        ->> Quelles
 TEST: {{Quels}} qu’en soient les raisons                      ->> Quelles
-
-
-__gn_det_mas_plur_2m__
-    [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
-        <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
-        -3>> =suggMasPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-        -3>> =suggMasPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
-
-    [et|ou|de|d’]  [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\3, ">seul/") >>>
-        <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
-        -4>> =suggMasPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
-        <<- /gn/ morph(\3, ":[NA].*:[pi]", ":G") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
-        -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-
-TEST: certains claviers {{dégueulasse}}
-TEST: certains hommes {{petite}}
-TEST: auxdits hommes {{connu}}
-TEST: quels hommes {{grandes}}
-TEST: elle se rappelle de quels rapports {{désastreuses}} il s’agit.
-TEST: de quels grands {{fou}} s’agit-il ?
-TEST: chez certains la revue Limite provoque des crises d’hystérie.
-
-
-__gn_det_fem_plur_2m__
-    [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
-        <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
-        -3>> =suggFemPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-        -3>> =suggFemPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
-
-    [et|ou|de|d’]  [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
-        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
-        <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
-        -4>> =suggFemPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
-        <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
-            and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
-        -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-
-TEST: certaines idioties {{stupide}}
-TEST: quelles grandes {{idiots}}
-TEST: je ne sais guère de quelles âneries {{proférés}} on parle.
-TEST: quelles étonnantes {{petits}}
-TEST: ici ou auxdites lointaines {{contrée}}
 
 
 ## quelque adverbe
@@ -22453,6 +22474,9 @@ __infi_qqch_de__
     >avoir besoin                               [de|d’]  ?[l’|la|leur]¿            ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
 
+    >avoir d’ >autre choix [que|qu’]            ?[de|d’]¿  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir d’autre choix que”, le verbe devrait être à l’infinitif.
+
     >avoir [peur|raison]                        [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
@@ -22542,6 +22566,7 @@ TEST: tu avais raison de {{pensée}} ça                                        
 TEST: point n’était besoin de {{données}} sans cesse des nouvelles                                  ->> donner
 TEST: avoir besoin de nous {{donné}} du temps                                                       ->> donner
 TEST: avoir besoin de la {{trouvée}} vite                                                           ->> trouver
+TEST: je n’ai pas d’autre choix que de leur {{donnée}} raison                                       ->> donner
 TEST: point n’était besoin de leur {{avancé}} de l’argent.                                          ->> avancer
 TEST: nous eûmes la chance de la {{trouvée}} facilement                                             ->> trouver
 TEST: avoir raison de la {{considérée}} ainsi                                                       ->> considérer
