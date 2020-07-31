@@ -10,12 +10,9 @@ import re
 import time
 from contextlib import contextmanager
 
-from ..graphspell.ibdawg import IBDAWG
+
 from ..graphspell.echo import echo
-from . import gc_engine as gce
-from . import conj
-from . import phonet
-from . import mfsp
+from . import gc_engine
 
 
 @contextmanager
@@ -31,19 +28,24 @@ def timeblock (label, hDst):
             hDst.write("{:<12.6}".format(end-start))
 
 
-def perf (sVersion, hDst=None):
+def perf (sVersion, bMemo=False):
     "performance tests"
-    print("\nPerformance tests")
-    gce.load()
-    gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
+    print("Performance tests")
+    gc_engine.load()
+    gc_engine.parse("Text to compile rules before launching real tests.")
 
     spHere, _ = os.path.split(__file__)
-    with open(os.path.join(spHere, "perf.txt"), "r", encoding="utf-8") as hSrc:
+    spfPerfTest = os.path.join(spHere, "perf.txt")
+    if not os.path.exists(spfPerfTest):
+        print(f"No file <perf.txt> in <{spHere}>")
+        return
+    with open(spfPerfTest, "r", encoding="utf-8") as hSrc:
+        hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if bMemo  else None
         if hDst:
             hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
         for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
             with timeblock(sText[:sText.find(".")], hDst):
-                gce.parse(sText)
+                gc_engine.parse(sText)
         if hDst:
             hDst.write("\n")
 
@@ -53,119 +55,23 @@ def _fuckBackslashUTF8 (s):
     return s.replace("\u2019", "'").replace("\u2013", "–").replace("\u2014", "—")
 
 
-class TestDictionary (unittest.TestCase):
-    "Test du correcteur orthographique"
-
-    @classmethod
-    def setUpClass (cls):
-        cls.oDic = IBDAWG("${dic_main_filename_py}")
-
-    def test_lookup (self):
-        for sWord in ["branche", "Émilie"]:
-            self.assertTrue(self.oDic.lookup(sWord), sWord)
-
-    def test_lookup_failed (self):
-        for sWord in ["Branche", "BRANCHE", "BranchE", "BRanche", "BRAnCHE", "émilie"]:
-            self.assertFalse(self.oDic.lookup(sWord), sWord)
-
-    def test_isvalid (self):
-        for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd'hui", "aujourd’hui", "Aujourd'hui", "Aujourd’hui"]:
-            self.assertTrue(self.oDic.isValid(sWord), sWord)
-
-    def test_isvalid_failed (self):
-        for sWord in ["BranchE", "BRanche", "BRAnCHE", "émilie", "éMILIE", "émiLie"]:
-            self.assertFalse(self.oDic.isValid(sWord), sWord)
-
-
-class TestConjugation (unittest.TestCase):
-    "Tests des conjugaisons"
-
-    @classmethod
-    def setUpClass (cls):
-        pass
-
-    def test_isverb (self):
-        for sVerb in ["avoir", "être", "aller", "manger", "courir", "venir", "faire", "finir"]:
-            self.assertTrue(conj.isVerb(sVerb), sVerb)
-        for sVerb in ["berk", "a", "va", "contre", "super", "", "à"]:
-            self.assertFalse(conj.isVerb(sVerb), sVerb)
-
-    def test_hasconj (self):
-        for sVerb, sTense, sWho in [("aller", ":E", ":2s"), ("avoir", ":Is", ":1s"), ("être", ":Ip", ":2p"),
-                                    ("manger", ":Sp", ":3s"), ("finir", ":K", ":3p"), ("prendre", ":If", ":1p")]:
-            self.assertTrue(conj.hasConj(sVerb, sTense, sWho), sVerb)
-
-    def test_getconj (self):
-        for sVerb, sTense, sWho, sConj in [("aller", ":E", ":2s", "va"), ("avoir", ":Iq", ":1s", "avais"), ("être", ":Ip", ":2p", "êtes"),
-                                           ("manger", ":Sp", ":3s", "mange"), ("finir", ":K", ":3p", "finiraient"), ("prendre", ":If", ":1p", "prendrons")]:
-            self.assertEqual(conj.getConj(sVerb, sTense, sWho), sConj, sVerb)
-
-
-class TestPhonet (unittest.TestCase):
-    "Tests des équivalences phonétiques"
-
-    @classmethod
-    def setUpClass (cls):
-        cls.lSet = [
-            ["ce", "se"],
-            ["ces", "saie", "saies", "ses", "sais", "sait"],
-            ["cet", "cette", "sept", "set", "sets"],
-            ["dé", "dés", "dès", "dais", "des"],
-            ["don", "dons", "dont"],
-            ["été", "étaie", "étaies", "étais", "était", "étai", "étés", "étaient"],
-            ["faire", "fer", "fers", "ferre", "ferres", "ferrent"],
-            ["fois", "foi", "foie", "foies"],
-            ["la", "là", "las"],
-            ["mes", "mets", "met", "mai", "mais"],
-            ["mon", "mont", "monts"],
-            ["mot", "mots", "maux"],
-            ["moi", "mois"],
-            ["notre", "nôtre", "nôtres"],
-            ["or", "ors", "hors"],
-            ["hou", "houe", "houes", "ou", "où", "houx"],
-            ["peu", "peux", "peut"],
-            ["son", "sons", "sont"],
-            ["tes", "tais", "tait", "taie", "taies", "thé", "thés"],
-            ["toi", "toit", "toits"],
-            ["ton", "tons", "thon", "thons", "tond", "tonds"],
-            ["voir", "voire"]
-        ]
-
-    def test_getsimil (self):
-        for aSet in self.lSet:
-            for sWord in aSet:
-                self.assertListEqual(phonet.getSimil(sWord), sorted(aSet))
-
-
-class TestMasFemSingPlur (unittest.TestCase):
-    "Tests des masculins, féminins, singuliers et pluriels"
-
-    @classmethod
-    def setUpClass (cls):
-        cls.lPlural = [
-            ("travail", ["travaux"]),
-            ("vœu", ["vœux"]),
-            ("gentleman", ["gentlemans", "gentlemen"])
-        ]
-
-    def test_getplural (self):
-        for sSing, lPlur in self.lPlural:
-            self.assertListEqual(mfsp.getMiscPlural(sSing), lPlur)
-
-
 class TestGrammarChecking (unittest.TestCase):
     "Tests du correcteur grammatical"
 
     @classmethod
     def setUpClass (cls):
-        gce.load()
+        gc_engine.load()
         cls._zError = re.compile(r"\{\{.*?\}\}")
         cls._aTestedRules = set()
 
     def test_parse (self):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
         spHere, _ = os.path.split(__file__)
-        with open(os.path.join(spHere, "gc_test.txt"), "r", encoding="utf-8") as hSrc:
+        spfParsingTest = os.path.join(spHere, "gc_test.txt")
+        if not os.path.exists(spfParsingTest):
+            print(f"No file <gc_test.txt> in <{spHere}>")
+            return
+        with open(spfParsingTest, "r", encoding="utf-8") as hSrc:
             nError = 0
             for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
                 sLineNum = sLine[:10].strip()
@@ -205,7 +111,7 @@ class TestGrammarChecking (unittest.TestCase):
                 print("Unexpected errors:", nError)
         # untested rules
         aUntestedRules = set()
-        for _, sOpt, sLineId, sRuleId in gce.listRules():
+        for _, sOpt, sLineId, sRuleId in gc_engine.listRules():
             sRuleId = sRuleId.rstrip("0123456789")
             if sOpt != "@@@@" and sRuleId not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
                 aUntestedRules.add(f"{sLineId}/{sRuleId}")
@@ -221,11 +127,11 @@ class TestGrammarChecking (unittest.TestCase):
 
     def _getFoundErrors (self, sLine, sOption):
         if sOption:
-            gce.setOption(sOption, True)
-            aErrs = gce.parse(sLine)
-            gce.setOption(sOption, False)
+            gc_engine.setOption(sOption, True)
+            aErrs = gc_engine.parse(sLine)
+            gc_engine.setOption(sOption, False)
         else:
-            aErrs = gce.parse(sLine)
+            aErrs = gc_engine.parse(sLine)
         sRes = " " * len(sLine)
         sListErr = ""
         lAllSugg = []

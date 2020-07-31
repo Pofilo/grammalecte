@@ -433,22 +433,21 @@ def main ():
                 bUseCache = False       # we rebuild
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, bUseCache)
 
-            # tests
-            if xArgs.tests or xArgs.perf or xArgs.perf_memo:
+            # Tests
+            if xArgs.tests:
                 print("> Running tests")
+                lTestModules = [f"grammalecte.{sLang}.tests_core", \
+                                f"grammalecte.{sLang}.tests_modules"]
+                xTestSuite = unittest.TestLoader().loadTestsFromNames(lTestModules)
+                unittest.TextTestRunner().run(xTestSuite)
+
+            if xArgs.perf or xArgs.perf_memo:
                 try:
-                    tests = importlib.import_module("grammalecte."+sLang+".tests")
-                    print(tests.__file__)
+                    tests = importlib.import_module(f"grammalecte.{sLang}.tests_core")
                 except ImportError:
-                    print(f"# Error. Import failed: grammalecte.{sLang}.tests")
-                    traceback.print_exc()
+                    print(f"# Error. Import failed: grammalecte.{sLang}.tests_core")
                 else:
-                    if xArgs.tests:
-                        xTestSuite = unittest.TestLoader().loadTestsFromModule(tests)
-                        unittest.TextTestRunner().run(xTestSuite)
-                    if xArgs.perf or xArgs.perf_memo:
-                        hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if xArgs.perf_memo  else None
-                        tests.perf(sVersion, hDst)
+                    tests.perf(sVersion, xArgs.perf_memo)
 
             # JavaScript linter
             if xArgs.lint_web_ext:
