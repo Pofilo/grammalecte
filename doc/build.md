@@ -7,7 +7,7 @@
 For building:
 
 * Python 3.7+ > [download](https://www.python.org/)
-* NodeJS > [download](https://nodejs.org/)
+* NodeJS (LTS version) > [download](https://nodejs.org/)
   * npm (should be installed with NodeJS)
   * web-ext > [instructions](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)
 
@@ -21,7 +21,7 @@ For testing:
 
 **Build a language**
 
-`make.py LANG`
+    make.py LANG
 
 > Generate the LibreOffice extension and the package folder.
 > LANG is the lang code (ISO 639).
@@ -29,7 +29,7 @@ For testing:
 
 **First build**
 
-`make.py LANG -js`
+    make.py LANG -js
 
 > This command is required to generate all necessary files.
 
@@ -75,16 +75,16 @@ For testing:
 
 Full rebuild:
 
-        make.py LANG -b -d -js
+    make.py LANG -b -d -js
 
 After modifying grammar rules:
 
-        make.py LANG -t
+    make.py LANG -t
 
 If you modify the lexicon:
 
-        make.py LANG -d -js
+    make.py LANG -d -js
 
 If you modify your script `build_data.py`:
 
-        make.py LANG -b -js
+    make.py LANG -b -js
