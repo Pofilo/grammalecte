@@ -8539,7 +8539,7 @@ TEST: prendre le problème à bras-le-corps
 # cou / coup / coût
 __conf_coup_cout_cou1__
     [>cou|>coût|>cout] au-dessous [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -9171,8 +9171,8 @@ TEST: il faut passer ça {{au peigne faim}}
 __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M|W)|>qu[e’]/
     faut  <end>
-        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|qui|<start>|,|")
-        -1>> faux                                                           && Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
+        <<- /conf/ not value(<1, "|il|ils|ne|n’|en|y|leur|lui|nous|vous|me|te|se|m’|t’|s’|la|le|les|qui|<start>|,|")
+        -1>> faux                                               && Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
 
 TEST: un homme {{faut}}
 TEST: c’est {{faut}}
@@ -11570,6 +11570,7 @@ TEST: ce serait, toutes choses égales par ailleurs, la meilleure solution possi
 
 # très / trait
 __conf_très_trait__
+    ## très
     [un|le|ce|mon|ton|son|notre|votre|leur]  [trait|traits|trais|traie|traies|traient]  @:A.*:[me]:[si]¬:G  @:N.*:[me]:[si]¬:(?:G|3[sp]|A)
         <<- /conf/ not (morph(\2, ">trait/") and morph(\3, ">(?:facial|vertical|horizontal|oblique|diagonal)/")) -2>> très
         && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que le “\4” est fort “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
@@ -11578,8 +11579,24 @@ __conf_très_trait__
         <<- /conf/ not (morph(\2, ">trait/") and morph(\3, ">(?:facial|vertical|horizontal|oblique|diagonal)/")) -2>> très
         && Confusion possible. Si “\3” est bien l’adjectif de “\4” et que vous voulez que les “\4” sont fort “\3”, utilisez l’adverbe “très”.|https://fr.wiktionary.org/wiki/tr%C3%A8s
 
-TEST: un {{trait}} petit homme
-TEST: les {{traits}} mauvais choix du patron nous ont conduits à la ruine.
+    ## trait
+    un très sur [l’|la|le|ce|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs] $:N
+        <<- /conf/ -2>> trait                                       && Confusion probable. Pour évoquer ce qu’on dessine ou figure, écrivez “trait”.|https://fr.wiktionary.org/wiki/trait
+
+    [>tracer|>dessiner] $:D¬:R très [<end>|)]
+        <<- /conf/ --2>> trait                                      && Confusion probable. Pour évoquer ce qu’on dessine ou figure, écrivez “trait”.|https://fr.wiktionary.org/wiki/trait
+
+    très @:(?:O[sv]|Cs)¬>comme/
+    très [<end>|,|)]
+    très /_VCint_
+        <<- /conf/ morph(<1, ":D") -1>> trait|traits                && Confusion probable. Pour évoquer ce qu’on dessine ou figure, écrivez “trait”.|https://fr.wiktionary.org/wiki/trait
+
+TEST: un {{trait}} petit homme                                                      ->> très
+TEST: les {{traits}} mauvais choix du patron nous ont conduits à la ruine.          ->> très
+TEST: Tirons définitivement un {{très}} sur vos espoirs d’avancement                ->> trait
+TEST: de quel {{très}} parlez-vous ?                                                ->> trait|traits
+TEST: il faut savoir tracer un {{très}}                                             ->> trait
+TEST: un très comme il faut monsieur
 TEST: je ne les trais pas, mais il le faudrait.
 TEST: un trait mal dessiné
 TEST: je lui lançais un trait bien piquant
@@ -13004,13 +13021,17 @@ __purge_horaires_et_durée__
     [avant|après|dès|depuis] la nuit tombée
     [avant|après|dès|depuis] la tombée de la nuit
     [avant|après|dès|depuis] le jour levé
-    [avant|après|dès|depuis] le lever de soleil
+    [avant|après|dès|depuis] le lever [de|du] soleil
     [avant|après|dès|depuis] le lever du jour
     [avant|après|dès|depuis] l’ aube
     [avant|après|dès|depuis] le crépuscule
         <<- ~>> *
 
     dans la [matinée|nuit|soirée] de [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] à [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
+        <<- ~>> *
+
+    dès le premier [jour|soir]
+    dès la première [matinée|nuit]
         <<- ~>> *
 
     à la fin de [la|l’]             [après-midi|matinée|nuit|soirée]
@@ -13056,6 +13077,7 @@ __purge_horaires_et_durée__
     au cours de la [seconde|minute] ?[dernière|passée|précédente|prochaine]¿
     [de|d’] ?[assez|si|très|trop]¿ bonne heure
     [de|d’] tout à l’ heure
+    dès la première heure
     l’ heure venue
     jusqu’ à pas d’ heure
     sur l’ heure
@@ -13446,12 +13468,14 @@ __purge_locutions_temporelles_diverses__
     dès [demain|hier] ?[soir|matin|après-midi]¿
     dès [maintenant|lors|aujourd’hui]
     dès [mon|ton|son|notre|votre|leur] plus jeune âge
+    dès [ma|ta|sa|notre|votre|leur] première rencontre
     dès que possible
     déjà
     désormais
     dorénavant
     du début à la fin
     du jour au lendemain
+    du jour j
     d’ antan
     d’ après-guerre
     d’ avant-guerre
@@ -14289,7 +14313,7 @@ __purge_locutions__
     en chômage partiel
     en chute libre
     en comparution immédiate
-    en ?parfaite¿ connaissance [de|d’] cause
+    en ?[parfaite|pleine]¿ connaissance [de|d’] cause
     en contrebas
     en contrepoint
     en coupe réglée
@@ -14333,10 +14357,11 @@ __purge_locutions__
     en main propre
     en mains propres
     en ?[assez|si|très|trop]¿ mauvais état
+    en ?[assez|si|très|trop]¿ mauvais état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ mauvaise [posture|santé]
     en nombre suffisant
     en nombre plus que suffisant
-    en ordre dispersé
+    en ordre [dispersé|serré]
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
@@ -14434,7 +14459,7 @@ __purge_locutions__
     ?d’¿ ici même
     ?d’¿ ici-bas
     illico ?presto¿
-    intra-muros
+    ?d’¿ intra-muros
     j’ en [passe|passais] et des [meilleurs|meilleures]
     jusqu’ au bout des ongles
     jusqu’ à bac
@@ -14462,7 +14487,7 @@ __purge_locutions__
     ?le¿ dos au mur
     le cas échéant
     le cœur battant la chamade
-    le cœur gros
+    le cœur [gros|serré]
     le moins du monde
     le moment venu
     les [choses|événements|évènements] suivant leur cours ?[endiablé|effréné|frénétique|implacable|inarrêtable]¿
@@ -14522,7 +14547,7 @@ __purge_locutions__
     par-dessus le marché
     par-dessus tout
     par-devant
-    par là
+    par là ?même¿
     par [un|le] simple effet du hasard
     partant [de|d’] là
     partout
@@ -14643,13 +14668,13 @@ __purge_locutions__
     sans résultat probant
     sans [croiser|rencontrer|voir] personne
     sans [croiser|rencontrer|voir] âme qui vive
-    sans tergiverser
+    sans ?jamais¿ [ciller|flancher|tergiverser]
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer [de|d’] respect
     sans y [croire|parvenir|réussir|réfléchir|songer|penser]
     sans y [faire|prêter] attention
     sans y prendre [garde|goût|gout|ombrage]
     secondo
-    selon toute vraisemblance
+    selon toute [apparence|vraisemblance]
     sens dessus dessous
     sens devant derrière
     >seul à >seul
@@ -14709,6 +14734,7 @@ __purge_locutions__
     toutes proportions gardées
     toutes voiles dehors
     trait pour trait
+    tremblant de tout [mon|ton|son|notre|votre|leur] corps
     très ?[bas|haut|bien|mal]¿
     un à un
     une à une
@@ -15449,6 +15475,7 @@ __substantifs_multi_mots__
     >convention [récepteur|générateur]
     >coque [de|d’] noix
     >corbeille à >pain
+    >correspondant [de|d’] guerre
     >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|éponge|épée|estoc|État|foudre|fil|filet|force|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|>tatane|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
     >coup [de|d’] baguette ?magique¿
     >coup d’ épée dans l’ eau
@@ -15693,6 +15720,7 @@ __substantifs_multi_mots__
     >passation [de|d’] pouvoir
     >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
+    perspectives d’ avenir
     >perte [de|d’] temps ?précieux¿
     >peur [de|d’] tous les diables
     >piano à queue
@@ -15712,6 +15740,7 @@ __substantifs_multi_mots__
     >plein aux as
     >poignée [de|d’] porte
     >police [de|d’] [caractères|écriture]
+    >policier en civil
     >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
     >pompe à [chaleur|essence|fric|>incendie]
@@ -15720,6 +15749,7 @@ __substantifs_multi_mots__
     >porte d’ entrée
     >pot [de|d’] [chambre|colle|départ]
     >poudre aux yeux
+    pour l’ amour du ciel
     >pouvoir d’ achat
     >président en exercice
     >presse à >scandale
@@ -15756,6 +15786,7 @@ __substantifs_multi_mots__
     >robe [de|d’] [chambre|soirée]
     >robe du soir
     >robe sans >manche
+    >roman à [>sensation|suspense]
     >roman à l’ eau [de|d’] rose
     >roue à aubes
     >roue [avant|arrière]
@@ -15851,6 +15882,7 @@ __substantifs_multi_mots__
     vernis à ongles
     >ver [de|d’] terre
     >verre à pied
+    >vie [de|d’] bohème
     >virage à [*NUM|$:B:e:p] degrés
     >voie [de|d’] [recours|perdition]
     >vol à l’ étalage
@@ -15918,6 +15950,7 @@ __substantifs_multi_mots__
     >têtu comme une [bourrique|mule]
     >têtu comme un [âne|bourriquot|mulet]
     [tiré+ses] à [quatre|4] épingles
+    [vu+ses] d’ un ?très¿ [bon|mauvais] œil
         <<- ~2:0>> *
 
     flambant >neuf
@@ -15953,13 +15986,14 @@ __purge_syntagmes_nominaux_matière__
     *WORD  en  acier  ?[galvanisé|inoxydable|trempé]¿
     *WORD  en  chêne  ?massif¿
     *WORD  en  [alu|aluminium|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]
-        <<- morph(\1, ":N") and not morph(>1, ":A.*:[me]:[si]") ~2:0>> *
+        || ?[rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+        <<- morph(\1, ":N", ":G") and not morph(>1, ":A.*:[me]:[si]") ~2:0>> *
 
     *WORD  en  pierre
     *WORD  en  pierre de taille
     *WORD  en  soie
     *WORD  en  terre  ?cuite¿
-        <<- morph(\1, ":N") and not morph(>1, ":A.*:[fe]:[si]") ~2:0>> *
+        <<- morph(\1, ":N", ":G") and not morph(>1, ":A.*:[fe]:[si]") ~2:0>> *
 
 TEST: deux câbles en acier situés de part et d’autre du chariot
 
@@ -16593,6 +16627,10 @@ __purge_locutions_potentielles__
     dans un avenir [lointain|proche]    [<end>|,|)]
         <<- ~1:-2>> *
 
+    de [mon|ton|son|notre|votre|leur] côté @¬:A.*:[me]:[si]
+    de [mon|ton|son|notre|votre|leur] côté [<end>|,|)]
+        <<- ~1:-2>> *
+
     de ce ?seul¿ fait  @¬:A.*:[me]:[si]
     de ce ?seul¿ fait  [<end>|,|)]
         <<- ~1:-2>> *
@@ -16634,6 +16672,10 @@ __purge_locutions_potentielles__
 
     en fait
         <<- not value(<1, "|je|tu|n’|il|on|elle|iel|") ~>> ␣
+
+    en [mémoire|souvenir] du bon vieux temps @¬:A.*:[me]:[si]
+    en [mémoire|souvenir] du bon vieux temps [<end>|,|)]
+        <<- ~1:-2>> *
 
     en un sens  @¬:A.*:[me]:[si]
     en un sens  [<end>|,|)]
@@ -16691,6 +16733,10 @@ __purge_locutions_potentielles__
     pour la plupart
         <<- not value(>1, "|de|du|d’|des|") ~>> *
 
+    par la suite @:¬:A.*:[fe]:[si]
+    par la suite [<end>|,|)]
+        <<- ~1:3>> *
+
     pour la majeure partie  @:¬:A.*:[fe]:[si]
     pour la majeure partie  [<end>|,|)]
     pour partie             @:¬:A.*:[fe]:[si]
@@ -16708,11 +16754,13 @@ __purge_locutions_potentielles__
     sans détour  [<end>|,|)]
         <<- ~1:2>> *
 
-    sans grande surprise    @:¬:[NA].*:[fe]:[si]
-    sans grande surprise    [<end>|,|)]
-    sans [réserve|surprise] @:¬:[NA].*:[fe]:[si]
-    sans [réserve|surprise] [<end>|,|)]
-        <<- ~1:2>> *
+    sans ?grande¿ surprise                @:¬:[NA].*:[fe]:[si]
+    sans ?grande¿ surprise                [<end>|,|)]
+    sans [hésitation|réserve]             @:¬:[NA].*:[fe]:[si]
+    sans [hésitation|réserve]             [<end>|,|)]
+    sans un ?seul¿ instant d’ hésitation  @:¬:[NA].*:[fe]:[si]
+    sans un ?seul¿ instant d’ hésitation  [<end>|,|)]
+        <<- ~1:-2>> *
 
     semblait-il
     semble-t-il
@@ -16937,7 +16985,6 @@ __da_locutions_verbales__
     >plier >bagage
     >porter [assistance|atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
     >poser problème
-    >porter plainte
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre ?[ça|cela|ceci]¿ au pied [de|d’] la lettre
@@ -18018,9 +18065,13 @@ TEST: C’est {{la}} {{champ de l’heur}}.
 
 __conf_champ_chant__
     >chant de [>blé|>betterave|>fleur|maïs|mais|>tournesol|>tulipe|>force|>lavande]
-        <<- /conf/ -1>> =\1.replace("nt", "mp")         && Confusion probable. Un chant est ce qui se chante.|https://fr.wiktionary.org/wiki/champ
+        <<- /conf/ -1>> =\1.replace("nt", "mp").replace("NT", "MP")     && Confusion probable. Un chant est ce qui se chante.|https://fr.wiktionary.org/wiki/champ
+
+    >fleur des [chants|chans]
+        <<- /conf/ --1>> champs                         && Confusion. Les fleurs poussent dans des champs.|https://fr.wiktionary.org/wiki/champ
 
 TEST: Il traversa le {{chant}} de betteraves.
+TEST: belle fleur des {{chants}}, veuillez entendre ma supplique
 
 
 # colon / côlon
@@ -18087,8 +18138,12 @@ __conf_corps_cor2__
     >plaider [>cor|>cœur] [présent+s]
         <<- /conf/ -2:0>> corps présent                     && Confusion. Locution “plaider corps présent” (c’est-à-dire en présence du client).
 
+    >trembler de ?tout¿ [mon|ton|son|notre|votre|leur] >cor
+        <<- /conf/ --1>> corps                              && Confusion probable. Le cor est un instrument à vent.|https://fr.wiktionary.org/wiki/corps
+
 TEST: Faisons {{cor}} avec lui !
 TEST: ils plaideront {{cor présent}}
+TEST: elle tremblait de tout son {{cor}}
 
 
 # côté / coté
@@ -18160,9 +18215,14 @@ TEST: j’avais prévu le {{cou}}
 # cuire / cuir
 __conf_cuire_cuir__
     >faire >cuir $:D [>blanquette|>boulette|>brochette|>bœuf|>carotte|>champignons|>confit|>cèpe|>côte|>côtelette|>escalope|>fruit|>fève|>girolle|>haricot|>herbe|>jarret|>joue|>lardon|>lentille|>longe|>légume|>marron|>mijoté|>morille|>nem|>nouille|>ognon|>oignon|>omelette|>patate|>paupiette|>pied|>poire|>poitrine|>pomme|>porc|>potée|>poêlée|>pruneau|>pâte|>pâte|>pâté|>ragout|>ragoût|>rillette|>rognon|>rouelle|>rôti|>sauté|>steak|>terrine|>veau|>émincé|>épice|>œuf]
-        <<- /conf/ -2>> cuire                                                           && Confusion. Le cuir est la peau d’un animal. Pour parler de la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
+        <<- /conf/ -2>> cuire                                       && Confusion. Le cuir est la peau d’un animal. Pour parler de la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
+
+    >aller [m’|t’|s’|nous|vous|leur] en >cuir
+    [>aller|>pouvoir|>savoir] ?[me|m’|te|t’|se|s’|nous|vous|leur]¿ >cuir
+        <<- /conf/ --1>> cuire                                      && Confusion. Le cuir est la peau d’un animal. Pour parler de la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
 
 TEST: Va te faire {{cuir}} un œuf.                              ->> cuire
+TEST: il va leur en {{cuir}} de m’avoir trompé                  ->> cuire
 
 
 # date / datte
@@ -18534,6 +18594,17 @@ TEST: Comment {{faîtes vous}} ça ?
 TEST: Elles sont {{faîtes}} comme ça.
 TEST: Elle est souvent {{faîte}} de cette manière-là.
 TEST: Vous {{faîtes}} mal !
+
+
+# faire faux bond à
+__conf_faire_faux_bond!7__
+    !! >faire faux bond ¡¡
+    >faire [faux|faut] [bon+s|bond+s]
+        <<- /conf/ -2:3>> faux bond                 && Locution “faire faux bond”, qui signifie “rebondir de côté” ou “manquer à un engagement”.|https://fr.wiktionary.org/wiki/faire_faux_bond
+
+TEST: il m’a fait {{faux bon}}                          ->> faux bond
+TEST: la balle fit une fois de plus {{faut bon}}        ->> faux bond
+TEST: faire faux bond
 
 
 # fausse / fosse
@@ -19605,6 +19676,7 @@ __conf_tache_tâche__
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tacher
 
+    [>nom|>honneur|>réputation|>vêtement] sans >tâche
     >faire tâche
     [>nettoyer|>laver|>essuyer|>gratter]  $:D  >tâche
         <<- /conf/ --1>> =\-1.replace("â", "a").replace("Â", "A")
@@ -19628,6 +19700,7 @@ TEST: une tâche de sélection des données
 TEST: les agents peu nombreux sont accaparés par le court terme et les tâches de gestion
 TEST: une simple tâche d’étiquetage
 TEST: une lourde tâche d’innombrables mesures ennuyeuses à effectuer
+TEST: sans tâche à accomplir
 
 
 __conf_tâche_tache__
@@ -19635,6 +19708,7 @@ __conf_tâche_tache__
     taches [accomplies|administratives|conceptuelles|dévalorisantes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|intellectuelles|manuelles|menées|ménagères|valorisantes]
     >tache [>chronophage|>complexe|>domestique|>insoluble]
     >tache consistant à
+    >tache à accomplir
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
@@ -23230,32 +23304,33 @@ __purge_prépositions_pronoms__
         || ni [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] {pronom_obj}
         <<- ~>> *
 
-    jusqu’ à    chez
-    de          chez
-    par         chez
-    pour        chez
+    jusqu’ à        chez
+    [de|d’]         chez
+    ?[de|d’]? par   chez
+    pour            chez
         <<- ~1:-2>> *
 
-    à bonne distance [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    à côté [de|d’]                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    à part                          {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    à [cause|partir] [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    autour [de|d’]                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    au-dessus [de|d’]               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    au-dedans [de|d’]               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    au fond [de|d’]                 {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    au plus profond [de|d’]         {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    de chez *WORD ?jusqu’¿ à chez   {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    en dessous [de|d’]              {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    ?tout¿ au fond [de|d’]          {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    ?tout¿ autour [de|d’]           {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    avec ou sans                    {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    en paix avec                    {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    par-devers                      {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    par égard pour                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    pour ou contre                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    ?tout¿ près [de|d’]             {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    quant à                         {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? à bonne distance [de|d’]      {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? à côté [de|d’]                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? à part                        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? à [cause|partir] [de|d’]      {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? autour [de|d’]                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? au-dessus [de|d’]             {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? au-dedans [de|d’]             {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? au fond [de|d’]               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? au plus profond [de|d’]       {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? chez *WORD ?jusqu’¿ à chez    {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? en dessous [de|d’]            {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? ?tout¿ au fond [de|d’]        {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? ?tout¿ autour [de|d’]         {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? avec ou sans                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? en paix avec                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? par-devers                    {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? par égard pour                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? par gratitude pour            {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? pour ou contre                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? ?tout¿ près [de|d’]           {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    quant à                                 {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:-2>> *
 
     [moi|toi]       [seul+e]
@@ -23272,6 +23347,7 @@ __purge_prépositions_pronoms__
     vous    [tous|toutes]   qui
     eux     tous            qui
     elles   toutes          qui
+    iels    tout_e_s        qui
         <<- ~2>> *
 
 TODO: comme
@@ -26943,7 +27019,7 @@ __ppas_être_confusion__
         <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "_que_") --1>> =suggVerbPpas(\-1)     && Après le verbe “être”, il faut un participe passé.
 
     >être  ~..er$
-        <<- /ppas/ not tag(\2, "_upron_") and morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or morph(\2, ">(?:aller|manger)/"))
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or morph(\2, ">(?:aller|manger)/"))
             and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
             and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
         -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être à l’infinitif.
@@ -27453,6 +27529,9 @@ __tag_usage_pronominal__
     [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
     nous nous            ?[le|la|l’|les|en|y]¿  $:V¬:G
     vous vous            ?[le|la|l’|les|en|y]¿  $:V¬:G
+    [me|m’|te|t’|se|s’]                         /_VCint_
+    nous                                        /-nous
+    vous                                        /-vous
         <<- /-1>> _upron_
 
 
@@ -29110,6 +29189,9 @@ __vmode_verbe_que_subjonctif__
     [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
+    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “se peut-il que”, le verbe devrait être au subjonctif.
+
     il          [arrive|arriva|arrivait]            [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
     il          [est|était] arrivé                  [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0)
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)
@@ -29146,6 +29228,7 @@ TEST: il arrive qu’il {{vient}}, mais rarement
 TEST: Vaudrait mieux qu’elle {{meurt}}
 TEST: il aurait mieux valu qu’elle {{meurt}}
 TEST: il est possible qu’il {{est}} parti
+TEST: se peut-il que je {{viens}}
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
 TEST: Je me doutais bien qu’elle me détestait
