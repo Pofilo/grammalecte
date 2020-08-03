@@ -8663,6 +8663,12 @@ __conf_cour_cours_court_courre__
     en cour d’ >assise
         <<- !1:2>>
 
+    court d’ eau
+        <<- /conf/ morph(<1, ":(?:D.*:[me]:[si]|R)") -1>> cours     && Confusion. Écrivez “cours d’eau”.|https://fr.wiktionary.org/wiki/cours_d%E2%80%99eau
+
+    courts d’ eau
+        <<- /conf/ morph(<1, ":(?:D.*:[me]:[pi]|R)") -1>> cours     && Confusion. Écrivez “cours d’eau”.|https://fr.wiktionary.org/wiki/cours_d%E2%80%99eau
+
     en cour
         <<- /conf/ ->> en cours                             && Confusion probable. Une cour… Un cours… Adjectif : court(e).
 
@@ -8695,6 +8701,8 @@ TEST: le rendement {{à cours terme}} est excellent.
 TEST: à {{cours}} d’argent
 TEST: le portage a encore {{cour}}
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
+TEST: un {{court}} d’eau
+TEST: desdits {{courts}} d’eau
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
@@ -21236,7 +21244,7 @@ __gn_nombre_chiffres_1m__
         -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
-        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
+        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:[,.][0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
             and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
@@ -21271,6 +21279,7 @@ TEST: 1 à 2 comprimés par jour voire 2 à 3 maximum
 TEST: elle vit dans un 24 m carré.
 TEST: elle vit dans un 24 m² triste de la banlieue de Paris.
 TEST: dans son 240 m2 lumineux, c’est la belle vie.
+TEST: Une correction de +0.5 dioptrie.
 
 
 ##  trouver ça/ceci/cela + adj
