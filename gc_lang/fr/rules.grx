@@ -4134,6 +4134,10 @@ TEST: dans la matinée de samedi à dimanche
 !!
 !!
 
+
+TEST: pourquoi habite‐t‐on loin de son activité (traits d’union U+2010)
+
+
 ### ce / cet / cette / ces + nom + là
 __tu_ce_cette_ces_nom_là_ci__
     [ce|cet|cette|ces] *WORD là
@@ -8564,6 +8568,15 @@ TEST: elle avait tout son {{contant}} de problèmes.
 TEST: non {{comptant}} de s’en prendre à eux, il s’attaqua aussi à elles
 
 
+# contre partie
+__conf_en_contrepartie__
+    [en|sans] >contre >parti
+        <<- /conf/ -2:3>> contrepartie              && Confusion. Locution “\1 contrepartie”.
+
+TEST: en {{contre parti}}                           ->> contrepartie
+TEST: sans {{contres partis}}                       ->> contrepartie
+
+
 # corps / cor
 __conf_corps_cor__
     !! à bras-le-corps ¡¡
@@ -9849,7 +9862,7 @@ __conf_m_a_ma!7__
 TEST: tu {{ma}} prise par surprise                          ->> m’as
 TEST: il {{ma}} tuée                                        ->> m’a
 TEST: cette femme ne {{ma}} prise que deux fois             ->> m’a
-TEST: {{on}} {{ma}} dézinguée                               ->> m’a|||ont
+TEST: {{on}} {{ma}} dézinguée                               ->> ont|||m’a
 TEST: ça {{ma}} {{foutu}} en l’air
 TEST: cet homme {{ma}} succédé à ce poste                   ->> m’a
 TEST: {{ma}} {{donner}} la nausée, ce con
@@ -9924,6 +9937,44 @@ __conf_n_est_ce_pas__
         <<- /conf/ ->> n’est-ce pas                         && Confusion. N’est-ce pas.|https://fr.wiktionary.org/wiki/n%E2%80%99est-ce_pas
 
 TEST: on en a plus qu’assez, {{n’ait-ce pas}} ?
+
+
+# nez / né
+__conf_nez_né__
+    !! à plein nez ¡¡
+    [à|a] [plain+s|plein+s] [né+ses|nez]
+        <<- /conf/ ->> à plein nez                          && Confusion. Locution “à plein nez”.|https://fr.wiktionary.org/wiki/%C3%A0_plein_nez
+
+    !! à vue [de|d’] nez ¡¡
+    [à|a] [vu+ses|vut] [de|d’] [né+ses|nais|nait|nez]
+        <<- /conf/ ->> à vue de nez                         && Confusion. Locution “à vue de nez”.|https://fr.wiktionary.org/wiki/%C3%A0_vue_de_nez
+
+    !! nez à nez ¡¡
+    [né+ses|ne|nez|nait|nais] [à|a] [né+ses|ne|nez|nait|nais]
+        <<- /conf/ ->> nez à nez                            && Confusion. Locution “nez à nez”.|https://fr.wiktionary.org/wiki/nez_%C3%A0_nez
+
+    [à|a] [mon|ton|son|notre|votre|leur] né
+    au [né+ses]
+    [dans|sur|sous] le [né+ses]
+    >crotte [de|d’] [né+ses]
+    [>mettre|>fourrer] ?@:[WX]¿ [le|mon|ton|son|notre|votre|leur] [né+ses]
+    >voir ?@:[WX]¿ plus loin [que|qu’] [le|mon|ton|son|notre|votre|leur] [né+ses]
+    >voir ?@:[WX]¿ plus loin [que|qu’] le bout [de|d’] [mon|ton|son|notre|votre|leur] [né+ses]
+    >avoir du [né+ses]
+        <<- /conf/ --1>> nez                                && Confusion. Pour l’organe olfactif, écrivez “nez”.|https://fr.wiktionary.org/wiki/nez
+
+    [né+ses] au vent
+        <<- /conf/ -1>> nez                                 && Confusion. Pour l’organe olfactif, écrivez “nez”.|https://fr.wiktionary.org/wiki/nez
+
+TEST: dans le {{né}}                                                    ->> nez
+TEST: {{a plain né}}                                                    ->> à plein nez
+TEST: {{a vu de nez}}                                                   ->> à vue de nez
+TEST: elles se retrouvent {{né à né}}                                   ->> nez à nez
+TEST: je ne puis tolérer qu’il me raccroche au {{né}}                   ->> nez
+TEST: avancer {{né}} au vent                                            ->> nez
+TEST: ne fourre pas ton {{né}} n’importe où                             ->> nez
+TEST: ça sent le gaz à plein nez
+TEST: à vue de nez, ça pue bien fort
 
 
 # notre / nôtre -- votre / vôtre
@@ -10555,6 +10606,7 @@ __conf_porc_port_pore__
         <<- /conf/ -1>> port|ports                                          && Confusion. Pour évoquer les connecteurs, écrivez “port”.|https://fr.wiktionary.org/wiki/port
 
     [pore|porc] de l’ [écharpe|étoile|épée]
+    [pore|porc] du masque
         <<- /conf/ -1>> port                                                && Confusion. Pour évoquer les objects que l’on porte, écrivez “port”.|https://fr.wiktionary.org/wiki/port
 
 TEST: les {{ports}} de la peau
@@ -14579,6 +14631,7 @@ __purge_locutions__
     ¿[de|d’]¿ la queue entre les jambes
     ¿[de|d’]¿ la peur au ventre
     l’ air [de|d’] rien
+    la gorge [nouée|serrée]
     la tête entre [mes|tes|ses|nos|vos|leurs] mains
     ?le¿ dos au mur
     le cas échéant
@@ -15568,7 +15621,7 @@ __substantifs_multi_mots__
     >conférence [de|d’] presse
     >congé [maternité|paternité]
     >conseiller d’ orientation [scolaire|professionnelle]
-    >connexion à Internet
+    >connexion ?à¿ Internet
     >conte [de|d’] fées
     >contrôle [de|d’] routine
     >convention [récepteur|générateur]
@@ -15916,6 +15969,7 @@ __substantifs_multi_mots__
     >silo à [>grains|blé]
     >site [de|d’] lancement
     >soldat d’ élite
+    >solution [de|d’] [rechange|repli]
     >sonnette d’ alarme
     >sortie [de|d’] secours
     >soue à >cochon
@@ -16534,8 +16588,11 @@ __purge_avant_adjectifs_adverbes__
     si  @:[AW]
         <<- not (value(\2, "|bien|") and value(>1, "|que|qu’|")) and not value(\2, "|tant|") ~1>> *
 
-    un [brin|chouia|chouïa|rien|minimum|soupçon|tantinet]  ?[trop|plus|moins]¿
+    un [chouia|chouïa|rien|tantinet]  ?[trop|plus|moins]¿
         <<- morph(>1, ":A", ":G") ~>> *
+
+    un [brin|minimum|poil|soupçon]  ?[trop|plus|moins]¿
+        <<- morph(>1, ":A", ":(?:A.*:[me]:[si]|G)") ~>> *
 
     [assez|trop]  @:[AW]¬:[123][sp]
         <<- ~1>> *
@@ -16925,6 +16982,8 @@ __purge_tout_tout_tous_toutes__
     on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes|tout_e_s]
         <<- morph(\-2, ":[123]s") ~-1>> *
 
+    [tous|toutes] , sans >exception ,
+        <<- ~2:0>> *
 
 
 @@@@
@@ -17378,6 +17437,7 @@ TEST: peut-être qu’ailleurs il est des pucelles ou des demoiselles pour porte
 TEST: la qualité desdits malheureux
 TEST: ç’a été dur.
 TEST: dût ma vanité en souffrir, je viendrai quoi qu’il arrive
+TEST: certaines régions sont un poil plus compliquées
 
 
 @@@@
@@ -23828,19 +23888,19 @@ __purge_syntagmes_nominaux__
         <<- ~1:3>> *
 
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
         <<- ~1:4>> *
 
     $:LR [des|du|de|d’] @:[NA] <end>
-    $:LR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    $:LR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     $:LR [des|du|de|d’] @:[NA] @:[VR]¬:[NAP]
     $:LR [des|du|de|d’] @:[NA] , @¬:[NA]
         <<- ~1:3>> *
 
     en [plein|pleine] @:[NA]  <end>
-    en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     en [plein|pleine] @:[NA]  @:[VR]¬:[NAP]
     en [plein|pleine] @:[NA]  , @¬:[NA]
         <<- ~1:3>> *
@@ -26123,6 +26183,18 @@ TEST: comme ces informations m’avaient {{manquées}}
 TEST: les notes que tu m’as données sont mal écrites.
 TEST: Garde précieusement les secrets que je t’ai confiés.
 TEST: je ne manquai pas de travailler aux choses qu’il m’avait prescrites
+TEST: Quelle mouche l’a piqué ?
+TEST: Quelle mouche l’a piquée ?
+#TEST: Quelle mouche nous a piqué ?
+#TEST: Quelle mouche nous a piquée ?
+TEST: Quelle mouche nous a piqués ?
+TEST: Quelle mouche nous a piquées ?
+TEST: Quelle mouche vous a piqué ?
+TEST: Quelle mouche vous a piquée ?
+TEST: Quelle mouche vous a piqués ?
+TEST: Quelle mouche vous a piquées ?
+TEST: Quelle mouche les a piqués ?
+TEST: Quelle mouche les a piquées ?
 
 
 __ppas_qui_avoir__
@@ -26739,6 +26811,7 @@ __imp_laisser_le_la_les_infi__
 
 TEST: {{Laisse les}} entrer…
 TEST: {{Laissez la}} venir…
+TEST: {{laisse le}} faire
 TEST: Laisse les chiens tranquilles
 TEST: Laissez la peste leur pourrir la vie encore quelque temps.
 TEST: le coût humain de la guerre qu’il a laissé les submerger.
@@ -27962,7 +28035,7 @@ TEST: {{prend on}} le temps d’y réfléchir ?
 TEST: De quel droit {{vient il}} m’{{ennuyer}} ?
 TEST: comment {{était il}}
 TEST: Pourquoi le message de Jean {{était il}} très radical pour son époque ?
-TEST: Pourquoi le message de Jean {{était‐il}} très radical pour son époque ?
+TEST: Pourquoi le message de Jean était‐il très radical pour son époque ? (Hyphen U+2010)
 
 
 __inte_union_ce!7__
@@ -28741,8 +28814,10 @@ __conj_tous_toutes__
         <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/")
         --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-TEST: Tous {{venait}} à la fête.
-TEST: Toutes {{ignorait}} ce qu’ils avaient fait.
+TEST: Tous {{venait}} à la fête.                                        ->> venaient
+TEST: Toutes {{ignorait}} ce qu’ils avaient fait.                       ->> ignoraient
+TEST: tous, sans exception, {{devine}} le fond du problème              ->> devinent
+TEST: toutes, sans exception, {{irons}} à l’Université                  ->> iront
 TEST: Il faut mettre un coup de grâce et tous monter sur Paris par tous les moyens possibles
 TEST: Pourrons-nous tous vaincre.
 TEST: Vous pouvez tous triompher de votre adversaire avec de la ruse.

@@ -313,8 +313,10 @@ class TextParser:
             sText = sText.replace(" ", ' ') # nnbsp
         if "'" in sText:
             sText = sText.replace("'", "’")
+        if "‐" in sText:
+            sText = sText.replace("‐", "-") # Hyphen (U+2010)
         if "‑" in sText:
-            sText = sText.replace("‑", "-") # nobreakdash
+            sText = sText.replace("‑", "-") # Non-Breaking Hyphen (U+2011)
         if "@@" in sText:
             sText = re.sub("@@+", "", sText)
         return sText

@@ -268,8 +268,11 @@ class TextParser {
         if (sText.includes("'")) {
             sText = sText.replace(/'/g, "’");
         }
+        if (sText.includes("‐")) {
+            sText = sText.replace(/‐/g, "-"); // Hyphen (U+2010)
+        }
         if (sText.includes("‑")) {
-            sText = sText.replace(/‑/g, "-"); // nobreakdash
+            sText = sText.replace(/‑/g, "-"); // Non-Breaking Hyphen (U+2011)
         }
         if (sText.includes("@@")) {
             sText = sText.replace(/@@+/g, "");
