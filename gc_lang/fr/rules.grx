@@ -377,7 +377,7 @@ __<s>/esp(esp_mélangés1)__              (?:  |  ) <<- ->> " | "            
 __<s>/esp(esp_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |   "                   && Incohérence : espace et tabulation.
 
 TEST: J’espère que ça ne va pas durer trop longtemps avec Mr{{  }}Paul.
-TEST: J’espère que ça ne{{ 	}}va pas durer. (Ici, espace suivi d’une tabulation)
+TEST: J’espère que ça ne{{  }}va pas durer. (Ici, espace suivi d’une tabulation)
 
 
 # Espaces insécables multiples
@@ -2234,7 +2234,9 @@ __tag_start__
     auxquels
     auxquelles
     à laquelle
-    [avec|pour|contre|sans] [lequel|laquelle|lesquels|lesquelles]
+    [avec|pour|contre|sans|sur|sous] [lequel|laquelle|lesquels|lesquelles]
+    [loin|près] [duquel|desquels|desquelles]
+    [loin|près] de laquelle
     ## autre
     à qui
     à quoi
@@ -2247,6 +2249,7 @@ __tag_start__
     quand
     [que|qu’]
     [quoique|quoiqu’]
+    si
         <<- />> _start_
 
 
@@ -4536,6 +4539,13 @@ __tu_substantifs__
         <<- /tu/ ->> \1\2|\1-\2|\2 \1                           && Mettez un trait d’union, fusionnez ou inversez les termes.
         <<- ~>> ␣
 
+    [copié+ses|copier] / [coller|collé+ses]
+    [copié-coller|copiée-coller|copiés-coller|copiées-coller]
+    [copier-collé|copiée-collée|copiés-collés|copiées-collées]
+        <<- /tu/ ->> copier-coller|copié-collé|copiée-collée|copiés-collés|copiées-collées
+        && Copier-coller pour la verbe ou l’action, copié-collé (et ses variantes) pour ce qui est copié-collé.
+
+
     >cul de sac
         <<- /tu/ ->> \1-\2-\3                                   && Mettez des traits d’union.|https://fr.wiktionary.org/wiki/cul-de-sac
 
@@ -4689,6 +4699,7 @@ TEST: un {{château fort}} n’est pas une demeure confortable
 TEST: des {{châteaux forts}}
 TEST: un {{coffre fort}}
 TEST: des {{coffres forts}}
+TEST: {{copié/coller}}
 TEST: encore un {{cul de sac}}
 TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
@@ -8624,6 +8635,14 @@ __conf_coup_cout_cou1__
     [>cou|>coût|>cout] [dur|durs]
         <<- /conf/ -1>> coup|coups      && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
 
+    violence du [>cou|>coût|>cout]
+    violence [de|d’] [ce|mon|ton|son|notre|votre|leur] [>cou|>coût|>cout]
+        <<- /conf/ --1>> coup           && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
+
+    violence des [>cou|>coût|>cout]
+    violence [de|d’] [ces|mes|tes|ses|nos|vos|leurs] [>cou|>coût|>cout]
+        <<- /conf/ --1>> coups          && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
+
     [>cou|>coup] de [>base|revient|reviens|>distribution|>développement|>production|>maintenance|>construction|>fonctionnement|>fabrication|>financement|>formation|>renonciation|>stockage|>transaction|>transfert|>transport|>transformation|>viabilisation]
     [>cou|>coup] de la vie
         <<- /conf/ -1>> coût|coûts      && Confusion probable. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, on écrit “coup”. Pour ce que ça coûte, écrivez “coût”.
@@ -8641,6 +8660,8 @@ __conf_coup_cout_cou1__
 
 TEST: J’ai pris un {{cou}} de bâton.
 TEST: Encore un {{cou}} dur.
+TEST: la violence du {{cou}}
+TEST: cette violence des {{coûts}}
 TEST: Merci de calculer le {{coup}} de production avant d’établir une facture.
 TEST: Elle a un {{coût}} très gracile.
 TEST: Après {{coût}} on a compris notre erreur.
@@ -15017,10 +15038,11 @@ __gestion_mots_grammaticaux__
     par le biais                                                                                                        [de|du|d’|des]
     par l’ entremise                                                                                                    [de|du|d’|des]
     par manque                                                                                                          [de|d’]
-    par habitude                                                                                                        [de|du|d’|des]
+    par [crainte|habitude]                                                                                              [de|du|d’|des]
     sans distinction                                                                                                    [de|d’]
+    sous l’ œil attentif                                                                                                [de|du|d’|des]
     sous la houlette                                                                                                    [de|du|d’|des]
-    sous forme                                                                                                          [de|d’]
+    sous [couvert|forme]                                                                                                [de|d’]
         <<- ~1:-2>> ␣
         <<- =>> define(\1, ":G:R:LR")
 
@@ -15727,6 +15749,7 @@ __substantifs_multi_mots__
     >file d’ attente
     >fille à [papa|maman|>soldat]
     >fille au pair
+    >film X
     fils à [papa|maman]
     fils [de|d’] pute
     >figure de proue
@@ -15893,6 +15916,8 @@ __substantifs_multi_mots__
     >pince à linge
     [>piqûre|>piqure] [de|d’] rappel
     >pistolet à [eau|plomb]
+    >pistolet à [un|1] coup
+    >pistolet à [$:B|*NUM] coups
     >placard à [>balai|chaussures]
     >plafond de verre
     >plainte avec constitution de partie civile
@@ -16047,6 +16072,7 @@ __substantifs_multi_mots__
     vernis à ongles
     >ver [de|d’] terre
     >verre à pied
+    >vidéo X
     >vie [de|d’] bohème
     >virage à [*NUM|$:B:e:p] degrés
     >voie [de|d’] [recours|perdition]
@@ -16061,6 +16087,8 @@ __substantifs_multi_mots__
         <<- not (morph(\1, ":[123][sp]") and morph(<1, ":O[sv]")) ~2:0>> *
         <<- __also__ =>> =select(\1, ":[NA]")
 
+    ## adjectifs
+    >bas [de|d’] plafond
     >bête à [manger|bouffer] du foin
     >blanc comme neige
     >blanc comme ?[de|d’]¿ la craie
