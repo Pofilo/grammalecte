@@ -8,11 +8,13 @@ import sys
 import os.path
 import argparse
 import json
+import itertools
 import re
 import traceback
 
 import grammalecte
 import grammalecte.text as txt
+import grammalecte.graphspell.str_transform as strt
 from grammalecte.graphspell.echo import echo
 
 
@@ -27,7 +29,8 @@ Analysis commands:
     !word                               spelling suggestion
     >word                               draw path of word in the word graph
     =[filter1][=[filter2]]              show entries which fit to filters (filter1 for word, filter2 for morphology)
-    $some_text                         show sentences and tokens of text
+    ≠word|word|…                        show distance between words
+    $some_text                          show sentences and tokens of text
 
 Other commands:
     /help                       /h      show this text
@@ -292,6 +295,11 @@ def main ():
                     sTagsPattern = ""
                 for aRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
                     echo("{:<30} {:<30} {}".format(*aRes))
+            elif sText.startswith("≠"):
+                lWords = sText[1:].split("|")
+                for s1, s2 in itertools.combinations(lWords, 2):
+                    nDist = strt.distanceDamerauLevenshtein(s1, s2)
+                    print(f"{s1} ≠ {s2}: {nDist}")
             elif sText.startswith("/o+ "):
                 oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
