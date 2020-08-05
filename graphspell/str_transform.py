@@ -46,9 +46,9 @@ def simplifyWord (sWord):
     sWord = sWord.lower().translate(_xTransCharsForSimplification)
     sNewWord = ""
     for i, c in enumerate(sWord, 1):
-        if c == 'e' or c != sWord[i:i+1]:  # exception for <e> to avoid confusion between crée / créai
+        if c != sWord[i:i+1] or (c == 'e' and sWord[i:i+2] != "ee"):  # exception for <e> to avoid confusion between crée / créai
             sNewWord += c
-    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "é").replace("ei", "é").replace("ph", "f")
+    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "éi").replace("ei", "é").replace("ph", "f")
 
 
 _xTransNumbersToExponent = str.maketrans({

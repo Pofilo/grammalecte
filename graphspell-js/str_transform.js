@@ -57,12 +57,12 @@ var str_transform = {
         let sNewWord = "";
         let i = 1;
         for (let c of sWord) {
-            if (c == 'e' || c != sWord.slice(i, i+1)) {  // exception for <e> to avoid confusion between crée / créai
+            if (c != sWord.slice(i, i+1) || (c == 'e' && sWord.slice(i, i+2) != "ee")) {  // exception for <e> to avoid confusion between crée / créai
                 sNewWord += c;
             }
             i++;
         }
-        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "é").replace(/ei/g, "é").replace(/ph/g, "f");
+        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "éi").replace(/ei/g, "é").replace(/ph/g, "f");
     },
 
     _xTransNumbersToExponent: new Map([
