@@ -9,18 +9,6 @@ ${map}
 
 var char_player = {
 
-    _xTransCharsForSpelling: new Map([
-        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
-    ]),
-
-    spellingNormalization: function (sWord) {
-        let sNewWord = "";
-        for (let c of sWord) {
-            sNewWord += this._xTransCharsForSpelling.gl_get(c, c);
-        }
-        return sNewWord.normalize("NFC");
-    },
-
     oDistanceBetweenChars: {
         "a": {},
         "e": {"é": 0.5},

@@ -4,14 +4,28 @@ Operations on strings:
 - transform strings with transformation codes
 """
 
+import unicodedata
+
 from .char_player import distanceBetweenChars
 
 
-#### Ngrams
+#### N-GRAMS
 
 def getNgrams (sWord, n=2):
     "return a list of Ngrams strings"
     return [ sWord[i:i+n]  for i in range(len(sWord)-n+1) ]
+
+
+
+#### WORD NORMALIZATION
+
+_xTransCharsForSpelling = str.maketrans({
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st'
+})
+
+def spellingNormalization (sWord):
+    "nomalization NFC and removing ligatures"
+    return unicodedata.normalize("NFC", sWord.translate(_xTransCharsForSpelling))
 
 
 

@@ -4,16 +4,6 @@ useful for suggestion mechanism
 """
 
 import re
-import unicodedata
-
-
-_xTransCharsForSpelling = str.maketrans({
-    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st'
-})
-
-def spellingNormalization (sWord):
-    "nomalization NFC and removing ligatures"
-    return unicodedata.normalize("NFC", sWord.translate(_xTransCharsForSpelling))
 
 
 dDistanceBetweenChars = {

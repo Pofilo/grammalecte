@@ -25,6 +25,18 @@ var str_transform = {
         return lNgrams;
     },
 
+    _xTransCharsForSpelling: new Map([
+        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
+    ]),
+
+    spellingNormalization: function (sWord) {
+        let sNewWord = "";
+        for (let c of sWord) {
+            sNewWord += this._xTransCharsForSpelling.gl_get(c, c);
+        }
+        return sNewWord.normalize("NFC");
+    },
+
     longestCommonSubstring: function (string1, string2) {
         // https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring
         // untested

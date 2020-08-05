@@ -248,7 +248,7 @@ class IBDAWG:
 
     def isValidToken (self, sToken):
         "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"
-        sToken = cp.spellingNormalization(sToken)
+        sToken = st.spellingNormalization(sToken)
         if self.isValid(sToken):
             return True
         if "-" in sToken:
@@ -292,7 +292,7 @@ class IBDAWG:
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
-        sWord = cp.spellingNormalization(sWord)
+        sWord = st.spellingNormalization(sWord)
         l = self.morph(sWord)
         if sWord[0:1].isupper():
             l.extend(self.morph(sWord.lower()))
@@ -304,7 +304,7 @@ class IBDAWG:
     def suggest (self, sWord, nSuggLimit=10, bSplitTrailingNumbers=False):
         "returns a set of suggestions for <sWord>"
         sWord = sWord.rstrip(".")   # useful for LibreOffice
-        sWord = cp.spellingNormalization(sWord)
+        sWord = st.spellingNormalization(sWord)
         sPfx, sWord, sSfx = cp.cut(sWord)
         nMaxSwitch = max(len(sWord) // 3, 1)
         nMaxDel = len(sWord) // 5
@@ -412,7 +412,7 @@ class IBDAWG:
 
     def drawPath (self, sWord, iAddr=0):
         "show the path taken by <sWord> in the graph"
-        sWord = cp.spellingNormalization(sWord)
+        sWord = st.spellingNormalization(sWord)
         c1 = sWord[0:1]  if sWord  else " "
         iPos = -1
         n = 0
