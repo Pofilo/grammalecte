@@ -28,6 +28,38 @@ def spellingNormalization (sWord):
     return unicodedata.normalize("NFC", sWord.translate(_xTransCharsForSpelling))
 
 
+_xTransCharsForSimplification = str.maketrans({
+    'à': 'a',  'é': 'é',  'î': 'i',  'ô': 'o',  'û': 'u',  'ÿ': 'y',
+    'â': 'a',  'è': 'é',  'ï': 'i',  'ö': 'o',  'ù': 'u',  'ŷ': 'y',
+    'ä': 'a',  'ê': 'é',  'í': 'i',  'ó': 'o',  'ü': 'u',  'ý': 'y',
+    'á': 'a',  'ë': 'é',  'ì': 'i',  'ò': 'o',  'ú': 'u',  'ỳ': 'y',
+    'ā': 'a',  'ē': 'é',  'ī': 'i',  'ō': 'o',  'ū': 'u',  'ȳ': 'y',
+    'ç': 'c',  'ñ': 'n',
+    'œ': 'oe',  'æ': 'ae',
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st',
+    "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9",
+    "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9"
+})
+
+def simplifyWord (sWord):
+    "word simplication before calculating distance between words"
+    sWord = sWord.lower().translate(_xTransCharsForSimplification)
+    sNewWord = ""
+    for i, c in enumerate(sWord, 1):
+        if c == 'e' or c != sWord[i:i+1]:  # exception for <e> to avoid confusion between crée / créai
+            sNewWord += c
+    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "é").replace("ei", "é").replace("ph", "f")
+
+
+_xTransNumbersToExponent = str.maketrans({
+    "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"
+})
+
+def numbersToExponent (sWord):
+    "convert numeral chars to exponant chars"
+    return sWord.translate(_xTransNumbersToExponent)
+
+
 
 #### DISTANCE CALCULATIONS
 

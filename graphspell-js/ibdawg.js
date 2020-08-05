@@ -27,7 +27,7 @@ class SuggResult {
 
     constructor (sWord, nDistLimit=-1) {
         this.sWord = sWord;
-        this.sSimplifiedWord = char_player.simplifyWord(sWord);
+        this.sSimplifiedWord = str_transform.simplifyWord(sWord);
         this.nDistLimit = (nDistLimit >= 0) ? nDistLimit :  Math.floor(sWord.length / 3) + 1;
         this.nMinDist = 1000;
         this.aSugg = new Set();
@@ -42,7 +42,7 @@ class SuggResult {
         }
         this.aAllSugg.add(sSugg);
         if (!this.aSugg.has(sSugg)) {
-            let nDist = str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, char_player.simplifyWord(sSugg));
+            let nDist = str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, str_transform.simplifyWord(sSugg));
             if (nDist <= this.nDistLimit) {
                 if (sSugg.includes(" ")) { // add 1 to distance for split suggestions
                     nDist += 1;
@@ -79,7 +79,6 @@ class SuggResult {
                 break;
             }
         }
-        lRes = char_player.filterSugg(lRes);
         if (this.sWord.gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
             lRes = [...new Set(lRes)];
@@ -197,6 +196,14 @@ class IBDAWG {
         //console.log(this.getInfo());
         this.bAcronymValid = true;
         this.bNumAtLastValid = false;
+
+        // lexicographer module ?
+        this.lexicographer = null;
+        // JS still sucks: we’ll try importation when importation will be available in Workers. Still waiting...
+        if (self && self.hasOwnProperty("lexgraph_"+this.sLangCode)) { // self is the Worker
+            this.lexicographer = self["lexgraph_"+this.sLangCode];
+        }
+
     }
 
     getInfo () {
@@ -328,7 +335,9 @@ class IBDAWG {
         sWord = str_transform.spellingNormalization(sWord);
         let sPfx = "";
         let sSfx = "";
-        [sPfx, sWord, sSfx] = char_player.cut(sWord);
+        if (this.lexicographer) {
+            [sPfx, sWord, sSfx] = this.lexicographer.split(sWord);
+        }
         let nMaxSwitch = Math.max(Math.floor(sWord.length / 3), 1);
         let nMaxDel = Math.floor(sWord.length / 5);
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
@@ -340,6 +349,9 @@ class IBDAWG {
         this._splitSuggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
+        if (this.lexicographer) {
+            aSugg = this.lexicographer.filterSugg(aSugg);
+        }
         if (sSfx || sPfx) {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx; } );
@@ -351,7 +363,7 @@ class IBDAWG {
     _splitTrailingNumbers (oSuggResult, sWord) {
         let m = /^([a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)([0-9]+)$/.exec(sWord);
         if (m  &&  !m[1].endsWith("-")  &&  !m[1].endsWith("_")) {
-            oSuggResult.addSugg(m[1] + " " + char_player.numbersToExponent(m[2]));
+            oSuggResult.addSugg(m[1] + " " + str_transform.numbersToExponent(m[2]));
         }
     }
 

@@ -6,10 +6,11 @@ Lexicographer for the French language
 # This mode must contains at least:
 #     <dSugg> : a dictionary for default suggestions.
 #     <bLexicographer> : a boolean False
-#       if the boolean is True, 3 functions are required:
+#       if the boolean is True, 4 functions are required:
 #           split(sWord) -> returns a list of string (that will be analyzed)
 #           analyze(sWord) -> returns a string with the meaning of word
 #           formatTags(sTags) -> returns a string with the meaning of tags
+#           filterSugg(aWord) -> returns a filtered list of suggestions
 
 
 import re
@@ -135,6 +136,17 @@ dSugg = {
     "XXIXème": "XXIXᵉ",
     "XXXème": "XXXᵉ"
 }
+
+
+# Préfixes et suffixes
+
+aPfx1 = frozenset([
+    "anti", "archi", "contre", "hyper", "mé", "méta", "im", "in", "ir", "par", "proto",
+    "pseudo", "pré", "re", "ré", "sans", "sous", "supra", "sur", "ultra"
+])
+aPfx2 = frozenset([
+    "belgo", "franco", "génito", "gynéco", "médico", "russo"
+])
 
 
 #### Lexicographer
@@ -316,19 +328,18 @@ _dValues = {
 }
 
 
-_zElidedPrefix = re.compile("(?i)^((?:[dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)’)(.+)")
-_zCompoundWord = re.compile("(?i)(\\w+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous))$")
+_zElidedPrefix = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([\\w-]+)")
+_zCompoundWord = re.compile("(?i)(\\w+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$")
 _zTag = re.compile("[:;/][\\w*][^:;/]*")
 
 def split (sWord):
     "split word in 3 parts: prefix, root, suffix"
-    sWord = sWord.replace("'", "’")
     sPrefix = ""
     sSuffix = ""
     # préfixe élidé
     m = _zElidedPrefix.match(sWord)
     if m:
-        sPrefix = m.group(1)
+        sPrefix = m.group(1) + "’"
         sWord = m.group(2)
     # mots composés
     m = _zCompoundWord.match(sWord)
@@ -356,3 +367,10 @@ def formatTags (sTags):
     if sRes.startswith(" verbe") and not sRes.endswith("infinitif"):
         sRes += " [{}]".format(sTags[1:sTags.find("/")])
     return sRes.rstrip(",")
+
+
+# Other functions
+
+def filterSugg (aSugg):
+    "exclude suggestions"
+    return filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSugg)

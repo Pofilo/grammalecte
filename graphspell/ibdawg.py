@@ -13,6 +13,7 @@ from functools import wraps
 import time
 import json
 import binascii
+import importlib
 from collections import OrderedDict
 
 #import logging
@@ -41,7 +42,7 @@ class SuggResult:
 
     def __init__ (self, sWord, nDistLimit=-1):
         self.sWord = sWord
-        self.sSimplifiedWord = cp.simplifyWord(sWord)
+        self.sSimplifiedWord = st.simplifyWord(sWord)
         self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
         self.nMinDist = 1000
         self.aSugg = set()
@@ -55,9 +56,9 @@ class SuggResult:
             return
         self.aAllSugg.add(sSugg)
         if sSugg not in self.aSugg:
-            #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg)))
-            nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg))
-            #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ cp.simplifyWord(sSugg) +" -> "+ str(nDist))
+            #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
+            nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg))
+            #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ st.simplifyWord(sSugg) +" -> "+ str(nDist))
             if nDist <= self.nDistLimit:
                 if " " in sSugg:
                     nDist += 1
@@ -82,7 +83,6 @@ class SuggResult:
                 lRes.extend(lSugg)
                 if len(lRes) > nSuggLimit:
                     break
-        lRes = list(cp.filterSugg(lRes))
         if self.sWord.isupper():
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
@@ -153,6 +153,14 @@ class IBDAWG:
 
         self.bAcronymValid = False
         self.bNumAtLastValid = False
+
+        # lexicographer module ?
+        self.lexicographer = None
+        try:
+            self.lexicographer = importlib.import_module("graphspell.lexgraph_"+self.sLangCode)
+        except ImportError:
+            print("# No module <graphspell.lexgraph_"+self.sLangCode+".py>")
+
 
     def _initBinary (self):
         "initialize with binary structure file"
@@ -305,7 +313,10 @@ class IBDAWG:
         "returns a set of suggestions for <sWord>"
         sWord = sWord.rstrip(".")   # useful for LibreOffice
         sWord = st.spellingNormalization(sWord)
-        sPfx, sWord, sSfx = cp.cut(sWord)
+        sPfx = ""
+        sSfx = ""
+        if self.lexicographer:
+            sPfx, sWord, sSfx = self.lexicographer.split(sWord)
         nMaxSwitch = max(len(sWord) // 3, 1)
         nMaxDel = len(sWord) // 5
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
@@ -316,6 +327,8 @@ class IBDAWG:
         self._splitSuggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions(nSuggLimit)
+        if self.lexicographer:
+            aSugg = self.lexicographer.filterSugg(aSugg)
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
@@ -324,7 +337,7 @@ class IBDAWG:
     def _splitTrailingNumbers (self, oSuggResult, sWord):
         m = re.match(r"(\D+)([0-9]+)$", sWord)
         if m and m.group(1)[-1:].isalpha():
-            oSuggResult.addSugg(m.group(1) + " " + cp.numbersToExponent(m.group(2)))
+            oSuggResult.addSugg(m.group(1) + " " + st.numbersToExponent(m.group(2)))
 
     def _splitSuggest (self, oSuggResult, sWord):
         # split at apostrophes

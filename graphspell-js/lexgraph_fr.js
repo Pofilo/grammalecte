@@ -136,6 +136,17 @@ var lexgraph_fr = {
 
     dSugg: _dSugg,
 
+    // Préfixes et suffixes
+    aPfx1: new Set([
+        "anti", "archi", "contre", "hyper", "mé", "méta", "im", "in", "ir", "par", "proto",
+        "pseudo", "pré", "re", "ré", "sans", "sous", "supra", "sur", "ultra"
+    ]),
+
+    aPfx2: new Set([
+        "belgo", "franco", "génito", "gynéco", "médico", "russo"
+    ]),
+
+    // Étiquettes
     dTag: new Map([
             [':N', [" nom,", "Nom"]],
             [':A', [" adjectif,", "Adjectif"]],
@@ -372,6 +383,26 @@ var lexgraph_fr = {
         this.oSpellChecker = oSpellChecker;
         this.oTokenizer = oTokenizer;
         this.oLocGraph = JSON.parse(oLocGraph);
+    },
+
+    split: function (sWord) {
+        // returns an arry of strings (prefix, trimed_word, suffix)
+        let sPrefix = "";
+        let sSuffix = "";
+        // préfixe élidé
+        let m = /^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)/i.exec(sWord);
+        if (m) {
+            sPrefix = m[1] + "’";
+            sWord = m[2];
+        }
+        // mots composés
+        m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$/i.exec(sWord);
+        if (m) {
+            sWord = m[1];
+            sSuffix = m[2];
+        }
+        // split word in 3 parts: prefix, root, suffix
+        return [sPrefix, sWord, sSuffix];
     },
 
     getInfoForToken: function (oToken) {
@@ -717,6 +748,11 @@ var lexgraph_fr = {
             }
         } while (iToken < lToken.length);
         return aElem;
+    },
+
+    // Other functions
+    filterSugg: function (aSugg) {
+        return aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); });
     }
 }
 
