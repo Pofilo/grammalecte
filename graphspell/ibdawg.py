@@ -55,7 +55,9 @@ class SuggResult:
             return
         self.aAllSugg.add(sSugg)
         if sSugg not in self.aSugg:
+            #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg)))
             nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg))
+            #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ cp.simplifyWord(sSugg) +" -> "+ str(nDist))
             if nDist <= self.nDistLimit:
                 if " " in sSugg:
                     nDist += 1
@@ -69,9 +71,11 @@ class SuggResult:
 
     def getSuggestions (self, nSuggLimit=10):
         "return a list of suggestions"
+        # we sort the better results with the original word
         if self.dSugg[0]:
-            # we sort the better results with the original word
             self.dSugg[0].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
+        elif self.dSugg[1]:
+            self.dSugg[1].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
         lRes = self.dSugg.pop(0)
         for nDist, lSugg in self.dSugg.items():
             if nDist <= self.nDistLimit:
@@ -341,9 +345,9 @@ class IBDAWG:
                 return
             if (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 if self.sLangCode == "fr" and sNewWord.lower() in ("l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu") and sRemain[0:1] in cp.aVowel:
-                    oSuggResult.addSugg(sNewWord+"’"+sRemain)
+                    oSuggResult.addSugg(sNewWord+"’"+sRemain, nDeep)
                 if (len(sNewWord) > 1 and len(sRemain) > 1) or sNewWord in "aày" or sRemain in "aày":
-                    oSuggResult.addSugg(sNewWord+" "+sRemain)
+                    oSuggResult.addSugg(sNewWord+" "+sRemain, nDeep)
         if nDist > oSuggResult.nDistLimit:
             return
         cCurrent = sRemain[0:1]
