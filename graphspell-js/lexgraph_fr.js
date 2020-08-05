@@ -32,6 +32,7 @@ const _dSugg = new Map ([
     ["loins", "loin"],
     ["mn", "min"],
     ["mns", "min"],
+    ["online", "en ligne"],
     ["parce-que", "parce que"],
     ["pcq", "parce que"],
     ["pd", "pendant|pédé"],
