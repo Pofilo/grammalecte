@@ -32,17 +32,6 @@ def g_checkAgreement (dToken1, dToken2, bNotOnlyNames=True):
     return cr.checkAgreement(lMorph1, lMorph2)
 
 
-def checkAgreement (sWord1, sWord2):
-    "check agreement between <sWord1> and <sWord1>"
-    lMorph2 = _oSpellChecker.getMorph(sWord2)
-    if not lMorph2:
-        return True
-    lMorph1 = _oSpellChecker.getMorph(sWord1)
-    if not lMorph1:
-        return True
-    return cr.checkAgreement(lMorph1, lMorph2)
-
-
 _zUnitSpecial = re.compile("[µ/⁰¹²³⁴⁵⁶⁷⁸⁹Ωℓ·]")
 _zUnitNumbers = re.compile("[0-9]")
 

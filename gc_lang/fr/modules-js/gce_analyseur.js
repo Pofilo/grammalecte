@@ -37,18 +37,6 @@ function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
     return cregex.checkAgreement(lMorph1, lMorph2);
 }
 
-function checkAgreement (sWord1, sWord2) {
-    let lMorph2 = _oSpellChecker.getMorph(sWord2);
-    if (lMorph2.length === 0) {
-        return true;
-    }
-    let lMorph1 = _oSpellChecker.getMorph(sWord1);
-    if (lMorph1.length === 0) {
-        return true;
-    }
-    return cregex.checkAgreement(lMorph1, lMorph2);
-}
-
 function mbUnit (s) {
     if (/[µ\/⁰¹²³⁴⁵⁶⁷⁸⁹Ωℓ·]/.test(s)) {
         return true;
