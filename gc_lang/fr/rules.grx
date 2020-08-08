@@ -9936,6 +9936,25 @@ TEST: {{mes}} que voulez-vous
 TEST: Mai pluvieux.
 
 
+# mat / mât
+__conf_mat_mât__
+    >échec et >mât
+        <<- /conf/ -3>> mat                                         && Confusion. Un mât est un poteau portant des voiles ou un drapeau.|https://fr.wiktionary.org/wiki/mat
+
+    [grand|grands] [mat|mats|mas]
+        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")     && Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
+
+    [mat|mats|mas] [de|d’] [artimon|beaupré|branchement|cocagne|battage|fortune|hune|misaine|perroquet|perruche]
+    [mat|mats|mas] en [>acier|>alu|>aluminium|bois|>carbone|>époxy|>fibre|>résine]
+    [mat|mats|mas] du [bateau|catamaran|navire|trimaran|vaisseau|voilier]
+    [mat|mats|mas] de la goélette
+        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")     && Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
+
+TEST: Échec et {{mât}}
+TEST: le grand {{mat}}
+TEST: {{Mat}} de misaine
+
+
 # min / mins
 __conf_symbole_min__
     *NUM  mins
@@ -17058,6 +17077,37 @@ __purge_tout_tout_tous_toutes__
 @@@@
 @@@@
 
+
+__fusions_enum_noms_communs__
+    [<start>|,|(|/_start_]                                      *WORD  et  *WORD
+        <<- morph(\2, ":N", ":(?:G|123[sp]|P|A)") and morph(\4, ":N", ":(?:G|123[sp]|P|A)") and not morph(>1, ":[NA]") =>> define(\2, queryNamesPOS(\2, \4))
+        <<- __also__ ~2:0>> ␣
+
+    [les|plusieurs]                                             *WORD  et  *WORD
+        <<- morph(\2, ":N", ":(?:G|123[sp]|P)") and morph(\4, ":N", ":(?:G|123[sp]|P)") and not morph(>1, ":[NA]") =>> define(\2, queryNamesPOS(\2, \4))
+        <<- __also__ ~2:0>> ␣
+
+    [des|ces|mes|tes|ses|nos|vos|leurs|quelques]                *WORD  et  *WORD
+        <<- morph(\2, ":N", ":G") and morph(\4, ":N", ":G") and not morph(>1, ":[NA]") =>> define(\2, queryNamesPOS(\2, \4))
+        <<- __also__ ~2:0>> ␣
+
+    certains                                                    *WORD  et  *WORD
+        <<- morph(\2, ":N.*:[me]:[pi]", ":(?:G|[23]p)") and morph(\4, ":N.*:[me]:[pi]", ":(?:G|[23]p)") and not morph(>1, ":[NA]") =>> define(\2, ":N:m:p")
+        <<- __also__ ~2:0>> ␣
+
+    [lesdits|desdits]                                           *WORD  et  *WORD
+        <<- morph(\2, ":N.*:[me]:[pi]", ":G") and morph(\4, ":N.*:[me]:[pi]", ":G") and not morph(>1, ":[NA]") =>> define(\2, ":N:m:p")
+        <<- __also__ ~2:0>> ␣
+
+    certaines                                                   *WORD  et  *WORD
+        <<- morph(\2, ":N.*:[fe]:[pi]", ":(?:G|[23]p)") and morph(\4, ":N.*:[fe]:[pi]", ":(?:G|[23]p)") and not morph(>1, ":[NA]") =>> define(\2, ":N:f:p")
+        <<- __also__ ~2:0>> ␣
+
+    [lesdites|desdites]                                         *WORD  et  *WORD
+        <<- morph(\2, ":N.*:[fe]:[pi]", ":G") and morph(\4, ":N.*:[fe]:[pi]", ":G") and not morph(>1, ":[NA]") =>> define(\2, ":N:f:p")
+        <<- __also__ ~2:0>> ␣
+
+
 __fusions_noms_propres_et_pronoms__
     [<start>|,|(|/_start_]  [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels|$:M]  et  [moi|nous]
     [<start>|,|(|/_start_]  [moi|nous]  et  [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels|$:M]
@@ -19250,25 +19300,6 @@ __conf_marre_mare__
 TEST: cette {{marre}} est presque sèche.
 TEST: j’en ai {{mare}} de tout ça.
 TEST: en avoir vraiment {{mare}} de ces conneries.
-
-
-# mat / mât
-__conf_mat_mât__
-    >échec et >mât
-        <<- /conf/ -3>> mat                                         && Confusion. Un mât est un poteau portant des voiles ou un drapeau.|https://fr.wiktionary.org/wiki/mat
-
-    [grand|grands] [mat|mats|mas]
-        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")     && Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
-
-    [mat|mats|mas] [de|d’] [artimon|beaupré|branchement|cocagne|battage|fortune|hune|misaine|perroquet|perruche]
-    [mat|mats|mas] en [>acier|>alu|>aluminium|bois|>carbone|>époxy|>fibre|>résine]
-    [mat|mats|mas] du [bateau|catamaran|navire|trimaran|vaisseau|voilier]
-    [mat|mats|mas] de la goélette
-        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")     && Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
-
-TEST: Échec et {{mât}}
-TEST: le grand {{mat}}
-TEST: {{Mat}} de misaine
 
 
 # mâter / mater
@@ -25000,7 +25031,7 @@ TEST: J’ai été conseiller régional
 __ppas_être_accord_sing!3__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:p¬:[GMWYsi]
-        <<- /ppas/ not tag_before(\1, "_que_") and not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
+        <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
         --1>> =suggSing(\-1)                                                                        && Accord avec la forme verbale “\2” : “\-1” devrait être au singulier.
 
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:p¬:[GMWYsi]
@@ -25028,7 +25059,7 @@ TEST: Demeures victoriennes.
 __ppas_être_accord_plur!3__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:s¬:[GMWYpi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:s¬:[GMWYpi]
-        <<- /ppas/ not tag_before(\1, "_que_") and not value(\-1, "|légion|néant|réalité|") and not morph(\1, ":G") and morph(\2, ":[13]p")
+        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(\1, ":G") and morph(\2, ":[13]p")
         --1>> =suggPlur(\-1)                                                                                            && Accord avec la forme verbale “\2” : “\-1” devrait être au pluriel.
 
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:s¬:[GMWYpi]
@@ -25178,6 +25209,7 @@ TEST: certains hommes se font {{rare}}                                          
 TEST: certains hommes qui s’efforcent d’être {{habile}}                                     ->> habiles
 TEST: certaines femmes se font {{petit}}                                                    ->> petites
 TEST: certaines femmes qui ne s’efforcent pas de paraître {{sensible}}                      ->> sensibles
+TEST: Surtout que les factures et opérations sont {{présent}}                               ->> présentes
 TEST: Les tortures que ce journaliste pense être “normales”.
 TEST: les abrutis sont légion
 

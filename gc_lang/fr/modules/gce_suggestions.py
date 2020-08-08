@@ -539,3 +539,17 @@ _xNormalizedCharsForInclusiveWriting = str.maketrans({
 def normalizeInclusiveWriting (sToken):
     "typography: replace word separators used in inclusive writing by underscore (_)"
     return sToken.translate(_xNormalizedCharsForInclusiveWriting)
+
+
+def queryNamesPOS(sWord1, sWord2):
+    lMorph1 = _oSpellChecker.getMorph(sWord1)
+    lMorph2 = _oSpellChecker.getMorph(sWord2)
+    if not lMorph1 or not lMorph2:
+        return ":N:e:p"
+    sGender1 = cr.getGender(lMorph1)
+    sGender2 = cr.getGender(lMorph2)
+    if sGender1 == ":m" or sGender2 == ":m":
+        return ":N:m:p"
+    if sGender1 == ":f" or sGender2 == ":f":
+        return ":N:f:p"
+    return ":N:e:p"
