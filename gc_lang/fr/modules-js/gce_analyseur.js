@@ -58,3 +58,20 @@ function mbUnit (s) {
     }
     return false;
 }
+
+function queryNamesPOS (sWord1, sWord2) {
+    let lMorph1 = _oSpellChecker.getMorph(sWord1);
+    let lMorph2 = _oSpellChecker.getMorph(sWord2);
+    if (lMorph1.length == 0 || lMorph2.length == 0) {
+        return ":N:e:p";
+    }
+    let sGender1 = cregex.getGender(lMorph1);
+    let sGender2 = cregex.getGender(lMorph2);
+    if (sGender1 == ":m" || sGender2 == ":m") {
+        return ":N:m:p";
+    }
+    if (sGender1 == ":f" || sGender2 == ":f") {
+        return ":N:f:p";
+    }
+    return ":N:e:p";
+}
