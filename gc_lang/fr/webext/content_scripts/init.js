@@ -190,7 +190,7 @@ const oGrammalecte = {
         if (!xNode) {
             return null;
         }
-        if (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT" || xNode.tagName == "IFRAME" || document.location.host == "twitter.com") {
+        if (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT" || xNode.tagName == "IFRAME") {
             return xNode;
         }
         const findNode = function (xNode) {
