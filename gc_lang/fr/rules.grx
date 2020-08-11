@@ -5598,6 +5598,9 @@ __pleo_pléonasmes_divers__
     >collaborer ensemble
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
+    >coup [de|d’] foudre [immédiat+s|instantané+ses|soudain]
+        <<- /pleo/ ->> \1 de foudre                                                         && Pléonasme.
+
     comme par exemple
         <<- /pleo/ ->> comme|par exemple                                                    && Pléonasme.
 
@@ -5614,7 +5617,7 @@ __pleo_pléonasmes_divers__
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
     à [partir|compter] de dorénavant
-        <<- /pleo/ ->> dorénavant|à partir de maintenant                                    && Pléonasme.
+        <<- /pleo/ ->> dorénavant|à \2 de maintenant                                        && Pléonasme.
 
     donc par conséquent
         <<- /pleo/ ->> donc|par conséquent|c’est pourquoi                                   && Pléonasme.
@@ -5761,6 +5764,7 @@ TEST: {{dessiner un dessin}}                        ->> dessiner
 TEST: {{joindre ensemble}}                          ->> joindre|mettre ensemble
 TEST: {{collaborer ensemble}}                       ->> collaborer
 TEST: {{comparer entre eux}}                        ->> comparer
+TEST: un {{coup de foudre soudain}}                 ->> coup de foudre
 TEST: {{monter en haut}}                            ->> monter
 TEST: {{descendre en bas}}                          ->> descendre
 TEST: {{enchevêtrer les uns dans les autres}}       ->> enchevêtrer
@@ -7477,6 +7481,7 @@ __conf_à_a_locutions__
     a cheval sur
     a cœur [joie|ouvert|perdu]
     a ciel ouvert
+    a condition [de|d’|que|qu’]
     a connotation sexuelle
     a corps perdu
     a côté [de|d’]
@@ -8629,8 +8634,8 @@ TEST: prendre le problème à bras-le-corps
 # cou / coup / coût
 __conf_coup_cout_cou1__
     [>cou|>coût|>cout] au-dessous [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>froid|fil|>filet|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
-    [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] d’ [>arrêt|>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
         <<- /conf/ -1>> coup|coups      && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
@@ -11920,8 +11925,7 @@ __conf_voir_voire__
         <<- !2>>
 
     voir  @:A¬:[NGM]
-        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|souhaiter|désirer|espérer|de|à)/")
-            and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
+        <<- /conf/ not \2.istitle() and not morph(<1, ":(?:O[vs]|X)|>(?:aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|souhaiter|désirer|espérer|de|à)/")
         -1>> voire                      && Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
     [ne|n’|le|la|les|l’|me|m’|te|t’|se|s’|y]                                             voire
@@ -11966,8 +11970,18 @@ TEST: les groupes anti-avortement cherchant à faire adopter des lois qu’ils e
 TEST: à côté de nous voire avec nous
 TEST: sans lui voire sans rien
 TEST: il fait ça pour nous voire pour tout le monde
-
-
+TEST: il veut me voir
+TEST: va te faire voir
+TEST: il faut voir
+TEST: me voir, c’est impossible en ce moment
+TEST: se voir un jour ou l’autre
+TEST: il risque de voir son travail volé
+TEST: ne voir que ce qui nous arrange
+TEST: y voir le mal partout
+TEST: ne pas voir le mal
+TEST: ne jamais voir le mal
+TEST: n’en voir que le mal
+TEST: il risque d’y voir rouge
 
 
 
@@ -13272,7 +13286,11 @@ __purge_horaires_et_durée__
     sur l’ heure
     tout à l’ heure
     trois quarts d’ heure plus [tôt|tard]
+    trois quarts d’ heure auparavant
     un quart d’ heure plus [tôt|tard]
+    un quart d’ heure auparavant
+    une fraction [de|d’] seconde auparavant
+    une fraction [de|d’] seconde plus [tard|tôt]
     vers [midi|minuit]
         <<- ~>> *
 
@@ -15624,6 +15642,7 @@ __substantifs_multi_mots__
     bras [de|d’] fer
     >brave ?d’¿ entre les braves
     >brosse à [>dent|reluire]
+    >bruit [de|d’] fond
     >bureau [de|d’] [tabac|vote]
     >business as usual
     >cabinet [de|d’] [toilette|travail]
@@ -15735,6 +15754,7 @@ __substantifs_multi_mots__
     >demande d’ asile
     >demandeur d’ [asile|emploi]
     >dépôt [de|d’] bilan
+    >défaut [de|d’] paiement
     >descente aux [enfers|flambeaux]
     >dindon [de|d’] la farce
     dieu tout-puissant
@@ -15760,7 +15780,8 @@ __substantifs_multi_mots__
     >emploi du temps
     >employé [de|d’] maison
     >ennemi d’ État
-    ennemi public numéro [un|deux|trois|1|2|3]
+    ennemi public numéro [un|$:B|*NUM]
+    ennemie publique numéro [un|$:B|*NUM]
     >ennui [de|d’] santé
     >enregistreur [de|d’] vol
     >enterrement [de|d’] vie [de|d’] garçon
@@ -15970,6 +15991,7 @@ __substantifs_multi_mots__
     >pâté en [croute|croûte]
     >pavillon [de|d’] chasse
     >peloton d’ exécution
+    >périphérique à bande ?[analogique|magnétique]¿
     >personnage [de|d’] roman
     perspectives d’ avenir
     >perte [de|d’] temps ?précieux¿
@@ -15987,6 +16009,7 @@ __substantifs_multi_mots__
     >placard à [>balai|chaussures]
     >plafond de verre
     >plainte avec constitution de partie civile
+    >plainte contre x
     >plan [A|B|C|cul]
     >plan [de|d’] relance
     >planche [de|d’] salut
@@ -17286,6 +17309,7 @@ __da_locutions_verbales__
     >percer à jour
     >perdre [connaissance|conscience|patience|pied|raison]
     >perdre d’ avance
+    >piéger comme des rats
     >piquer au vif
     >pleuvoir à torrents
     >plier >bagage
@@ -17581,6 +17605,7 @@ TEST: la qualité desdits malheureux
 TEST: ç’a été dur.
 TEST: dût ma vanité en souffrir, je viendrai quoi qu’il arrive
 TEST: certaines régions sont un poil plus compliquées
+TEST: Tout est bien qui finit bien.
 
 
 @@@@
@@ -21409,6 +21434,7 @@ TEST: elle vit dans un 24 m carré.
 TEST: elle vit dans un 24 m² triste de la banlieue de Paris.
 TEST: dans son 240 m2 lumineux, c’est la belle vie.
 TEST: Une correction de +0.5 dioptrie.
+TEST: zéro compassion
 
 
 ##  trouver ça/ceci/cela + adj
@@ -23888,12 +23914,14 @@ __purge_syntagmes_nominaux__
     [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]   @:[VR]¬:[NAP]
     [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]  ,  @¬:[NA]
+    [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:4>> *
 
     [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NAM]  <end>
     [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NA]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NA]   @:[VR]¬:[NAP]
     [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NAM]  , @¬:[NA]
+    [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NAM]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
@@ -23904,6 +23932,8 @@ __purge_syntagmes_nominaux__
         || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]¬:G   @:[VR]¬:[NAP]
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
         || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     à @:[NAM]¬:[GY]  <end>
@@ -23916,6 +23946,7 @@ __purge_syntagmes_nominaux__
     [avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NA]¬:[GY]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NA]¬:[GY]   @:[VR]¬:[NAP]
     [avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  , @¬:[NA]
+    [avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:2>> *
 
     [un|ce|cet|au|ledit] *WORD *WORD
@@ -24012,42 +24043,49 @@ __purge_syntagmes_nominaux__
     [de|d’]  @:[NA].*:s¬:[YG]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     [de|d’]  @:[NA].*:s¬:[YG]  @:[VR]¬:[NAP]
     [de|d’]  @:[NA].*:s¬:[YG]  , @¬:[NA]
+    [de|d’]  @:[NA].*:s¬:[YG]  ?,¿  [/_VCint_|/_VCimp_]
         <<- not value(\2, "|autres|") ~1:2>> *
 
     [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   <end>
     [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   @:[VR]¬:[NAP]
     [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   , @¬:[NA]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
     [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
     [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
+    [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     de  [la|l’|leur]  @:[NA]¬:Y  <end>
     de  [la|l’|leur]  @:[NA]¬:Y  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     de  [la|l’|leur]  @:[NA]¬:Y  @:[VR]¬:[NAP]
     de  [la|l’|leur]  @:[NA]¬:Y  , @¬:[NA]
+    de  [la|l’|leur]  @:[NA]¬:Y  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
     $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:4>> *
 
     $:LR [des|du|de|d’] @:[NA] <end>
     $:LR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     $:LR [des|du|de|d’] @:[NA] @:[VR]¬:[NAP]
     $:LR [des|du|de|d’] @:[NA] , @¬:[NA]
+    $:LR [des|du|de|d’] @:[NA] ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     en [plein|pleine] @:[NA]  <end>
     en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
     en [plein|pleine] @:[NA]  @:[VR]¬:[NAP]
     en [plein|pleine] @:[NA]  , @¬:[NA]
+    en [plein|pleine] @:[NA]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux] [__URL__|__MAIL__]
@@ -24058,7 +24096,7 @@ __purge_syntagmes_nominaux__
 # @:[VR]¬:[NAP]
 # , @¬:[NA]
 # ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-
+# ?,¿  [/_VCint_|/_VCimp_]
 
 __purge_syntagme_verbal__
     [de|d’]  @:V[123]_i.*:Y  ,
@@ -24172,6 +24210,7 @@ __tag_locutions_verbales_d_état__
     ## locutions verbales d’état
     >avoir [été|semblé|paru]
     >avoir [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    [>être|>sembler|>demeurer|>paraître|>paraitre] loin d’ [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     [>être|>sembler] [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
@@ -24956,6 +24995,7 @@ TEST: ils se montrent {{exigeantes}}
 TEST: ceux-ci se surent {{espionné}} par les agents secrets de l’ennemi.
 TEST: agissons eux qui se montrent tellement {{arrogantes}} qu’ils méritent une petite leçon.
 TEST: lesquels se pensent encore {{anonyme}}
+TEST: ils sont loin d’être aussi {{malin}} qu’ils l’imaginent
 TEST: ils étaient devenus réalité.
 
 
@@ -27972,6 +28012,47 @@ TEST: {{viennent elles}} souvent ?
 TEST: quand {{furent elles}} recrutées ?
 TEST: quels éléments {{examinèrent elles}} ?
 TEST: {{connaissent iels}} leurs droits ?
+
+
+
+!!
+!!
+!!!! Accord du sujet avec le pronom de la forme interrogative                                     !!
+!!
+!!
+
+__conj_sujet_verbe_interrogatif_pronom__
+    <start>  [le|un|ce|cet|ledit]               *WORD  /-elle
+        <<- /conj/ morph(\3, ":N.*:m:[si]", ":[fe]:[si]")
+        --1>> =\-1.replace("-elle", "-il").replace("-Elle", "-Il").replace("-ELLE", "-IL")          && Le pronom “elle” n’est pas accordé avec “\2 \3”.
+
+    <start>  [la|une|cette|ma|ta|sa|ladite]     *WORD  /-il
+        <<- /conj/ morph(\3, ":N.*:f:[si]", ":[me]:[si]")
+        --1>> =\-1.replace("-il", "-elle").replace("-Il", "-Elle").replace("-IL", "-ELLE")          && Le pronom “il” n’est pas accordé avec “\2 \3”.
+
+    <start>  [l’|leur|mon|ton|son|notre|votre]  *WORD  /-elle
+        <<- /conj/ morph(\3, ":N.*:m:[si]", ":[fe]:[si]")
+        --1>> =\-1.replace("-elle", "-il").replace("-Elle", "-Il").replace("-ELLE", "-IL")          && Le pronom “elle” n’est pas accordé avec “\2 \3”.
+
+    <start>  [l’|leur|mon|ton|son|notre|votre]  *WORD  /-il
+        <<- /conj/ morph(\3, ":N.*:f:[si]", ":[me]:[si]")
+        --1>> =\-1.replace("-il", "-elle").replace("-Il", "-Elle").replace("-IL", "-ELLE")          && Le pronom “il” n’est pas accordé avec “\2 \3”.
+
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|lesdits]    *WORD  /-elles
+        <<- /conj/ morph(\3, ":N.*:m:[pi]", ":[fe]:[pi]")
+        --1>> =\-1.replace("-elles", "-ils").replace("-Elles", "-Ils").replace("-ELLES", "-ILS")    && Le pronom “elles” n’est pas accordé avec “\2 \3”.
+
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certaines|lesdites]  *WORD  /-ils
+        <<- /conj/ morph(\3, ":N.*:f:[pi]", ":[me]:[pi]")
+        --1>> =\-1.replace("-ils", "-elles").replace("-Ils", "-Elles").replace("-ILS", "-ELLES")    && Le pronom “ils” n’est pas accordé avec “\2 \3”.
+
+
+TEST: le parti {{va-t-elle}} se dissoudre                                               ->> va-t-il
+TEST: la partie {{a-t-il}} engendré beaucoup de recette                                 ->> a-t-elle
+TEST: L’avenir d’une entreprise {{est-elle}} nécessairement… ?                          ->> est-il
+TEST: L’année {{sera-t-il}} une nouvelle chance de succès                               ->> sera-t-elle
+TEST: lesdits joueurs {{vont-elles}} réussir                                            ->> vont-ils
+TEST: plusieurs joueuses {{pensent-ils}} à quitter la partie                            ->> pensent-elles
 
 
 
