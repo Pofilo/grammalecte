@@ -22052,6 +22052,20 @@ __sgpl_nombre_de_1m__
 TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 
 
+__sgpl_plein_de__
+    pleins [de|d’]
+        <<- /sgpl/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
+        -1>> plein                                                  && S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
+
+    plein [de|d’] [client|croyant|demande|enfant|erreur|garçon|homme|femme|fidèle|fille|fillette|individu|faute|personne|patient|touriste]
+        <<- /sgpl/ --1>> \3s                                        && S’il y en a plein (c’est-à-dire plusieurs), il faut mettre au pluriel.
+
+TEST: Je connais {{pleins}} de gens
+TEST: un site avec {{pleins}} de pubs
+TEST: il y a plein de {{client}}
+TEST: Les avocats sont pleins de nutriments.
+
+
 __sgpl_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
@@ -22087,6 +22101,10 @@ __sgpl_confluence_de__
     >confluence de [rivière|fleuve|ruisseau]
         <<- /sgpl/ -3>> =suggPlur(\3)                                   && Confluence de plusieurs cours d’eau : mettez au pluriel.
 
+__sgpl_distributeur_de_billets__
+    >distributeur [de|d’] billet
+        <<- /sgpl/ --1>> billets                        && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
+
 __sgpl_groupe_de__
     [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
         <<- /sgpl/ -3>> \3s                                             && Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
@@ -22107,6 +22125,7 @@ TEST: Ce collectif d’{{artiste}} est très inventif.
 TEST: Rends-moi ma collection de {{film}} !
 TEST: C’est un malheureux concours de {{circonstance}}.
 TEST: à la confluence de {{rivière}}
+TEST: distributeur de {{billet}}                                        ->> billets
 TEST: ils constituent un groupe de {{passionné}}.
 TEST: C’est un putain de troupeau de {{mouton}} !
 TEST: où est mon trousseau de {{clé}} ?
@@ -22213,14 +22232,6 @@ __sgpl_leur_dévolu__
 TEST: Ces gens qui jettent {{leurs dévolus}} sur n’importe qui, c’est d’une indécence.
 
 
-# distributeur de billets
-__sgpl_distributeur_de_billets__
-    >distributeur [de|d’] billet
-        <<- /sgpl/ --1>> billets                        && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
-
-TEST: distributeur de {{billet}}                        ->> billets
-
-
 # escalier
 __sgpl_cage_d_escalier__
     >cage d’ escaliers
@@ -22322,17 +22333,6 @@ __sgpl_pied__
 TEST: ils ont tout simplement perdu {{pieds}}
 TEST: ils y sont allés à {{pieds}}.
 TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}
-
-
-# plein
-__sgpl_plein_de__
-    pleins [de|d’]
-        <<- /sgpl/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
-        -1>> plein                                                  && S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
-
-TEST: Je connais {{pleins}} de gens
-TEST: un site avec {{pleins}} de pubs
-TEST: Les avocats sont pleins de nutriments.
 
 
 # possible
@@ -25520,6 +25520,100 @@ TEST: il lui faut être malin
 TEST: il nous faut être malines
 
 
+__ppas_pronom_sujet_verbe_état_verbe__
+    [<start>|,|(]  [je|tu|iel] ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                    @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  [je|tu|iel] ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_      @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":s")                                                   && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    [<start>|,|(]  il ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                             @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  il ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_               @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")                                                 && Accord avec le sujet “\2” : “\-1” devrait être un participe passé masculin singulier.
+
+    [<start>|,|(]  elle ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                           @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  elle ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_             @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":f:s")                                                 && Accord avec le sujet “\2” : “\-1” devrait être un participe passé féminin singulier.
+
+    [<start>|,|(]  [nous|iels] ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                    @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  [nous|iels] ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_      @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":p")                                                   && Accord avec le sujet “\2” : “\-1” devrait être un participe passé pluriel.
+
+    [<start>|,|(]  [on|vous] ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                      @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  [on|vous] ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_        @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         && Accord avec le sujet “\2” : “\-1” devrait être un participe passé.
+
+    [<start>|,|(]  ils ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                            @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  ils ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_              @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:p")                                                 && Accord avec le sujet “\2” : “\-1” devrait être un participe passé masculin pluriel.
+
+    [<start>|,|(]  elles ?[ne|n’]¿ ?[en|y]¿ /_VE_                                                          @:[123][sp]¬:[NAQGM]
+    [<start>|,|(]  elles ?[ne|n’]¿ ?[en|y]¿ /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_            @:[123][sp]¬:[NAQGM]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":f:p")                                                 && Accord avec le sujet “\2” : “\-1” devrait être un participe passé féminin pluriel.
+
+TEST: je ne parais pas {{épuise}} par mon périple, mais je le suis.
+TEST: j’ai été {{bouleverse}} par ces aveux.
+TEST: il sait être {{désire}}
+TEST: elle imagine être {{désire}}
+TEST: elle semble avoir été {{sonne}}
+TEST: iel semble être {{ignore}}
+TEST: ouais, on adore avoir été {{persécute}} par ces enfoirés
+TEST: nous préférions être restés {{chagrinait}} par cette perte
+TEST: on déclare avoir été {{choque}} par ces nouvelles
+TEST: ils semblent être redevenus {{élut}}
+TEST: elles aiment avoir paru {{murent}}
+
+
+__ppas_être_confusion__
+    ne [pas|jamais] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
+        <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         && Après “ne \2 être”, il faut un participe passé.
+
+    avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
+        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "_que_") --1>> =suggVerbPpas(\-1)   && Après le verbe “être”, il faut un participe passé.
+
+    >être  ~..er$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or morph(\2, ">(?:aller|manger)/"))
+            and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
+        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être à l’infinitif.
+
+    >être  ~..ez$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":2p", ":[NAQ]")
+        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du pluriel.
+
+    >être  ~..es$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":2s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du singulier.
+
+    >être  ~.it$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
+        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
+
+    >être  ~.ut$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
+        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
+
+TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
+TEST: Ne pas être {{arrivez}} à ses fins.
+TEST: Ne pas être {{prit}} au sérieux.
+TEST: Ne pas être {{voulut}}.
+TEST: avoir cru être {{éliminer}} par de tels bouffons…
+TEST: ces hommes sont {{tromper}} par tous ces hypocrites.
+TEST: je me suis trompé, me suis {{laisser}} emporter.
+TEST: c’est être {{emportez}} par la vague.
+TEST: des jeunes étudiants anglais étaient {{dégoûtes}}
+TEST: l’homme était {{sortit}} avec enthousiasme.
+TEST: ces femmes-là seront {{reconnut}} par leurs pairs
+TEST: Jeûner n’est pas seulement cesser de manger.
+TEST: Ne pas aimer n’est pas oublier l’autre.
+TEST: Dire la vérité, c’eût été manquer à sa parole.
+TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
+TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
+TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
+TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
+TEST: la grande crainte du maire est de voir arriver d’autres immigrés
+
+
 !!
 !!
 !!!! Participes passés: avoir l’air                                                               !!
@@ -26975,164 +27069,6 @@ __conf_vc_int_imp_verbe!3__
 TEST: Annonce-le {{dépare}}.
 TEST: prends-la {{tète}}.
 TEST: alors rappelons-nous Marie
-
-
-__conf_pronom_sujet_verbe_état_verbe__
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]      @:[123][sp]¬:[NAQGM]
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                        @:[123][sp]¬:[NAQGM]
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                            @:[123][sp]¬:[NAQGM]
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":s")                                       && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  il ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]           @:[123][sp]¬:[NAQGM]
-    <start>  il ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                             @:[123][sp]¬:[NAQGM]
-    <start>  il ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                                 @:[123][sp]¬:[NAQGM]
-    <start>  il ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  il ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  il ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":m:s")                                      && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]         @:[123][sp]¬:[NAQGM]
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                           @:[123][sp]¬:[NAQGM]
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                               @:[123][sp]¬:[NAQGM]
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  elle ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":f:s")                                      && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]         @:[123][sp]¬:[NAQGM]
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                           @:[123][sp]¬:[NAQGM]
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                               @:[123][sp]¬:[NAQGM]
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  nous ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":p")                                      && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]    @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                      @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu+s|redevenu+s|resté+s|demeuré+s]                      @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu+s|redevenu+s|resté+s|demeuré+s]                                                                 @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous|iel|iels] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1)                                             && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]          @:[123][sp]¬:[NAQGM]
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            @:[123][sp]¬:[NAQGM]
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                                @:[123][sp]¬:[NAQGM]
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  ils ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":m:p")                                      && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]        @:[123][sp]¬:[NAQGM]
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                          @:[123][sp]¬:[NAQGM]
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                              @:[123][sp]¬:[NAQGM]
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
-    <start>  elles ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
-        <<- /conf/ --1>> =suggVerbPpas(\-1, ":f:p")                                      && Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
-
-TEST: je ne parais pas {{épuise}} par mon périple, mais je le suis.
-TEST: j’ai été {{bouleverse}} par ces aveux.
-TEST: il sait être {{désire}}
-TEST: elle imagine être {{désire}}
-TEST: elle semble avoir été {{sonne}}
-TEST: ouais, on adore avoir été {{persécute}} par ces enfoirés
-TEST: nous préférions être restés {{chagrinait}} par cette perte
-TEST: on déclare avoir été {{choque}} par ces nouvelles
-TEST: ils semblent être redevenus {{élut}}
-TEST: elles aiment avoir paru {{murent}}
-
-
-__ppas_être_confusion__
-    ne [pas|jamais] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         && Après “ne \2 être”, il faut un participe passé.
-
-    avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "_que_") --1>> =suggVerbPpas(\-1)     && Après le verbe “être”, il faut un participe passé.
-
-    >être  ~..er$
-        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or morph(\2, ">(?:aller|manger)/"))
-            and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
-        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être à l’infinitif.
-
-    >être  ~..ez$
-        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":2p", ":[NAQ]")
-        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du pluriel.
-
-    >être  ~.it$
-        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
-        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
-
-    >être  ~.ut$
-        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-            and not tag_before(\1, "_ceque_") and not tag_before(\1, "_sujinfi_")
-        -2>> =suggVerbPpas(\2)                                                                      && Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
-
-TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
-TEST: Ne pas être {{arrivez}} à ses fins.
-TEST: Ne pas être {{prit}} au sérieux.
-TEST: Ne pas être {{voulut}}.
-TEST: avoir cru être {{éliminer}} par de tels bouffons…
-TEST: ces hommes sont {{tromper}} par tous ces hypocrites.
-TEST: je me suis trompé, me suis {{laisser}} emporter.
-TEST: c’est être {{emportez}} par la vague.
-TEST: l’homme était {{sortit}} avec enthousiasme.
-TEST: ces femmes-là seront {{reconnut}} par leurs pairs
-TEST: Jeûner n’est pas seulement cesser de manger.
-TEST: Ne pas aimer n’est pas oublier l’autre.
-TEST: Dire la vérité, c’eût été manquer à sa parole.
-TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
-TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
-TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
-TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
-TEST: la grande crainte du maire est de voir arriver d’autres immigrés
 
 
 __conf_verbes_det_verbe_nom__
