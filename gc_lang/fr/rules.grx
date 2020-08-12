@@ -2923,7 +2923,7 @@ TEST: __ocr__ nous avons vaincu, au grand dam de tous ces grands messieurs
 # dame / darne
 __ocr_dame__
     [>darne|>daine]
-        <<- /ocr/ ->> =\1.replace("rn", "m").replace("in", "m")                                     && Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("rn", "m").replace("in", "m").replace("RN", "M").replace("IN", "M")   && Erreur de numérisation ?
 
 TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
 TEST: __ocr__ cette {{daine}} élégamment vêtue.
@@ -2967,10 +2967,11 @@ TEST: __ocr__ Sans aucun {{cloute}}.
 
 # du / dû
 __ocr_du__
-    dû  @:[NA]:[me]:[si]¬:Y
+    dû  @:[NA]:[me]:[si]¬:(?:Y|Ov)
         <<- /ocr/ -1>> du                                                                           && Erreur de numérisation ?
 
 TEST: __ocr__ prendre {{dû}} bon temps
+TEST: __ocr__ il aurait dû la trouver
 TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
 
 
@@ -15963,6 +15964,7 @@ __substantifs_multi_mots__
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >moulin à [café|eau|paroles|poivre|prières|vent]
     >nerf à vif
+    >nettoyeur haute pression
     >nid [de|d’] résistance
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
@@ -22057,20 +22059,22 @@ __sgpl_plein_de__
         <<- /sgpl/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
         -1>> plein                                                  && S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
 
-    plein [de|d’] [client|croyant|demande|enfant|erreur|garçon|homme|femme|fidèle|fille|fillette|individu|faute|personne|patient|touriste]
+    plein [de|d’] [client|conseil|croyance|croyant|demande|élève|enfant|erreur|étudiant+e|faute|femme|fidèle|fille|fillette|garçon|homme|individu|personne|patient|touriste]
         <<- /sgpl/ --1>> \3s                                        && S’il y en a plein (c’est-à-dire plusieurs), il faut mettre au pluriel.
 
 TEST: Je connais {{pleins}} de gens
 TEST: un site avec {{pleins}} de pubs
 TEST: il y a plein de {{client}}
 TEST: Les avocats sont pleins de nutriments.
+TEST: ajoute plein de sel sur ses pâtes
+TEST: avoir plein d’argent ne suffit pas toujours à tout résoudre
 
 
 __sgpl_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
         <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/")
-        -4>> =suggPlur(\4)                                                                  && Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
+        -4>> =suggPlur(\4)                                                                  && Avec « \1 \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
         <<- /sgpl/ -4>> =suggSing(\4)                                                       && Mettez au singulier.
@@ -22954,15 +22958,15 @@ __infi_qqch_de__
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
 
-    il >être [temps|admissible|inadmissible|absurde|contraignant|libérateur|difficile|facile|impossible|indispensable|nécessaire|possible|utile|inutile]
-        || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il est \3 de”, le verbe devrait être à l’infinitif.
-
     hors d’ état                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors d’état de”, le verbe devrait être à l’infinitif.
 
     hors de question                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors de question de”, le verbe devrait être à l’infinitif.
+
+    il >être [temps|admissible|inadmissible|absurde|contraignant|libérateur|difficile|facile|impossible|indispensable|nécessaire|possible|utile|inutile]
+        || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il est \3 de”, le verbe devrait être à l’infinitif.
 
     il ?n’¿ >être question                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il (n’)est (pas) question de”, le verbe devrait être à l’infinitif.
@@ -22973,7 +22977,10 @@ __infi_qqch_de__
     pas question                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “pas question de”, le verbe devrait être à l’infinitif.
 
-    [<start>|,|(] [>capable|>incapable|impossible|inutile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    [<start>|,|(] [>capable|>incapable|impossible|inutile|>libre]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\2 de”, le verbe devrait être à l’infinitif.
+
+    [<start>|,|(] >libre  à [moi|toi|lui|elle|soi|nous|vous|eux|elles]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\2 de”, le verbe devrait être à l’infinitif.
 
     force [est|était|fut|serait|sera]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -23022,6 +23029,7 @@ TEST: il est hors de question de {{menée}} cette attaque ainsi                 
 TEST: il serait temps de {{poussée}} la logique jusqu’au bout                                       ->> pousser
 TEST: impossible d’{{échappée}} à cette horreur.                                                    ->> échapper
 TEST: hors d’état de {{pensée}} à quoi que ce soit                                                  ->> penser
+TEST: libre à elle de la {{supposée}} hypocrite                                                     ->> supposer
 TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.        ->> penser
 TEST: sous peine de nous {{pesée}} lourd sun l’estomac                                              ->> peser
 TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?                                           ->> fabriquer
