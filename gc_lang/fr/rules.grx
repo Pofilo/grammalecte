@@ -374,10 +374,10 @@ TEST: Espaces{{                 }}surnuméraires.                        ->> " "
 
 # Espaces insécable et sécable, et tabulations
 __<s>/esp(esp_mélangés1)__              (?:  |  ) <<- ->> " | "                                     && Incohérence : l’espace insécable à côté de l’espace sécable n’a pas d’effet.
-__<s>/esp(esp_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |   "                   && Incohérence : espace et tabulation.
+__<s>/esp(esp_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |	"                   && Incohérence : espace et tabulation.
 
 TEST: J’espère que ça ne va pas durer trop longtemps avec Mr{{  }}Paul.
-TEST: J’espère que ça ne{{  }}va pas durer. (Ici, espace suivi d’une tabulation)
+TEST: J’espère que ça{{ 	}}va pas durer. (Ici, espace suivi d’une tabulation)      ->>  " |	"
 
 
 # Espaces insécables multiples
@@ -927,7 +927,7 @@ TEST: combien de rad/s
 # Majuscules après un point
 __[s]/maj(majuscule_après_point)__
     ({w_2})[.] ([a-zàâéèêîôç]\w*)  @@0,$
-        <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
+        <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|ex|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
             and morph(\1, ":") and morph(\2, ":")
         -2>> =\2.capitalize()                                                                       && Après un point, une majuscule est généralement requise.
 
@@ -8605,11 +8605,12 @@ __conf_corps_cor__
         <<- /conf/ ->> à corps perdu                                                && Confusion. Locution “à corps perdu”.|https://fr.wiktionary.org/wiki/%C3%A0_corps_perdu
 
     >cor [a|à] >cor
-        <<- /conf/ ->> corps à corps                                                && Confusion. Le cor est instrument de musique.
+        <<- /conf/ ->> corps à corps                                                && Confusion. Locution “corps à corps”.|https://fr.wiktionary.org/wiki/corps_%C3%A0_corps
 
-    >cor du [christ|défunt]
-    >cor de [>doctrine|logis|>preuve]
-    >cor de la magistrature
+    >cor du [christ|défunt|droit|mort]
+    >cor de [>doctrine|gendarmerie|>loi|logis|>preuve]
+    >cor de la [doctrine|magistrature]
+    >cor d’ [armée|artillerie]
     >cor [>politique|>diplomatique|>expéditionnaire|>législatif|>mystique|humain+s|calleux|caverneux|muqueux]
     >cor et >âme
         <<- /conf/ -1>> corps                                                       && Confusion. Le cor est instrument de musique.
@@ -14775,6 +14776,8 @@ __purge_locutions__
     par ce biais
     par certains [aspects|côtés]
     par définition
+    par ex .
+    p. ex .
     par grand froid
     par gros temps
     par mesure [de|d’] sécurité
@@ -15622,6 +15625,7 @@ __substantifs_multi_mots__
     >banc [de|d’] touche
     >bandit [de|d’] grand chemin
     >bandit [de|d’] grands chemins
+    >baptême du feu
     >barrage [de|d’] police
     bas résille
     >bateau à aubes
@@ -15818,7 +15822,7 @@ __substantifs_multi_mots__
     >fermeture éclair
     >fermoir à [cliquet|levier|ressort]
     >feu d’ artifice
-    >feu [de|d’] paille
+    >feu [de|d’] [camp|paille]
     >feux [de|d’] la rampe
     >feuille [de|d’] route
     >fibre [de|d’] verre
@@ -15930,6 +15934,7 @@ __substantifs_multi_mots__
     >marchand [de|d’] fruits et légumes
     >marché aux puces
     >maréchal des [logis|logis-chef]
+    >mariage [de|d’] raison
     >marin d’ eau douce
     >marge [de|d’] >manœuvre
     >marque [de|d’] fabrique
@@ -16034,6 +16039,7 @@ __substantifs_multi_mots__
     preuve ?suffisante¿ du contraire
     preuves ?suffisantes¿ du contraire
     >prise [de|d’] conscience
+    >prisonnier [de|d’] guerre
     prix à payer
     prix [de|d’] revient
     puits [de|d’] [carbone|forage|lumière|pétrole|science]
@@ -16174,6 +16180,7 @@ __substantifs_multi_mots__
     >vidéo X
     >vie [de|d’] bohème
     >virage à [*NUM|$:B:e:p] degrés
+    >vitamine [A|B|C|D|E|F]
     >voie [de|d’] [recours|perdition]
     >vol à l’ étalage
     >vol à la [sauvette|tire]
@@ -18477,7 +18484,10 @@ TEST: On paye toujours argent {{content}}.
 # corps / cor
 __conf_corps_cor2__
     >faire >cor
-        <<- /conf/ -2>> corps                               && Confusion probable. Le cor est un instrument à vent.|https://fr.wiktionary.org/wiki/faire_corps
+        <<- /conf/ -2>> corps                               && Confusion probable. Locution “faire corps”.|https://fr.wiktionary.org/wiki/faire_corps
+
+    >donner >cor [à|aux|a|,|)|<end>]
+        <<- /conf/ -2>> corps                               && Confusion probable . Locution “donner corps”.|https://fr.wiktionary.org/wiki/donner_corps
 
     >plaider [>cor|>cœur] [présent+s]
         <<- /conf/ -2:0>> corps présent                     && Confusion. Locution “plaider corps présent” (c’est-à-dire en présence du client).
@@ -18488,6 +18498,7 @@ __conf_corps_cor2__
 TEST: Faisons {{cor}} avec lui !
 TEST: ils plaideront {{cor présent}}
 TEST: elle tremblait de tout son {{cor}}
+TEST: donnons {{cor}} à notre ambition
 
 
 # côté / coté
@@ -24210,7 +24221,8 @@ __tag_locutions_verbales_d_état__
     ## locutions verbales d’état
     >avoir [été|semblé|paru]
     >avoir [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    [>être|>sembler|>demeurer|>paraître|>paraitre] loin d’ [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir peur [de|d’]                     [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    [>être|>sembler|>demeurer|>paraître|>paraitre] [loin|près] d’ [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     [>être|>sembler] [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
