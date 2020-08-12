@@ -4326,22 +4326,26 @@ __tu_mots_grammaticaux__
     [celle|celles|celui|ceux] si
         <<- /tu/ not morph(>1, ":[WA]") ->> \1-ci               && Il manque un trait d’union.
 
-    [moi|toi|soi|lui|elle|vous] même
+    [moi|toi|soi|lui|elle|vous|iel] même
         <<- /tu/ not value(>1, "|si|s’|") ->> \1-\2             && Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
 
-    [nous|vous|eux|elles] mêmes
+    [nous|vous|eux|elles|iels] mêmes
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
-TEST: {{au delà}}                                                               ->> au-delà
-TEST: {{Au dessus}}                                                             ->> Au-dessus
-TEST: un bel enfoiré, {{c’est à dire}} un hypocrite
-TEST: {{Ceux la}} vont à la pêche.                                              ->> Ceux-là
-TEST: mais {{celles là}} sont différentes.
-TEST: avec {{celles ci}}, tout va bien
-TEST: {{ceux si}} sont des teignes
+    [nous|vous|eux|elles|iels] même
+        <<- /tu/ not value(>1, "|si|s’|") ->> \1-\2s            && Il manque un trait d’union.
+
+TEST: {{au delà}}                                                                           ->> au-delà
+TEST: {{Au dessus}}                                                                         ->> Au-dessus
+TEST: un bel enfoiré, {{c’est à dire}} un hypocrite                                         ->> c’est-à-dire
+TEST: {{Ceux la}} vont à la pêche.                                                          ->> Ceux-là
+TEST: mais {{celles là}} sont différentes.                                                  ->> celles-là
+TEST: avec {{celles ci}}, tout va bien                                                      ->> celles-ci
+TEST: {{ceux si}} sont des teignes                                                          ->> ceux-ci
+TEST: {{Lui même}}                                                                          ->> Lui-même
+TEST: {{eux mêmes}}.                                                                        ->> eux-mêmes
+TEST: il n’y a pas de raison que les demandes de recouvrement cessent d’{{elles même}}      ->> elles-mêmes
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
-TEST: {{Lui même}}                                    ->> Lui-même
-TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 
 
 __tu_locutions__
@@ -7160,14 +7164,14 @@ __conf_à_a__
         <<- /conf/ -2>> à                                           && Confusion probable : « à moins que » pour dire « sauf si ».
 
     a part @:(?:M[12]|D|Oo)
-        <<- /conf/ -1>> à                                           && Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -1>> à                                           && Confusion probable : “a” est une forme conjuguée de “avoir”. Pour la préposition, écrivez “à”.
 
     face a
         <<- /conf/ not morph(<1, ":(?:D.*:f:s|A.*:[fe]:[si])|>en/")
-        -2>> à                                                      && Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        -2>> à                                                      && Confusion probable : “a” est une forme conjuguée de “avoir”. Pour la préposition, écrivez “à”.
 
     par rapport  a  @:(?:D|Oo|M)
-        <<- /conf/ -3>> à                                           && Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -3>> à                                           && Confusion : “a” est une forme conjuguée de “avoir”. Pour la préposition, écrivez “à”.
 
     grâce a
         <<- /conf/ morph(<1, ":[VN]|<start>", "*") -2>> à           && Confusion probable. Locution “grâce à”.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
@@ -7175,7 +7179,7 @@ __conf_à_a__
     tout a fait
     jusqu’ a
     pas a pas
-        <<- /conf/ -2>> à                                           && Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -2>> à                                           && Confusion : “a” est une forme conjuguée de “avoir”. Pour la préposition, écrivez “à”.
 
     a [moi|toi|eux|elles]
     a [lui|elle|nous|vous]  <end>
@@ -7644,7 +7648,7 @@ __conf_à_a_locutions__
     a y [réfléchir|songer|penser]
     a y regarder [de|d’] plus près
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
     a [mon|ton|son|notre|votre|leur] grand désarroi
@@ -7662,7 +7666,7 @@ __conf_à_a_locutions__
     a l’ autre bout                                                                                 [de|d’|des|du|<end>|,]
     a la [portée|suite]                                                                             [de|d’|des|du|<end>|,]
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              && Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
@@ -22604,9 +22608,24 @@ TEST: {{lorsque}} ton code {{grossi}}, il faut le factoriser
 TEST: quand le jour venu, il fallut se battre, nous étions prêts.
 
 
+__conf_qui_pronom_verbe__
+    qui  [lui|nous|vous]  @:[NA]¬:(?:[123][sp]|P)
+        <<- /conf/ hasSimil(\-1, ":(?:[123][sp]|P)") --1>> =suggSimil(\-1, ":[123][sp]")            && Confusion probable : “\-1” n’est pas une forme verbale conjuguée.
+
+    qui  *WORD  [,|<end>|$:D]
+        <<- /conf/ morph(\2, ":[NA]", ":(?:[123][sp]|P)") and hasSimil(\2, ":(?:[123][sp])")
+        -2>> =suggSimil(\2, ":[123][sp]")                                                           && Confusion probable : “\2” n’est pas une forme verbale conjuguée.
+
+TEST: Et gardez bien en tête que la personne qui vous {{contact}} peut-être un sous-traitant
+TEST: la nature qui nous {{maintien}} en vie
+TEST: un homme qui {{oubli}} son devoir
+TEST: qu’est-ce qui lui donne cette assurance ?
+TEST: qui vous prend aux tripes
+
+
 __bs_substantif_de_adj__
     il  y  >avoir  [un|une]  *WORD  [de|d’]  $:Q¬:G
-        <<- /bs/ --2:-1>> _                         && Usage populaire. Le “de” est superflu. Exemple : « Il y a un fichier modifié » à la place de « il y a un fichier de modifié ».
+        <<- /bs/ --2:-1>> \-1                           && Usage populaire. Le “de” est superflu. Exemple : « Il y a un fichier modifié » à la place de « il y a un fichier de modifié ».
         <<- ~-2:-1>> *
         <<- !-1>>
 
