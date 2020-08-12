@@ -37,7 +37,7 @@
 !!
 
 OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj minis, num nf, virg poncfin, ocr chim, liga mapos
-OPTGROUP/gramm: conf sgpl gn
+OPTGROUP/gramm: conf loc gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
 OPTGROUP/style: bs pleo, eleu neg, redon1 redon2
 OPTGROUP/misc: date mc
@@ -65,7 +65,7 @@ OPT/mapos:          False       False       False       False       False       
 OPT/chim:           True        True        False       True        True        True
 OPT/ocr:            False       False       False       False       False       False
 OPT/conf:           True        True        True        True        True        True
-OPT/sgpl:           True        True        True        True        True        True
+OPT/loc:            True        True        True        True        True        True
 OPT/gn:             True        True        True        True        True        True
 OPT/infi:           True        True        True        True        True        True
 OPT/conj:           True        True        True        True        True        True
@@ -129,7 +129,7 @@ OPTCOLOR/mapos:     orange      orange_vif
 OPTCOLOR/chim:      orange      orange_vif
 OPTCOLOR/ocr:       bleupr      bleupr_clair
 OPTCOLOR/conf:      violet      violet_vif
-OPTCOLOR/sgpl:      bleu        bleu_vif
+OPTCOLOR/loc:       violet      violet_vif
 OPTCOLOR/gn:        bleu        bleu_vif
 OPTCOLOR/infi:      fuschia     vert_vif
 OPTCOLOR/conj:      fuschia     vert_vif
@@ -179,7 +179,7 @@ OPTLABEL/ocr:       Erreurs de numérisation (OCR) [!]|Erreurs de reconnaissance
 
 OPTLABEL/gramm:     Noms et adjectifs
 OPTLABEL/conf:      Confusions et faux-amis|Cherche des erreurs souvent dues à l’homonymie (par exemple, les confusions entre « faîte » et « faite »).
-OPTLABEL/sgpl:      Pluriels (locutions)|Vérifie l’usage du pluriel ou du singulier dans certaines locutions.
+OPTLABEL/loc:       Locutions|Écriture des locutions usuelles.
 OPTLABEL/gn:        Accords (genre et nombre)|Accords des noms et des adjectifs.
 
 OPTLABEL/verbs:     Verbes
@@ -230,7 +230,7 @@ OPTLABEL/ocr:       OCR errors [!]|Warning: many false positives.
 
 OPTLABEL/gramm:     Nouns and Adjectives
 OPTLABEL/conf:      Confusions and false friends|Seeks errors often due to homonymy (i.e. confusions between « faîte » et « faite »).
-OPTLABEL/sgpl:      Plural (locutions)|Checks the use of plural and singular in locutions.
+OPTLABEL/loc:       Locutions|Writing of common locutions.
 OPTLABEL/gn:        Agreement (gender and number)|Agreement between nouns and adjectives.
 
 OPTLABEL/verbs:     Verbs
@@ -4345,7 +4345,7 @@ TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 
 
 __tu_locutions__
-    [à|a] [la|là] [va|vas] vite
+    [à|a] [la|là] [va|vas|vat] vite
         <<- /tu/ ->> à la va-vite                               && Il manque un trait d’union.
 
     [à|a] tout [va|vas|vat]
@@ -12026,27 +12026,27 @@ TEST: un {{fil a que terre}}
 !!!! Singuliers et pluriels                                                                       !!
 
 # Assemblée nationale
-__sgpl_assemblée_nationale__
+__gn_assemblée_nationale__
     [<start>|,|l’] assemblé [national+e]
-        <<- /sgpl/ -2:3>> Assemblée nationale                       && Confusion. Écrivez “Assemblée nationale”.|https://fr.wiktionary.org/wiki/Assembl%C3%A9e_nationale
+        <<- /gn/ -2:3>> Assemblée nationale                         && Confusion. Écrivez “Assemblée nationale”.|https://fr.wiktionary.org/wiki/Assembl%C3%A9e_nationale
 
 TEST: l’{{assemblé national}}
 TEST: l’Assemblée nationale
 
 
 # ayants droit
-__sgpl_ayants_droit__
+__gn_ayants_droit__
     [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
-        <<- /sgpl/ -2:3>> ayants droit                              && Au singulier : “un ayant droit”. Au pluriel : “des ayants droit”.
+        <<- /gn/ -2:3>> ayants droit                                && Au singulier : “un ayant droit”. Au pluriel : “des ayants droit”.
 
 TEST: Comment lutter contre la cupidité des {{ayant droits}}
 # Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
 
 
 # bien d’autres
-__sgpl_bien_d_autres__
+__gn_bien_d_autres__
     [<start>|,|(|et]  bien  d’  autre
-        <<- /sgpl/ not value(>1, "|part|") --1>> autres
+        <<- /gn/ not value(>1, "|part|") --1>> autres
         && Au pluriel : “bien d’autres”, c’est-à-dire d’autres personnes, d’autres choses, d’autres considérations…|https://fr.wiktionary.org/wiki/bien_d%E2%80%99autres
 
     [<start>|,|(|et]  bien  d’  autres  @:N.*:s¬:(?:[pi]|G)
@@ -12059,48 +12059,48 @@ TEST: il s’agit bien d’autre chose.
 
 
 # bien
-__sgpl_très_bien__
+__gn_très_bien__
     très biens
-        <<- /sgpl/ -2>> bien                                        && Adverbe ou adjectif, “bien” est invariable.|https://fr.wiktionary.org/wiki/bien
+        <<- /gn/ -2>> bien                                          && Adverbe ou adjectif, “bien” est invariable.|https://fr.wiktionary.org/wiki/bien
 
-TEST: Très {{biens}} connus des services de police, il leur fut difficile de passer entre les mailles du filet.
+TEST: Très {{biens}} connus des services de police, il leur fut difficile de passer entre les mailles du filet.         ->> bien
 
 
 # ensemble
-__sgpl_ensemble__
+__gn_ensemble__
     [toutes|tous] ensembles
-        <<- /sgpl/ -2>> ensemble                                    && Ici, “ensemble” est vraisemblablement un adverbe, donc invariable.|https://fr.wiktionary.org/wiki/ensemble
+        <<- /gn/ -2>> ensemble                                      && Ici, “ensemble” est vraisemblablement un adverbe, donc invariable.|https://fr.wiktionary.org/wiki/ensemble
 
 TEST: Allons-y toutes {{ensembles}}                             ->> ensemble
 
 
 # en particulier
-__sgpl_en_particulier__
+__loc_en_particulier__
     en particuliers
-        <<- /conf/ not morph(<1, ">agir/") ->> en particulier       && Locution “en particulier” toujours au singulier.|https://fr.wiktionary.org/wiki/en_particulier
+        <<- /loc/ not morph(<1, ">agir/") ->> en particulier        && Locution “en particulier” toujours au singulier.|https://fr.wiktionary.org/wiki/en_particulier
 
 TEST: en général et {{en particuliers}}
 TEST: agir en particulier averti.
 
 
 # en rangs serrés
-__sgpl_en_rangs_serrés__
+__loc_en_rangs_serrés__
     en rang serré
-        <<- /sgpl/ ->> en rangs serrés|en ordre serré               && Au pluriel, car il y a plusieurs rangs. Vous pouvez aussi utiliser l’expression “en ordre serré”.
+        <<- /loc/ ->> en rangs serrés|en ordre serré                && Au pluriel, car il y a plusieurs rangs. Vous pouvez aussi utiliser l’expression “en ordre serré”.
 
 TEST: ils défilèrent {{en rang serré}}
 TEST: elles arrivent en rangs serrés.
 
 
 # entre autres
-__sgpl_entre_autres!6__
+__loc_entre_autres!6__
     entre autre [<end>|,|)]
     entre autre @:(?:[GW]|[NA].*:[pi])
-        <<- /sgpl/ -2>> autres                                      && La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
+        <<- /loc/ -2>> autres                                       && La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
 
     !! entre autres choses ¡¡
     entre [autre+s] [chose+s]
-        <<- /sgpl/ not value(<1, "|j’|n’|il|elle|on|")
+        <<- /loc/ not value(<1, "|j’|n’|il|elle|on|")
         ->> entre autres choses                                     && La locution “entre autres choses”, toujours au pluriel.
 
 TEST: Des raisons ? Entre {{autre}} je n’en savais pas plus que lui.
@@ -12111,18 +12111,18 @@ TEST: on entre autre chose dans la base pour voir ce que ça donne.
 
 
 # nul et non avenu
-__sgpl_nul_et_non_avenu__
+__gn_nul_et_non_avenu__
     nul et non >avenu
-        <<- /sgpl/ not value(\-1, "|avenu|") --1>> avenu            && Accord avec “\1”.
+        <<- /gn/ not value(\-1, "|avenu|") --1>> avenu              && Accord avec “\1”.
 
     nulle et non >avenu
-        <<- /sgpl/ not value(\-1, "|avenue|") --1>> avenue          && Accord avec “\1”.
+        <<- /gn/ not value(\-1, "|avenue|") --1>> avenue            && Accord avec “\1”.
 
     nuls et non >avenu
-        <<- /sgpl/ not value(\-1, "|avenus|") --1>> avenus          && Accord avec “\1”.
+        <<- /gn/ not value(\-1, "|avenus|") --1>> avenus            && Accord avec “\1”.
 
     nulles et non >avenu
-        <<- /sgpl/ not value(\-1, "|avenues|") --1>> avenues        && Accord avec “\1”.
+        <<- /gn/ not value(\-1, "|avenues|") --1>> avenues          && Accord avec “\1”.
 
 TEST: c’est nul et non {{avenue}}                       ->> avenu
 TEST: des éléments nuls et non {{avenues}}              ->> avenus
@@ -12131,22 +12131,22 @@ TEST: nulles et non {{avenue}}                          ->> avenues
 
 
 # en termes de
-__sgpl_en_termes_de__
+__loc_en_termes_de__
     en terme [de|d’]
-        <<- /sgpl/ -2>> termes                                      && Dans la locution “en termes de”, mettez “terme” au pluriel.
+        <<- /loc/ ->> en termes \3                                  && Dans la locution “en termes de”, mettez “terme” au pluriel.
 
-TEST: en {{terme}} de communication, c’est une véritable catastrophe
+TEST: {{en terme de}} communication, c’est une véritable catastrophe
 
 
 # tous / tout / toutes
-__sgpl_tous_azimuts__
+__loc_tous_azimuts__
     tout [azimut|azimuts]
-        <<- /sgpl/ ->> tous azimuts                                 && « Tous azimuts » signifie « dans toutes les directions ».
+        <<- /loc/ ->> tous azimuts                                  && « Tous azimuts » signifie « dans toutes les directions ».
 
-__sgpl_une_bonne_fois_pour_toutes__
-    une fois pour (toute)
-    une bonne fois pour (toute)
-        <<- /sgpl/ -1>> toutes                                      && Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
+__loc_une_bonne_fois_pour_toutes__
+    une fois pour toute
+    une bonne fois pour toute
+        <<- /loc/ --1>> toutes                                      && Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
 
 TEST: ils lancent des attaques {{tout azimut}}.
 TEST: une bonne fois pour {{toute}}
@@ -12154,12 +12154,12 @@ TEST: ce sera réglé une fois pour {{toute}} quand il sera capturé.
 
 
 # vu de ses yeux vu
-__sgpl_vu_de_ses_yeux_vu__
+__gn_vu_de_ses_yeux_vu__
     [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
-        <<- /sgpl/ \1.lower() != \-1.lower() --1>> \1                                               && Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
+        <<- /gn/ \1.lower() != \-1.lower() --1>> \1                                                 && Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
 
     [vu|vue|vus|vues]  ,  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]  [,|<end>|)]
-        <<- /sgpl/ \1.lower() != \-2.lower() --2>> \1                                               && Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
+        <<- /gn/ \1.lower() != \-2.lower() --2>> \1                                                 && Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
 
 TEST: Elles les ont vues de ses yeux {{vue}}
 TEST: Il l’a vue, de ses yeux {{vu}}.
@@ -12170,19 +12170,19 @@ TEST: Je suis sûr de les avoir vus de mes yeux vus.
 
 
 # ni vu ni connu
-__sgpl_ni_vu_ni_connu__
+__loc_ni_vu_ni_connu__
     ni [vus|vue|vues] ni [connu|connus|connue|connues]
     ni vu ni [connus|connue|connues]
-        <<- /sgpl/ ->> ni vu ni connu                                                               && Ni vu ni connu : locution invariable.|https://fr.wiktionary.org/wiki/ni_vu_ni_connu
+        <<- /loc/ ->> ni vu ni connu                                                                && Ni vu ni connu : locution invariable.|https://fr.wiktionary.org/wiki/ni_vu_ni_connu
 
 TEST: {{ni vus ni connus}}, on va s’en occuper.
 TEST: ni vu ni connu, j’t’embrouille.
 
 
 #### X fois par jour/an/semaine/etc.
-__sgpl_x_fois_par_période__
+__gn_x_fois_par_période__
     fois par [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|semestres|trimestres|ans|années|décennies|siècles|millénaires]
-        <<- /sgpl/ -3>> =suggSing(\3)                                   && Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
+        <<- /gn/ -3>> =suggSing(\3)                                     && Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
 
 TEST: vingt fois par {{ans}}, à peu près.
 TEST: 12 fois par {{jours}}, ça suffit.
@@ -12190,9 +12190,9 @@ TEST: Deux fois par mois…
 
 
 #### lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche / matin, soir
-__sgpl_jour_matin_soir__
+__gn_jour_matin_soir__
     [>lundi|>mardi|>mercredi|>jeudi|>vendredi|>samedi|>dimanche] [matins|soirs|après-midis]
-        <<- /sgpl/ -2>> =\2[:-1]                                        && Ici, comme adverbe, ces mots sont invariables. Exemple : les mardis soir (les mardi au soir).
+        <<- /gn/ -2>> =\2[:-1]                                          && Ici, comme adverbe, ces mots sont invariables. Exemple : les mardis soir (les mardi au soir).
 
 TEST: Tous les lundis {{soirs}}.
 TEST: Les mardis soir.
@@ -12444,22 +12444,22 @@ TEST: Elle en prendra vingt {{Grammes}}.                ->> grammes
 
 __locutions_invariables__
     [plus|moins|autant]  que  [prévue|prévus|prévues]
-        <<- /sgpl/ -3>> prévu                                                                       && Invariable. Implicitement, \1 que ce qui était prévu.
+        <<- /gn/ -3>> prévu                                                                         && Invariable. Implicitement, \1 que ce qui était prévu.
 
     [plus|moins|aussi]  *WORD  que  [prévue|prévus|prévues]
-        <<- /sgpl/ -4>> prévu                                                                       && Invariable. Implicitement, \1 \2 que ce qui était prévu.
+        <<- /gn/ -4>> prévu                                                                         && Invariable. Implicitement, \1 \2 que ce qui était prévu.
 
     [plus|moins|autant]  [de|d’]  *WORD  que  [prévue|prévus|prévues]
-        <<- /sgpl/ -5>> prévu                                                                       && Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
+        <<- /gn/ -5>> prévu                                                                         && Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
 
     comme [annoncés|annoncée|annoncées]
-        <<- /sgpl/ -2>> annoncé                                                                     && Invariable. Implicitement, comme ce qui était annoncé.
+        <<- /gn/ -2>> annoncé                                                                       && Invariable. Implicitement, comme ce qui était annoncé.
 
     comme [convenus|convenue|convenues]
-        <<- /sgpl/ -2>> convenu                                                                     && Invariable. Implicitement, comme ce qui était convenu.
+        <<- /gn/ -2>> convenu                                                                       && Invariable. Implicitement, comme ce qui était convenu.
 
     comme [prévue|prévus|prévues]
-        <<- /sgpl/ -2>> prévu                                                                       && Invariable. Implicitement, comme ce qui était prévu.
+        <<- /gn/ -2>> prévu                                                                         && Invariable. Implicitement, comme ce qui était prévu.
 
 TEST: il y en a autant que {{prévus}}.
 TEST: elles sont plus nombreuses plus que {{prévues}}
@@ -17400,9 +17400,9 @@ __purge_vite__
         <<- not (morph(<1, ":V0a") and value(>1, "|fait|")) ~>> *
 
 
-__sgpl_faire_plaisir__
+__loc_faire_plaisir__
     >faire plaisirs
-        <<- /sgpl/ --1>> plaisir        && Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- /loc/ --1>> plaisir         && Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~-1>> *
 
 TEST: Ça me fait {{plaisirs}}.
@@ -18886,7 +18886,7 @@ __conf_faisceau_vaisseau__
         <<- /conf/ ->> faisceau de présomptions             && Confusion probable. Un faisceau de présomptions, c’est-à-dire un ensemble de présomptions concordantes.|https://fr.wiktionary.org/wiki/faisceau
 
     >faisceau [de|d’] présomption
-        <<- /sgpl/ --1>> présomptions                       && Il y a plusieurs présomptions dans un faisceau (un ensemble de présomptions concordantes).
+        <<- /gn/ --1>> présomptions                         && Il y a plusieurs présomptions dans un faisceau (un ensemble de présomptions concordantes).
 
 TEST: un {{vaisseau de présomption}}                    ->> faisceau de présomptions
 TEST: un faisceau de {{présomption}}                    ->> présomptions
@@ -21836,9 +21836,9 @@ TEST: les argiles et les marnes jouent le rôle d’isolants enfermant les masse
 !!
 !!
 
-__sgpl_couleurs_invariables__
+__gn_couleurs_invariables__
     [abricots|acajous|anthracites|argents|aubergines|azurs|bistres|briques|bronzes|cachous|caramels|carmins|cerises|chocolats|corails|crèmes|cuivres|ébènes|émeraudes|fraises|garances|grenats|indigos|isabelles|ivoires|lavandes|magentas|marrons|moutardes|nacres|noisettes|ocres|olives|ors|oranges|outremers|pailles|pastels|pervenches|pies|pistaches|pivoines|rouilles|sables|safrans|sépias|tabacs|taupes|tomates|turquoises|vermillons]
-        <<- /sgpl/ morph(<1, ":N", ":[GAVWM]") ->> =\1[:-1]
+        <<- /gn/ morph(<1, ":N", ":[GAVWM]") ->> =\1[:-1]
         && Couleur. Si une couleur est représentée par un fruit, un animal, une roche… elle est (en général) invariable.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
 TEST: Des yeux {{vert}}.
@@ -21847,21 +21847,21 @@ TEST: Des créatures marines.
 TEST: Un cageot des premières cerises.
 
 
-__sgpl_couleurs_composées!5__
+__gn_couleurs_composées!5__
     [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>rose|>vermeil] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>brillant|>clair|>vif|diapré+ses|foncé+ses|irisé+ses|cuivré+ses]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        <<- /gn/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggSing(\1) + " " + suggMasSing(\2)
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     [>blanc|>bleu|>brun|>gris|>noir|>vert|>violet] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>brillant|>clair|>vif|diapré+ses|foncé+ses|irisé+ses|cuivré+ses]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        <<- /gn/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggMasSing(\1) + " " + suggMasSing(\2)
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     >jaune [>paille|>sable]
     >rose  [>bonbon|>chair|>corail]
     >rouge [>brique|>carmin|>cerise|>écarlate|rubis|>sang|>tomate|>vermillon]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
+        <<- /gn/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
         ->> =suggSing(\1) + " " + suggSing(\2)
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
@@ -21869,12 +21869,12 @@ __sgpl_couleurs_composées!5__
     >blond >platine
     >gris [>acier|>anthracite|>perle|souris]
     >vert [>émeraude|>olive|>pistache|>pomme]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
+        <<- /gn/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
         ->> =suggMasSing(\1) + " " + suggSing(\2)
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     >noir [de|d’] [encre|jais]
-        <<- /sgpl/ not morph(<1, ":D") -1>> noir
+        <<- /gn/ not morph(<1, ":D") -1>> noir
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
 TEST: les chapeaux {{rouges clairs}}                                        ->> rouge clair
@@ -21909,25 +21909,25 @@ TEST: Il a une queue bleu vert
 # Similaires à prépositions : http://www.synapse-fr.com/manuels/PP_ATTENDU.htm
 # attendu, compris, non-compris, y compris, entendu, excepté, ôté, ouï, passé, supposé, vu
 # ! problème avec l’ouïe, ouï retiré de la liste
-__sgpl_prépositions__
+__gn_prépositions__
     <start> ?non¿ [comprise|comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
-        <<- /sgpl/ --2>> compris                                                            && Considéré comme préposition, invariable.
+        <<- /gn/ --2>> compris                                                              && Considéré comme préposition, invariable.
 
     <start> [non-comprise|non-comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
-        <<- /sgpl/ -2>> non compris                                                         && Considéré comme préposition, invariable.
+        <<- /gn/ -2>> non compris                                                           && Considéré comme préposition, invariable.
 
     <start> [entendus|exceptés|ôtés|supposés|passés|entendue|exceptée|ôtée|supposée|passée|entendues|exceptées|ôtées|supposées|passées]  [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
-        <<- /sgpl/ -2>> =suggMasSing(\2)                                                    && Considéré comme préposition, invariable.
+        <<- /gn/ -2>> =suggMasSing(\2)                                                      && Considéré comme préposition, invariable.
 
     [<start>|,|(]  [attendus|attendue|attendues]  [que|qu’]
-        <<- /sgpl/ -2>> attendu                                                             && “Attendu que” : considéré comme préposition, invariable.
+        <<- /gn/ -2>> attendu                                                               && “Attendu que” : considéré comme préposition, invariable.
 
     [<start>|,|(]  étant [donnés|donnée|données]
-        <<- /sgpl/ -3>> donné                                                               && “Étant donné” : considéré comme préposition, invariable.
+        <<- /gn/ -3>> donné                                                                 && “Étant donné” : considéré comme préposition, invariable.
 
     [<start>|,|(]  [vus|vue|vues]  [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
     [<start>|,|(]  [vus|vue|vues]  [que|qu’]
-        <<- /sgpl/ -2>> vu                                                                  && Considéré comme préposition, invariable.
+        <<- /gn/ -2>> vu                                                                    && “Vu que”. Considéré comme préposition, invariable.
 
 TEST: {{comprises}} mes prestations sur place
 TEST: {{non-comprises}} les boissons
@@ -21943,11 +21943,11 @@ TEST: Vu la dureté extrême des conditions de survie…
 
 #### ce + sont / étaient
 
-__conf_ce_être_pluriel__
+__gn_ce_être_pluriel__
     ce       [sont|seront|seraient|furent]  [de|d’]  @:A.*:s¬:[Gpi]  @:N¬:G
     c’       étaient                        [de|d’]  @:A.*:s¬:[Gpi]  @:N¬:G
     [c’|ç’]  avaient été                    [de|d’]  @:A.*:s¬:[Gpi]  @:N¬:G
-        <<- /sgpl/ --2>> =suggPlur(\-2)                                                     && Après “ce sont”, il est vraisemblable que ce qui est évoqué soit au pluriel.
+        <<- /gn/ --2>> =suggPlur(\-2)                                                       && Après “ce sont”, il est vraisemblable que ce qui est évoqué soit au pluriel.
 
 TEST: ce sont de {{beau}} jouet                                 ->> beaux
 TEST: ç’avaient été de {{belle}} festivité
@@ -21958,13 +21958,13 @@ TEST: ce sont d’autre part des petits malins.
 #### Nombres cardinaux
 
 # vingt
-__sgpl_vingt__
+__gn_vingt__
     vingts
-        <<- /sgpl/ not value(<1, "|quatre|") ->> vingt                                      && “Vingt” ne prend la marque du pluriel que dans “quatre-vingts”.
+        <<- /gn/ not value(<1, "|quatre|") ->> vingt                                        && “Vingt” ne prend la marque du pluriel que dans “quatre-vingts”.
 
     quatre-vingt
     quatre vingt
-        <<- /sgpl/ not morph(>1, ":B") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
+        <<- /gn/ not morph(>1, ":B") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
         ->> quatre-vingts                                                                   && Mettre « vingt » au pluriel, excepté s’il s’agit d’une référence (page, chapitre, année…).
 
     quatre-vingts-un
@@ -21986,7 +21986,7 @@ __sgpl_vingt__
     quatre-vingts-dix-sept
     quatre-vingts-dix-huit
     [quatre-vingts-dix-neuf|quatre-vingts-dix-neufs]
-        <<- /sgpl/ -1>> =\1.replace("vingts", "vingt").replace("VINGTS", "VINGT")           && Mettez « vingt » au singulier.
+        <<- /gn/ -1>> =\1.replace("vingts", "vingt").replace("VINGTS", "VINGT")             && Mettez « vingt » au singulier.
 
 TEST: Il y a {{vingts}} personnes dans le salon.
 TEST: {{Quatre-vingt}} femmes sont passées.
@@ -21995,7 +21995,7 @@ TEST: Le gagnant est le numéro quatre-vingt.
 
 
 # neuf
-__sgpl_nombre_neuf__
+__gn_nombre_neuf__
     dix-neufs
     vingt-neufs
     trente-neufs
@@ -22005,23 +22005,23 @@ __sgpl_nombre_neuf__
     soixante-dix-neufs
     quatre-vingt-neufs
     quatre-vingt-dix-neufs
-        <<- /sgpl/ ->> =\1[:-1]                                                             && Pas de “s” sur “neuf” lorsqu’il s’agit d’un nombre.
+        <<- /gn/ ->> =\1[:-1]                                                               && Pas de “s” sur “neuf” lorsqu’il s’agit d’un nombre.
 
 TEST: par {{trente-neufs}} degrés.
 
 
 # cent
-__sgpl_nombre_cents__
+__gn_nombre_cents__
     [deux|trois|quatre|cinq|six|sept|huit|neuf]  cent
-        <<- /sgpl/ not morph(>1, ":B:e:p|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
+        <<- /gn/ not morph(>1, ":B:e:p|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
         -2>> cents                          && Mettre “cent” au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|https://fr.wiktionary.org/wiki/cent
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf|mille]  cents
-        <<- /sgpl/ morph(>1, ":B:e:p|>une?")
+        <<- /gn/ morph(>1, ":B:e:p|>une?")
         -2>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|https://fr.wiktionary.org/wiki/cent
 
     cents  @:[NA].*:[pi]¬:G
-        <<- /sgpl/ morph(<1, ":[VR]|<start>", ":B")
+        <<- /gn/ morph(<1, ":[VR]|<start>", ":B")
         -1>> cent                           && Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|https://fr.wiktionary.org/wiki/cent
 
 TEST: deux {{cents}} trois mots                                                         ->> cent
@@ -22034,9 +22034,9 @@ TEST: par {{cents}} idées différentes.
 
 
 # mille
-__sgpl_mille__
+__gn_mille__
     milles
-        <<- /sgpl/ morph(>1, ":(?:B:e:p|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
+        <<- /gn/ morph(>1, ":(?:B:e:p|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
         ->> mille                           && “Mille” est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
 
 TEST: Plus de {{milles}} personnes sont venues.
@@ -22046,21 +22046,21 @@ TEST: plus de deux cent quatre-vingt mille personnes
 #### Groupes, regroupements, collections, etc.
 
 ## Pluriel des groupes
-__sgpl_nombre_de_1m__
+__gn_nombre_de_1m__
     nombre  [de|d’]  *WORD
-        <<- /sgpl/ morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>|>,", ":[AD]")
+        <<- /gn/ morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>|>,", ":[AD]")
         -3>> =suggPlur(\3)                                                                  && Ici, « nombre de » devrait probablement être suivi d’un pluriel.
 
 TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 
 
-__sgpl_plein_de__
+__gn_plein_de__
     pleins [de|d’]
-        <<- /sgpl/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
+        <<- /gn/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
         -1>> plein                                                  && S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
 
     plein [de|d’] [client|conseil|croyance|croyant|demande|élève|enfant|erreur|étudiant+e|faute|femme|fidèle|fille|fillette|garçon|homme|individu|personne|patient|touriste]
-        <<- /sgpl/ --1>> \3s                                        && S’il y en a plein (c’est-à-dire plusieurs), il faut mettre au pluriel.
+        <<- /gn/ --1>> \3s                                          && S’il y en a plein (c’est-à-dire plusieurs), il faut mettre au pluriel.
 
 TEST: Je connais {{pleins}} de gens
 TEST: un site avec {{pleins}} de pubs
@@ -22070,14 +22070,14 @@ TEST: ajoute plein de sel sur ses pâtes
 TEST: avoir plein d’argent ne suffit pas toujours à tout résoudre
 
 
-__sgpl_det_groupe_de_1m__
+__gn_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
-        <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/")
+        <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/")
         -4>> =suggPlur(\4)                                                                  && Avec « \1 \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
-        <<- /sgpl/ -4>> =suggSing(\4)                                                       && Mettez au singulier.
+        <<- /gn/ -4>> =suggSing(\4)                                                         && Mettez au singulier.
 
 TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
 TEST: une multitude d’{{homme}}                                     ->> hommes
@@ -22085,53 +22085,73 @@ TEST: des groupes de {{paroles}}                                    ->> parole
 TEST: les 80 milliards de fraude fiscale
 
 
-__sgpl_carnet_de__
+__gn_cage_d_escalier__
+    >cage d’ escaliers
+        <<- /gn/ -3>> escalier                                          && Usuellement, pas de “s” à escalier.
+
+__gn_carnet_de__
     >carnet de [chèque|note|timbre|ticket|vacance]
-        <<- /sgpl/ -3>> \3s                                             && Il manque un “s”. Il y en a plusieurs dans un carnet.
+        <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un carnet.
 
-__sgpl_collectif_de__
+__gn_collectif_de__
     >collectif [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
-        <<- /sgpl/ morph(<1, ":D|<start>") -3>> \1s                     && Il manque un “s”. Il y en a plusieurs dans un collectif.
+        <<- /gn/ morph(<1, ":D|<start>") -3>> \1s                       && Il manque un “s”. Il y en a plusieurs dans un collectif.
 
-__sgpl_collection_de__
+__gn_collection_de__
     >collection [de|d’] [autocollant|boîte|blason|bouton|carte|chaussure|écusson|étiquette|film|fossile|gravure|jeu|insecte|livre|médaille|moto|papillon|pièce|pierre|pipe|tableau|timbre|voiture]
-        <<- /sgpl/ -3>> =suggPlur(\3)                                   && Il manque un “s”. Il y en a plusieurs dans une collection.
+        <<- /gn/ -3>> =suggPlur(\3)                                     && Il manque un “s”. Il y en a plusieurs dans une collection.
 
-__sgpl_concours_de_circonstances__
+__gn_concours_de_circonstances__
     concours de circonstance
-        <<- /sgpl/ -3>> circonstances                                   && Un concours de circonstances signifie qu’il y a plusieurs circonstances.
+        <<- /gn/ -3>> circonstances                                     && Un concours de circonstances signifie qu’il y a plusieurs circonstances.
 
-__sgpl_confluence_de__
+__gn_confluence_de__
     >confluence de [rivière|fleuve|ruisseau]
-        <<- /sgpl/ -3>> =suggPlur(\3)                                   && Confluence de plusieurs cours d’eau : mettez au pluriel.
+        <<- /gn/ -3>> =suggPlur(\3)                                     && Confluence de plusieurs cours d’eau : mettez au pluriel.
 
-__sgpl_distributeur_de_billets__
+__gn_d_armes__
+    [>compagnon|>frère|>sœur] d’ arme
+        <<- /gn/ -3>> armes                                             && Les compagnons d’armes.|https://fr.wiktionary.org/wiki/compagnon_d%E2%80%99armes
+
+__gn_débit_de_boissons__
+    >débit de boisson
+        <<- /gn/ -3>> boissons                                          && Dans la locution “débit de boissons”, “boissons” est au pluriel.
+
+__gn_distributeur_de_billets__
     >distributeur [de|d’] billet
-        <<- /sgpl/ --1>> billets                        && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
+        <<- /gn/ --1>> billets                                          && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
 
-__sgpl_groupe_de__
+__gn_groupe_de__
     [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
-        <<- /sgpl/ -3>> \3s                                             && Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
+        <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
 
-__sgpl_troupeau_de__
+__gn_points_de_suspension__
+    points de suspensions
+        <<- /gn/ -3>> suspension                                        && Dans la locution nominale “points de suspension”, le dernier terme est au singulier.
+
+__gn_troupeau_de__
     >troupeau [de|d’] [âne|animal|bœuf|buffle|bovin|bison|con|conne|cheval|chèvre|génisse|mouton|mule|mulet|porc|taureau|touriste|vache|veau]
-        <<- /sgpl/ -3>> =suggPlur(\3)                                   && Il manque un “s”. Il y en a plusieurs dans un troupeau.
+        <<- /gn/ -3>> =suggPlur(\3)                                     && Il manque un “s”. Il y en a plusieurs dans un troupeau.
 
-__sgpl_trousseau_de__
+__gn_trousseau_de__
     >trousseau [de|d’] [clé|clef]
-        <<- /sgpl/ -3>> =suggPlur(\3)                                   && Il manque un “s”. Il y en a plusieurs dans un troupeau.
+        <<- /gn/ -3>> =suggPlur(\3)                                     && Il manque un “s”. Il y en a plusieurs dans un troupeau.
 
     >trousseau [de|d’] mariages
-        <<- /sgpl/ -3>> =\3[:-1]                                        && Mettez au singulier.
+        <<- /gn/ -3>> =\3[:-1]                                          && Mettez au singulier.
 
 TEST: d’un air compassé, il sortit son carnet de {{chèque}}.
 TEST: Ce collectif d’{{artiste}} est très inventif.
+TEST: Elle est passée par la cage d’{{escaliers}}
 TEST: Rends-moi ma collection de {{film}} !
 TEST: C’est un malheureux concours de {{circonstance}}.
 TEST: à la confluence de {{rivière}}
+TEST: mes frères d’{{arme}}
+TEST: ils ont ouvert un débit de {{boisson}} à Paris.
 TEST: distributeur de {{billet}}                                        ->> billets
 TEST: ils constituent un groupe de {{passionné}}.
 TEST: C’est un putain de troupeau de {{mouton}} !
+TEST: Arrête de mettre des points de {{suspensions}} partout.
 TEST: où est mon trousseau de {{clé}} ?
 TEST: un trousseau de {{mariages}}
 
@@ -22139,9 +22159,9 @@ TEST: un trousseau de {{mariages}}
 #### Locutions
 
 # à
-__sgpl_mettre_à_nu__
+__loc_mettre_à_nu__
     >mettre à [nus|nue|nues]
-        <<- /sgpl/ -3>> nu                                                  && Dans la locution “mettre à nu”, “nu” est invariable.
+        <<- /loc/ -3>> nu                                                   && Dans la locution “mettre à nu”, “nu” est invariable.
 
 TEST: Mettre à {{nus}} les hommes.                              ->> nu
 TEST: Elle s’est mise à {{nue}} devant ses sœurs.               ->> nu
@@ -22149,18 +22169,18 @@ TEST: Une mise à nu douloureuse.
 
 
 # affaires
-__sgpl_affaires__
+__loc_affaires__
     [>chiffre|>homme|>femme|>centre|>chargé]  d’ affaire
-        <<- /sgpl/ -3>> affaires                                            && Dans “\1 d’affaires”, toujours mettre “affaires” au pluriel.
+        <<- /gn/ -3>> affaires                                              && Dans “\1 d’affaires”, toujours mettre “affaires” au pluriel.
 
     >faire affaires avec
-        <<- /sgpl/ -2>> affaire                                             && Dans la locution “Faire affaire avec”, “affaire” est au singulier.
+        <<- /loc/ -2>> affaire                                              && Dans la locution “Faire affaire avec”, “affaire” est au singulier.
 
     >faire affaire [à|en] /_Tit_
-        <<- /sgpl/ morph(\4, ":(?:N|MP)") -2>> affaires                     && Ajoutez un “s” à « affaire ».
+        <<- /loc/ morph(\4, ":(?:N|MP)") -2>> affaires                      && Ajoutez un “s” à « affaire ».
 
     >avoir affaires à
-        <<- /sgpl/ -2>> affaire                                             && Dans la locution “avoir affaire à”, “affaire” est au singulier.|https://fr.wiktionary.org/wiki/avoir_affaire_%C3%A0
+        <<- /loc/ -2>> affaire                                              && Dans la locution “avoir affaire à”, “affaire” est au singulier.|https://fr.wiktionary.org/wiki/avoir_affaire_%C3%A0
 
 TEST: Quel est son chiffre d’{{affaire}} ?
 TEST: Allez-vous faire {{affaires}} avec ces connards ?
@@ -22169,28 +22189,12 @@ TEST: Faire {{affaire}} à Paris.
 TEST: avoir {{affaires}} à eux
 
 
-# armes
-__sgpl_d_armes__
-    [>compagnon|>frère|>sœur] d’ arme
-        <<- /sgpl/ -3>> armes                                               && Les compagnons d’armes.|https://fr.wiktionary.org/wiki/compagnon_d%E2%80%99armes
-
-TEST: mes frères d’{{arme}}
-
-
-# boisson
-__sgpl_débit_de_boissons__
-    >débit de boisson
-        <<- /sgpl/ -3>> boissons                                            && Dans la locution “débit de boissons”, “boissons” est au pluriel.
-
-TEST: ils ont ouvert un débit de {{boisson}} à Paris.
-
-
 # demi-heure, heure et demie, à demi
-__sgpl_demi_heure__
+__gn_demi_heure__
     demie-heure
     demie heure
     demi heure
-        <<- /sgpl/ ->> demi-heure                       && La moitié d’une heure s’écrit “demi-heure”.
+        <<- /gn/ ->> demi-heure                         && La moitié d’une heure s’écrit “demi-heure”.
 
     demie-heures
     demie heures
@@ -22199,58 +22203,50 @@ __sgpl_demi_heure__
     demi heures
     demis >heure
     demis-heures
-        <<- /sgpl/ ->> demi-heures                      && La moitié d’une heure s’écrit “demi-heure” (“demi-heures” au pluriel).
+        <<- /gn/ ->> demi-heures                        && La moitié d’une heure s’écrit “demi-heure” (“demi-heures” au pluriel).
 
 TEST: L’entretien dure environ une {{demie heure}}.
 TEST: les {{demies heures}} les plus longues de ma vie
 TEST: Une demi-heure d’ennui profond.
 
 
-__sgpl_demi_demie__
+__gn_demi_demie__
     [>année|>semaine|>journée|>heure|>minute|>seconde|>bouteille|>caisse|>cuillère|>page|>remorque|>tasse|>tonne] et [demi|demis|demies]
-        <<- /sgpl/ -3>> demie                           && « Une et demie », « deux et demie », etc.
+        <<- /gn/ -3>> demie                             && « Une et demie », « deux et demie », etc.
 
     [>millénaire|>siècle|>an|>jour|>degré|>kilo|>litre|>mètre|>wagon] et [demie|demis|demies]
-        <<- /sgpl/ -3>> demi                            && « Un et demi », « deux et demi », etc.
+        <<- /gn/ -3>> demi                              && « Un et demi », « deux et demi », etc.
 
     >demi [>douzaine|>cercle|>litre|>millénaire|>siècle|>journée|>heure|>sœur|>frère|>fin|>sel|>final|>centre|>million|>pension|>portion|>mot|>mort|>longueur|>page|>mesure|>écrémer|>tour|>teinte]
-        <<- /sgpl/ ->> demi-\2                          && Pour la moitié de “\2”, écrivez “demi-\2”.
+        <<- /gn/ ->> demi-\2                            && Pour la moitié de “\2”, écrivez “demi-\2”.
 
 TEST: nous avons rendez-vous dans une heure et {{demi}}
 TEST: Deux mètre et {{demis}}.
 TEST: achète une {{demie douzaine}} d’œufs.
 
-__sgpl_à_demi__
+__loc_à_demi__
     [à|a] [demis|demie|demies]
-        <<- /sgpl/ ->> à demi                           && Pour la locution adverbiale signifiant “à moitié” ou “en partie”, écrivez “à demi”.|https://fr.wiktionary.org/wiki/%C3%A0_demi
+        <<- /loc/ ->> à demi                            && Pour la locution adverbiale signifiant “à moitié” ou “en partie”, écrivez “à demi”.|https://fr.wiktionary.org/wiki/%C3%A0_demi
 
 TEST: Elle est {{à demie}} consciente de ce qui se passe en face de chez elle.
 TEST: Il est {{à demis}} cuit.
 
 
 # dévolu
-__sgpl_leur_dévolu__
+__loc_leur_dévolu__
     >jeter leurs dévolus
-        <<- /sgpl/ -2:3>> leur dévolu                   && Jeter son dévolu, leur dévolu : au singulier.
+        <<- /loc/ -2:3>> leur dévolu                    && Jeter son dévolu, leur dévolu : au singulier.
 
 TEST: Ces gens qui jettent {{leurs dévolus}} sur n’importe qui, c’est d’une indécence.
 
 
-# escalier
-__sgpl_cage_d_escalier__
-    >cage d’ escaliers
-        <<- /sgpl/ -3>> escalier                                && Usuellement, pas de “s” à escalier.
-
-TEST: Elle est passée par la cage d’{{escaliers}}
-
-
 # extérieur/intérieur
-__sgpl_intérieur_extérieur__
+__gn_intérieur_extérieur__
     [l’|d’|mon|ton|son|leur|notre|votre|cet|en] [intérieure|extérieure]
-        <<- /sgpl/ -2>> =\1[:-1]                                && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
+        <<- /gn/ -2>> =\1[:-1]                          && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
 
     [d’|ces|des|les|mes|tes|ses|leurs|nos|vos|en] [intérieures|extérieures]
-        <<- /sgpl/ -2>> =\1[:-2]+"s"                            && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
+        <<- /gn/ -2>> =\1[:-2]+"s"                      && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
 
 TEST: que pensez-vous de notre {{intérieure}} ?
 TEST: à l’{{intérieure}} rien de notable.
@@ -22259,80 +22255,52 @@ TEST: des {{intérieures}} remarquables.
 
 
 # en bons termes
-__sgpl_en_bons_termes__
+__loc_en_bons_termes__
     en bon terme
-        <<- /sgpl/ ->> en bons termes                               && En bons termes : cette locution est toujours au pluriel.
+        <<- /loc/ ->> en bons termes                    && En bons termes : cette locution est toujours au pluriel.
 
 TEST: nous sommes à présent {{en bon terme}}
 
 
-# ensemble
-__ensemble__
-    ensembles
-        <<- /sgpl/ morph(<1, ":V.*:[123]|>(?:tou(?:te|)s|pas|rien|guère|jamais|toujours|souvent)/", ":[DRB]")
-        ->> ensemble                                                 && S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
-
-TEST: Elles viendront {{ensembles}}.
-
-
 # eux-mêmes, elles-mêmes
-__sgpl_eux_elles_mêmes__
+__loc_eux_elles_mêmes__
     eux-même
-        <<- /sgpl/ ->> eux-mêmes                                    && Il manque un “s” à même.
+        <<- /loc/ ->> eux-mêmes                                     && Il manque un “s” à même.
 
     elles-même
-        <<- /sgpl/ ->> elles-mêmes                                  && Il manque un “s” à même.
+        <<- /loc/ ->> elles-mêmes                                   && Il manque un “s” à même.
 
 TEST: Elles ne sont plus {{elles-même}}.
 TEST: Ils ne peuvent s’en prendre qu’à {{eux-même}}.
 
 
 # par intermittence
-__sgpl_par_intermittence__
+__loc_par_intermittence__
     par intermittences
-        <<- /sgpl/ -2>> intermittence                               && Locution : « par intermittence ».
+        <<- /loc/ ->> par intermittence                             && Locution : « par intermittence ».
 
-TEST: Elles ne viennent que par {{intermittences}}.
+TEST: Elles ne viennent que {{par intermittences}}.
 
 
 # par intervalles
-__sgpl_par_intervalles__
+__loc_par_intervalles__
     par intervalle
-        <<- /sgpl/ -2>> intervalles                                 && Locution : « par intervalles ».
+        <<- /loc/ ->> par intervalles                               && Locution : « par intervalles ».
 
-TEST: On va procéder par {{intervalle}}
-
-
-# juste
-__sgpl_juste__
-    justes
-        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":[NA].*:[pi]")
-            and not (morph(<1, ">(?:être|sembler|devenir|rester|demeurer|redevenir|para[îi]tre|trouver)/.*:[123]p") and morph(>1, ":G|<end>|>,/"))
-        ->> juste                                                   && Si “juste” est un adverbe, il est invariable.
-
-TEST: Viser {{justes}}
-TEST: Voir {{justes}}.
-TEST: Penser juste.
-TEST: Dures mais justes.
-TEST: J’ai retrouvé tout mon ressenti, tous les mots sont justes.
-TEST: Nos chiffres sont justes, et nous vous le prouverons.
-TEST: Ces observations sont tellement justes que, dans les années à venir, elles serviront de référence.
-TEST: Les motivations sont justes et évidentes
-TEST: ces théories incomplètes sont suffisamment justes pour prédire la réalité
-TEST: À vous de trouver les compromis que vous trouvez justes.
+TEST: On va procéder {{par intervalle}}
 
 
 # pied
-__sgpl_pied__
+__loc_pied__
     [>avoir|>perdre]  pieds
-        <<- /sgpl/ -2>> pied                                        && Locution “\1 pied” : écrivez “pied” au singulier.
+        <<- /loc/ -2>> pied                                         && Locution “\1 pied” : écrivez “pied” au singulier.
 
     à pieds
-        <<- /sgpl/ not before("(?i)\\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\\b") and not morph(>1, ">sculpter/")
+        <<- /loc/ not before("(?i)\\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\\b") and not morph(>1, ">sculpter/")
         -2>> pied                                                   && Locution “à pied” : écrivez “pied” au singulier.|https://fr.wiktionary.org/wiki/%C3%A0_pied
 
     [à|aux] >pied >levé
-        <<- /sgpl/ ->> au pied levé                                 && Locution adverbiale invariable.
+        <<- /loc/ ->> au pied levé                                  && Locution adverbiale invariable.
 
 TEST: ils ont tout simplement perdu {{pieds}}
 TEST: ils y sont allés à {{pieds}}.
@@ -22340,15 +22308,15 @@ TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}
 
 
 # possible
-__sgpl_autant_que_possible__
+__gn_autant_que_possible__
     autant  que  possibles
-        <<- /sgpl/ -3>> possible                                    && Invariable. Implicitement, autant que ce qui est possible.
+        <<- /gn/ -3>> possible                                      && Invariable. Implicitement, autant que ce qui est possible.
 
     autant  [de|d’]  *WORD  que  possibles
-        <<- /sgpl/ -5>> possible                                    && Invariable. Implicitement, autant \2 \3 que ce qui est possible.
+        <<- /gn/ -5>> possible                                      && Invariable. Implicitement, autant \2 \3 que ce qui est possible.
 
     autant  [de|d’]  *WORD  *WORD  que  possibles
-        <<- /sgpl/ -6>> possible                                    && Invariable. Implicitement, autant \2 \3 \4 que ce qui est possible.
+        <<- /gn/ -6>> possible                                      && Invariable. Implicitement, autant \2 \3 \4 que ce qui est possible.
 
 TEST: nous ferons des tests autant que {{possibles}}.
 TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.
@@ -22356,67 +22324,59 @@ TEST: rabaissons autant de connards prétentieux que {{possibles}}…
 
 
 # quelque
-__sgpl_quelque_temps__
+__loc_quelque_temps__
     quelques temps
-        <<- /sgpl/ ->> quelque temps                                && Quelque temps : un temps indéterminé. Ici, “quelque” est un adverbe (donc invariable).|https://fr.wiktionary.org/wiki/quelque_temps
+        <<- /loc/ ->> quelque temps                                 && Quelque temps : un temps indéterminé. Ici, “quelque” est un adverbe (donc invariable).|https://fr.wiktionary.org/wiki/quelque_temps
 
-__sgpl_en_quelque_sorte__
+__loc_en_quelque_sorte__
     en quelques sortes
-        <<- /sgpl/ ->> en quelque sorte                             && En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
+        <<- /loc/ ->> en quelque sorte                              && En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
 
 TEST: Il y a {{quelques temps}} que nous nous connaissons.
 TEST: Je suis en vacances, {{en quelques sortes}}.
 
 
 # rafales
-__sgpl_par_en_rafales__
+__loc_par_en_rafales__
     [par|en]  rafale
-        <<- /sgpl/ -2>> rafales                                     && Il y a plusieurs rafales. Mettez au pluriel.
+        <<- /loc/ ->> \1 rafales                                   && Il y a plusieurs rafales. Mettez au pluriel.
 
-TEST: Je lance des tests en {{rafale}}.
+TEST: Je lance des tests {{en rafale}}.                             ->> en rafales
 
 
 # par souci de
-__sgpl_par_souci_de__
+__loc_par_souci_de__
     par soucis [de|d’]
-        <<- /sgpl/ -2>> souci                                       && Locution “par souci de”. Mettez “souci” au singulier.
+        <<- /loc/ -2>> souci                                       && Locution “par souci de”. Mettez “souci” au singulier.
 
 TEST: par {{soucis}} d’équité, chacun aura droit à une part.
 
 
-# Point de suspension
-__sgpl_points_de_suspension__
-    points de suspensions
-        <<- /sgpl/ -3>> suspension                                  && Dans la locution nominale “points de suspension”, le dernier terme est au singulier.
-
-TEST: Arrête de mettre des points de {{suspensions}} partout.
-
-
 # rester en contact
-__sgpl_rester_en_contact__
+__loc_rester_en_contact__
     >rester en contacts
-        <<- /sgpl/ --1>> contact                                    && Dans la locution “rester en contact”, “contact” est toujours au singulier.
+        <<- /loc/ --1>> contact                                    && Dans la locution “rester en contact”, “contact” est toujours au singulier.
 
 TEST: rester en {{contacts}}
 
 
 # sentir bon
-__sgpl_sentir_bon__
+__gn_sentir_bon__
     >sentir bons
-        <<- /sgpl/ -2>> bon                                         && Dans la locution “sentir bon”, “bon” est un adverbe, donc invariable.
+        <<- /gn/ -2>> bon                                          && Dans la locution “sentir bon”, “bon” est un adverbe, donc invariable.
 
 TEST: Ces fleurs sentent {{bons}}.
 TEST: Ça sent bon.
 
 
 # vacances
-__sgpl_bonnes_vacances__
+__gn_bonnes_vacances__
     bonne vacance
-        <<- /sgpl/ not morph(<1, ":D.*:f:s") ->> bonnes vacances    && Les vacances. Au pluriel.
+        <<- /gn/ not morph(<1, ":D.*:f:s") ->> bonnes vacances     && Les vacances. Au pluriel.
 
-__sgpl_en_vacances__
+__gn_en_vacances__
     [>aller|>partir]  en  vacance
-        <<- /sgpl/ -3>> vacances                                    && Si vous parlez des congés, “vacance” doit être au pluriel.
+        <<- /gn/ -3>> vacances                                     && Si vous parlez des congés, “vacance” doit être au pluriel.
 
 TEST: Je pars en {{vacance}}.
 TEST: {{Bonne vacance}} !
@@ -22424,36 +22384,26 @@ TEST: Il nous reste un poste en vacance.
 TEST: Cette place est en vacance.
 
 
-# vites
-__sgpl_vite__
-    vites
-        <<- /sgpl/ not morph(<1, ":V0e.*:3p") or morph(>1, ":[AQ]")
-        ->> vite                                                    && Adverbe “vite” invariable. (La forme adjective est désuète.)
-
-TEST: ils mangent {{vites}}.
-TEST: elles sont {{vites}} parties.
-TEST: elles sont vites.
-
-
 # voir clair
-__sgpl_voir_clair__
+__loc_voir_clair__
     >voir >clair
-        <<- /sgpl/ \2 != "clair" and \2 != "Claire" and morph(\1, ":(?:[123][sp]|P|Y)")
+        <<- /loc/ not value(\2, "|clair|Claire|") and morph(\1, ":(?:[123][sp]|P|Y)")
         -2>> clair      && Dans la locution “voir clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
 
 TEST: Ils y voient {{clairs}}.
+TEST: elle voit {{claire}} dans son jeu
 TEST: Il vit Claire au théâtre.
 TEST: J’y vois clair, mec.
 TEST: rendant leur vue peu claire
 
 
 # vu / vue
-__sgpl_vue_vu__
+__gn_vue_vu__
     >point de [vu|vus|vues]
-        <<- /sgpl/ -3>> vue                                         && Dans un “point de vue”, “vue” est toujours au féminin singulier.
+        <<- /gn/ -3>> vue                                           && Dans un “point de vue”, “vue” est toujours au féminin singulier.
 
     >perdre de [vu|vus|vues]
-        <<- /sgpl/ -3>> vue                                         && Dans un “perdre de vue”, “vue” est toujours au féminin singulier.
+        <<- /loc/ -3>> vue                                          && Dans un “perdre de vue”, “vue” est toujours au féminin singulier.
 
 TEST: c’est son point de {{vu}} qui prime.
 TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
@@ -22461,22 +22411,22 @@ TEST: de mon point de {{vues}}
 TEST: elle a perdu de {{vu}} ses anciens amis
 
 
-__sgpl_verbe__
+__loc_verbe__
     >faire rires
-        <<- /sgpl/ -2>> rire                                        && Faire rire. Rire est un verbe, il ne prend pas la marque du pluriel.
+        <<- /loc/ -2>> rire                                         && Faire rire. Rire est un verbe, il ne prend pas la marque du pluriel.
 
     [>pouvoir|>vouloir|>falloir] [rires|mangers|êtres|avoirs]
-        <<- /sgpl/ morph(\1, ":V") -2>> =\2[:-1]                    && Si “\2” est censé être un verbe, ne mettez pas la marque du pluriel.
+        <<- /loc/ morph(\1, ":V") -2>> =\2[:-1]                     && Si “\2” est censé être un verbe, ne mettez pas la marque du pluriel.
 
 
 TEST: On peut {{rires}}, non ?
 TEST: Faire {{rires}}, c’est compliqué.
 
 
-__sgpl_rien_de_adj__
+__gn_rien_de_adj__
     [<start>|,|(]       rien  [de|d’]  @:A.*:[pf]¬:[me]:[si]
     n’ ?[en|y]¿ >avoir  rien  [de|d’]  @:A.*:[pf]¬:[me]:[si]
-        <<- /sgpl/ --1>> =suggMasSing(\-1)                          && Avec “rien de” l’adjectif suivant devrait être au masculin singulier. Exemple : il n’y a plus rien de naturel ici, tout est bétonné.
+        <<- /gn/ --1>> =suggMasSing(\-1)                            && Avec “rien de” l’adjectif suivant devrait être au masculin singulier. Exemple : il n’y a plus rien de naturel ici, tout est bétonné.
 
 TEST: il n’y a plus rien de {{naturelle}} dans cette bouffe.            ->> naturel
 TEST: rien d’{{interdites}} dans cette mesure                           ->> interdit
@@ -22486,14 +22436,14 @@ TEST: rien d’{{interdites}} dans cette mesure                           ->> in
 !!!! Adverbes après verbe                                                                         !!
 
 # fort
-__sgpl_verbe_fort__
+__gn_adverbe_fort__
     forts
-        <<- /sgpl/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)|>(?:affirmer|trouver|croire|désirer|estimer|préférer|penser|imaginer|voir|vouloir|aimer|adorer|rendre|souhaiter)/")
+        <<- /gn/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)|>(?:affirmer|trouver|croire|désirer|estimer|préférer|penser|imaginer|voir|vouloir|aimer|adorer|rendre|souhaiter)/")
             and not morph(>1, ":A.*:[me]:[pi]")
         ->> fort                                                && Confusion probable. S’il s’agit ici de l’adverbe “fort” (équivalent de “fortement”), écrivez-le au singulier.
 
     hauts [et|&] forts
-        <<- /sgpl/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)")
+        <<- /gn/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)")
         ->> haut et fort                                        && Confusion probable. S’il s’agit ici de la locution adverbiale “haut et fort”, elle est invariable.
 
 TEST: ces emmerdeurs crient bien trop {{forts}}
@@ -22511,9 +22461,9 @@ TEST: Il nous rend forts.
 
 
 # bien
-__sgpl_verbe_bien__
+__gn_adverbe_bien__
     biens
-        <<- /sgpl/ morph(<1, ":V", ":[DA].*:p") ->> bien        && Confusion probable. Ici, “bien” est un adverbe, donc invariable.
+        <<- /gn/ morph(<1, ":V", ":[DA].*:p") ->> bien              && Confusion probable. Ici, “bien” est un adverbe, donc invariable.
 
 TEST: Ils vont {{biens}}.
 TEST: Elles travaillaient vraiment {{biens}}.
@@ -22521,6 +22471,44 @@ TEST: Il ne comprenait vraiment pas très {{biens}} ces principes de base.
 TEST: Il a de grands biens.
 TEST: Ce sont des biens de peu de valeur.
 
+
+# ensemble
+__gn_adverbe_ensemble__
+    ensembles
+        <<- /gn/ morph(<1, ":V.*:[123]|>(?:tou(?:te|)s|pas|rien|guère|jamais|toujours|souvent)/", ":[DRB]")
+        ->> ensemble                                                && S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
+
+TEST: Elles viendront {{ensembles}}.
+
+
+# juste
+__gn_adverbe_juste__
+    justes
+        <<- /gn/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":[NA].*:[pi]")
+            and not (morph(<1, ">(?:être|sembler|devenir|rester|demeurer|redevenir|para[îi]tre|trouver)/.*:[123]p") and morph(>1, ":G|<end>|>,/"))
+        ->> juste                                                   && Si “juste” est un adverbe, il est invariable.
+
+TEST: Viser {{justes}}
+TEST: Voir {{justes}}.
+TEST: Penser juste.
+TEST: Dures mais justes.
+TEST: J’ai retrouvé tout mon ressenti, tous les mots sont justes.
+TEST: Nos chiffres sont justes, et nous vous le prouverons.
+TEST: Ces observations sont tellement justes que, dans les années à venir, elles serviront de référence.
+TEST: Les motivations sont justes et évidentes
+TEST: ces théories incomplètes sont suffisamment justes pour prédire la réalité
+TEST: À vous de trouver les compromis que vous trouvez justes.
+
+
+# vite
+__gn_adverbe_vite__
+    vites
+        <<- /gn/ not morph(<1, ":V0e.*:3p") or morph(>1, ":[AQ]")
+        ->> vite                                                    && Adverbe “vite” invariable. (La forme adjective est désuète.)
+
+TEST: ils mangent {{vites}}.
+TEST: elles sont {{vites}} parties.
+TEST: elles sont vites.
 
 
 
@@ -24596,7 +24584,7 @@ TEST: nous laisserons étourdi cet homme.
 
 !!!! Participes passés: se faire fort de                                                          !!
 
-__ppas_se_faire_fort_de__
+__loc_se_faire_fort_de__
     [me|m’|te|t’|se|s’] >faire >fort [de|d’] ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
     [me|m’|te|t’|se|s’] >faire >fort [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
     [me|m’|te|t’|se|s’] >faire >fort [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
@@ -24609,7 +24597,7 @@ __ppas_se_faire_fort_de__
     vous                >faire >fort [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
     vous                >faire >fort [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
     vous                >faire >fort [de|d’] ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
-        <<- /sgpl/ -3>> fort                                    && Dans la locution “se faire fort de…”, “fort” est invariable.|https://fr.wiktionary.org/wiki/se_faire_fort_de
+        <<- /loc/ -3>> fort                                     && Dans la locution “se faire fort de…”, “fort” est invariable.|https://fr.wiktionary.org/wiki/se_faire_fort_de
 
 TEST: je me faisais {{forte}} de triompher de tous                  ->> fort
 TEST: nous nous faisons {{fortes}} d’y parvenir                     ->> fort
