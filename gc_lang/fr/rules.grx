@@ -8615,7 +8615,7 @@ __conf_corps_cor__
     >cor du [christ|défunt|droit|mort]
     >cor de [>doctrine|gendarmerie|>loi|logis|>preuve]
     >cor de la [doctrine|magistrature]
-    >cor d’ [armée|artillerie]
+    >cor d’ [armée|élite|artillerie]
     >cor [>politique|>diplomatique|>expéditionnaire|>législatif|>mystique|humain+s|calleux|caverneux|muqueux]
     >cor et >âme
         <<- /conf/ -1>> corps                                                       && Confusion. Le cor est instrument de musique.
@@ -13273,6 +13273,7 @@ __purge_horaires_et_durée__
     à cette heure du jour
     à l’ heure actuelle
     à l’ heure qu’ il est
+    à la nuit tombée
     à n’importe quelle heure du jour et de la nuit
     à toute heure
     à toute heure de la nuit
@@ -13284,6 +13285,7 @@ __purge_horaires_et_durée__
     au cours de la [dernière|précédente|prochaine] [seconde|minute|heure]
     au cours de l’ heure ?[dernière|passée|précédente|prochaine]¿
     au cours de la [seconde|minute] ?[dernière|passée|précédente|prochaine]¿
+    au cours [de|d’] la nuit
     [de|d’] ?[assez|si|très|trop]¿ bonne heure
     [de|d’] tout à l’ heure
     dès la première heure
@@ -15063,8 +15065,9 @@ __purge_x_par_après_x__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|disposition|distance|droite]                        [de|du|d’|des]
-    à [flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]                                               [de|du|d’|des]
+    à [bord|bout|cause|contre-courant|côté|défaut|destination|disposition|distance|droite]                              [de|du|d’|des]
+    à [flanc|gauche|hauteur|partir|portée|proximité|propos|rebours]                                                     [de|du|d’|des]
+    à [court|titre]                                                                                                     [de|d’]
     à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
     à peu [de|d’] distance                                                                                              [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|encontre|est|exception|extérieur]                         [de|du|d’|des]
@@ -15098,6 +15101,7 @@ __gestion_mots_grammaticaux__
     des [quatre|4] coins                                                                                                [de|du|d’|des]
     en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|marge]                        [de|du|d’|des]
     en [possession|présence|provenance|quête|raison|surplomb|sus|tête|termes|travers|vertu]                             [de|du|d’|des]
+    en [ma|ta|sa|notre|votre|leur] qualité                                                                              [de|d’]
     en dépit de la proximité                                                                                            [de|du|d’|des]
     en forme                                                                                                            [de|d’]
     en flagrant délit                                                                                                   [de|d’]
@@ -18426,8 +18430,18 @@ __conf_champ_chant__
     >fleur des [chants|chans]
         <<- /conf/ --1>> champs                         && Confusion. Les fleurs poussent dans des champs.|https://fr.wiktionary.org/wiki/champ
 
+    [>avoir|>accorder|>donner|>laisser|>offrir]     le [chan|chant] libre
+    [>accorder|>donner|>laisser|>offrir]   à  $:M   le [chan|chant] libre
+        <<- /conf/ --2>> champ                          && Confusion. Locution “le champ libre”, c’est-à-dire la liberté d’action.|https://fr.wiktionary.org/wiki/champ_libre
+
+    /_VCimp_    le [chan|chant] libre
+        <<- /conf/ morphVC(\1, ">(?:avoir|accorder|donner|laisser|offrir)/")
+        --2>> champ                                     && Confusion. Locution “le champ libre”, c’est-à-dire la liberté d’action.|https://fr.wiktionary.org/wiki/champ_libre
+
 TEST: Il traversa le {{chant}} de betteraves.
 TEST: belle fleur des {{chants}}, veuillez entendre ma supplique
+TEST: je leur laisse le {{chant}} libre
+TEST: donnons-leur le {{chant}} libre et cessons de nous inquieter
 
 
 # colon / côlon
@@ -22074,7 +22088,7 @@ TEST: ajoute plein de sel sur ses pâtes
 TEST: avoir plein d’argent ne suffit pas toujours à tout résoudre
 
 
-__gn_det_groupe_de_1m__
+__gn_groupe_de__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
         <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/")
@@ -22083,9 +22097,14 @@ __gn_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
         <<- /gn/ -4>> =suggSing(\4)                                                         && Mettez au singulier.
 
+    [>association|>assemblée|>collectif|>collectivité|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|imbécile|infirmier|infirmière|jeune|malfaiteur|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
+        <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
+
 TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
 TEST: une multitude d’{{homme}}                                     ->> hommes
 TEST: des groupes de {{paroles}}                                    ->> parole
+TEST: ils constituent un groupe de {{passionné}}.                   ->> passionnés
+TEST: Ce collectif d’{{artiste}} est très inventif.                 ->> artistes
 TEST: les 80 milliards de fraude fiscale
 
 
@@ -22096,10 +22115,6 @@ __gn_cage_d_escalier__
 __gn_carnet_de__
     >carnet de [chèque|note|timbre|ticket|vacance]
         <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un carnet.
-
-__gn_collectif_de__
-    >collectif [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
-        <<- /gn/ morph(<1, ":D|<start>") -3>> \1s                       && Il manque un “s”. Il y en a plusieurs dans un collectif.
 
 __gn_collection_de__
     >collection [de|d’] [autocollant|boîte|blason|bouton|carte|chaussure|écusson|étiquette|film|fossile|gravure|jeu|insecte|livre|médaille|moto|papillon|pièce|pierre|pipe|tableau|timbre|voiture]
@@ -22125,10 +22140,6 @@ __gn_distributeur_de_billets__
     >distributeur [de|d’] billet
         <<- /gn/ --1>> billets                                          && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
 
-__gn_groupe_de__
-    [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
-        <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
-
 __gn_points_de_suspension__
     points de suspensions
         <<- /gn/ -3>> suspension                                        && Dans la locution nominale “points de suspension”, le dernier terme est au singulier.
@@ -22142,10 +22153,9 @@ __gn_trousseau_de__
         <<- /gn/ -3>> =suggPlur(\3)                                     && Il manque un “s”. Il y en a plusieurs dans un troupeau.
 
     >trousseau [de|d’] mariages
-        <<- /gn/ -3>> =\3[:-1]                                          && Mettez au singulier.
+        <<- /gn/ -3>> mariage                                           && Mettez au singulier.
 
 TEST: d’un air compassé, il sortit son carnet de {{chèque}}.
-TEST: Ce collectif d’{{artiste}} est très inventif.
 TEST: Elle est passée par la cage d’{{escaliers}}
 TEST: Rends-moi ma collection de {{film}} !
 TEST: C’est un malheureux concours de {{circonstance}}.
@@ -22153,7 +22163,6 @@ TEST: à la confluence de {{rivière}}
 TEST: mes frères d’{{arme}}
 TEST: ils ont ouvert un débit de {{boisson}} à Paris.
 TEST: distributeur de {{billet}}                                        ->> billets
-TEST: ils constituent un groupe de {{passionné}}.
 TEST: C’est un putain de troupeau de {{mouton}} !
 TEST: Arrête de mettre des points de {{suspensions}} partout.
 TEST: où est mon trousseau de {{clé}} ?
