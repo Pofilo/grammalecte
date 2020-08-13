@@ -103,7 +103,7 @@ class HTMLPageEditor {
         // recursive function
         try {
             for (let xNode of xRootNode.childNodes) {
-                if (xNode.className !== "moz-cite-prefix" && xNode.tagName !== "BLOCKQUOTE"
+                if (xNode.className !== "moz-cite-prefix" && xNode.className !== "moz-forward-container" && xNode.tagName !== "BLOCKQUOTE"
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
                     if (xNode.tagName === undefined) {
@@ -133,7 +133,7 @@ class HTMLPageEditor {
             for (let xNode of this._getParsableNodes(this.xRootNode)) {
                 if (xNode.textContent.trim() !== "") {
                     this.lNode.push(xNode);
-                    sPageText += xNode.textContent + "\n";
+                    sPageText += xNode.textContent.replace(/\n/g, "") + "\n";
                 }
             }
             //console.log(sPageText);
