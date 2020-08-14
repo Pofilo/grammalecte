@@ -2332,8 +2332,19 @@ __fusions_noms_communs__
     *NUM  ~^h[0-9][0-9]$
         <<- space_after(\1, 0, 0) ~>> ␣
 
+    cul et chemise
+    mari et femme
+    père et mère
+    papa et maman
+    frère et sœur
+    cousin et cousine
+        <<- ~>> ␣
+        <<- =>> define(\1, ":LN:e:p")
 
 TEST: mais nous avancions en terra incognita
+TEST: elles sont cul et chemise
+TEST: ils sont frère et sœur
+TEST: iels étaient mari et femme
 
 
 __fusions_noms_communs_séparés_slah__
@@ -4510,6 +4521,9 @@ __tu_substantifs__
     [les|des|aux] beaux arts
         <<- /tu/ -2:3>> beaux-arts                              && Il manque un trait d’union.
 
+    [blanc+s] >bec
+        <<- /tu/ ->> blanc-bec|blancs-becs                      && S’il s’agit bien d’évoquer un homme sans expérience, mettez un trait d’union.|https://fr.wiktionary.org/wiki/blanc-bec
+
     bouche à [bouche|>oreille]
         <<- /tu/ morph(<1, ":D") ->> \1-\2-\3                   && Il manque les traits d’union.
 
@@ -4550,7 +4564,6 @@ __tu_substantifs__
         <<- /tu/ ->> copier-coller|copié-collé|copiée-collée|copiés-collés|copiées-collées
         && Copier-coller pour la verbe ou l’action, copié-collé (et ses variantes) pour ce qui est copié-collé.
 
-
     >cul de sac
         <<- /tu/ ->> \1-\2-\3                                   && Mettez des traits d’union.|https://fr.wiktionary.org/wiki/cul-de-sac
 
@@ -4563,6 +4576,9 @@ __tu_substantifs__
 
     face [a|à] face
         <<- /tu/ morph(<1, ":D") ->> face-à-face                && Si vous employez cette locution comme un nom, mettez des traits d’union.|https://fr.wiktionary.org/wiki/face-%C3%A0-face
+
+    [fier+s] [à|a] bras
+        <<- /tu/ ->> \1-à-bras                                  && Il manque les traits d’union.|https://fr.wiktionary.org/wiki/fier-%C3%A0-bras
 
     gagne >pain
         <<- /tu/ not morph(<1, ":O[sv]") ->> gagne-pain         && Il manque un trait d’union.
@@ -4591,6 +4607,9 @@ __tu_substantifs__
     outre mer
         <<- /tu/ ->> outre-mer                                  && Il manque un trait d’union.
 
+    pas de porte
+        <<- /tu/ morph(<1, ":D") ->> pas-de-porte               && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/pas-de-porte
+
     >pied [à|a] terre
         <<- /tu/ morph(<1, ":D") ->> \1-à-terre                 && Il manque les traits d’union.
 
@@ -4602,10 +4621,6 @@ __tu_substantifs__
 
     [prêt+s] [à|a] porter
         <<- /tu/ morph(<1, ":D") ->> \1-à-porter                && Il manque les traits d’union.
-
-    quelques [un|uns|une|unes]
-        <<- /tu/ \2.endswith("s") or \2.endswith("S") ->> quelques-\2       && Il manque un trait d’union.
-        <<- /tu/ __else__ ->> quelques-\2s                                  && Il manque un trait d’union.
 
     [plus|moins] [value|values]
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/plus-value
@@ -4621,6 +4636,10 @@ __tu_substantifs__
 
     >prêt [>relai|relais]
         <<- /tu/ ->> prêt-relai|prêt-relais|prêts-relais        && Il manque un trait d’union.
+
+    quelques [un|uns|une|unes]
+        <<- /tu/ \2.endswith("s") or \2.endswith("S") ->> quelques-\2       && Il manque un trait d’union.
+        <<- /tu/ __else__ ->> quelques-\2s                                  && Il manque un trait d’union.
 
     ras le bol
     ras-le bol
@@ -4694,6 +4713,7 @@ TEST: {{au jour d’hui}}
 TEST: je déteste le {{basket ball}}
 TEST: sur le {{bas côté}}
 TEST: les {{beaux arts}}
+TEST: marre de ces {{blancs becs}} qui croient tout savoir
 TEST: {{le}} {{bouche à oreille}}
 TEST: un {{cessez le feu}}
 TEST: {{chef lieu}} de ce canton
@@ -4710,6 +4730,7 @@ TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: L’{{état major}} n’a pas encore tranché la question.
 TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se poursuit devant l’hôtel de ville à Bordeaux depuis environ 1h30.
+TEST: ces {{fiers à bras}} vont encore se prendre une raclée mémorable
 TEST: {{gagne pain}} de merde
 TEST: perfusé par des {{goutte à goutte}}
 TEST: mes deux {{grands pères}} sont décédés
@@ -4723,8 +4744,7 @@ TEST: La papesse du {{prêt à porter}} viendra demain.
 TEST: il loge dans un {{pied à terre}} misérable
 TEST: sur cette {{plate forme}}, rien ne fonctionne
 TEST: une {{presque île}}
-TEST: {{Quelques unes}} sont très habiles.
-TEST: {{quelques un}} seront blâmés, les autres pardonnés
+TEST: sur son {{pas de porte}}
 TEST: une {{plus value}}                                                        ->> plus-value
 TEST: combien de {{plu value}}
 TEST: Un énorme {{plus value}}.
@@ -4732,6 +4752,8 @@ TEST: Versez des {{pots de vin}} s’il le faut.
 TEST: ils ont fait un {{prêt relai}}
 TEST: un {{prêt bail}}
 TEST: je connais le {{ras le bol}}
+TEST: {{Quelques unes}} sont très habiles.
+TEST: {{quelques un}} seront blâmés, les autres pardonnés
 TEST: en avoir ras le bol de ces conneries
 TEST: des {{rendez vous}}                               ->> rendez-vous
 TEST: un Mars par {{rendez vous}}
@@ -5078,6 +5100,7 @@ __tu_anciennes_graphies__
     grand’croix
     grand’duc
     grand’duché
+    grand-erre
     grand’guignolesque
     grand’maman
     grand’messe
@@ -6192,6 +6215,10 @@ __conj_vous__
     [<start>|,|(|puisque|lorsque|quand|quoique|combien|pourquoi|comment|où]  vous  [le|la|l’|les|en|y]   @:V[123]..t_._[e_][a_]¬:(?:2p|Ov|Y|P)
         <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      && Conjugaison possiblement erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
+    [<start>|,|(|/_start_]  vous  aller  ?[$:W|donc]¿  ?$:Ov¿  ?$:Ov¿  $:Y
+    [<start>|,|(|/_start_]  vous  aller  [<end>|,|)]
+        <<- /conj/ -3>> allez                                                                       && Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
 TEST: Vous {{arrivais}} trop tard.
 TEST: vous ne l’{{avait}} pas vu.
 TEST: je crois, vous m’{{avais}} trompé…
@@ -6202,7 +6229,13 @@ TEST: vous {{avançons}}
 TEST: Vous ne la {{voulait}} pas
 TEST: Vous ne {{mangeait}} que des légumes ?
 TEST: vous l’{{accomplissait}}
+TEST: vous n’{{aller}} pas assez vite
+TEST: vous {{aller}} me fâcher
+TEST: vous {{aller}} la lui donner
+TEST: vous {{aller}} donc être interdit bancaire et vous vous débrouillerez avec les huissiers
+TEST: j’irai là où vous {{aller}}
 TEST: vous la rendait avec bienveillance
+TEST: vous verrez, ça va vous aller comme un gant
 
 
 ## 3pl
@@ -8253,6 +8286,16 @@ TEST: À partir de 1934, et après l’élimination de ses principaux dirigeants
 TEST: Adolf Hitler a créé les SA à Munich le 8 août 1921 en réunissant d’anciens combattants, des officiers mécontents et des membres des corps francs
 TEST: En 1933, après l’élection du NSDAP, les SA se voyaient en concurrence avec l’armée régulière (Reichswehr)
 TEST: les SA devenant de plus en plus extrêmistes
+
+
+# blanle-bas de combat
+__conf_branle_bas_de_combat__
+    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] >combat
+    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] [con|+s] [ba|bas|bat+s|>bât]
+        <<- /conf/ ->> branle-bas de combat                         && Écrivez “branle-bas de combat”.|https://fr.wiktionary.org/wiki/branle-bas_de_combat
+
+TEST: le branle-bas de combat commençait, mais trop tard
+TEST: {{branle bat de con bat}}
 
 
 # car / quart
@@ -16155,7 +16198,7 @@ __substantifs_multi_mots__
     tenants et aboutissants
     >ténor du barreau
     >tenue [de|d’] rechange
-    >terrain [de|d’] [chasse|entente]
+    >terrain [de|d’] [chasse|entente|golf]
     >tête à claques
     >tête d’ enterrement
     >tête [de|d’] [linotte|déterré+ses|mule|pont]
@@ -16454,34 +16497,24 @@ __purge_pronom_aussi__
 
 __purge_après_être__
     [>être|>devenir|>rester] [bon|meilleur] marché
-    [>être|>devenir|>rester] cousin et cousine
     [>être|>devenir|>rester] de passage
-    [>être|>devenir|>rester] frère et sœur
-    [>être|>devenir|>rester] mari et femme
     [>être|>devenir|>rester] mission impossible
     [>être|>devenir|>rester] monnaie courante
-    [>être|>devenir|>rester] papa et maman
     [>être|>devenir|>rester] partie [intégrante|prenante]
     [>être|>devenir|>rester] peine perdue
     [>être|>devenir|>rester] pieds et poings liés
     [>être|>devenir|>rester] pieds nus
-    [>être|>devenir|>rester] père et mère
         <<- ~2:0>> ␣
         <<- =>> define(\2, ":LV")
 
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] [bon|meilleur] marché
-    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] cousin et cousine
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] de passage
-    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] frère et sœur
-    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] mari et femme
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] mission impossible
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] monnaie courante
-    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] papa et maman
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] partie [intégrante|prenante]
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] peine perdue
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] pieds et poings liés
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] pieds nus
-    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] père et mère
         <<- ~2>> *
         <<- ~3:0>> ␣
         <<- =>> define(\3, ":LV")
@@ -16510,23 +16543,18 @@ __purge_après_être__
     /_VCint_ pieds et poings liés
     /_VCint_ pieds nus
     /_VCint_ père et mère
-        <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> ␣
+        <<- morphVC(\1, ">(?:être|devenir|rester)/") ~2:0>> ␣
         <<- __also__ =>> define(\2, ":LV")
 
     /_VCint_ [pas|jamais|plus|guère|point] [bon|meilleur] marché
-    /_VCint_ [pas|jamais|plus|guère|point] cousin et cousine
     /_VCint_ [pas|jamais|plus|guère|point] de passage
-    /_VCint_ [pas|jamais|plus|guère|point] frère et sœur
-    /_VCint_ [pas|jamais|plus|guère|point] mari et femme
     /_VCint_ [pas|jamais|plus|guère|point] mission impossible
     /_VCint_ [pas|jamais|plus|guère|point] monnaie courante
-    /_VCint_ [pas|jamais|plus|guère|point] papa et maman
     /_VCint_ [pas|jamais|plus|guère|point] partie [intégrante|prenante]
     /_VCint_ [pas|jamais|plus|guère|point] peine perdue
     /_VCint_ [pas|jamais|plus|guère|point] pieds et poings liés
     /_VCint_ [pas|jamais|plus|guère|point] pieds nus
-    /_VCint_ [pas|jamais|plus|guère|point] père et mère
-        <<- morphVC(\1, ">(?:être|devenir|rester)") ~2>> *
+        <<- morphVC(\1, ">(?:être|devenir|rester)/") ~2>> *
         <<- __also__ ~3:0>> ␣
         <<- __also__ =>> define(\3, ":LV")
 
@@ -16539,7 +16567,7 @@ __purge_après_être__
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ un jour
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ à jamais
     /_VCint_ [pas|jamais|plus|guère|point]
-        <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> *
+        <<- morphVC(\1, ">(?:être|devenir|rester)/") ~2:0>> *
 
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ beaucoup
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ bien [entendu|sûr]
@@ -16859,8 +16887,8 @@ __purge_locutions_potentielles__
 
     à la longue             @:¬:N.*:[fe]:[si]
     à la longue             [<end>|,|)]
-    à la [dérive|mode]      @:¬:A.*:[fe]:[si]
-    à la [dérive|mode]      [<end>|,|)]
+    à la [base|dérive|mode] @:¬:A.*:[fe]:[si]
+    à la [base|dérive|mode] [<end>|,|)]
     à l’ [avance|époque]    @:¬:A.*:[fe]:[si]
     à l’ [avance|époque]    [<end>|,|)]
     à l’ identique          @:¬:N.*:[si]
@@ -17641,6 +17669,7 @@ TEST: ç’a été dur.
 TEST: dût ma vanité en souffrir, je viendrai quoi qu’il arrive
 TEST: certaines régions sont un poil plus compliquées
 TEST: Tout est bien qui finit bien.
+TEST: on est tous à la base basé sur quelque chose
 
 
 @@@@
@@ -22548,6 +22577,18 @@ __gn_adverbe_ensemble__
         ->> ensemble                                                && S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
 
 TEST: Elles viendront {{ensembles}}.
+
+
+# haut
+__gn_placer_haut__
+    [>placer|>mettre] $:D $:N haut
+        <<- !-1>>
+
+    [>placer|>mettre] $:D $:N [haut+ses]
+        <<- /gn/ --1>> haut                                         && Placer quelque-chose (très) haut : “haut” étant ici un adverbe, il est invariable.
+
+TEST: il place la barre très {{haute}}
+TEST: elle met la barre très haut
 
 
 # juste
