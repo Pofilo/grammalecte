@@ -5072,19 +5072,32 @@ TEST: {{les dites}} tomates étaient pourries                        ->> lesdite
 
 
 __tu_anciennes_graphies__
+    grand’angle
     grand’chemin
+    grand’chose
+    grand’croix
+    grand’duc
+    grand’duché
+    grand’guignolesque
     grand’maman
+    grand’messe
     grand’mère
     grand’oncle
-    grand’père
     grand’papa
+    grand’peine
+    grand’place
+    grand’père
     grand’route
     grand’rue
+    grant’tante
     grand’ville
+    grand’voile
         <<- /tu/ ->> =\1.replace("’", "-")                                      && Graphie désuète. Au lieu d’une apostrophe, employez plutôt un trait d’union.
         <<- ~>> =\1.replace("’", "-")
 
 TEST: je suis allé dans la {{grand’rue}}.                           ->> grand-rue
+TEST: la grand-rue
+TEST: sur la grand-place
 
 
 
@@ -6478,7 +6491,7 @@ TEST: ni vous ni personne ne le retrouverez
 __vmode_je_futur!6__
     <start>  ([demain|oui|non|certainement|absolument|totalement])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿  <end>
     <start>  ([demain|oui|non|certainement|absolument|totalement])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿
-        || [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines]  *WORD  <end>
+        || [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  *WORD  <end>
         <<- /vmode/ morph(\2, ":K:1s", ">(?:aimer|vouloir)/") -2>> =\2[:-1]
         && Confusion possible. Le mot “\1” semble indiquer une certitude. Dans ce cas, “\2” devrait être conjugué au futur, non au conditionnel.
 
@@ -6965,7 +6978,7 @@ TEST: il était très {{habille}}
 #### Aussi +adj que soit +sujet
 
 __conf_aussi_adj_que_soit__
-    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  [un|une|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines]
+    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  [un|une|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maints|maintes]
     aussi  *WORD  [que|qu’]  [soi|>être|>soie]  $:M
         <<- /conf/ morph(\2, ":V1.*:Y", ":[AW]") -2>> =suggVerbPpas(\2)     && Confusion probable. Dans l’expression “aussi <X> que soit quelque chose ou quelqu’un”, <X> doit être un adjectif.
         <<- /conf/ \4 == "soie" or \4 == "soies" -4>> soit|soient           && Confusion. La soie est une matière filamenteuse produite par les chenilles et utilisée pour le textile.
@@ -7203,7 +7216,7 @@ TEST: Il t’a toi.
 
 
 __conf_suite_à__
-    [<start>|,|(] suite a [le|la|l’|les|ce|ces|de|d’|des|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs]
+    [<start>|,|(] suite a [le|la|l’|les|ce|ces|de|d’|des|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs|maints|maintes]
         <<- /conf/ -3>> à                                           && Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
 
 TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
@@ -8704,9 +8717,9 @@ __conf_cour_cours_court_courre__
     en cour
         <<- /conf/ ->> en cours                             && Confusion probable. Une cour… Un cours… Adjectif : court(e).
 
-    [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains] [court+s] [de|d’]
+    [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains|maints] [court+s] [de|d’]
         || [allemand|anglais|arabe|arabe|bengali|bhodjpouri|cantonais|coréen|égyptien|espagnol|français|grec|gujarati|haoussa|hébreu|hindi|indonésien|italien|italien|latin|japonais|javanais|mandarin|marathi|minnan|ourdou|pendjabi|persan|portugais|russe|sanskrit|sanscrit|swahili|tamoul|thaï|turc|tégoulou|vietnamien|wu]
-    [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains] [court+s] [de|d’]
+    [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains|maints] [court+s] [de|d’]
         || [>administration|>agriculture|>agronomie|>art|>biologie|>chant|>commerce|>culture|>cristallographie|>conduite|>cuisine|>danse|>dessin|>ébénisterie|>écriture|>épistémologie|>droit|>éducation|>électronique|>électrotechnique|>élocution|>éthique|>géographie|>gestion|>histoire|>karaté|>kung-fu|>informatique|>langue|>lettre|>littérature|>orientation|>morale|maintien|>mathématique|>math|>mécanique|>médecine|>menuiserie|>musique|>odontologie|>pâtisserie|>peinture|>philosophie|>philo|>physique|>programmation|>psychologie|>science|>sport|>théâtre|>théologie]
         <<- /conf/ -2>> cours                               && Confusion probable : “court” signifie “de peu de longueur”. Pour un enseignement, écrivez “cours”.|https://fr.wiktionary.org/wiki/cours
 
@@ -8765,10 +8778,10 @@ TEST: un bonnet en {{cuire}}
 
 # dans / d’en
 __conf_dans_dan_d_en__
-    d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines]
+    d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines|maints|maintes]
         <<- /conf/ not (\3 == "ce" and value(>1, "|moment|")) -1:2>> dans           && Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 
-    <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines]
+    <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines|maints|maintes]
         <<- /conf/ -2>> dans                                                        && Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 
 TEST: {{dan}} la voiture
@@ -8808,7 +8821,7 @@ __conf_davantage_d_avantages__
     [peu|plein|beaucoup|trop|plus|moins|assez|suffisamment|tellement|>obtention|>régime]  davantage
         <<- /conf/ -2>> d’avantages                                                 && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    @:V  d’ >avantage
+    $:V  d’ >avantage
         <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
@@ -8827,6 +8840,10 @@ TEST: Viendras-tu {{d’avantage}} à la maison
 TEST: il en faut {{d’avantages}}.
 TEST: veut-elle {{d’avantage}} se reposer ?
 TEST: {{d’avantage}} de monde viendra
+TEST: en savoir {{d’avantage}}
+TEST: en apprendre {{d’avantage}}
+TEST: produire {{d’avantage}}
+TEST: faire {{d’avantage}}
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
 TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
@@ -9713,7 +9730,6 @@ __conf_la_là!7__
     la ou les
         <<- !1>>
 
-    la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
     la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute|non)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       && Confusion probable. Écrivez “là” si vous voulez dire “ici”.|https://fr.wiktionary.org/wiki/l%C3%A0
 
@@ -9724,6 +9740,8 @@ TEST: Ce {{fait-la}} ne peut être ignoré.
 TEST: ce {{soutien-la}}
 TEST: nous serions encore {{la}} l’année prochaine
 TEST: en reprenant le chandail de John {{la}} où elle l’avait abandonné.
+TEST: {{la}} n’est pas la question
+TEST: il est {{la}} lorsqu’il le faut,
 TEST: la peu efficace sensibilité
 TEST: c’est toujours la même histoire
 TEST: c’est la moins habile de toutes
@@ -10087,7 +10105,7 @@ TEST: Toutes les agences évaluent de façon ad hoc la satisfaction de leur clie
 # on / ont
 __conf_ont_on!6__
     on  @:W¬:(?:3s|Ov)
-    on  [de|d’|du|des|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|plusieurs|certains|certaines]
+    on  [de|d’|du|des|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- /conf/ not morph(<1, ":V.*:3s") and not before0("’$")
         -1>> ont                                                    && Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
 
@@ -11327,7 +11345,7 @@ __conf_s_y_si__
         <<- /conf/ morph(\3, ":[NA].*:[pi]")
         --2>> s’y           && Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
 
-    [<start>|,|(]  [certains|certaines|moult]  *WORD  si  @:[23]p
+    [<start>|,|(]  [certains|certaines|moult|maints|maintes]  *WORD  si  @:[23]p
         <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3p")
         --2>> s’y           && Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
 
@@ -12336,14 +12354,14 @@ __maj_gentilés__
     [>afghan|>albanais|>algérien|>allemand|>américain|>andorran|>anglais|>angolais|>arabe|>argentin|>arménien|>australien|>autrichien|>asiatique|>azerbaïdjanais|>bahamien|>bangladais|>bengladeshi|>barbadien|>basque|>belge|>bélizien|>béninois|>breton|>bhoutanais|>biélorusse|>birman|>bolivien|>bosnien|>botswanais|>brésilien|>britannique|>brunéien|>bulgare|>burkinabé|>burundais|>cambodgien|>camerounais|>canadien|>capverdien|>centrafricain|>chilien|>chinois|>chypriote|>colombien|>comorien|>congolais|>nord-coréen|>corse|>costaricien|>croate|>cubain|>danois|>djiboutien|>dominicain|>égyptien|>émirati|>équatorien|>érythréen|>estonien|>espagnol|>étatsunien|>états-unien|>étasunien|>éthiopien|>fidjien|>finlandais|>formosan|>français|>gabonais|>gambien|>géorgien|>ghanéen|>grec|>grenadien|>guadeloupéen|>guatémaltèque|>guinéen|>équato-guinéen|>guyanien|>haïtien|>hondurien|>hollandais|>hongrois|>indien|>indochinois|>indonésien|>irakien|>italien|>iranien|>irlandais|>islandais|>israélien|>ivoirien|>jamaïcain|>japonais|>jordanien|>kazakh|>kényan|>kosovar|>koweïtien|>laotien|>lapon|>letton|>libanais|>libérien|>libyen|>liechtensteinois|>lituanien|>luxembourgeois|>macédonien|>maghrébin|>malgache|>malaisien|>malawite|>maldivien|>malien|>maltais|>maori|>marocain|>martien|>mauricien|>mauritanien|>mexicain|>micronésien|>moldave|>monégasque|>monténégrin|>mongol|>mozambicain|>namibien|>népalais|>nicaraguayen|>nigérien|>nigérian|>néerlandais|>norvégien|>néo-zélandais|>ougandais|>ouzbek|>pakistanais|>palestinien|>panaméen|>paraguayen|>perse|>péruvien|>philippin|>polonais|>polynésien|>portugais|>québécois|>qatari|>roumain|>russe|>rwandais|>saoudien|>scandinave|>salvadorien|>sénégalais|>serbe|>singapourien|>slovaque|>slovène|>somalien|>soudanais|>soviétique|>srilankais|>suédois|>suisse|>surinamais|>syrien|>sud-africain|>sud-coréen|>américain|>tadjik|>tanzanien|>tchadien|>tchèque|>thaïlandais|>togolais|>tahitien|>tunisien|>turkmène|>turc|>taïwanais|>ukrainien|>uruguayen|>vénézuélien|>vietnamien|>yéménite|>yougoslave|>zaïrois|>zambien|>zimbabwéen]
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          && S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \1.islower() and not \1.startswith("canadienne") and
-            ( value(<1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|")
+            ( value(<1, "|certains|certaines|maints|maintes|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|")
             or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:f:[si]") )
             or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
             or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
         -1>> =\1.capitalize()                                                                       && S’il s’agit d’un gentilé, mettez une majuscule.
 
-    [un|une|certains|certaines|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européen|>parisien|>lyonnais|>marseillais|>lillois|>toulousain|>nantais|>strasbourgeois|>montpelliérain|>bordelais|>bruxellois|>montréalais|>londonien|>genévois|>zurichois|>bâlois|>berlinois|>romain|>californien]
+    [un|une|certains|certaines|maints|maintes|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européen|>parisien|>lyonnais|>marseillais|>lillois|>toulousain|>nantais|>strasbourgeois|>montpelliérain|>bordelais|>bruxellois|>montréalais|>londonien|>genévois|>zurichois|>bâlois|>berlinois|>romain|>californien]
         <<- /maj/ \2.islower() -2>> =\2.capitalize()                                                && S’il s’agit d’un gentilé, mettez une majuscule.
 
 TEST: deux {{français}}                                                 ->> Français
@@ -17162,7 +17180,7 @@ __fusions_enum_noms_communs__
         <<- morph(\2, ":N", ":G") and morph(\4, ":N", ":G") and not morph(>1, ":[NA]") =>> define(\2, queryNamesPOS(\2, \4))
         <<- __also__ ~2:0>> ␣
 
-    certains                                                    *WORD  et  *WORD
+    [certains|maints]                                           *WORD  et  *WORD
         <<- morph(\2, ":N.*:[me]:[pi]", ":(?:G|[23]p)") and morph(\4, ":N.*:[me]:[pi]", ":(?:G|[23]p)") and not morph(>1, ":[NA]") =>> define(\2, ":N:m:p")
         <<- __also__ ~2:0>> ␣
 
@@ -17170,7 +17188,7 @@ __fusions_enum_noms_communs__
         <<- morph(\2, ":N.*:[me]:[pi]", ":G") and morph(\4, ":N.*:[me]:[pi]", ":G") and not morph(>1, ":[NA]") =>> define(\2, ":N:m:p")
         <<- __also__ ~2:0>> ␣
 
-    certaines                                                   *WORD  et  *WORD
+    [certaines|maintes]                                         *WORD  et  *WORD
         <<- morph(\2, ":N.*:[fe]:[pi]", ":(?:G|[23]p)") and morph(\4, ":N.*:[fe]:[pi]", ":(?:G|[23]p)") and not morph(>1, ":[NA]") =>> define(\2, ":N:f:p")
         <<- __also__ ~2:0>> ␣
 
@@ -17231,7 +17249,7 @@ __da_substantifs__
     leurs  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- not before(":O[vs]") =>> exclude(\3, ":V")
 
-    [plusieurs|certains|certaines]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|Q|G)
+    [plusieurs|certains|certaines|maints|maintes]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|Q|G)
         <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
 
 
@@ -18544,7 +18562,7 @@ __conf_côte_cote_cotte__
         <<- /conf/ -1>> =\1.replace("o", "ô").replace("tt", "t")                    && Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
 
     [>cote|>cotte] [>briser|>casser|>fêler|>fracturer]
-        <<- /conf/ morph(\2, ":A") -1>> =\1.replace("o", "ô").replace("tt", "t")    && Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
+        <<- /conf/ morph(\2, ":Q") -1>> =\1.replace("o", "ô").replace("tt", "t")    && Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
 
     [>fracture|>radiographie] des [>cote|>cotte]
         <<- /conf/ -3>> côtes                                       && Confusion : écrivez “côtes” pour les os du thorax.|https://fr.wiktionary.org/wiki/c%C3%B4te
@@ -18560,6 +18578,14 @@ __conf_côte_cote_cotte__
     >avoir la cotte [@:[RCO]|,|<end>]
         <<- /conf/ -3>> cote                                        && Confusion probable : utilisez “cote” (cotation).|https://fr.wiktionary.org/wiki/cote
 
+    [>escalader|>monter|>gravir] [la|cette|une] [cote|cotte]
+        <<- /conf/ --1>> côte
+        && Confusion probable : pour parler de la pente d’une montagne, d’une colline ou, allégoriquement, d’une difficulté à passer, écrivez “côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te
+
+    >longer [la|cette|une] [cote|cotte]
+        <<- /conf/ --1>> côte
+        && Confusion probable : pour parler d’un rivage ou d’une ligne de relief, écrivez “côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te
+
     [>côte|>cotte|>cote]  [à|a|á]  [>côte|>cotte|>cote]
         <<- /conf/ ->> côte à côte                                  && Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
         <<- ~>> *
@@ -18571,6 +18597,8 @@ TEST: Quelle est sa {{côte}} de popularité
 TEST: il a réussi à percer sa {{cote}} de mailles.
 TEST: Il a la {{côte}} auprès de ses collègues
 TEST: ils sont {{cotte à cotte}}
+TEST: il nous faut encore gravir cette {{cotte}}
+TEST: nous avions prévu de longer cette {{cote}}
 TEST: on a atteint la cote d’alerte.
 TEST: Elles avançaient côte à côte.
 
@@ -18884,7 +18912,7 @@ __conf_été_était__
         <<- /conf/ morph(\2, ":N.*:f:[si]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>,") --1>> était
         && Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
-    [les|des|ces|mes|tes|ces|nos|vos|leurs|quelques|plusieurs|certains|certaines|quels|quelles]  *WORD  >été
+    [les|des|ces|mes|tes|ces|nos|vos|leurs|quelques|plusieurs|certains|certaines|quels|quelles|maints|maintes]  *WORD  >été
         <<- /conf/ morph(\2, ":N.*:[pi]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>,") --1>> étaient
         && Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “étaient”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
@@ -20994,14 +21022,14 @@ TEST: le bruit de nos pas étouffé par l’épais tapis.
 
 
 __gn_det_mas_plur_2m__
-    [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
+    [certains|maints|quels|lesdits|desdits|auxdits]  *WORD  *WORD
         <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggMasPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
-    [et|ou|de|d’]  [certains|quels|lesdits|desdits|auxdits]  *WORD  *WORD
+    [et|ou|de|d’]  [certains|maints|quels|lesdits|desdits|auxdits]  *WORD  *WORD
         <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
@@ -21019,14 +21047,14 @@ TEST: chez certains la revue Limite provoque des crises d’hystérie.
 
 
 __gn_det_fem_plur_2m__
-    [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
+    [certaines|maintes|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
         <<- /gn/ not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemPlur(\3, True)                                                         && Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggFemPlur(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
-    [et|ou|de|d’]  [certaines|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
+    [et|ou|de|d’]  [certaines|maintes|quelles|lesdites|desdites|auxdites]  *WORD  *WORD
         <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemPlur(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
@@ -21102,9 +21130,9 @@ TEST: les heureux imbéciles {{payé}} au lance-pierre.
 
 
 __gn_det_plur_3m__
-    [ces|mes|tes|ses|nos|vos|quels|quelles|aux]             *WORD  *WORD  *WORD
-    [plusieurs|quelques|certains|certaines|moult]           *WORD  *WORD  *WORD
-    [lesdits|lesdites|desdits|desdites|auxdits|auxdites]    *WORD  *WORD  *WORD
+    [ces|mes|tes|ses|nos|vos|quels|quelles|aux]                     *WORD  *WORD  *WORD
+    [plusieurs|quelques|certains|certaines|moult|maints|maintes]    *WORD  *WORD  *WORD
+    [lesdits|lesdites|desdits|desdites|auxdits|auxdites]            *WORD  *WORD  *WORD
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
             and morph(\4, ":[NA].*:s", "*") and \4.islower() and not before("(?i)\\bune? de +$") and not morph(\4, ">seul/")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
@@ -21153,6 +21181,28 @@ TEST: {{certains}} des {{nouvelles}} sont à côté de la plaque.
 TEST: {{certaines}} des hommes
 TEST: {{certaines}} des {{petits}}
 TEST: Un problème rapporté par certains est l’incapacité à trouver un partenaire
+
+
+## maints / maintes
+__gn_maints_1m__
+    maints  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:f", ":[emGWP]") -1>> maintes                            && Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasPlur(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:[ipGWP]|V0)") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
+        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+__gn_maintes_1m__
+    maintes  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[efGWP]") -1>> maints                             && Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemPlur(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
+        -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+TEST: {{maints}} {{petites}}
+TEST: Maintes {{danse}}
+TEST: Maints {{chien}}
+TEST: {{maintes}} {{petits}}
+TEST: Un problème rapporté par maints est l’incapacité à trouver un partenaire
 
 
 ## quel / quels / quelle / quelles
@@ -21777,16 +21827,16 @@ TEST: tu vas faire {{de telles sortes}} qu’on ne nous retrouve jamais.
 !!
 
 __gn_lequel_laquelle_lesquels_lesquelles__
-    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          *WORD  *WORD   [laquelle|lesquels|lesquelles]
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]                  *WORD  *WORD   [laquelle|lesquels|lesquelles]
         <<- /conf/ morph(\3, ":N.*:m:[si]", ":f") and morph(\4, ":R", ">à/") --1>> lequel           && Accord avec “\2 \3” : utilisez le masculin singulier.
 
-    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]             *WORD  *WORD   [lequel|lesquels|lesquelles]
+    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]                     *WORD  *WORD   [lequel|lesquels|lesquelles]
         <<- /conf/ morph(\3, ":N.*:f:[si]", ":m") and morph(\4, ":R", ">à/") --1>> laquelle         && Accord avec “\2 \3” : utilisez le féminin singulier.
 
-    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains]   *WORD  *WORD   [lequel|laquelle|lesquelles]
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains|maints]    *WORD  *WORD   [lequel|laquelle|lesquelles]
         <<- /conf/ morph(\3, ":N.*:m:[pi]", ":f") and morph(\4, ":R", ">à/") --1>> lesquels         && Accord avec “\2 \3” : utilisez le pluriel masculin.
 
-    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  *WORD  *WORD   [lequel|laquelle|lesquels]
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines|maintes]  *WORD  *WORD   [lequel|laquelle|lesquels]
         <<- /conf/ morph(\3, ":N.*:f:[pi]", ":m") and morph(\4, ":R", ">à/") --1>> lesquelles       && Accord avec “\2 \3” : utilisez le pluriel féminin.
 
 TEST: L’homme pour {{laquelle}} tu te plies en quatre ne le mérite pas.                 ->> lequel
@@ -21799,19 +21849,19 @@ TEST: Une distance au-delà de laquelle il devient difficile de voir.
 
 
 __gn_auquel_à_laquelle_auxquels_auxquelles__
-    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          *WORD   [auxquels|auxquelles]
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]                  *WORD   [auxquels|auxquelles]
         <<- /conf/ morph(\3, ":N.*:m:[si]", ":f") --1>> auquel                                      && Accord avec “\2 \3” : utilisez le masculin singulier.
 
-    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          *WORD   à laquelle
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]                  *WORD   à laquelle
         <<- /conf/ morph(\3, ":N.*:m:[si]", ":f:[si]") --2:-1>> auquel                              && Accord avec “\2 \3” : utilisez le masculin singulier.
 
-    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]             *WORD   [auquel|auxquels|auxquelles]
+    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]                     *WORD   [auquel|auxquels|auxquelles]
         <<- /conf/ morph(\3, ":N.*:f:[si]", ":m") --1>> à laquelle                                  && Accord avec “\2 \3” : utilisez le féminin singulier.
 
-    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains]   *WORD   [auquel|auxquelles]
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains|maints]    *WORD   [auquel|auxquelles]
         <<- /conf/ morph(\3, ":N.*:m:[pi]") --1>> auxquels                                          && Accord avec “\2 \3” : utilisez le pluriel masculin.
 
-    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  *WORD   [auquel|auxquels]
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines|maintes]  *WORD   [auquel|auxquels]
         <<- /conf/ morph(\3, ":N.*:f:[pi]", ":m") --1>> auxquelles                                  && Accord avec “\2 \3” : utilisez le pluriel féminin.
 
 TEST: le délire {{à laquelle}} nous avons dû faire face.                                ->> auquel
@@ -21830,10 +21880,10 @@ __gn_duquel_de_laquelle_desquels_desquelles__
     [<start>|,|(]  *WORD  [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  *WORD    desquels
         <<- /conf/ morph(\2, ":R") and morph(\4, ":N.*:f:[pi]", ":m:[pi]") --1>> desquelles         && Si “\-1” se rapporte à “\3 \4” : utilisez le pluriel féminin.
 
-    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certains|aux]        *WORD    desquelles
+    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certains|maints|aux]     *WORD    desquelles
         <<- /conf/ morph(\3, ":N.*:m:[pi]", ":f:[pi]") --1>> desquels                               && Si “\-1” se rapporte à “\2 \3” : utilisez le pluriel masculin.
 
-    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines|aux]       *WORD    desquels
+    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines|maintes|aux]   *WORD    desquels
         <<- /conf/ morph(\3, ":N.*:f:[pi]", ":m:[pi]") --1>> desquelles                             && Si “\-1” se rapporte à “\2 \3” : utilisez le pluriel féminin.
 
 TEST: contre les ennuis {{desquelles}} nous nous sommes dépêtrés seuls                  ->> desquels
@@ -21913,6 +21963,7 @@ TEST: Des yeux vert olive.
 TEST: Ses cheveux étaient noir de jais.
 TEST: Il a une queue vert émeraude
 TEST: Il a une queue bleu vert
+TEST: un gris-bleu ou gris-vert sale
 
 
 
@@ -22183,23 +22234,28 @@ TEST: Une mise à nu douloureuse.
 
 # affaires
 __loc_affaires__
-    [>chiffre|>homme|>femme|>centre|>chargé]  d’ affaire
+    [>chiffre|>homme|>femme|>centre|>chargé|gens|repas|>voyage]  d’ affaire
         <<- /gn/ -3>> affaires                                              && Dans “\1 d’affaires”, toujours mettre “affaires” au pluriel.
 
     >faire affaires avec
-        <<- /loc/ -2>> affaire                                              && Dans la locution “Faire affaire avec”, “affaire” est au singulier.
+        <<- /loc/ -2>> affaire                                              && Locution “faire affaire avec”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4119
 
     >faire affaire [à|en] /_Tit_
-        <<- /loc/ morph(\4, ":(?:N|MP)") -2>> affaires                      && Ajoutez un “s” à « affaire ».
+        <<- /loc/ morph(\4, ":(?:N|MP)") -2>> affaires                      && Sous-entendu : “faire des affaires”.
 
     >avoir affaires à
         <<- /loc/ -2>> affaire                                              && Dans la locution “avoir affaire à”, “affaire” est au singulier.|https://fr.wiktionary.org/wiki/avoir_affaire_%C3%A0
+
+    [>parler|>discuter|>causer] affaire
+        <<- /loc/ --1>> affaires                                            && Sous-entendu “parler des affaires”.
 
 TEST: Quel est son chiffre d’{{affaire}} ?
 TEST: Allez-vous faire {{affaires}} avec ces connards ?
 TEST: elle fait {{affaire}} à Londres
 TEST: Faire {{affaire}} à Paris.
 TEST: avoir {{affaires}} à eux
+TEST: ouais, causons {{affaire}}
+TEST: dans ce genre d’affaire, ce qui compte, c’est la persévérance
 
 
 # demi-heure, heure et demie, à demi
@@ -22603,7 +22659,7 @@ __conf_conj_suj_verbe_adj__
         -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
-    [quand|lorsque|puisque]  [plusieurs|certains|certaines]                 *WORD  ~..[éeiut]e?s$ ,  $:Os
+    [quand|lorsque|puisque]  [plusieurs|certains|certaines|maints|maintes]  *WORD  ~..[éeiut]e?s$ ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3pl") and  morph(\4, ":Q.*:[pi]", ":3s")
         -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
@@ -23960,15 +24016,15 @@ __purge_syntagmes_nominaux__
         <<- ~1:3>> *
 
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
-        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  <end>
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines|maints|maintes]  @:[NAM]¬:G  <end>
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
-        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]¬:G   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines|maints|maintes]  @:[NA]¬:G   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
-        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]¬:G   @:[VR]¬:[NAP]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines|maints|maintes]  @:[NA]¬:G   @:[VR]¬:[NAP]
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
-        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines|maints|maintes]  @:[NAM]¬:G  , @¬:[NA]
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
-        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  ?,¿  [/_VCint_|/_VCimp_]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines|maints|maintes]  @:[NAM]¬:G  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     à @:[NAM]¬:[GY]  <end>
@@ -24059,12 +24115,12 @@ __purge_syntagmes_nominaux__
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
-    certains *WORD *WORD
+    [certains|maints] *WORD *WORD
         <<- morph(\2, ":[NA].*:[me]:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    certaines *WORD *WORD
+    [certaines|maintes] *WORD *WORD
         <<- morph(\2, ":[NA].*:[fe]:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
@@ -24197,15 +24253,15 @@ __da_été2__
 
 
 __purge_subst_plur_comme_nom_sing__
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  *WORD
         ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p¬:G
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  *WORD
         ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p¬:G
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  *WORD
         ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p¬:G
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  *WORD
         ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p¬:G
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  *WORD
         ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p¬:G
         <<- morph(\2, ":[NA].*:[pi]") and morph(\5, ":[NA].*:[si]") ~3:5>> *
 
@@ -24332,7 +24388,7 @@ __conf_on_ont2__
     <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  on  @:[QDRY]¬:(?:Ov|3s)
         <<- /conf/ morph(\3, ":[NA].*:[pi]", ":G") -4>> ont         && Confusion probable. Accord avec “\2 \3…”. Pour le verbe avoir à la 3ᵉ personne du pluriel, écrivez “ont”.
 
-    <start>  [certains|certaines|ceux-ci|ceux-là|celles-ci|celles-là|plusieurs]  on  @:[QDRY]¬:(?:Ov|3s)
+    <start>  [certains|certaines|ceux-ci|ceux-là|celles-ci|celles-là|plusieurs|maints|maintes]  on  @:[QDRY]¬:(?:Ov|3s)
         <<- /conf/ -3>> ont                                         && Confusion probable. Accord avec “\2”. Pour le verbe avoir à la 3ᵉ personne du pluriel, écrivez “ont”.
 
 TEST: les Allemands {{on}} {{commencé}} la partie.
@@ -24344,8 +24400,8 @@ TEST: certaines {{on}} {{mangé}} du lion
 
 ## ou / où
 __conf_det_nom_où_pronom__
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [je|j’|tu|il|on|ils]
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [elle|nous|vous|elles|iel|iels]
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  *WORD  ou  [je|j’|tu|il|on|ils]
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  *WORD  ou  [elle|nous|vous|elles|iel|iels]
         || [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|lui|nous|vous|leur]
         <<- /conf/ morph(\3, ":[NA]", ":G")
         -4>> où                                             && Confusion probable. Pour évoquer un lieu ou un moment, écrivez “où”.|https://fr.wiktionary.org/wiki/o%C3%B9
@@ -24604,6 +24660,7 @@ TEST: Il te laisse trois jours de délai.
 
 TEST: je les laisse {{indifférent}}.
 TEST: elle nous laissera {{perdu}} dans nos délires.
+TEST: elle doit nous laisser tout à fait {{tranquille}}
 TEST: je les laisse indifférents.
 TEST: tu nous laisses indifférentes.
 TEST: ils nous laisseront étourdis.
@@ -24977,17 +25034,17 @@ __ppas_3pl_mas_verbe_état__
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns]) qui ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns]) qui ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
@@ -25036,17 +25093,17 @@ TEST: ils étaient devenus réalité.
 
 
 __ppas_3pl_fem_verbe_état__
-    ([elles|celles-ci|celles-là|certaines|quelques-unes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemPlur(\-1)                                                                                         && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
 
@@ -25280,17 +25337,17 @@ __ppas_sujet_être_accord_pluriel__
         <<- /ppas/ __else__ and morph(\1, ":m", ":[fe]") and morph(\-1, ":f", ":[me]") --1>> =suggMasPlur(\-1)  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
         <<- /ppas/ __else__ and morph(\-1, ":s", ":[pi]") --1>> =suggPlur(\-1)                                  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au pluriel.
 
-    [<start>|,|(|/_start_]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  certains  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[me]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
         --1>> =suggMasPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
 
-    [<start>|,|(|/_start_]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[fe]:[pi])
-    [<start>|,|(|/_start_]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[fe]:[pi])
-    [<start>|,|(|/_start_]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  certaines  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[fe]:[pi])
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":[NA].*:[fe]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
         --1>> =suggFemPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin pluriel.
 
@@ -26063,7 +26120,7 @@ TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 
 __ppas_det_nom_avoir__
-    [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs|maints|maintes]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
             and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
@@ -26915,17 +26972,17 @@ __conf_le_la_leur_les_verbe_nom!6__
         <<- /conf/ hasSimil(\3, ":[NA].*:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[pi]", True)                                   && Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,|(] certains        @:V¬:[NAY]  [me|m’|te|s’|se|s’]
-    [<start>|,|(] certains        @:V¬:[NAY]  [ne|n’]                     @:[123][sp]
-    [<start>|,|(] certains        @:V¬:[NAY]  [le|la|l’|les|leur]         @:[123][sp]¬:[QNAG]
-    [<start>|,|(] certains        @:V¬:[NAY]  ?[nous|vous]¿               @:[123][sp]¬:[QG]
+    [<start>|,|(] [certains|maints]     @:V¬:[NAY]  [me|m’|te|s’|se|s’]
+    [<start>|,|(] [certains|maints]     @:V¬:[NAY]  [ne|n’]                     @:[123][sp]
+    [<start>|,|(] [certains|maints]     @:V¬:[NAY]  [le|la|l’|les|leur]         @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [certains|maints]     @:V¬:[NAY]  ?[nous|vous]¿               @:[123][sp]¬:[QG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[me]:[pi]", True)                              && Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,|(] certaines       @:V¬:[NAY]  [me|m’|te|s’|se|s’]
-    [<start>|,|(] certaines       @:V¬:[NAY]  [ne|n’]                     @:[123][sp]
-    [<start>|,|(] certaines       @:V¬:[NAY]  [le|la|l’|les|leur]         @:[123][sp]¬:[QNAG]
-    [<start>|,|(] certaines       @:V¬:[NAY]  ?[nous|vous]¿               @:[123][sp]¬:[QG]
+    [<start>|,|(] [certaines|maintes]   @:V¬:[NAY]  [me|m’|te|s’|se|s’]
+    [<start>|,|(] [certaines|maintes]   @:V¬:[NAY]  [ne|n’]                     @:[123][sp]
+    [<start>|,|(] [certaines|maintes]   @:V¬:[NAY]  [le|la|l’|les|leur]         @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [certaines|maintes]   @:V¬:[NAY]  ?[nous|vous]¿               @:[123][sp]¬:[QG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[pi]", True)                              && Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
@@ -27169,11 +27226,11 @@ __conf_vinfi_adj__
         <<- /conf/ \4.islower() and morph(\3, ":[NA].*:e:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
         -4>> =suggVerbPpas(\4, ":s")                                        && Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [ne|n’|me|m’|te|t’|se|s’]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [lui|leur|y]    en                          @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines|maints|maintes]    *WORD      *WORD     [ne|n’|me|m’|te|t’|se|s’]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines|maints|maintes]    *WORD      *WORD     ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines|maints|maintes]    *WORD      *WORD     [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines|maints|maintes]    *WORD      *WORD     [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines|maints|maintes]    *WORD      *WORD     [lui|leur|y]    en                          @:[123][sp]
         <<- /conf/ \4.islower() and morph(\3, ":[NA].*:[pi]", ":G") and morph(\4, ":V1.*:Y", ":M")
         -4>> =suggVerbPpas(\4, ":p")                                        && Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
@@ -27573,18 +27630,18 @@ __tag_usage_pronominal__
 
 
 __énumérations_substantifs__
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
         <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> _enum_
 
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
         <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> _enum_
 
 
@@ -27646,28 +27703,28 @@ TEST: tout est peine perdue.
 
 #### et / est
 __conf_et_est2__
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  @:3p¬:G
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  @:3p¬:G
         <<- /conf/ -4>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  *WORD
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\4, ":[123][sp]", ":[NAGW]") -7>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD
         ||   >avoir  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\4, ":(?:[123][sp]|P)") and morph(\5, ":Q") -8>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
-    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD
         ||   >être  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\4, ":(?:[123][sp]|P)") and morph(\5, ":[QA]") -8>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
@@ -27688,20 +27745,20 @@ __conf_et_est2__
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
     <start>  [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\3, ":([123][sp]|P)") -6>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
     <start>  [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ce]  >être  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\3, ":([123][sp]|P)") and morph(\4, ":[QA]") -7>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
     <start>  [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  >avoir  *WORD
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
-        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|maints|mainets|plusieurs]  *WORD  <end>
         <<- /conf/ morph(\3, ":([123][sp]|P)") and morph(\4, ":Q") -7>> et
         && Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
@@ -28010,11 +28067,11 @@ __conj_sujet_verbe_interrogatif_pronom__
         <<- /conj/ morph(\3, ":N.*:f:[si]", ":[me]:[si]")
         --1>> =\-1.replace("-il", "-elle").replace("-Il", "-Elle").replace("-IL", "-ELLE")          && Le pronom “il” n’est pas accordé avec “\2 \3”.
 
-    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|lesdits]    *WORD  /-elles
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|lesdits|maints]    *WORD  /-elles
         <<- /conj/ morph(\3, ":N.*:m:[pi]", ":[fe]:[pi]")
         --1>> =\-1.replace("-elles", "-ils").replace("-Elles", "-Ils").replace("-ELLES", "-ILS")    && Le pronom “elles” n’est pas accordé avec “\2 \3”.
 
-    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certaines|lesdites]  *WORD  /-ils
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certaines|lesdites|maintes]  *WORD  /-ils
         <<- /conj/ morph(\3, ":N.*:f:[pi]", ":[me]:[pi]")
         --1>> =\-1.replace("-ils", "-elles").replace("-Ils", "-Elles").replace("-ILS", "-ELLES")    && Le pronom “ils” n’est pas accordé avec “\2 \3”.
 
@@ -28595,11 +28652,11 @@ TEST: avec la plupart des femmes qui {{devienne}} mère
 
 
 __conj_certains_certaines_plusieurs__
-    [certains|certaines|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
+    [certains|certaines|maints|maintes|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
         <<- /conj/ not morph(<1, ":[VR]") and not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
         --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    [certains|certaines|plusieurs]  qui  @:V¬:(?:G|3p|P)
+    [certains|certaines|maints|maintes|plusieurs]  qui  @:V¬:(?:G|3p|P)
         <<- /conj/ not (tag(\1, "_d_entre_nous_") and morph(\-1, ":1p")) and not (tag(\1, "_d_entre_vous_") and morph(\-1, ":2p"))
         --1>> =suggVerb(\-1, ":3p")                                     && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
@@ -28671,14 +28728,14 @@ TEST: elles vont toutes aller faire un tour
 
 
 __conj_det_plur_nom__
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  @:V¬:(?:3p|P|Y|G|M|A.*:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]¬:V0  @:V¬:(?:3p|P|Y|G|M|A.*:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A"))
         -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    [ces|mes|tes|ses|nos|vos|leurs|quelques|maints]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
+    [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -28750,7 +28807,7 @@ TEST: il les a sélectionnés, les a améliorées pour accroître leur rendement
 
 
 __conj_certains_certaines_plusieurs_nom__
-    certains  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
+    [certains|maints]  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
@@ -28759,7 +28816,7 @@ __conj_certains_certaines_plusieurs_nom__
         -3>> =suggVerb(\3, ":3p", suggMasPlur)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    certaines  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
+    [certaines|maintes]  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
@@ -28777,7 +28834,7 @@ __conj_certains_certaines_plusieurs_nom__
         -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    [certains|certaines|plusieurs]  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
+    [certains|certaines|plusieurs|maints|maintes]  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                                                   && Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -29158,8 +29215,8 @@ __vmode_si_sujet_conditionnel__
     <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
         <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3s")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « S’il avait perdu, il aurait recommencé. »
 
-    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  @:[NA].*:[pi]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
-    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  @:[NA].*:[pi]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
         <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
 
 TEST: si j’{{aurais}} perdu, j’aurais recommencé.                                   ->> avais
@@ -29373,7 +29430,7 @@ __vmode_qqch_que_subjonctif__
     [<start>|,|(]  encore                           [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GSK]|If)
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                && Après « \2 que », le verbe s’emploie au subjonctif.
 
-    jusqu’      à           ce                      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    jusqu’      à           [ce|tant]               [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
 
 TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
@@ -29482,11 +29539,11 @@ TEST: L’amour, expliqua la femme.
 
 
 __conj_det_nom_plur_virgule__
-    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  [<end>|,|)]
+    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines|maints|maintes]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  [<end>|,|)]
         <<- /conj/ space_after(\3, 0, 0)
         -3:4>> \3                                                               && La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
-    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  @:A.*:[pi]
+    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines|maints|maintes]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  @:A.*:[pi]
         <<- /conj/ space_after(\3, 0, 0) and morph(\5, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/")
         -3:4>> \3                                                               && La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
@@ -29710,6 +29767,8 @@ TEST: Qu’est-ce qu’ils font de leurs journées à part prendre du bon temps�
 TEST: c’est cela que comprirent les hommes
 TEST: le cheval continait de se débattre
 TEST: les Autrichiens se sont laissé jouer
+TEST: la côte est des États-Unis
+TEST: c’était de la belle ouvrage
 
 
 
@@ -33023,7 +33082,7 @@ TEST: On ne cite personne comme ayant fréquenté la maison. On ne sait pas si l
 TEST: Ceux de derrière étaient toujours fermés, excepté aux fenêtres de la grande arrière-pièce du quatrième étage. La maison était une assez bonne maison, pas trop vieille.
 TEST: » Isidore Muset, gendarme, dépose qu’il a été mis en réquisition, vers trois heures du matin, et qu’il a trouvé à la grande porte vingt ou trente personnes qui s’efforçaient de pénétrer dans la maison.
 TEST: Il l’a forcée avec une baïonnette et non pas avec une pince.
-TEST: Il n’a pas eu grand’peine à l’ouvrir, parce qu’elle était à deux battants et n’était verrouillée ni par en haut, ni par en bas.
+TEST: Il n’a pas eu grand-peine à l’ouvrir, parce qu’elle était à deux battants et n’était verrouillée ni par en haut, ni par en bas.
 TEST: Les cris ont continué jusqu’à ce que la porte fût enfoncée, puis ils ont soudainement cessé.
 TEST: On eût dit les cris d’une ou de plusieurs personnes en proie aux plus vives douleurs ; des cris très-hauts, très-prolongés, – non pas des cris brefs, ni précipités.
 TEST: Le témoin a grimpé l’escalier.
@@ -33063,7 +33122,7 @@ TEST: On a soigneusement dérangé et visité tous ces objets.
 TEST: Il n’y a pas un pouce d’une partie quelconque de la maison qui n’ait été soigneusement visité. On a fait pénétrer des ramoneurs dans les cheminées. La maison est à quatre étages avec des mansardes.
 TEST: Une trappe qui donne sur le toit était condamnée et solidement fermée avec des clous ; elle ne semblait pas avoir été ouverte depuis des années.
 TEST: Les témoins varient sur la durée du temps écoulé entre le moment où l’on a entendu les voix qui se disputaient et celui où l’on a forcé la porte de la chambre.
-TEST: Quelques-uns l’évaluent trop court, deux ou trois minutes, – d’autres, cinq minutes. La porte ne fut ouverte qu’à grand’peine.
+TEST: Quelques-uns l’évaluent trop court, deux ou trois minutes, – d’autres, cinq minutes. La porte ne fut ouverte qu’à grand-peine.
 TEST: » Alfonso Garcio, entrepreneur des pompes funèbres, dépose qu’il demeure rue Morgue.
 TEST: Il est né en Espagne. Il est un de ceux qui ont pénétré dans la maison. Il n’a pas monté l’escalier. Il a les nerfs très-délicats, et redoute les conséquences d’une violente agitation nerveuse.
 TEST: Il a entendu les voix qui se disputaient. La grosse voix était celle d’un Français.
@@ -33792,7 +33851,7 @@ TEST: Si les hommes auront assez d’effronterie,
 TEST: Seront assez méchants, scélérats, et pervers,
 TEST: Pour me faire injustice aux yeux de l’univers.
 TEST: PHILINTE. Quel homme !
-TEST: ALCESTE. Je voudrais, m’en coutât-il grand’chose
+TEST: ALCESTE. Je voudrais, m’en coutât-il grand-chose
 TEST: Pour la beauté du fait, avoir perdu ma cause.
 TEST: PHILINTE. On se rirait de vous, Alceste, tout de bon,
 TEST: Si l’on vous entendait parler de la façon.
