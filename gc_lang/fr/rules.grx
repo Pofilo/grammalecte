@@ -1971,6 +1971,9 @@ __da_mots_grammaticaaux__
     [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
+    [son|ton] @:G¬:[NA]
+        <<- =>> exclude(\1, ":D")
+
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
         <<- =>> select(\-1, ":N")
 
@@ -3314,7 +3317,12 @@ __ocr_nous__
     [noue|noua]
         <<- /ocr/ ->> nous                                                                          && Erreur de numérisation ?
 
+    mous
+        <<- /ocr/ morph(<1, "<start>|>,|:(?:R|Os|X)") ->> nous                                      && Erreur de numérisation ?
+
 TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
+TEST: __ocr__ il finit par {{mous}} énerver avec ces histoires sans fin
+TEST: __ocr__ {{mous}} croire invincibles
 
 
 # par / paf / pan / pat
@@ -4678,10 +4686,10 @@ __tu_substantifs__
         <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    && Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
 
     >tête [à|a] >tête
-        <<- /tu/ morph(<1, ">en/|:D") ->> tête-à-tête           && Il manque les traits d’union.
+        <<- /tu/ morph(<1, ":D") ->> tête-à-tête                && Il manque les traits d’union.
 
     trompe l’ [œil|oeil]
-        <<- /tu/ morph(<1, ":D") ->> trompe-l’œil               && Il manque un trait d’union.
+        <<- /tu/ morph(<1, ">en/|:D") ->> trompe-l’œil          && Il manque un trait d’union.
 
     [le|de|ce|les|des|ces|un|mon|leur|leurs|nos|vos|notre|votre|quel|quels] [va|vas] et [vient|viens]
         <<- /tu/ -2:0>> va-et-vient                             && Il manque les traits d’union.
@@ -8862,7 +8870,7 @@ TEST: à la {{datte}} du 25 janvier
 # davantage / d’avantage
 __conf_davantage_d_avantages__
     [peu|plein|beaucoup|trop|plus|moins|assez|suffisamment|tellement|>obtention|>régime]  davantage
-        <<- /conf/ -2>> d’avantages                                                 && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+        <<- /conf/ --1>> d’avantages                                                && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
     $:V  d’ >avantage
         <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
@@ -12443,13 +12451,33 @@ __maj_Moyen_Âge__
     [Moyen-Age|Moyen-Âge]
     [moyen-âge|moyen-age]
     moyen age
-        <<- /maj/ ->> Moyen Âge                                     && Le “Moyen Âge”, l’époque médiévale.
+        <<- /maj/ ->> Moyen Âge                                                                     && Le “Moyen Âge”, l’époque médiévale.
 
     moyen âge
-        <<- /maj/ \1.islower() and \2.islower() ->> Moyen Âge       && Le “Moyen Âge”, l’époque médiévale.
+        <<- /maj/ \1.islower() and \2.islower() ->> Moyen Âge                                       && Le “Moyen Âge”, l’époque médiévale.
 
 TEST: C’est le {{moyen age}}, chez ces ploucs.          ->> Moyen Âge
 TEST: au {{moyen âge}}
+
+
+# Dieu
+__maj_Dieu__
+    dieu
+        <<- /maj/ \1.islower() and not morph(<1, ":[DA]") and not morph(>1, ":A|>(?:d[eu’]|des)/")
+        ->> Dieu                                                                                    && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
+
+    [amour|compassion|colère|esprit|fureur|jalousie|gloire|parole|toute-puissance|volonté] de dieu
+    [croyance|foi] en dieu
+        <<- /maj/ \-1.islower() --1>> Dieu                                                          && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
+
+TEST: faire ça pour {{dieu}}
+TEST: gloire de {{dieu}}
+TEST: oublie {{dieu}} et les bondieuseries
+TEST: dieu colérique, dieu jaloux, dieu silencieux
+TEST: ne provoque par la colère des dieux !
+TEST: Apollon, dieu du Soleil ; Athéna, déesse de la Guerre
+TEST: quel dieu d’amour ferait une telle chose ?
+TEST: entendez-moi, dieu de la Terre, dieu des Ténèbres et dieu du Ciel.
 
 
 # Église
@@ -12460,7 +12488,7 @@ __maj_Église__
     >homme d’ église
         <<- /maj/ \3.islower() -3>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
 
-    [>chef|>rite|>sacrement] de l’ église
+    [>chef|>rite|>sacrement] [de|d’] l’ église
         <<- /maj/ \4.islower() -4>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
 
     [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>roman|~^Saint-[A-ZÉÊ]]
@@ -12711,52 +12739,63 @@ TEST: sur {{toutes}} {{armure}}
 !!
 
 __neg_ne_manquant__
-    [<start>|,|(]  je               [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ -3>> ne \3                                                                        && Ne … \5 : il manque l’adverbe de négation.
+    [<start>|,|(|/_start_]  je                   [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela]    [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
+        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> ne \3                       && Ne … \5 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  [je|j’]          [en|y]                                                  @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               [en|y]                                                  @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] [en|y]                                                  @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             [en|y]                                                  @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             [en|y]                                                  @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] [en|y]                                                  @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ -3>> n’\3                                                                         && Ne … \5 : il manque l’adverbe de négation.
+    [<start>|,|(|/_start_]  [je|j’]              [en|y]                                                  @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   [en|y]                                                  @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     [en|y]                                                  @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela|c’] [en|y]                                                  @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 [en|y]                                                  @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 [en|y]                                                  @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     [en|y]                                                  @:3p¬:Ov  [pas|rien|jamais|guère|point]
+        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> n’\3                                                                         && Ne … \5 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  je               [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  je               [le|la|l’|les]                  [lui|leur|en|y]         @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               [le|la|l’|les]                  [lui|leur|en|y]         @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] [le|la|l’|les]                  [lui|leur|en|y]         @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             [le|la|l’|les]                  [lui|leur|en|y]         @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             [le|la|l’|les]                  [lui|leur|en|y]         @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] [le|la|l’|les]                  [lui|leur|en|y]         @:3p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  je               [lui|leur]                      en                      @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               [lui|leur]                      en                      @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] [lui|leur]                      en                      @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             [lui|leur]                      en                      @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             [lui|leur]                      en                      @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ -3>> ne \3                                                                        && Ne … \6 : il manque l’adverbe de négation.
+    [<start>|,|(|/_start_]  je                   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela]    [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  je                   [le|la|l’|les]                  [lui|leur|en|y]         @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   [le|la|l’|les]                  [lui|leur|en|y]         @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     [le|la|l’|les]                  [lui|leur|en|y]         @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela]    [le|la|l’|les]                  [lui|leur|en|y]         @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 [le|la|l’|les]                  [lui|leur|en|y]         @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 [le|la|l’|les]                  [lui|leur|en|y]         @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     [le|la|l’|les]                  [lui|leur|en|y]         @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  je                   [lui|leur]                      en                      @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   [lui|leur]                      en                      @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     [lui|leur]                      en                      @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela]    [lui|leur]                      en                      @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 [lui|leur]                      en                      @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 [lui|leur]                      en                      @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
+        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> ne \3                                                                        && Ne … \6 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  [je|j’]          @:1s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu               @:2s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on|iel] @:3s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous             @:1p¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous             @:2p¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles|iels] @:3p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [je|j’]              @:1s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  tu                   @:2s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [il|elle|on|iel]     @:3s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ce|ça|ceci|cela]    @:3s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  nous                 @:1p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  vous                 @:2p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(|/_start_]  [ils|elles|iels]     @:3p¬:Ov    [pas|rien|jamais|guère|point]
+        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) >>>
         <<- /neg/ morph(\3, ">[aâeéêiîoôuœæ]") -3>> n’\3                                            && Ne … \4 : il manque l’adverbe de négation.
         <<- /neg/ __else__ -3>> ne \3                                                               && Ne … \4 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  [je|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  >avoir  qu’  à
+    [<start>|,|(|/_start_]  c’                   @:3s¬:Ov    [pas|rien|jamais|guère|point]
+        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) and morph(\3, ">[aâeéêiîoôuœæ]")
+        -2>> ce n’                                                                                  && Ne … \4 : il manque l’adverbe de négation.
+
+    [<start>|,|(|/_start_]  [je|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  >avoir  qu’  à
         <<- /neg/ -3>> n’\3                                                                         && Locution “n’avoir qu’à” : il manque l’adverbe de négation.
 
 TEST: __neg__ On {{a}} pas compris.                     ->> n’a
@@ -12764,9 +12803,17 @@ TEST: __neg__ Il {{part}} pas encore.                   ->> ne part
 TEST: __neg__ On {{vous}} a pas compris.                ->> ne vous
 TEST: __neg__ On {{en}} a pas.                          ->> n’en
 TEST: __neg__ Il {{y}} a jamais d’eau.                  ->> n’y
+TEST: __neg__ il {{y}} aura pas foule aujourd’hui       ->> n’y
 TEST: __neg__ je {{deviendrai}} pas hargneux.           ->> ne deviendrai
 TEST: __neg__ il {{le}} lui donne pas souvent.          ->> ne le
 TEST: __neg__ il {{a}} qu’à venir demain                ->> n’a
+TEST: __neg__ ceci {{est}} guère pertinent              ->> n’est
+TEST: __neg__ cela {{me}} chagrine pas                  ->> ne me
+TEST: __neg__ {{c’}}est jamais ta faute                 ->> ce n’
+TEST: __neg__ {{c’}}est pas si mal                      ->> ce n’
+TEST: __neg__ c’est pas mal
+TEST: __neg__ ça devient pas mal
+TEST: __neg__ nous avançons pas mal
 
 
 !!
@@ -14161,7 +14208,7 @@ __purge_locutions__
     à hue et à dia
     à huis clos
     à juste [raison|titre]
-    à l’ [accoutumée|amiable|arrache|arrachée|avance|avenant|aveuglette|emporte-pièce|envi|évidence|étouffée|improviste|inverse|unanimité|unisson]
+    à l’ [accoutumée|amiable|arrache|arraché|arrachée|avance|avenant|aveuglette|emporte-pièce|envi|évidence|étouffée|improviste|inverse|unanimité|unisson]
     à l’ air libre
     à l’ avenir ?[incertain|prometteur]¿
     à l’ échelon [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
@@ -14712,6 +14759,7 @@ __purge_locutions__
     en sous nombre ?[évident|flagrant]¿
     en tant que >tel
     en tête à tête
+    en tête-à-tête
     en si peu [de|d’] temps
     en terrain [découvert|miné]
     en termes choisis
@@ -14731,6 +14779,7 @@ __purge_locutions__
     en ?toute¿ connaissance [de|d’] cause
     en toute [confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|modestie|sécurité|simplicité]
     en travers [de|d’] la gorge
+    en trompe-l’œil
     en vase clos
     en vigueur
     en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
@@ -15785,6 +15834,7 @@ __substantifs_multi_mots__
     >code [de|d’] la route
     >collègue [de|d’] bureau
     >colosse aux pieds d’ argile
+    >commandant en chef
     >commis d’ office
     >compagne [de|d’] route
     >compagnon [de|d’] route
@@ -15990,6 +16040,7 @@ __substantifs_multi_mots__
     >loi d’ airain
     >longueur d’ avance
     >lune [de|d’] miel
+    >lutte à outrance
     >machine à [café|coudre|écrire|laver|sous|voter]
     >machine à remonter le temps
     >machine [de|d’] guerre
@@ -16105,6 +16156,7 @@ __substantifs_multi_mots__
     >poule aux œufs d’ or
     pour l’ amour du ciel
     >pouvoir d’ achat
+    >prédication [de|d’] rue
     >président en exercice
     >presse à >scandale
     preuve ?suffisante¿ du contraire
@@ -16258,6 +16310,7 @@ __substantifs_multi_mots__
     >vol à main armée
     >volée [de|d’] bois vert
     >voiture [de|d’] location
+    >vote par correspondance ?électronique¿
     >wagon à bestiaux
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
@@ -20036,10 +20089,11 @@ TEST: Évidemment, cela va {{s’en}} dire.
 # sceptique / septique
 __conf_sceptique_septique__
     [>fosse|>installation|>choc|>chirurgie|>maladie|>plaie|>blessure|>embolie|>arthrite|>isolement|>pneumoentérite|>pneumo-entérite] >sceptique
-        <<- /conf/ -2>> =\2.replace("scep","sep")                               && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/septique
+        <<- /conf/ -2>> =\2.replace("scep","sep").replace("SCEP","SEP")         && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/septique
 
-    [>être|>demeurer|>rester|>devenir]  >septique
-        <<- /conf/ not morph(<1, ">plaie/") -2>> =\2.replace("sep", "scep")     && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/sceptique
+    [>communauté|>pensée|>philosophie|>être|>demeurer|>rester|>devenir]  >septique
+        <<- /conf/ not morph(<1, ">plaie/")
+        -2>> =\2.replace("sep", "scep").replace("SEP", "SCEP")                  && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/sceptique
 
 TEST: cette fosse {{sceptique}} est pleine.
 TEST: Je suis {{septique}} !
@@ -20068,11 +20122,13 @@ __conf_aller_de_soi__
     >aller [de|d’] [sois|>soie]
         <<- /conf/ -3>> soi                                 && Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
-    >aller ?[pas|jamais|guère]¿ de soit
+    >aller de soit
         <<- /conf/ not after(" soit ") --1>> soi            && Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
-TEST: ça va de {{soie}}
-TEST: cela ne va pas de {{soit}}.
+TEST: ça va de {{soie}}                                                 ->> soi
+TEST: cela ne va pas de {{soit}}.                                       ->> soi
+TEST: ça ne va guère de {{soit}}                                        ->> soi
+TEST: ce qui ne va jamais de {{soie}}                                   ->> soi
 
 
 # suer à grosses gouttes
@@ -22037,6 +22093,7 @@ TEST: {{Vues}} les idioties qu’on entend, normal qu’on perde la tête.
 TEST: {{Passées}} les premières heures du jour…
 TEST: Il faut même être indulgent pour accorder une place à cette dernière, vu qu’elle a pour condition le mensonge des instincts
 TEST: Vu la dureté extrême des conditions de survie…
+TEST: vu les circonstances
 
 
 #### ce + sont / étaient
@@ -22186,6 +22243,7 @@ TEST: des groupes de {{paroles}}                                    ->> parole
 TEST: ils constituent un groupe de {{passionné}}.                   ->> passionnés
 TEST: Ce collectif d’{{artiste}} est très inventif.                 ->> artistes
 TEST: les 80 milliards de fraude fiscale
+TEST: un groupe de prière
 
 
 __gn_cage_d_escalier__
@@ -22285,6 +22343,7 @@ TEST: Faire {{affaire}} à Paris.
 TEST: avoir {{affaires}} à eux
 TEST: ouais, causons {{affaire}}
 TEST: dans ce genre d’affaire, ce qui compte, c’est la persévérance
+TEST: ils ne voulaient rien avoir à faire avec nous.
 
 
 # demi-heure, heure et demie, à demi
@@ -25282,6 +25341,7 @@ TEST: qui n’en furent pas {{balayé}} au premier coup de vent.
 TEST: semblent être redevenus {{sage}}
 TEST: ces hommes qui semblent susceptibles d’être {{balayé}}
 TEST: qui semblent susceptibles d’être {{balayé}}
+TEST: il y a des hauteurs de ton qui sont {{importante}}
 TEST: ce que les journalistes estiment être normal.
 TEST: qui échappe à tout contrôle démocratique et dans lequel les lobbies sont partie prenante est une folie.
 
@@ -26836,6 +26896,8 @@ TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 TEST: Faites le plein de culture en vous abonnant dès 1 € !
 TEST: Fais le plein de vêtements avant de partir en vacances
 TEST: on l’attend pour la fin de semaine, prévoit le Dr Bayart.
+TEST: fais le bien
+TEST: fais-le bien
 
 
 __imp_union_en__
@@ -29809,7 +29871,8 @@ TEST: c’est cela que comprirent les hommes
 TEST: le cheval continait de se débattre
 TEST: les Autrichiens se sont laissé jouer
 TEST: la côte est des États-Unis
-TEST: c’était de la belle ouvrage
+TEST: c’était de la belle ouvrage exécutée avec cœur
+TEST: en ce monde n’existent ni honneur ni justice
 
 
 
