@@ -1011,7 +1011,6 @@ __<s>/virg(virg_virgule_après_point)__
 TEST: ceci, cela{{, …}}                                                   ->> …
 TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|.
 
-
 # Fin de paragraphe
 #__<i>/typo__  ({w_2}) *$   @@0
 #    <<- before("[a-zéàùèê][.] ") and not before("^(?:\\d|\w[.])")
@@ -1203,6 +1202,15 @@ __[s]/typo(typo_math)__
 
 TEST: {{cos ω}}                                         ->> cos(ω)|cos ω
 TEST: {{sin γ}}                                         ->> sin(γ)|sin γ
+
+
+#__[s]/virg(virg_nombre)__
+#    [0-9]+[.]([0-9]+)(?![,.])
+#        <<-  ->> =\0.replace(".", ",")                     && En français, le séparateur décimal est la virgule, non le point.
+#
+#TEST: +{{1.5}} dioptrie
+#TEST: j’en veux 2.000
+#TEST: et moi 3.000.000 de dollars
 
 
 !!
@@ -12605,10 +12613,14 @@ __gn_tout_det__
     tout les @:¬:(?:3s|Oo)
         <<- /gn/ not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                          && Erreur d’accord probable avec « les \3 ».
 
+    de tout les temps
+        <<- /gn/ -2>> tous                                                                          && Erreur d’accord avec « \3 \4 ».
+
 TEST: {{Tout}} deux sont partis les premiers.
 TEST: {{Tout}} mes hommes sont venus.
 TEST: {{Tout}} les hommes sont dingues.
 TEST: Donne à manger à {{tout}} ceux qui sont là.
+TEST: le meilleur hamburger de {{tout}} les temps
 TEST: Revenus de tout ceux qui sont partis ont perdu la foi.
 TEST: car malgré tout ceux qui persistent obtiennent parfois justice.
 TEST: je ne connais pas du tout ceux dont tu parles.
@@ -12628,10 +12640,17 @@ __gn_toute_det__
     toute mon ~^[bcdfgjklmnpqrstvwxz]
         <<- /gn/ -1>> tout                                                                          && Erreur d’accord probable avec “\2”.
 
+    [<start>|,|(|/_start_]  toute  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(|/_start_]  toute  @:[123]p
+        <<- /gn/ -2>> toutes                                                                        && Si vous voulez dire “tous” au féminin, écrivez “toutes”.
+
 TEST: {{Toute}} celles qui viendront…
 TEST: et {{toute}} ce barouf ne nous a apporté que des ennuis.
 TEST: car {{toute}} mon savoir vient d’elle
+TEST: {{toute}} prenaient le train
+TEST: {{toute}} m’ennuyaient
 TEST: toute mon ignorance
+TEST: j’eus toutes les peines du monde à l’en convaincre
 
 
 __gn_tous_det_nom__
@@ -12645,9 +12664,22 @@ __gn_tous_det_nom__
         <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> toutes                 && Erreur d’accord probable : « \3 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggMasPlur(\3, True)                            && Erreur d’accord probable : « \1 » est masculin.
 
+    tous un chacun
+        <<- /loc/ ->> tout un chacun                                                                && Pronom indéfini “tout un chacun”.|https://fr.wiktionary.org/wiki/tout_un_chacun
+
+    [<start>|(] tous [le|l’|ce|cet|mon|ton|son|notre|votre|leur] @:N.*:[me]:[si]
+    [<start>|(] tous [le|l’|ce|cet|mon|ton|son|notre|votre|leur] @:N.*:[me]:[si]
+        <<- /gn/ -2>> tout                                                                          && Erreur d’accord probable avec « \3 \4 ».
+
 TEST: {{tous}} ces {{idiotes}}
 TEST: indubitablement {{tous}} des {{privilégiées}}
+TEST: {{tous un chacun}} avait son opinion
+TEST: {{tous}} mon amour pour elle n’y fit rien
+TEST: {{tous}} mon plan consistait à les prendre par surprise et de vitesse
 TEST: ça consiste à ne pas tous les lire
+TEST: Ils ont tous mon plan de sauvetage de Beyrouth.
+TEST: il y avait pour tous une carte de bienvenue, pour toutes un bouquet de rose.
+TEST: ils avaient tous le même bagage, tous le dessein de vaincre
 
 
 __gn_toutes_det_nom__
@@ -12661,8 +12693,17 @@ __gn_toutes_det_nom__
         <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> tous                   && Erreur d’accord probable : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                            && Erreur d’accord probable : « \1 » est féminin.
 
+    [<start>|(] toutes [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] @:N.*:[fe]:[si]
+    [<start>|(] toutes [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] @:N.*:[fe]:[si]
+        <<- /gn/ -2>> toute                                                                         && Erreur d’accord probable avec « \3 \4 ».
+
 TEST: {{toutes}} mes {{bars}}
 TEST: vraiment {{toutes}} des {{costauds}}
+TEST: {{toutes}} sa dévotion n’y suffisait pas                                          ->> toute
+TEST: {{toutes}} la pensée philosophique a buté sur la question de la liberté           ->> toute
+TEST: Elles connaissent toutes le monde féerique des princes et princesses.
+TEST: Les filles, plus studieuses que les garçons, ont toutes le document transmis par courriel.
+TEST: elles avaient toutes la même idée, toutes la même ambition, toutes l’obsession du succès
 
 
 __gn_tout_nom__
