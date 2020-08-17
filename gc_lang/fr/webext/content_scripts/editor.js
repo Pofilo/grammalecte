@@ -6,6 +6,19 @@
 "use strict";
 
 
+// Exception list
+var oGrammalecteExclusions = new Set([
+    "twitter.com"
+]);
+
+
+var oGrammalecteMessages = {
+    "no_text_area": "⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.",
+    "format_warning": "❗ La zone de texte est un champ textuel enrichi. Les éléments de formatage direct (non textuels) sont susceptibles d’être effacés lors de la correction.",
+    "excluded_site": "⛔ Renvoyer les corrections sur ce site s’avère difficile à cause des interférences possibles. La zone d’où a été extrait le texte ne sera pas modifiée. Vous pouvez copier le texte dans le presse-papiers avec le bouton 📋 ci-dessus."
+};
+
+
 /*
     Text Editor
 */
@@ -68,6 +81,7 @@ class HTMLPageEditor {
 	constructor (xWhat, xResultNode=null, bCheckSignature=true) {
         this.xWhat = xWhat;
         this.bIframe = false;
+        this.bWrite = !oGrammalecteExclusions.has(document.location.host);
         //console.log(xWhat);
         if (xWhat.tagName  &&  xWhat.tagName == "IFRAME") {
             // iframe
@@ -94,7 +108,13 @@ class HTMLPageEditor {
         this.bCheckSignature = bCheckSignature;
         this._lParsableNodes = ["P", "LI", "H1", "H2", "H3", "H4", "H5", "H6"];
         this._lRootNodes = ["DIV", "UL", "OL"];
-        oGrammalecte.oGCPanel.addMessageToGCPanel("❗ Les éléments de formatage direct (non textuels) sont susceptibles d’être effacés lors de la correction.");
+        if (!this.bWrite) {
+            // we don’t write back to the page
+            oGrammalecte.oGCPanel.addMessageToGCPanel(oGrammalecteMessages["excluded_site"]);
+            oGrammalecte.oGCPanel.highlightClipboardButton();
+        } else {
+            oGrammalecte.oGCPanel.addMessageToGCPanel(oGrammalecteMessages["format_warning"]);
+        }
         let sText = this.getTextFromPage();
         oGrammalecteTextEditor.loadText(sText);
     }
@@ -180,6 +200,9 @@ class HTMLPageEditor {
     }
 
     write () {
+        if (!this.bWrite) {
+            return;
+        }
         for (let [i, sParagraph] of oGrammalecteTextEditor.getParagraphs()) {
             if (i < this.lNode.length) {
                 this.lNode[iParagraph].textContent = sParagraph;
@@ -204,6 +227,7 @@ class TextNodeEditor {
     constructor (what, xResultNode=null) {
         this.xNode = null;
         this.bTextArea = false;
+        this.bWrite = !oGrammalecteExclusions.has(document.location.host);
         this.bResultInEvent = false; // if true, the node content is not modified, but an event is dispatched on the node with the modified text
         this.xResultNode = null; // only useful for text analysed without node
         if (xResultNode instanceof HTMLElement) {
@@ -213,7 +237,7 @@ class TextNodeEditor {
         if (typeof(what) == "string") {
             // SIMPLE TEXT
             if (!this.xResultNode) {
-                oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
+                oGrammalecte.oGCPanel.addMessageToGCPanel(oGrammalecteMessages["no_text_area"]);
             }
             this.loadText(what);
         }
@@ -229,7 +253,13 @@ class TextNodeEditor {
             }
             else {
                 // editable node
-                oGrammalecte.oGCPanel.addMessageToGCPanel("❗ La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
+                if (!this.bWrite) {
+                    // we don’t write back to the page
+                    oGrammalecte.oGCPanel.addMessageToGCPanel(oGrammalecteMessages["excluded_site"]);
+                    oGrammalecte.oGCPanel.highlightClipboardButton();
+                } else {
+                    oGrammalecte.oGCPanel.addMessageToGCPanel(oGrammalecteMessages["format_warning"]);
+                }
                 this.loadText(this.xNode.innerText);
             }
         }
@@ -244,11 +274,11 @@ class TextNodeEditor {
     clear () {
         if (this.xNode !== null) {
             this.xNode.disabled = false;
-            this.bTextArea = false;
-            this.bResultInEvent = false;
-            this.xNode = null;
-            this.xResultNode = null;
         }
+        this.bTextArea = false;
+        this.bResultInEvent = false;
+        this.xNode = null;
+        this.xResultNode = null;
         oGrammalecteTextEditor.clear();
     }
 
@@ -272,6 +302,9 @@ class TextNodeEditor {
     }
 
     write () {
+        if (!this.bWrite) {
+            return;
+        }
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
                 const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: oGrammalecteTextEditor.getText() }) });
