@@ -1983,6 +1983,7 @@ __da_mots_grammaticaaux__
         <<- =>> exclude(\1, ":D")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
+    [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
         <<- =>> select(\-1, ":N")
 
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
@@ -2315,6 +2316,7 @@ __fusions_noms_communs__
 
     black [>bloc|>block]
     drag >queen
+    drama >queen
     jet set
     machine [learning+s]
     nec plus ultra
@@ -8248,6 +8250,34 @@ TEST: on va y arriver, {{au temps que faire se peu}}…
 TEST: autant que faire se peut, il faut éviter la confusion entre ces deux discours.
 
 
+# avant / avent
+__conf_avant_avent__
+    [<start>|,|(]  avent  $:D
+        <<- /conf/ -2>> avant                                   && Confusion probable. Si vous évoquez ce qui précède, écrivez “avant”.|https://fr.wiktionary.org/wiki/avant
+
+    avent  [moi|toi|lui|elle|soi|nous|vous|eux|elles|iel|iels]
+        <<- /conf/ not morph(<1, ":D") -1>> avant               && Confusion. Si vous évoquez ce qui précède, écrivez “avant”.|https://fr.wiktionary.org/wiki/avant
+
+    calendrier de l’ avant
+        <<- /conf/ not value(>1, "|guerre|révolution|")
+        --1>> Avent
+        && Confusion probable. Écrivez “calendrier de l’Avent”, c’est-à-dire le calendrier de décembre précédant l’avènement du Christ. Le mot “avent” provient du latin “adventus”, ce qui advient.|https://fr.wiktionary.org/wiki/calendrier_de_l%E2%80%99Avent
+
+TEST: {{avent}} la naissance de l’univers
+TEST: elle passe {{avent}} nous
+TEST: le calendrier de l’{{avant}}                                  ->> Avent
+
+
+# blanle-bas de combat
+__conf_branle_bas_de_combat__
+    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] >combat
+    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] [con|+s] [ba|bas|bat+s|>bât]
+        <<- /conf/ ->> branle-bas de combat                         && Écrivez “branle-bas de combat”.|https://fr.wiktionary.org/wiki/branle-bas_de_combat
+
+TEST: le branle-bas de combat commençait, mais trop tard
+TEST: {{branle bat de con bat}}
+
+
 # ça / çà / sa
 __conf_ça_çà_sa!7__
     ça  @:[NAQ].*:f¬:(?:G|P|[123][sp])|>seul/
@@ -8302,16 +8332,6 @@ TEST: À partir de 1934, et après l’élimination de ses principaux dirigeants
 TEST: Adolf Hitler a créé les SA à Munich le 8 août 1921 en réunissant d’anciens combattants, des officiers mécontents et des membres des corps francs
 TEST: En 1933, après l’élection du NSDAP, les SA se voyaient en concurrence avec l’armée régulière (Reichswehr)
 TEST: les SA devenant de plus en plus extrêmistes
-
-
-# blanle-bas de combat
-__conf_branle_bas_de_combat__
-    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] >combat
-    [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] [con|+s] [ba|bas|bat+s|>bât]
-        <<- /conf/ ->> branle-bas de combat                         && Écrivez “branle-bas de combat”.|https://fr.wiktionary.org/wiki/branle-bas_de_combat
-
-TEST: le branle-bas de combat commençait, mais trop tard
-TEST: {{branle bat de con bat}}
 
 
 # car / quart
@@ -12628,6 +12648,17 @@ TEST: Malgré tout ces hommes sont quand même revenus.
 TEST: Les tout premiers hommes.
 TEST: Les tout petits ne sont pas des légumes.
 TEST: Faire des envois par tout petits nombres.
+TEST: Je n’avais pas vu tout cela…
+TEST: Elle est tout émue. (mais : Elle est toute contente)
+TEST: Ne t’inquiète pas pour les bagages, tout suit. (sens collectif)
+TEST: Ne t’inquiète pas pour les bagages, tous suivent. (tous les bagages)
+TEST: Elles travaillent tout le temps.
+TEST: Elles travaillent tous les jours.
+TEST: Elles travaillent toutes les nuits.
+TEST: Elles travaillent toute la journée.
+TEST: Ils sont tout seuls depuis toujours.
+TEST: Cette femme est tout entière, d’une nature tout entière
+TEST: Les tout débuts de cette entreprise furent fulgurants.
 
 
 __gn_toute_det__
@@ -12680,6 +12711,8 @@ TEST: ça consiste à ne pas tous les lire
 TEST: Ils ont tous mon plan de sauvetage de Beyrouth.
 TEST: il y avait pour tous une carte de bienvenue, pour toutes un bouquet de rose.
 TEST: ils avaient tous le même bagage, tous le dessein de vaincre
+TEST: Mes amis sont tous arrivés, je les attendais tous.
+TEST: Tous sont venus avec un peu de méfiance.
 
 
 __gn_toutes_det_nom__
@@ -12704,6 +12737,8 @@ TEST: {{toutes}} la pensée philosophique a buté sur la question de la liberté
 TEST: Elles connaissent toutes le monde féerique des princes et princesses.
 TEST: Les filles, plus studieuses que les garçons, ont toutes le document transmis par courriel.
 TEST: elles avaient toutes la même idée, toutes la même ambition, toutes l’obsession du succès
+TEST: Leurs sœurs sont toutes mariées.
+TEST: Toutes étaient contentes d’être ici.
 
 
 __gn_tout_nom__
@@ -16992,6 +17027,14 @@ __purge_locutions_potentielles__
     à répétition  @¬:A.*:[fe]:[si]
     à répétition  [<end>|,|)]
         <<- ~1:2>> *
+
+    à en croire certains    @:¬:[NA].*:[me]:[pi]
+    à en croire certains    [<end>|,|)]
+    à en croire certaines   @:¬:[NA].*:[fe]:[pi]
+    à en croire certaines   [<end>|,|)]
+    à en croire plusieurs   @:¬:[NA].*:[pi]
+    à en croire plusieurs   [<end>|,|)]
+        <<- ~1:-2>> *
 
     au bout d’ un moment  @:¬:A.*:[me]:[si]
     au bout d’ un moment  [<end>|,|)]
@@ -23263,7 +23306,6 @@ TEST: il avait besoin d’alliés.
 __infi_divers__
     de [qui|quoi]           ~..(?:ée?s?|ez)$
     à faire                 ~..(?:ée?s?|ez)$
-    à quoi bon              ~..(?:ée?s?|ez)$
     avec [qui|quoi]         ~..(?:ée?s?|ez)$
     comment                 ~..(?:ée?s?|ez)$
     pourquoi                ~..(?:ée?s?|ez)$
@@ -23272,20 +23314,61 @@ __infi_divers__
         <<- /infi/ morph(\-1, ":(?:Q|2p)", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
-TEST: Quand {{mangez}}
-TEST: pourquoi m’{{étonnez}} de ces idioties…
-TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les jours.
-TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.
-TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur
-TEST: Avec quoi {{fabriqué}} un arc ?
+TEST: Quand {{mangez}}                                                                      ->> manger
+TEST: pourquoi {{étonné}} le monde avec ces idioties…                                       ->> étonner
+TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les jours.        ->> aller
+TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.                                  ->> penser
+TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur                  ->> abandonner
+TEST: Avec quoi {{fabriqué}} un arc ?                                                       ->> fabriquer
 TEST: des espaces différents de ceux où se crée le chiffre d’affaires et où elles extraient les données
 
-__infi_y_verbe!3__
-    y ~ée?s?$
-        <<- /infi/ morph(\2, ":V", ":[123][sp]") -2>> _                                 && Le verbe ne devrait pas être un participe passé.
 
-TEST: y {{mangée}} était un supplice
-TEST: j’y crée une nouvelle maison.
+__infi_à_quoi_bon__
+    à quoi bon  le          ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1", ":(?:M|N.*:[me]:[si])")
+        --1>> =suggVerbInfi(\-1)                                                                    && Après “à quoi bon”, le verbe devrait être à l’infinitif.
+
+    à quoi bon  la          ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1", ":(?:M|N.*:[fe]:[si])")
+        --1>> =suggVerbInfi(\-1)                                                                    && Après “à quoi bon”, le verbe devrait être à l’infinitif.
+
+    à quoi bon  [l’|leur]   ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1", ":(?:M|N.*:[si])")
+        --1>> =suggVerbInfi(\-1)                                                                    && Après “à quoi bon”, le verbe devrait être à l’infinitif.
+
+    à quoi bon  les         ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1", ":(?:M|N.*:[pi])")
+        --1>> =suggVerbInfi(\-1)                                                                    && Après “à quoi bon”, le verbe devrait être à l’infinitif.
+
+    à quoi bon             ?[en|me|m’|te|t’|se|s’|nous|vous|lui|y]¿                   ~..(?:ée?s?|ez|ai[ts]?)$
+    à quoi bon  [ne|n’]    ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿ ~..(?:ée?s?|ez|ai[ts]?)$
+    à quoi bon  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
+    à quoi bon  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
+    à quoi bon  ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    && Après “à quoi bon”, le verbe devrait être à l’infinitif.
+
+TEST: à quoi bon le {{chanté}} sur tous les toits                                           ->> chanter
+TEST: à quoi bon la {{donnez}}                                                              ->> donner
+TEST: à quoi bon leur {{donné}} raison                                                      ->> donner
+TEST: à quoi bon l’{{amené}} ici                                                            ->> amener
+TEST: à quoi bon les {{amenés}} chez nous                                                   ->> amener
+TEST: à quoi bon s’{{énervait}} sur une chose aussi insignifiante                           ->> énerver
+TEST: à quoi bon les passions amoureuses si elles nous jettent dans l’affliction
+TEST: à quoi bon les données personnelles si on ne s’en sert pas
+TEST: à quoi bon le passé ressassé sans fin
+TEST: à quoi bon la prise de conscience des multitudes si elles l’oublient aussitôt
+
+
+__infi_que_faire_sinon__
+    que faire ?,¿ sinon  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿ ~..(?:ée?s?|ez|ai[ts]?)$
+    que faire ?,¿ sinon  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
+    que faire ?,¿ sinon  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
+    que faire ?,¿ sinon  ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                      && Après “que faire”, mettez le verbe à l’infinitif.
+
+TEST: que faire, sinon s’{{adonnait}} à sa passion                                          ->> adonner
+TEST: que croire sinon la pensée qu’il y a toujours une solution
 
 
 __infi_nous_vous_verbe__
@@ -23296,6 +23379,15 @@ TEST: oui, pourquoi pas, puisque nous {{intéressé}} à la question ne suffit p
 TEST: il faut croire que vous {{mangé}} ne nous nourrirait guère
 TEST: Sommes-nous désespérés à ce point ?
 TEST: Vous d’habitude si réservée.
+
+
+__infi_y_verbe!3__
+    y ~ée?s?$
+        <<- /infi/ morph(\2, ":V", ":[123][sp]") -2>> _                                 && Le verbe ne devrait pas être un participe passé.
+
+TEST: y {{mangée}} était un supplice
+TEST: j’y crée une nouvelle maison.
+
 
 
 #### Infinitif directement après verbe
@@ -25276,10 +25368,12 @@ TEST: celles qui ne s’efforcent jamais de paraître {{belle}}
 TEST: celles-ci qui ne s’y efforcent jamais de paraître {{raisonnable}}
 TEST: lesquelles s’efforceront toujours de paraître {{évidente}}
 TEST: avec celles qui paraissent susceptibles d’être {{rentré}} à temps
+TEST: lesquelles se savaient, à en croire certains, {{estimés}} en haut lieu        ->> estimées
 TEST: elles se sentent {{perdu}}                                                    ->> perdues
 TEST: contre celles qui se veulent {{ignorante}} des réalités.                      ->> ignorantes
 TEST: Lesquelles s’y montraient {{dure}}.                                           ->> dures
 TEST: celles-là imaginent être devenues légion
+TEST: lesquelles se savaient à en croire certains estimées en haut lieu
 
 
 __ppas_3pl_épi_verbe_état__
@@ -29214,7 +29308,7 @@ __conj_que_où_comment_verbe_sans_sujet!3__
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
 TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
 TEST: nous savons comment {{arriverons}} ces problèmes…
-TEST: combien {{paraissez}} folles ces augmentations
+TEST: nous le pensons puisque {{paraitrons}} folles ces augmentations
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
 TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
 TEST: à des règles aussi absurdes que précises
