@@ -67,22 +67,22 @@ def _createOptionsForWebExtension (dVars):
 def createMailExtension (sLang, dVars):
     "create extension for Thunderbird (as MailExtension)"
     print("> Building extension for Thunderbird (MailExtension)")
-    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.mailext.xpi'
+    spfZip = f"_build/thunderbird-grammalecte-{sLang}-v{dVars['version']}.mailext.xpi"
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     _copyGrammalecteJSPackageInZipFile(hZip, sLang)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
-    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/background.js", "background.js", dVars)
-    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/gce_worker.js", "gce_worker.js", dVars)
-    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/README.md", "README.md", dVars)
-    helpers.addFileToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/NOTE_FOR_REVIEWERS.md", "NOTE_FOR_REVIEWERS.md", dVars)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/3rd", "3rd", dVars, True)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/_locales", "_locales", dVars, True)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/content_scripts", "content_scripts", dVars, True)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/fonts", "fonts", dVars, True)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/img", "img", dVars, True)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/webext/panel", "panel", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/mailext", "", dVars, True)
+    helpers.addFileToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/background.js", "background.js", dVars)
+    helpers.addFileToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/gce_worker.js", "gce_worker.js", dVars)
+    helpers.addFileToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/README.md", "README.md", dVars)
+    helpers.addFileToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/NOTE_FOR_REVIEWERS.md", "NOTE_FOR_REVIEWERS.md", dVars)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/3rd", "3rd", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/_locales", "_locales", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/content_scripts", "content_scripts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/fonts", "fonts", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/img", "img", dVars, True)
+    helpers.addFolderToZipAndFileFile(hZip, f"gc_lang/{sLang}/webext/panel", "panel", dVars, True)
     hZip.close()
     # Note about copying Thunderbird extension directly into the profile:
     # In Options > Configuration editor (about:config), deactivate option <xpinstall.whitelist.required>
