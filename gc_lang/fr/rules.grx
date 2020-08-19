@@ -8732,7 +8732,7 @@ TEST: prendre le problème à bras-le-corps
 # cou / coup / coût
 __conf_coup_cout_cou1__
     [>cou|>coût|>cout] au-dessous [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>arrêt|>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
@@ -9672,7 +9672,7 @@ __conf_hors_or__
     >or [de|d’] chez [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     >or du commun
     >or [de|d’] ?[ma|ta|sa|notre|votre|leur]¿ [compréhension|perception|portée|vue]
-    >or [de|d’] question [que|qu’]
+    >or [de|d’] question [que|qu’|,|)|<end>]
         <<- not morph(<1, ":D.*:[me]") -1>> hors        && Confusion probable. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
     [<start>|,|(] or [de|d’] {pronom_obj}
@@ -11818,10 +11818,11 @@ TEST: nous nous embrassâmes tous les uns les autres, têtes contre têtes
 # confusion toit / toi
 __conf_toi_toit__
     [chez|pour|contre|avec] toit
-        <<- /conf/ -2>> toi                         && Confusion. Le toit est constitué d’une toiture. Pour le pronom personnel à la 2ᵉ personne, écrivez “toi”.|https://fr.wiktionary.org/wiki/toi
+    >parler ?@:[WX]¿ de toit
+        <<- /conf/ --1>> toi                        && Confusion. Le toit est constitué d’une toiture. Pour le pronom personnel à la 2ᵉ personne, écrivez “toi”.|https://fr.wiktionary.org/wiki/toi
 
     [sous|sur] [mon|ton|son|notre|votre|leur] toi
-    [sous|sur] le toi
+    [sous|sur] [le|ce|un] toi
         <<- /conf/ -3>> toit                        && Confusion : “toi” est le pronom personnel à la 2ᵉ personne. Pour évoquer le sommet d’un bâtiment, écrivez “toit”.|https://fr.wiktionary.org/wiki/toit
 
 TEST: ce n’est pas contre {{toit}}
@@ -13457,7 +13458,7 @@ __purge_horaires_et_durée__
     à cette heure du jour
     à l’ heure actuelle
     à l’ heure qu’ il est
-    à la nuit tombée
+    à la nuit [tombée|tombante]
     à n’importe quelle heure du jour et de la nuit
     à toute heure
     à toute heure de la nuit
@@ -14308,7 +14309,6 @@ __purge_locutions__
     à la limite du supportable
     à la lumière [de|d’] tout [ceci|cela|ça]
     à la mords-moi le nœud
-    à la nuit tombante
     à la petite semaine
     à la [force|pointe] [de|d’] l’ épée
     à la pointe du progrès ?[algorithmique|biologique|cybernétique|écologique|industriel|informatique|numérique|scientifique|social|spatial|technique|technologique]¿
@@ -14556,7 +14556,7 @@ __purge_locutions__
     dans la dernière ligne droite
     dans le feu [de|d’] l’ action
     dans leur globalité
-    dans leur grande majorité
+    dans leur ?très¿ grande majorité
     dans tout [cela|ça|ceci]
     dans un cas comme dans l’autre
     dans une [certaine|large|moindre] mesure
@@ -15280,6 +15280,7 @@ __gestion_mots_grammaticaux__
     aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]                      [de|d’]
     aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]
         || [de|d’] [milliers|millions|milliards|trillions|trilliards]                                                   [de|d’]
+    aux lieu et place                                                                                                   [de|du|d’|des]
     compte tenu                                                                                                         [de|du|d’|des]
     d’ un bout à l’ autre                                                                                               [de|du|d’|des]
     dans l’ [attente|éventualité]                                                                                       [de|du|d’|des]
@@ -15892,7 +15893,7 @@ __substantifs_multi_mots__
     >chèque en blanc
     >chèque sans provision
     >cheval [de|d’] [bataille|Troie]
-    >chien [de|d’] garde
+    >chien [de|d’] [garde|guerre]
     >chili con carne
     >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
@@ -15947,6 +15948,7 @@ __substantifs_multi_mots__
     >crotte [de|d’] nez
     >cuillère à [café|soupe]
     >cure [de|d’] [désintoxication|désintox]
+    >date butoir
     >débat sans fin
     >déclaration sur l’ honneur
     >degré d’ arc
@@ -16049,6 +16051,7 @@ __substantifs_multi_mots__
     >frein à >tambour
     >frousse [de|d’] tous les diables
     >fuite en avant
+    >fusée [de|d’] détresse
     >fusil à [lunette|plomb|pompe]
     >gala [de|d’] charité
     >garde à vue
@@ -16067,7 +16070,7 @@ __substantifs_multi_mots__
     >harcèlement [de|d’] rue
     >haussement d’ épaules
     >heure [sup|sup’]
-    heures [de|d’] pointe
+    >heure [de|d’] pointe
     >histoire à dormir debout
     >histoire avec un [grand|petit] h
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|paix|pouvoir]
@@ -16173,6 +16176,7 @@ __substantifs_multi_mots__
     >oiseau [de|d’] mauvais augure
     >ombre au tableau
     >onde [de|d’] choc
+    >opération [de|d’] nuit
     >ordre du jour
     orge [perlé|mondé|carré]
     >nuit [de|d’] noces
@@ -16229,6 +16233,7 @@ __substantifs_multi_mots__
     >porte d’ entrée
     >pot [de|d’] [chambre|colle|départ|échappement]
     >poudre aux yeux
+    >poudre d’ escampette
     >poule aux œufs d’ or
     pour l’ amour du ciel
     >pouvoir d’ achat
@@ -16278,6 +16283,7 @@ __substantifs_multi_mots__
     [rond+s] [de|d’] >jambe
     >roue à aubes
     >roue [avant|arrière]
+    >roue [de|d’] secours
     >rouge à lèvres
     >roulement à billes
     [>ru|>ruisseau] à sec
@@ -16345,7 +16351,7 @@ __substantifs_multi_mots__
     >tour [de|d’] [contrôle|guet|passe-passe]
     >torrent à sec
     >train à grande vitesse
-    >train [de|d’] vie
+    >train [de|d’] [nuit|vie]
     >trait [de|d’] caractère
     >traitement [de|d’] [faveur|texte]
     >transport en commun
@@ -16355,7 +16361,9 @@ __substantifs_multi_mots__
     >tribunal d’ assises
     >trombone à coulisse
     >trou à >rat
+    >trou du cul
     >trouble à l’ ordre public
+    >trousse [de|d’] secours
     >t-shirt sans >manche
     >tuerie [de|d’] masse
     >tueur à gages
@@ -16390,7 +16398,7 @@ __substantifs_multi_mots__
     >wagon à bestiaux
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
-        <<- not (morph(\1, ":[123][sp]") and morph(<1, ":O[sv]")) ~2:0>> *
+        <<- morph(\1, ":N") and not morph(<1, ":Os") ~2:0>> *
         <<- __also__ =>> =select(\1, ":[NA]")
 
     ## adjectifs
