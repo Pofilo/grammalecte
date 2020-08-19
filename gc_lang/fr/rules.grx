@@ -10483,6 +10483,20 @@ TEST: La {{pause}} de la tapisserie.
 TEST: La {{pause}} de la première pierre.
 
 
+# peau / pot
+__conf_peau_pot__
+    >pot [de|d’] [âne|agneau|autruche|bouc|bœuf|buffle|chamois|cerf|chagrin|chèvre|daim|élan|éléphant|femme|homme|humain|humaine|ignane|lapin|léopard|lièvre|mouton|ours|panthère|phoque|porc|renne|serpent|tigre|truie|vache|veau|vison|zèbre|zob]
+    >pot >humain
+        <<- /conf/ morph(<1, ">(?:,|en)/|:D.*:e|<start>") -1>> peau|peaux   && Confusion. Un pot est un récipient. L’enveloppe d’un humain ou d’un animal s’écrit “peau”.|https://fr.wiktionary.org/wiki/peau
+
+    mal dans [ma|ta|sa|notre|votre|leur] pot
+        <<- /conf/ --1>> peau                                               && Confusion. Un pot est un récipient. L’enveloppe d’un humain ou d’un animal s’écrit “peau”.|https://fr.wiktionary.org/wiki/peau
+
+TEST: en {{pot}} de mouton                                          ->> peau|peaux
+TEST: des {{pots}} de vache                                         ->> peau|peaux
+TEST: ils sont mal dans leur {{pot}}                                ->> peau
+
+
 # péché / pêcher
 __conf_péché_pêcher1__
     [pécher|>pêcher|pêché+ses] [mignon+s|>capital|>mortel|>originel|>véniel]
@@ -10626,7 +10640,7 @@ __conf_plant_plan__
     >plan [de|d’] [>aubergine|>betterave|>carotte|>citrouille|>concombre|>cornichon|>courgette|>légume|>melon|>poivron|>potiron|>rubarbe|>tabac|>tomate|>vigne]
     >plan [de|d’] [petit+s] pois
     >plan [de|d’] >pomme [de|d’] terre
-    >plan [>maraîchère|>maraichère]
+    >plan [>maraîcher|>maraicher]
         <<- /conf/ -1>> =\1.replace("n", "nt").replace("N", "NT")           && Confusion. Pour parler d’une petite pousse végétale, écrivez “plant” (dérivé de “plante”).
 
 TEST: va acheter des {{plans}} de tomate
@@ -13263,6 +13277,13 @@ __purge_saisons__
     par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps de l’ [an|année] ~^[0-9]{2,5}$
     par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] d’ [été|automne|hiver]
     par un ?beau¿ [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] printemps
+        <<- ~>> *
+
+    entre [printemps|été|automne|hiver] ?~^\d{2,5}$¿ et [printemps|été|automne|hiver] ?~^\d{2,5}$¿
+    du printemps ?~^\d{2,5}$¿ au printemps ?~^\d{2,5}$¿
+    du printemps ?~^\d{2,5}$¿ à l’ [été|automne|hiver] ?~^\d{2,5}$¿
+    de l’ [été|automne|hiver] ?~^\d{2,5}$¿ au printemps ?~^\d{2,5}$¿
+    de l’ [été|automne|hiver] ?~^\d{2,5}$¿ à l’ [été|automne|hiver] ?~^\d{2,5}$¿
         <<- ~>> *
 
 
@@ -15989,6 +16010,7 @@ __substantifs_multi_mots__
     >enterrement [de|d’] vie [de|d’] garçon
     >enterrement [de|d’] vie [de|d’] jeune fille
     >entrée [de|d’] service
+    >enquête à charge
     >épée à deux mains
     >épingle à cravate
     >épreuve [de|d’] force
@@ -24542,7 +24564,10 @@ __tag_locutions_verbales_d_état__
     ## locutions verbales d’état
     >avoir [été|semblé|paru]
     >avoir [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir peur [de|d’]                     [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir [envie|horreur|peur]                               [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir l’ [envie|exigence|illusion|impression|intention]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir le [désir|sentiment]                               [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir la ?ferme¿ [intention|volonté]                     [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     [>être|>sembler|>demeurer|>paraître|>paraitre] [loin|près] d’ [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     [>être|>sembler] [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
@@ -25330,6 +25355,7 @@ TEST: ceux-ci se surent {{espionné}} par les agents secrets de l’ennemi.
 TEST: agissons eux qui se montrent tellement {{arrogantes}} qu’ils méritent une petite leçon.
 TEST: lesquels se pensent encore {{anonyme}}
 TEST: ils sont loin d’être aussi {{malin}} qu’ils l’imaginent
+TEST: ils avaient la ferme intention d’être {{vainqueur}} ce soir
 TEST: ils étaient devenus réalité.
 
 
