@@ -6,20 +6,17 @@
 
 "use strict";
 
-if(typeof(process) !== 'undefined') {
-    var str_transform = require("./str_transform.js");
-    var helpers = require("./helpers.js");
-    var char_player = require("./char_player.js");
-} else if (typeof(require) !== 'undefined') {
-    var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-    var char_player = require("resource://grammalecte/graphspell/char_player.js");
-}
-
 // Don’t remove <string>. Necessary in TB.
 ${string}
 ${map}
 ${set}
+
+
+if (typeof(process) !== 'undefined') {
+    var str_transform = require("./str_transform.js");
+    var helpers = require("./helpers.js");
+    var char_player = require("./char_player.js");
+}
 
 
 class SuggResult {

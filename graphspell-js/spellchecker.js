@@ -13,16 +13,13 @@
 
 "use strict";
 
+${map}
+
+
 if (typeof(process) !== 'undefined') {
     var ibdawg = require("./ibdawg.js");
     var tokenizer = require("./tokenizer.js");
 }
-else if (typeof(require) !== 'undefined') {
-    var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-    var tokenizer = require("resource://grammalecte/graphspell/tokenizer.js");
-}
-
-${map}
 
 
 const dDefaultDictionaries = new Map([
