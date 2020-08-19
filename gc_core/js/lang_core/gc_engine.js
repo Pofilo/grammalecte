@@ -30,21 +30,12 @@ function capitalizeArray (aArray) {
     return aNew;
 }
 
-
-// data
-let _sAppContext = "";                                  // what software is running
-let _dOptions = null;
-let _dOptionsColors = null;
-let _oSpellChecker = null;
-let _oTokenizer = null;
-let _aIgnoredRules = new Set();
-
-
 function echo (x) {
     console.log(x);
     return true;
 }
 
+var _sAppContext = "";
 
 var gc_engine = {
 
@@ -57,24 +48,29 @@ var gc_engine = {
     version: "${version}",
     author: "${author}",
 
+    //// Tools
+    oSpellChecker: null,
+    oTokenizer: null,
+
+    //// Data
+    aIgnoredRules: new Set(),
+    oOptionsColors: null,
+
     //// Initialization
 
     load: function (sContext="JavaScript", sColorType="aRGB", sPath="") {
         try {
-            if(typeof(process) !== 'undefined') {
-                var spellchecker = require("../graphspell/spellchecker.js");
-                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
-            } else if (typeof(require) !== 'undefined') {
-                var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
-                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
-            } else {
-                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_main_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
-            }
             _sAppContext = sContext;
-            _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
-            _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType);
-            _oTokenizer = _oSpellChecker.getTokenizer();
-            _oSpellChecker.activateStorage();
+            if (typeof(process) !== 'undefined') {
+                var spellchecker = require("../graphspell/spellchecker.js");
+                this.oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
+            } else {
+                this.oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_main_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
+            }
+            this.oSpellChecker.activateStorage();
+            this.oTokenizer = this.oSpellChecker.getTokenizer();
+            gc_options.load(sContext)
+            this.oOptionsColors = gc_options.getOptionsColors(sContext, sColorType);
         }
         catch (e) {
             console.error(e);
@@ -82,7 +78,7 @@ var gc_engine = {
     },
 
     getSpellChecker: function () {
-        return _oSpellChecker;
+        return this.oSpellChecker;
     },
 
     //// Rules
@@ -95,15 +91,15 @@ var gc_engine = {
     },
 
     ignoreRule: function (sRuleId) {
-        _aIgnoredRules.add(sRuleId);
+        this.aIgnoredRules.add(sRuleId);
     },
 
     resetIgnoreRules: function () {
-        _aIgnoredRules.clear();
+        this.aIgnoredRules.clear();
     },
 
     reactivateRule: function (sRuleId) {
-        _aIgnoredRules.delete(sRuleId);
+        this.aIgnoredRules.delete(sRuleId);
     },
 
     listRules: function* (sFilter=null) {
@@ -132,25 +128,23 @@ var gc_engine = {
     //// Options
 
     setOption: function (sOpt, bVal) {
-        if (_dOptions.has(sOpt)) {
-            _dOptions.set(sOpt, bVal);
-        }
+        gc_options.setOption(sOpt, bVal);
     },
 
     setOptions: function (dOpt) {
-        _dOptions.gl_updateOnlyExistingKeys(dOpt);
+        gc_options.setOptions(dOpt);
     },
 
     getOptions: function () {
-        return _dOptions;
+        return gc_options.getOptions();
     },
 
     getDefaultOptions: function () {
-        return gc_options.getOptions(_sAppContext).gl_shallowCopy();
+        return gc_options.getDefaultOptions();
     },
 
     resetOptions: function () {
-        _dOptions = gc_options.getOptions(_sAppContext).gl_shallowCopy();
+        gc_options.resetOptions();
     },
 
     //// Parsing
@@ -198,7 +192,7 @@ class TextParser {
 
     parse (sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false, bFullInfo=false) {
         // analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors
-        let dOpt = dOptions || _dOptions;
+        let dOpt = dOptions || gc_options.dOptions;
         let bShowRuleId = option('idrule');
         // parse paragraph
         try {
@@ -221,7 +215,7 @@ class TextParser {
                 this.sSentence = sText.slice(iStart, iEnd);
                 this.sSentence0 = this.sText0.slice(iStart, iEnd);
                 this.nOffsetWithinParagraph = iStart;
-                this.lToken = Array.from(_oTokenizer.genTokens(this.sSentence, true));
+                this.lToken = Array.from(gc_engine.oTokenizer.genTokens(this.sSentence, true));
                 this.dTokenPos.clear();
                 for (let dToken of this.lToken) {
                     if (dToken["sType"] != "INFO") {
@@ -232,7 +226,7 @@ class TextParser {
                     oSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": this.sSentence, "lToken": Array.from(this.lToken) };
                     for (let oToken of oSentence["lToken"]) {
                         if (oToken["sType"] == "WORD") {
-                            oToken["bValidToken"] = _oSpellChecker.isValidToken(oToken["sValue"]);
+                            oToken["bValidToken"] = gc_engine.oSpellChecker.isValidToken(oToken["sValue"]);
                         }
                     }
                     // the list of tokens is duplicated, to keep all tokens from being deleted when analysis
@@ -302,7 +296,7 @@ class TextParser {
             }
             else if (!sOption || option(sOption)) {
                 for (let [zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions, lGroups, lNegLookBefore] of lRuleGroup) {
-                    if (!_aIgnoredRules.has(sRuleId)) {
+                    if (!gc_engine.aIgnoredRules.has(sRuleId)) {
                         while ((m = zRegex.gl_exec2(sText, lGroups, lNegLookBefore)) !== null) {
                             let bCondMemo = null;
                             for (let [sFuncCond, cActionType, sWhat, ...eAct] of lActions) {
@@ -373,7 +367,7 @@ class TextParser {
     update (sSentence, bDebug=false) {
         // update <sSentence> and retokenize
         this.sSentence = sSentence;
-        let lNewToken = Array.from(_oTokenizer.genTokens(sSentence, true));
+        let lNewToken = Array.from(gc_engine.oTokenizer.genTokens(sSentence, true));
         for (let oToken of lNewToken) {
             if (this.dTokenPos.gl_get(oToken["nStart"], {}).hasOwnProperty("lMorph")) {
                 oToken["lMorph"] = this.dTokenPos.get(oToken["nStart"])["lMorph"];
@@ -471,7 +465,7 @@ class TextParser {
             if (oToken["sType"].slice(0,4) == "WORD") {
                 // token lemmas
                 if (oNode.hasOwnProperty("<lemmas>")) {
-                    for (let sLemma of _oSpellChecker.getLemma(oToken["sValue"])) {
+                    for (let sLemma of gc_engine.oSpellChecker.getLemma(oToken["sValue"])) {
                         if (oNode["<lemmas>"].hasOwnProperty(sLemma)) {
                             if (bDebug) {
                                 console.log("  MATCH: >" + sLemma);
@@ -483,7 +477,7 @@ class TextParser {
                 }
                 // morph arcs
                 if (oNode.hasOwnProperty("<morph>")) {
-                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
                     if (lMorph.length > 0) {
                         for (let sSearch in oNode["<morph>"]) {
                             if (!sSearch.includes("¬")) {
@@ -527,7 +521,7 @@ class TextParser {
                 }
                 // regex morph arcs
                 if (oNode.hasOwnProperty("<re_morph>")) {
-                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
                     if (lMorph.length > 0) {
                         for (let sRegex in oNode["<re_morph>"]) {
                             if (!sRegex.includes("¬")) {
@@ -840,7 +834,7 @@ class TextParser {
             "sLineId": sLineId,
             "sRuleId": sRuleId,
             "sType": sOption || "notype",
-            "aColor": _dOptionsColors[sOption],
+            "aColor": gc_engine.oOptionsColors[sOption],
             "sMessage": sMessage,
             "aSuggestions": lSugg,
             "URL": sURL
@@ -1033,7 +1027,7 @@ class TextParser {
 
 function option (sOpt) {
     // return true if option sOpt is active
-    return _dOptions.get(sOpt);
+    return gc_options.dOptions.gl_get(sOpt, false);
 }
 
 var re = {
@@ -1123,7 +1117,7 @@ function displayInfo (dTokenPos, aWord) {
         console.log("> nothing to find");
         return true;
     }
-    let lMorph = _oSpellChecker.getMorph(aWord[1]);
+    let lMorph = gc_engine.oSpellChecker.getMorph(aWord[1]);
     if (lMorph.length === 0) {
         console.log("> not in dictionary");
         return true;
@@ -1140,7 +1134,7 @@ function morph (dTokenPos, aWord, sPattern, sNegPattern, bNoWord=false) {
     if (!aWord) {
         return bNoWord;
     }
-    let lMorph = (dTokenPos.has(aWord[0])  &&  dTokenPos.get(aWord[0]))["lMorph"] ? dTokenPos.get(aWord[0])["lMorph"] : _oSpellChecker.getMorph(aWord[1]);
+    let lMorph = (dTokenPos.has(aWord[0])  &&  dTokenPos.get(aWord[0]))["lMorph"] ? dTokenPos.get(aWord[0])["lMorph"] : gc_engine.oSpellChecker.getMorph(aWord[1]);
     if (lMorph.length === 0) {
         return false;
     }
@@ -1162,7 +1156,7 @@ function morph (dTokenPos, aWord, sPattern, sNegPattern, bNoWord=false) {
 
 function analyse (sWord, sPattern, sNegPattern) {
     // analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)
-    let lMorph = _oSpellChecker.getMorph(sWord);
+    let lMorph = gc_engine.oSpellChecker.getMorph(sWord);
     if (lMorph.length === 0) {
         return false;
     }
@@ -1220,12 +1214,12 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     else {
         if (nLeft !== null) {
             let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
-            lMorph = _oSpellChecker.getMorph(sValue);
+            lMorph = gc_engine.oSpellChecker.getMorph(sValue);
             if (bMemorizeMorph) {
                 oToken["lMorph"] = lMorph;
             }
         } else {
-            lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
+            lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
         }
     }
     if (lMorph.length == 0) {
@@ -1252,12 +1246,12 @@ function g_analyse (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, b
     let lMorph;
     if (nLeft !== null) {
         let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
-        lMorph = _oSpellChecker.getMorph(sValue);
+        lMorph = gc_engine.oSpellChecker.getMorph(sValue);
         if (bMemorizeMorph) {
             oToken["lMorph"] = lMorph;
         }
     } else {
-        lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
+        lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     }
     if (lMorph.length == 0) {
         return false;
@@ -1280,7 +1274,7 @@ function g_analyse (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, b
 
 function g_merged_analyse (oToken1, oToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
     // merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)
-    let lMorph = _oSpellChecker.getMorph(oToken1["sValue"] + cMerger + oToken2["sValue"]);
+    let lMorph = gc_engine.oSpellChecker.getMorph(oToken1["sValue"] + cMerger + oToken2["sValue"]);
     if (lMorph.length == 0) {
         return false;
     }
@@ -1364,7 +1358,7 @@ function select (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
         console.log("Error. There should be a token at this position: ", nPos);
         return true;
     }
-    let lMorph = _oSpellChecker.getMorph(sWord);
+    let lMorph = gc_engine.oSpellChecker.getMorph(sWord);
     if (lMorph.length === 0  ||  lMorph.length === 1) {
         return true;
     }
@@ -1387,7 +1381,7 @@ function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
         console.log("Error. There should be a token at this position: ", nPos);
         return true;
     }
-    let lMorph = _oSpellChecker.getMorph(sWord);
+    let lMorph = gc_engine.oSpellChecker.getMorph(sWord);
     if (lMorph.length === 0  ||  lMorph.length === 1) {
         return true;
     }
@@ -1412,7 +1406,7 @@ function define (dTokenPos, nPos, sMorphs) {
 
 function g_select (oToken, sPattern, lDefault=null) {
     // select morphologies for <oToken> according to <sPattern>, always return true
-    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
             oToken["lMorph"] = lDefault;
@@ -1432,7 +1426,7 @@ function g_select (oToken, sPattern, lDefault=null) {
 
 function g_exclude (oToken, sPattern, lDefault=null) {
     // select morphologies for <oToken> according to <sPattern>, always return true
-    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
             oToken["lMorph"] = lDefault;
@@ -1452,7 +1446,7 @@ function g_exclude (oToken, sPattern, lDefault=null) {
 
 function g_add_morph (oToken, sNewMorph) {
     // Disambiguation: add a morphology to a token
-    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     lMorph.push(...sNewMorph.split("|"));
     oToken["lMorph"] = lMorph;
     return true;
@@ -1460,7 +1454,7 @@ function g_add_morph (oToken, sNewMorph) {
 
 function g_rewrite (oToken, sToReplace, sReplace) {
     // Disambiguation: rewrite morphologies
-    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     oToken["lMorph"] = lMorph.map(s => s.replace(sToReplace, sReplace));
     return true;
 }
@@ -1476,7 +1470,7 @@ function g_define_from (oToken, nLeft=null, nRight=null) {
     if (nLeft !== null) {
         sValue = (nRight !== null) ? sValue.slice(nLeft, nRight) : sValue.slice(nLeft);
     }
-    oToken["lMorph"] = _oSpellChecker.getMorph(sValue);
+    oToken["lMorph"] = gc_engine.oSpellChecker.getMorph(sValue);
     return true;
 }
 

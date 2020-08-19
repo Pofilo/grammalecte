@@ -45,15 +45,16 @@ author = "${author}"
 _rules = None                               # module gc_rules
 _rules_graph = None                         # module gc_rules_graph
 
-# Data
-_sAppContext = ""                           # what software is running
-_dOptions = None
-_dOptionsColors = None
+# Tools
 _oSpellChecker = None
 _oTokenizer = None
+
+# Data
+_sAppContext = ""                           # what software is running
 _aIgnoredRules = set()
 
 # Writer underlining style
+_dOptionsColors = None
 _bMulticolor = True
 _nUnderliningStyle = 0
 
@@ -64,16 +65,15 @@ def load (sContext="Python", sColorType="aRGB"):
     "initialization of the grammar checker"
     global _oSpellChecker
     global _sAppContext
-    global _dOptions
     global _dOptionsColors
     global _oTokenizer
     try:
-        _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
-        _dOptions = gc_options.getOptions(sContext).copy()   # duplication necessary, to be able to reset to default
-        _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)
-        _oTokenizer = _oSpellChecker.getTokenizer()
+        _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _oSpellChecker.activateStorage()
+        _oTokenizer = _oSpellChecker.getTokenizer()
+        gc_options.load(sContext)
+        _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)
     except:
         traceback.print_exc()
 
@@ -158,47 +158,41 @@ def displayRules (sFilter=None):
         echo("{:<8} {:<10} {:<10} {}".format(sOption, sLineId, sRuleId, sType))
 
 
-#### Options
+#### Options (just calls to gc_options, to keep for compatibility)
 
 def setOption (sOpt, bVal):
     "set option <sOpt> with <bVal> if it exists"
-    if sOpt in _dOptions:
-        _dOptions[sOpt] = bVal
+    gc_options.setOption(sOpt, bVal)
 
 
 def setOptions (dOpt):
     "update the dictionary of options with <dOpt>"
-    for sKey, bVal in dOpt.items():
-        if sKey in _dOptions:
-            _dOptions[sKey] = bVal
+    gc_options.setOptions(dOpt)
 
 
 def getOptions ():
     "return the dictionary of current options"
-    return _dOptions
+    return gc_options.getOptions()
 
 
 def getDefaultOptions ():
     "return the dictionary of default options"
-    return gc_options.getOptions(_sAppContext).copy()
+    return gc_options.getDefaultOptions()
 
 
-def getOptionsLabels (sLang):
+def getOptionsLabels (sLang="${lang}"):
     "return options labels"
-    return gc_options.getUI(sLang)
+    return gc_options.getOptionLabels(sLang)
 
 
 def displayOptions (sLang="${lang}"):
-    "display the list of grammar checking options"
-    echo("Options:")
-    echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
-    echo("")
+    "print options"
+    gc_options.displayOptions(sLang)
 
 
 def resetOptions ():
     "set options to default values"
-    global _dOptions
-    _dOptions = getDefaultOptions()
+    gc_options.resetOptions()
 
 
 def setWriterUnderliningStyle (sStyle="BOLDWAVE", bMulticolor=True):
@@ -264,7 +258,7 @@ class TextParser:
     def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False, bFullInfo=False):
         "analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) paragraphs errors and sentences with tokens and errors"
         #sText = unicodedata.normalize("NFC", sText)
-        dOpt = dOptions or _dOptions
+        dOpt = dOptions or gc_options.dOptions
         bShowRuleId = option('idrule')
         # parse paragraph
         try:
@@ -883,7 +877,7 @@ class TextParser:
 
 def option (sOpt):
     "return True if option <sOpt> is active"
-    return _dOptions.get(sOpt, False)
+    return gc_options.dOptions.get(sOpt, False)
 
 
 #### Functions to get text outside pattern scope

@@ -27,6 +27,7 @@ def py2js (sCode):
     sCode = sCode.replace("None", "null")
     sCode = sCode.replace("bool", "Boolean")
     # methods
+    sCode = sCode.replace("_oSpellChecker", "gc_engine.oSpellChecker")
     sCode = sCode.replace(".__len__()", ".length")
     sCode = sCode.replace(".endswith", ".endsWith")
     sCode = sCode.replace(".find", ".indexOf")
@@ -45,6 +46,7 @@ def py2js (sCode):
     sCode = sCode.replace('.replace("."', r".replace(/\./g")
     sCode = sCode.replace('.replace("..."', r".replace(/\.\.\./g")
     sCode = re.sub(r'.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
+
     # regex
     sCode = re.sub('m\\.group\\((\\d+)\\) +in +(a[a-zA-Z]+)', "\\2.has(m[\\1])", sCode)
     sCode = re.sub('(lToken\\S+) +in +(a[a-zA-Z]+)', "\\2.has(\\1)", sCode)

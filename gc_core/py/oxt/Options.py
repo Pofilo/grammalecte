@@ -23,7 +23,7 @@ def loadOptions (sLang):
     try:
         xNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Leaves", False)
         xChild = xNode.getByName(sLang)
-        dOpt = gce.gc_options.getOptions("Writer")
+        dOpt = gce.gc_options.getOptions()
         for sKey in dOpt:
             sValue = xChild.getPropertyValue(sKey)
             if sValue != '':
@@ -72,7 +72,7 @@ class GC_Options (unohelper.Base, XActionListener):
     def run (self, sUI):
         try:
             dUI = op_strings.getUI(sUI)
-            dOptionUI = gce.gc_options.getUI(sUI)
+            dOptionUI = gce.gc_options.getOptionLabels(sUI)
 
             # fonts
             xFDTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")

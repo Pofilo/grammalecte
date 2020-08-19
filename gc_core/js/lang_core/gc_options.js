@@ -1,4 +1,4 @@
-// Options for Grammalecte
+// Grammar checker options manager
 
 /* jshint esversion:6 */
 /* jslint esversion:6 */
@@ -8,22 +8,60 @@ ${map}
 
 
 var gc_options = {
-    getOptions: function (sContext="JavaScript") {
-        if (this.dOpt.hasOwnProperty(sContext)) {
-            return this.dOpt[sContext];
+
+    dOptions: new Map(),
+
+    sAppContext: "JavaScript",
+
+    load: function (sContext="JavaScript") {
+        this.sAppContext = sContext;
+        this.dOptions = this.getDefaultOptions(sContext);
+    },
+
+    setOption: function (sOpt, bVal) {
+        if (this.dOptions.has(sOpt)) {
+            this.dOptions.set(sOpt, bVal);
         }
-        return this.dOpt["JavaScript"];
+    },
+
+    setOptions: function (dOpt) {
+        this.dOptions.gl_updateOnlyExistingKeys(dOpt);
+    },
+
+    getOptions: function () {
+        return this.dOptions.gl_shallowCopy();
+    },
+
+    resetOptions: function () {
+        this.dOptions = this.getDefaultOptions(this._sAppContext);
+    },
+
+    getDefaultOptions: function (sContext="") {
+        if (!sContext) {
+            sContext = this.sAppContext;
+        }
+        if (this.oDefaultOpt.hasOwnProperty(sContext)) {
+            return this.oDefaultOpt[sContext].gl_shallowCopy();
+        }
+        return this.oDefaultOpt["JavaScript"].gl_shallowCopy();
+    },
+
+    getOptionLabels: function (sLang="${sLang}") {
+        if (this.oOptLabel.hasOwnProperty(sLang)) {
+            return this.oOptLabel[sLang];
+        }
+        return this.oOptLabel["{$sLang}"];
     },
 
     getOptionsColors: function (sTheme="Default", sColorType="aRGB") {
-        let dOptColor = (this.dOptColor.hasOwnProperty(sTheme)) ? this.dOptColor[sTheme] : this.dOptColor["Default"];
-        let dColorType = (this.dColorType.hasOwnProperty(sColorType)) ? this.dColorType[sColorType] : this.dColorType["aRGB"];
-        let dColor = {};
+        let oOptColor = (this.oOptColor.hasOwnProperty(sTheme)) ? this.oOptColor[sTheme] : this.oOptColor["Default"];
+        let oColorType = (this.oColorType.hasOwnProperty(sColorType)) ? this.oColorType[sColorType] : this.oColorType["aRGB"];
+        let oColor = {};
         try {
-            for (let [sOpt, sColor] of Object.entries(dOptColor)) {
-                dColor[sOpt] = dColorType[sColor];
+            for (let [sOpt, sColor] of Object.entries(oOptColor)) {
+                oColor[sOpt] = oColorType[sColor];
             }
-            return dColor;
+            return oColor;
         }
         catch (e) {
             console.error(e);
@@ -33,26 +71,33 @@ var gc_options = {
 
     lStructOpt: ${lStructOpt},
 
-    dOpt: {
+    oDefaultOpt: {
         "JavaScript": new Map (${dOptJavaScript}),
         "Firefox": new Map (${dOptFirefox}),
         "Thunderbird": new Map (${dOptThunderbird}),
     },
 
-    dColorType: ${dColorType},
+    oColorType: ${dColorType},
 
-    dOptColor: ${dOptColor},
+    oOptColor: ${dOptColor},
 
-    dOptLabel: ${dOptLabel}
+    oOptLabel: ${dOptLabel}
 };
 
 
 if (typeof(exports) !== 'undefined') {
+    exports.dOptions = gc_options.dOptions;
+    exports.sAppContext = gc_options.sAppContext;
+    exports.load = gc_options.load;
+    exports.setOption = gc_options.setOption;
+    exports.setOptions = gc_options.setOptions;
+    exports.resetOptions = gc_options.resetOptions;
+    exports.getDefaultOptions = gc_options.getDefaultOptions;
     exports.getOptions = gc_options.getOptions;
     exports.getOptionsColors = gc_options.getOptionsColors;
     exports.lStructOpt = gc_options.lStructOpt;
-    exports.dOpt = gc_options.dOpt;
+    exports.oDefaultOpt = gc_options.oDefaultOpt;
     exports.dColorType = gc_options.dColorType;
-    exports.dOptColor = gc_options.dOptColor;
-    exports.dOptLabel = gc_options.dOptLabel;
+    exports.oOptColor = gc_options.oOptColor;
+    exports.oOptLabel = gc_options.oOptLabel;
 }

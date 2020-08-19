@@ -18,16 +18,16 @@ function g_morphVC (oToken, sPattern, sNegPattern="") {
 
 function apposition (sWord1, sWord2) {
     // returns true if nom + nom (no agreement required)
-    return sWord2.length < 2 || (cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)));
+    return sWord2.length < 2 || (cregex.mbNomNotAdj(gc_engine.oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(gc_engine.oSpellChecker.getMorph(sWord1)));
 }
 
 function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
     // check agreement between <oToken1> and <oToken2>
-    let lMorph1 = oToken1.hasOwnProperty("lMorph") ? oToken1["lMorph"] : _oSpellChecker.getMorph(oToken1["sValue"]);
+    let lMorph1 = oToken1.hasOwnProperty("lMorph") ? oToken1["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken1["sValue"]);
     if (lMorph1.length === 0) {
         return true;
     }
-    let lMorph2 = oToken2.hasOwnProperty("lMorph") ? oToken2["lMorph"] : _oSpellChecker.getMorph(oToken2["sValue"]);
+    let lMorph2 = oToken2.hasOwnProperty("lMorph") ? oToken2["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken2["sValue"]);
     if (lMorph2.length === 0) {
         return true;
     }
@@ -48,8 +48,8 @@ function mbUnit (s) {
 }
 
 function queryNamesPOS (sWord1, sWord2) {
-    let lMorph1 = _oSpellChecker.getMorph(sWord1);
-    let lMorph2 = _oSpellChecker.getMorph(sWord2);
+    let lMorph1 = gc_engine.oSpellChecker.getMorph(sWord1);
+    let lMorph2 = gc_engine.oSpellChecker.getMorph(sWord2);
     if (lMorph1.length == 0 || lMorph2.length == 0) {
         return ":N:e:p";
     }
