@@ -13,6 +13,7 @@ from ..graphspell.echo import echo
 
 from .. import text
 
+from . import gc_functions
 from . import gc_options
 
 try:
@@ -72,6 +73,7 @@ def load (sContext="Python", sColorType="aRGB"):
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _oSpellChecker.activateStorage()
         _oTokenizer = _oSpellChecker.getTokenizer()
+        gc_functions.load(sContext, _oSpellChecker)
         gc_options.load(sContext)
         _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)
     except:
@@ -259,7 +261,7 @@ class TextParser:
         "analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) paragraphs errors and sentences with tokens and errors"
         #sText = unicodedata.normalize("NFC", sText)
         dOpt = dOptions or gc_options.dOptions
-        bShowRuleId = option('idrule')
+        bShowRuleId = gc_options.dOptions.get('idrule', False)
         # parse paragraph
         try:
             self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
@@ -338,7 +340,7 @@ class TextParser:
                             for sFuncCond, cActionType, sWhat, *eAct in lActions:
                                 # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try:
-                                    bCondMemo = not sFuncCond or globals()[sFuncCond](sText, sText0, m, self.dTokenPos, sCountry, bCondMemo)
+                                    bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(sText, sText0, m, self.dTokenPos, sCountry, bCondMemo)
                                     if bCondMemo:
                                         if bDebug:
                                             echo("RULE: " + sLineId)
@@ -358,7 +360,7 @@ class TextParser:
                                         elif cActionType == "=":
                                             # disambiguation
                                             if not bParagraph:
-                                                globals()[sWhat](sText, m, self.dTokenPos)
+                                                getattr(gc_functions, sWhat)(sText, m, self.dTokenPos)
                                                 if bDebug:
                                                     echo("= " + m.group(0) + "  # " + sLineId)
                                         elif cActionType == ">":
@@ -591,7 +593,7 @@ class TextParser:
                     # Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
-                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
+                        bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error
@@ -618,7 +620,7 @@ class TextParser:
                                     echo("    TEXT_PROCESSOR: [{}:{}]  > {}".format(self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"], sWhat))
                             elif cActionType == "=":
                                 # disambiguation
-                                globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
+                                getattr(gc_functions, sWhat)(self.lToken, nTokenOffset, nLastToken)
                                 if bDebug:
                                     echo("    DISAMBIGUATOR: ({})  [{}:{}]".format(sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
                             elif cActionType == ">":
@@ -674,7 +676,7 @@ class TextParser:
         nEnd = nOffset + m.end(iGroup)
         # suggestions
         if sRepl[0:1] == "=":
-            sSugg = globals()[sRepl[1:]](sText, m)
+            sSugg = getattr(gc_functions, sRepl[1:])(sText, m)
             lSugg = sSugg.split("|")  if sSugg  else []
         elif sRepl == "_":
             lSugg = []
@@ -683,7 +685,7 @@ class TextParser:
         if bCaseSvty and lSugg and m.group(iGroup)[0:1].isupper():
             lSugg = list(map(lambda s: s.upper(), lSugg))  if m.group(iGroup).isupper()  else list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
-        sMessage = globals()[sMsg[1:]](sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
+        sMessage = getattr(gc_functions, sMsg[1:])(sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
         if bShowRuleId:
             sMessage += "  #" + sLineId + " / " + sRuleId
         #
@@ -694,7 +696,7 @@ class TextParser:
     def _createErrorFromTokens (self, sSugg, nTokenOffset, nLastToken, iFirstToken, nStart, nEnd, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
         if sSugg[0:1] == "=":
-            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset, nLastToken)
+            sSugg = getattr(gc_functions, sSugg[1:])(self.lToken, nTokenOffset, nLastToken)
             lSugg = sSugg.split("|")  if sSugg  else []
         elif sSugg == "_":
             lSugg = []
@@ -703,7 +705,7 @@ class TextParser:
         if bCaseSvty and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
             lSugg = list(map(lambda s: s.upper(), lSugg))  if self.sSentence[nStart:nEnd].isupper()  else list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
-        sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
+        sMessage = getattr(gc_functions, sMsg[1:])(self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
         if bShowRuleId:
             sMessage += "  #" + sLineId + " / " + sRuleId
         #
@@ -767,7 +769,7 @@ class TextParser:
         elif sRepl == "@":
             sNew = "@" * nLen
         elif sRepl[0:1] == "=":
-            sNew = globals()[sRepl[1:]](sText, m)
+            sNew = getattr(gc_functions, sRepl[1:])(sText, m)
             sNew = sNew + " " * (nLen-len(sNew))
             if bUppercase and m.group(iGroup)[0:1].isupper():
                 sNew = sNew.capitalize()
@@ -797,7 +799,7 @@ class TextParser:
                     self.lToken[i]["sNewValue"] = "_"
         else:
             if sWhat.startswith("="):
-                sWhat = globals()[sWhat[1:]](self.lToken, nTokenOffset, nLastToken)
+                sWhat = getattr(gc_functions, sWhat[1:])(self.lToken, nTokenOffset, nLastToken)
             else:
                 sWhat = self._expand(sWhat, nTokenOffset, nLastToken)
             bUppercase = bCaseSvty and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
@@ -871,415 +873,3 @@ class TextParser:
             echo("  TEXT REWRITED: " + self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
-
-
-#### common functions
-
-def option (sOpt):
-    "return True if option <sOpt> is active"
-    return gc_options.dOptions.get(sOpt, False)
-
-
-#### Functions to get text outside pattern scope
-
-# warning: check compile_rules.py to understand how it works
-
-_zNextWord = re.compile(r" +(\w[\w-]*)")
-_zPrevWord = re.compile(r"(\w[\w-]*) +$")
-
-def nextword (s, iStart, n):
-    "get the nth word of the input string or empty string"
-    m = re.match("(?: +[\\w%-]+){" + str(n-1) + "} +([\\w%-]+)", s[iStart:])
-    if not m:
-        return None
-    return (iStart+m.start(1), m.group(1))
-
-
-def prevword (s, iEnd, n):
-    "get the (-)nth word of the input string or empty string"
-    m = re.search("([\\w%-]+) +(?:[\\w%-]+ +){" + str(n-1) + "}$", s[:iEnd])
-    if not m:
-        return None
-    return (m.start(1), m.group(1))
-
-
-def nextword1 (s, iStart):
-    "get next word (optimization)"
-    m = _zNextWord.match(s[iStart:])
-    if not m:
-        return None
-    return (iStart+m.start(1), m.group(1))
-
-
-def prevword1 (s, iEnd):
-    "get previous word (optimization)"
-    m = _zPrevWord.search(s[:iEnd])
-    if not m:
-        return None
-    return (m.start(1), m.group(1))
-
-
-def look (s, sPattern, sNegPattern=None):
-    "seek sPattern in s (before/after/fulltext), if sNegPattern not in s"
-    if sNegPattern and re.search(sNegPattern, s):
-        return False
-    if re.search(sPattern, s):
-        return True
-    return False
-
-
-def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=""):
-    "returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1"
-    m = re.search(sPattern, s)
-    if not m:
-        return False
-    try:
-        sWord = m.group(1)
-        nPos = m.start(1) + nOffset
-    except IndexError:
-        return False
-    return morph(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
-
-
-
-#### Analyse groups for regex rules
-
-def displayInfo (dTokenPos, tWord):
-    "for debugging: retrieve info of word"
-    if not tWord:
-        echo("> nothing to find")
-        return True
-    lMorph = _oSpellChecker.getMorph(tWord[1])
-    if not lMorph:
-        echo("> not in dictionary")
-        return True
-    echo("TOKENS:", dTokenPos)
-    if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]:
-        echo("DA: " + str(dTokenPos[tWord[0]]["lMorph"]))
-    echo("FSA: " + str(lMorph))
-    return True
-
-
-def morph (dTokenPos, tWord, sPattern, sNegPattern="", bNoWord=False):
-    "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
-    if not tWord:
-        return bNoWord
-    lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
-    if not lMorph:
-        return False
-    # check negative condition
-    if sNegPattern:
-        if sNegPattern == "*":
-            # all morph must match sPattern
-            zPattern = re.compile(sPattern)
-            return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        zNegPattern = re.compile(sNegPattern)
-        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-            return False
-    # search sPattern
-    zPattern = re.compile(sPattern)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
-
-
-def analyse (sWord, sPattern, sNegPattern=""):
-    "analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)"
-    lMorph = _oSpellChecker.getMorph(sWord)
-    if not lMorph:
-        return False
-    # check negative condition
-    if sNegPattern:
-        if sNegPattern == "*":
-            zPattern = re.compile(sPattern)
-            return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        zNegPattern = re.compile(sNegPattern)
-        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-            return False
-    # search sPattern
-    zPattern = re.compile(sPattern)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
-
-
-#### Analyse tokens for graph rules
-
-def g_value (dToken, sValues, nLeft=None, nRight=None):
-    "test if <dToken['sValue']> is in sValues (each value should be separated with |)"
-    sValue = "|"+dToken["sValue"]+"|"  if nLeft is None  else "|"+dToken["sValue"][slice(nLeft, nRight)]+"|"
-    if sValue in sValues:
-        return True
-    if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
-        if sValue.lower() in sValues:
-            return True
-    elif dToken["sValue"].isupper():
-        #if sValue.lower() in sValues:
-        #    return True
-        sValue = "|"+sValue[1:].capitalize()
-        if sValue in sValues:
-            return True
-        sValue = sValue.lower()
-        if sValue in sValues:
-            return True
-    return False
-
-
-def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
-    "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
-    if "lMorph" in dToken:
-        lMorph = dToken["lMorph"]
-    else:
-        if nLeft is not None:
-            lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-            if bMemorizeMorph:
-                dToken["lMorph"] = lMorph
-        else:
-            lMorph = _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph:
-        return False
-    # check negative condition
-    if sNegPattern:
-        if sNegPattern == "*":
-            # all morph must match sPattern
-            zPattern = re.compile(sPattern)
-            return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        zNegPattern = re.compile(sNegPattern)
-        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-            return False
-    # search sPattern
-    zPattern = re.compile(sPattern)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
-
-
-def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
-    "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
-    if nLeft is not None:
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-        if bMemorizeMorph:
-            dToken["lMorph"] = lMorph
-    else:
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph:
-        return False
-    # check negative condition
-    if sNegPattern:
-        if sNegPattern == "*":
-            # all morph must match sPattern
-            zPattern = re.compile(sPattern)
-            return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        zNegPattern = re.compile(sNegPattern)
-        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-            return False
-    # search sPattern
-    zPattern = re.compile(sPattern)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
-
-
-def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=True):
-    "merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
-    lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"])
-    if not lMorph:
-        return False
-    # check negative condition
-    if sNegPattern:
-        if sNegPattern == "*":
-            # all morph must match sPattern
-            zPattern = re.compile(sPattern)
-            bResult = all(zPattern.search(sMorph)  for sMorph in lMorph)
-            if bResult and bSetMorph:
-                dToken1["lMorph"] = lMorph
-            return bResult
-        zNegPattern = re.compile(sNegPattern)
-        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-            return False
-    # search sPattern
-    zPattern = re.compile(sPattern)
-    bResult = any(zPattern.search(sMorph)  for sMorph in lMorph)
-    if bResult and bSetMorph:
-        dToken1["lMorph"] = lMorph
-    return bResult
-
-
-def g_tag_before (dToken, dTags, sTag):
-    "returns True if <sTag> is present on tokens before <dToken>"
-    if sTag not in dTags:
-        return False
-    if dToken["i"] > dTags[sTag][0]:
-        return True
-    return False
-
-
-def g_tag_after (dToken, dTags, sTag):
-    "returns True if <sTag> is present on tokens after <dToken>"
-    if sTag not in dTags:
-        return False
-    if dToken["i"] < dTags[sTag][1]:
-        return True
-    return False
-
-
-def g_tag (dToken, sTag):
-    "returns True if <sTag> is present on token <dToken>"
-    return "aTags" in dToken and sTag in dToken["aTags"]
-
-
-def g_meta (dToken, sType):
-    "returns True if <sType> is equal to the token type"
-    return dToken["sType"] == sType
-
-
-def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
-    "checks if spaces between tokens is >= <nMin> and <= <nMax>"
-    nSpace = dToken2["nStart"] - dToken1["nEnd"]
-    if nSpace < nMin:
-        return False
-    if nMax is not None and nSpace > nMax:
-        return False
-    return True
-
-
-def g_token (lToken, i):
-    "return token at index <i> in lToken (or the closest one)"
-    if i < 0:
-        return lToken[0]
-    if i >= len(lToken):
-        return lToken[-1]
-    return lToken[i]
-
-
-
-#### Disambiguator for regex rules
-
-def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
-    "Disambiguation: select morphologies of <sWord> matching <sPattern>"
-    if not sWord:
-        return True
-    if nPos not in dTokenPos:
-        echo("Error. There should be a token at this position: ", nPos)
-        return True
-    lMorph = _oSpellChecker.getMorph(sWord)
-    if not lMorph or len(lMorph) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dTokenPos[nPos]["lMorph"] = lSelect
-    elif lDefault:
-        dTokenPos[nPos]["lMorph"] = lDefault
-    return True
-
-
-def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
-    "Disambiguation: exclude morphologies of <sWord> matching <sPattern>"
-    if not sWord:
-        return True
-    if nPos not in dTokenPos:
-        echo("Error. There should be a token at this position: ", nPos)
-        return True
-    lMorph = _oSpellChecker.getMorph(sWord)
-    if not lMorph or len(lMorph) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dTokenPos[nPos]["lMorph"] = lSelect
-    elif lDefault:
-        dTokenPos[nPos]["lMorph"] = lDefault
-    return True
-
-
-def define (dTokenPos, nPos, sMorphs):
-    "Disambiguation: set morphologies of token at <nPos> with <sMorphs>"
-    if nPos not in dTokenPos:
-        echo("Error. There should be a token at this position: ", nPos)
-        return True
-    dTokenPos[nPos]["lMorph"] = sMorphs.split("|")
-    return True
-
-
-#### Disambiguation for graph rules
-
-def g_select (dToken, sPattern, lDefault=None):
-    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
-    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph or len(lMorph) == 1:
-        if lDefault:
-            dToken["lMorph"] = lDefault
-            #echo("DA:", dToken["sValue"], dToken["lMorph"])
-        return True
-    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dToken["lMorph"] = lSelect
-    elif lDefault:
-        dToken["lMorph"] = lDefault
-    #echo("DA:", dToken["sValue"], dToken["lMorph"])
-    return True
-
-
-def g_exclude (dToken, sPattern, lDefault=None):
-    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
-    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph or len(lMorph) == 1:
-        if lDefault:
-            dToken["lMorph"] = lDefault
-            #echo("DA:", dToken["sValue"], dToken["lMorph"])
-        return True
-    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dToken["lMorph"] = lSelect
-    elif lDefault:
-        dToken["lMorph"] = lDefault
-    #echo("DA:", dToken["sValue"], dToken["lMorph"])
-    return True
-
-
-def g_add_morph (dToken, sNewMorph):
-    "Disambiguation: add a morphology to a token"
-    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    lMorph.extend(sNewMorph.split("|"))
-    dToken["lMorph"] = lMorph
-    return True
-
-
-def g_rewrite (dToken, sToReplace, sReplace):
-    "Disambiguation: rewrite morphologies"
-    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    dToken["lMorph"] = [ sMorph.replace(sToReplace, sReplace)  for sMorph in lMorph ]
-    return True
-
-
-def g_define (dToken, sMorphs):
-    "Disambiguation: set morphologies of <dToken>, always return True"
-    dToken["lMorph"] = sMorphs.split("|")
-    #echo("DA:", dToken["sValue"], lMorph)
-    return True
-
-
-def g_define_from (dToken, nLeft=None, nRight=None):
-    "Disambiguation: set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
-    if nLeft is not None:
-        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-    else:
-        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
-    return True
-
-
-def g_change_meta (dToken, sType):
-    "Disambiguation: change type of token"
-    dToken["sType"] = sType
-    return True
-
-
-
-#### GRAMMAR CHECKER PLUGINS
-
-${plugins}
-
-
-#### CALLABLES FOR REGEX RULES (generated code)
-
-${callables}
-
-
-#### CALLABLES FOR GRAPH RULES (generated code)
-
-${graph_callables}
