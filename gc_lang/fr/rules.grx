@@ -5623,7 +5623,7 @@ __pleo_pléonasmes_divers__
     actuellement en train [de|d’]
         <<- /pleo/ not value(>1, "|nuit|") -1:3>> en train                                  && Pléonasme.
 
-    >ajouter en plus
+    [>ajouter|>rajouter] [de|en] plus
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
     >apanage >exclusif
@@ -10849,7 +10849,7 @@ __conf_près_prêt_pré__
     à une [exception|nuance|variation|année-lumière|nanoseconde|milliseconde|seconde|minute|heure|semaine|année|décennie] [>prêt|>pré]
         <<- /conf/ --1>> près                                               && Confusion probable. Locution “à \2 \3 près”.
 
-    au [>millimètre|>centimètre|>décimètre|>mètre|>kilomètre] [>prêt|>pré]
+    au [>nanomètre|>millimètre|>centimètre|>décimètre|>mètre|>kilomètre] [>prêt|>pré]
         <<- /conf/ --1>> près                                               && Confusion probable. Locution “au \2 près”.
 
     à [ceci|cela] [prêt|prêts] [que|qu’]
@@ -17837,6 +17837,14 @@ TEST: dût ma vanité en souffrir, je viendrai quoi qu’il arrive
 TEST: certaines régions sont un poil plus compliquées
 TEST: Tout est bien qui finit bien.
 TEST: on est tous à la base basé sur quelque chose
+TEST: seulement, c’était la dernière chose au monde qu’il ambitionnât
+TEST: Ceux que tu convoques en tant que témoins
+TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
+TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
+TEST: Il faut donc examiner ensemble les panneaux et les parois latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et les parois latérales.
 
 
 @@@@
@@ -18240,6 +18248,7 @@ TEST: baptême de l’{{aire}}
 TEST: il va se foutre en l’{{ère}} si ça continue comme ça.
 TEST: {{l’ère de rien}}
 TEST: il avança aussi discrètement que possible {{l’aire de rien}}.
+TEST: ces pauvres hères
 
 
 # auspice / hospice
@@ -23069,6 +23078,9 @@ TEST: sa tournée, elle la finit par Rodez.
 #### Infinitif après “de”
 
 __infi_de_verbe__
+    [un|une] [de|d’] [perdu+ses] ?,¿ dix [de|d’] [retrouvé+ses]
+        <<- !-1>>
+
     [de|d’]  [le|l’|leur|les]               @:V¬:[YNAM]|>(?:lui|plus)/
     [<start>|,|(]  [de|d’] [nous|vous|lui]  @:V¬:[YEP]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               && Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
@@ -23125,11 +23137,14 @@ TEST: ce qu’ils ont d’obscur, d’exagéré et parfois de sec et de figé
 TEST: ce qu’il y a de compliqué dans ces affaires.
 TEST: Un patient peut avoir autant de satanées maladies qui lui chante.
 TEST: C’est toujours ça de gagné.
+TEST: Toujours ça de gagné.
 TEST: que n’a-t-on pas entendu au sujet de ces revendications, souvent qualifiées de trop désordonnées
 TEST: Tous ceux qui disent que la rigidité déflationnaire de l’euro est une chance pour la France sont de fieffés menteurs
 TEST: Le virus, depuis le début, a joué de sacrés tours aux chercheurs et aux médecins.
 TEST: Elle s’était de plus appliquée de bonne heure à l’ornementation des monuments funéraires.
 TEST: nombre d’entre nous le faisons déjà
+TEST: un de perdu, dix de retrouvés
+TEST: une de perdue, dix de retrouvées
 
 
 __infi_verbe_de_verbe__
@@ -26537,6 +26552,10 @@ __ppas_avoir__
         <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              && Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
+    >avoir  ~..is$
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":V3.*:I[ps].*:[12]s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              && Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
     >avoir  ~.ut$
         <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              && Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
@@ -26547,6 +26566,7 @@ TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom d
 TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
 TEST: ces hommes, n’en doutez pas, auraient {{put}} trouver la solution.
 TEST: à celui qui aurait {{déclarer}} une telle horreur
+TEST: je fais allusion à tout ce qui nous aurait {{fais}} perdre les pédales
 TEST: nous avons vu des avions voler haut dans le ciel.
 TEST: c’est le pouvoir en place qui les a envoyés exercer leur métier
 
