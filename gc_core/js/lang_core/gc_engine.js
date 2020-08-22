@@ -197,6 +197,8 @@ class TextParser {
         catch (e) {
             console.error(e);
         }
+        this.lTokens = null;
+        this.lTokens0 = null;
         let lParagraphErrors = null;
         if (bFullInfo) {
             lParagraphErrors = Array.from(this.dError.values());
@@ -211,26 +213,34 @@ class TextParser {
                 this.sSentence = sText.slice(iStart, iEnd);
                 this.sSentence0 = this.sText0.slice(iStart, iEnd);
                 this.nOffsetWithinParagraph = iStart;
-                this.lToken = Array.from(gc_engine.oTokenizer.genTokens(this.sSentence, true));
+                this.lTokens = Array.from(gc_engine.oTokenizer.genTokens(this.sSentence, true));
                 this.dTokenPos.clear();
-                for (let dToken of this.lToken) {
+                for (let dToken of this.lTokens) {
                     if (dToken["sType"] != "INFO") {
                         this.dTokenPos.set(dToken["nStart"], dToken);
                     }
                 }
                 if (bFullInfo) {
-                    oSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": this.sSentence, "lToken": Array.from(this.lToken) };
-                    for (let oToken of oSentence["lToken"]) {
-                        if (oToken["sType"] == "WORD") {
-                            oToken["bValidToken"] = gc_engine.oSpellChecker.isValidToken(oToken["sValue"]);
-                        }
-                    }
+                    this.lTokens0 = Array.from(this.lTokens);
                     // the list of tokens is duplicated, to keep all tokens from being deleted when analysis
                 }
                 this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
                 if (bFullInfo) {
-                    oSentence["lGrammarErrors"] = Array.from(this.dSentenceError.values());
-                    lSentences.push(oSentence);
+                    for (let oToken of this.lTokens0) {
+                        if (oToken["sType"] == "WORD") {
+                            oToken["bValidToken"] = gc_engine.oSpellChecker.isValidToken(oToken["sValue"]);
+                        }
+                        if (!oToken.hasOwnProperty("lMorph")) {
+                            oToken["lMorph"] = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
+                        }
+                    }
+                    lSentences.push({
+                        "nStart": iStart,
+                        "nEnd": iEnd,
+                        "sSentence": this.sSentence0,
+                        "lTokens": this.lTokens0,
+                        "lGrammarErrors": Array.from(this.dSentenceError.values())
+                    });
                     this.dSentenceError.clear();
                 }
             }
@@ -374,9 +384,9 @@ class TextParser {
                 oToken["aTags"] = this.dTokenPos.get(oToken["nStart"])["aTags"];
             }
         }
-        this.lToken = lNewToken;
+        this.lTokens = lNewToken;
         this.dTokenPos.clear();
-        for (let oToken of this.lToken) {
+        for (let oToken of this.lTokens) {
             if (oToken["sType"] != "INFO") {
                 this.dTokenPos.set(oToken["nStart"], oToken);
             }
@@ -616,7 +626,7 @@ class TextParser {
         let lPointer = [];
         let bTagAndRewrite = false;
         try {
-            for (let [iToken, oToken] of this.lToken.entries()) {
+            for (let [iToken, oToken] of this.lTokens.entries()) {
                 if (bDebug) {
                     console.log("TOKEN: " + oToken["sValue"]);
                 }
@@ -668,17 +678,17 @@ class TextParser {
                     // Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
                     // Test          [ option, condition, ">", "" ]
                     if (!sOption || dOptions.gl_get(sOption, false)) {
-                        bCondMemo = !sFuncCond || gc_functions[sFuncCond](this.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
-                        //bCondMemo = !sFuncCond || oEvalFunc[sFuncCond](this.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
+                        bCondMemo = !sFuncCond || gc_functions[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
+                        //bCondMemo = !sFuncCond || oEvalFunc[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
                         if (bCondMemo) {
                             if (cActionType == "-") {
                                 // grammar error
                                 let [iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL] = eAct;
                                 let nTokenErrorStart = (iTokenStart > 0) ? nTokenOffset + iTokenStart : nLastToken + iTokenStart;
-                                if (!this.lToken[nTokenErrorStart].hasOwnProperty("bImmune")) {
+                                if (!this.lTokens[nTokenErrorStart].hasOwnProperty("bImmune")) {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
-                                    let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lToken[nTokenErrorStart]["nStart"] : this.lToken[nTokenErrorStart]["nEnd"]);
-                                    let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
+                                    let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lTokens[nTokenErrorStart]["nStart"] : this.lTokens[nTokenErrorStart]["nEnd"]);
+                                    let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lTokens[nTokenErrorEnd]["nEnd"] : this.lTokens[nTokenErrorEnd]["nStart"]);
                                     if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
                                         this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty,
                                                                                                  sMessage, gc_rules_graph.dURL[iURL], bShowRuleId, sOption, bContext));
@@ -697,15 +707,15 @@ class TextParser {
                                 this._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug);
                                 bChange = true;
                                 if (bDebug) {
-                                    console.log(`    TEXT_PROCESSOR: [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]  > ${sWhat}`);
+                                    console.log(`    TEXT_PROCESSOR: [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]  > ${sWhat}`);
                                 }
                             }
                             else if (cActionType == "=") {
                                 // disambiguation
-                                gc_functions[sWhat](this.lToken, nTokenOffset, nLastToken);
-                                //oEvalFunc[sWhat](this.lToken, nTokenOffset, nLastToken);
+                                gc_functions[sWhat](this.lTokens, nTokenOffset, nLastToken);
+                                //oEvalFunc[sWhat](this.lTokens, nTokenOffset, nLastToken);
                                 if (bDebug) {
-                                    console.log(`    DISAMBIGUATOR: (${sWhat})  [${this.lToken[nTokenOffset+1]["sValue"]}:${this.lToken[nLastToken]["sValue"]}]`);
+                                    console.log(`    DISAMBIGUATOR: (${sWhat})  [${this.lTokens[nTokenOffset+1]["sValue"]}:${this.lTokens[nLastToken]["sValue"]}]`);
                                 }
                             }
                             else if (cActionType == ">") {
@@ -719,14 +729,14 @@ class TextParser {
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 for (let i = nTokenStart; i <= nTokenEnd; i++) {
-                                    if (this.lToken[i].hasOwnProperty("aTags")) {
-                                        this.lToken[i]["aTags"].add(...sWhat.split("|"))
+                                    if (this.lTokens[i].hasOwnProperty("aTags")) {
+                                        this.lTokens[i]["aTags"].add(...sWhat.split("|"))
                                     } else {
-                                        this.lToken[i]["aTags"] = new Set(sWhat.split("|"));
+                                        this.lTokens[i]["aTags"] = new Set(sWhat.split("|"));
                                     }
                                 }
                                 if (bDebug) {
-                                    console.log(`    TAG:  ${sWhat} > [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]`);
+                                    console.log(`    TAG:  ${sWhat} > [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]`);
                                 }
                                 for (let sTag of sWhat.split("|")) {
                                     if (!this.dTags.has(sTag)) {
@@ -744,15 +754,15 @@ class TextParser {
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 if (nTokenEnd - nTokenStart == 0) {
-                                    this.lToken[nTokenStart]["bImmune"] = true;
-                                    let nErrorStart = this.nOffsetWithinParagraph + this.lToken[nTokenStart]["nStart"];
+                                    this.lTokens[nTokenStart]["bImmune"] = true;
+                                    let nErrorStart = this.nOffsetWithinParagraph + this.lTokens[nTokenStart]["nStart"];
                                     if (this.dError.has(nErrorStart)) {
                                         this.dError.delete(nErrorStart);
                                     }
                                 } else {
                                     for (let i = nTokenStart;  i <= nTokenEnd;  i++) {
-                                        this.lToken[i]["bImmune"] = true;
-                                        let nErrorStart = this.nOffsetWithinParagraph + this.lToken[i]["nStart"];
+                                        this.lTokens[i]["bImmune"] = true;
+                                        let nErrorStart = this.nOffsetWithinParagraph + this.lTokens[i]["nStart"];
                                         if (this.dError.has(nErrorStart)) {
                                             this.dError.delete(nErrorStart);
                                         }
@@ -810,20 +820,20 @@ class TextParser {
         // suggestions
         let lSugg = [];
         if (sSugg.startsWith("=")) {
-            sSugg = gc_functions[sSugg.slice(1)](this.lToken, nTokenOffset, nLastToken);
-            //sSugg = oEvalFunc[sSugg.slice(1)](this.lToken, nTokenOffset, nLastToken);
+            sSugg = gc_functions[sSugg.slice(1)](this.lTokens, nTokenOffset, nLastToken);
+            //sSugg = oEvalFunc[sSugg.slice(1)](this.lTokens, nTokenOffset, nLastToken);
             lSugg = (sSugg) ? sSugg.split("|") : [];
         } else if (sSugg == "_") {
             lSugg = [];
         } else {
             lSugg = this._expand(sSugg, nTokenOffset, nLastToken).split("|");
         }
-        if (bCaseSvty && lSugg.length > 0 && this.lToken[iFirstToken]["sValue"].slice(0,1).gl_isUpperCase()) {
+        if (bCaseSvty && lSugg.length > 0 && this.lTokens[iFirstToken]["sValue"].slice(0,1).gl_isUpperCase()) {
             lSugg = (this.sSentence.slice(nStart, nEnd).gl_isUpperCase()) ? lSugg.map((s) => s.toUpperCase()) : capitalizeArray(lSugg);
         }
         // Message
-        let sMessage = (sMsg.startsWith("=")) ? gc_functions[sMsg.slice(1)](this.lToken, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
-        //let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](this.lToken, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
+        let sMessage = (sMsg.startsWith("=")) ? gc_functions[sMsg.slice(1)](this.lTokens, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
+        //let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](this.lTokens, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
         if (bShowRuleId) {
             sMessage += "  #" + sLineId + " / " + sRuleId;
         }
@@ -855,9 +865,9 @@ class TextParser {
         let m;
         while ((m = /\\(-?[0-9]+)/.exec(sText)) !== null) {
             if (m[1].slice(0,1) == "-") {
-                sText = sText.replace(m[0], this.lToken[nLastToken+parseInt(m[1],10)+1]["sValue"]);
+                sText = sText.replace(m[0], this.lTokens[nLastToken+parseInt(m[1],10)+1]["sValue"]);
             } else {
-                sText = sText.replace(m[0], this.lToken[nTokenOffset+parseInt(m[1],10)]["sValue"]);
+                sText = sText.replace(m[0], this.lTokens[nTokenOffset+parseInt(m[1],10)]["sValue"]);
             }
         }
         return sText;
@@ -896,41 +906,41 @@ class TextParser {
         if (sWhat === "*") {
             // purge text
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
-                this.lToken[nTokenRewriteStart]["bToRemove"] = true;
+                this.lTokens[nTokenRewriteStart]["bToRemove"] = true;
             } else {
                 for (let i = nTokenRewriteStart;  i <= nTokenRewriteEnd;  i++) {
-                    this.lToken[i]["bToRemove"] = true;
+                    this.lTokens[i]["bToRemove"] = true;
                 }
             }
         }
         else if (sWhat === "␣") {
             // merge tokens
-            this.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
+            this.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
         }
         else if (sWhat === "_") {
             // neutralized token
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
-                this.lToken[nTokenRewriteStart]["sNewValue"] = "_";
+                this.lTokens[nTokenRewriteStart]["sNewValue"] = "_";
             } else {
                 for (let i = nTokenRewriteStart;  i <= nTokenRewriteEnd;  i++) {
-                    this.lToken[i]["sNewValue"] = "_";
+                    this.lTokens[i]["sNewValue"] = "_";
                 }
             }
         }
         else {
             if (sWhat.startsWith("=")) {
-                sWhat = gc_functions[sWhat.slice(1)](this.lToken, nTokenOffset, nLastToken);
-                //sWhat = oEvalFunc[sWhat.slice(1)](this.lToken, nTokenOffset, nLastToken);
+                sWhat = gc_functions[sWhat.slice(1)](this.lTokens, nTokenOffset, nLastToken);
+                //sWhat = oEvalFunc[sWhat.slice(1)](this.lTokens, nTokenOffset, nLastToken);
             } else {
                 sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
             }
-            let bUppercase = bCaseSvty && this.lToken[nTokenRewriteStart]["sValue"].slice(0,1).gl_isUpperCase();
+            let bUppercase = bCaseSvty && this.lTokens[nTokenRewriteStart]["sValue"].slice(0,1).gl_isUpperCase();
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
                 // one token
                 if (bUppercase) {
                     sWhat = sWhat.gl_toCapitalize();
                 }
-                this.lToken[nTokenRewriteStart]["sNewValue"] = sWhat;
+                this.lTokens[nTokenRewriteStart]["sNewValue"] = sWhat;
             }
             else {
                 // several tokens
@@ -945,12 +955,12 @@ class TextParser {
                 for (let i = nTokenRewriteStart;  i <= nTokenRewriteEnd;  i++) {
                     let sValue = lTokenValue[j];
                     if (!sValue || sValue === "*") {
-                        this.lToken[i]["bToRemove"] = true;
+                        this.lTokens[i]["bToRemove"] = true;
                     } else {
                         if (bUppercase) {
                             sValue = sValue.gl_toCapitalize();
                         }
-                        this.lToken[i]["sNewValue"] = sValue;
+                        this.lTokens[i]["sNewValue"] = sValue;
                     }
                     j++;
                 }
@@ -964,10 +974,12 @@ class TextParser {
             console.log("REWRITE");
         }
         let lNewToken = [];
+        let lNewTokens0 = [];
         let nMergeUntil = 0;
         let oMergingToken = null;
-        for (let [iToken, oToken] of this.lToken.entries()) {
+        for (let [iToken, oToken] of this.lTokens.entries()) {
             let bKeepToken = true;
+            let bKeepToken0 = true;
             if (oToken["sType"] != "INFO") {
                 if (nMergeUntil && iToken <= nMergeUntil) {
                     oMergingToken["sValue"] += " ".repeat(oToken["nStart"] - oMergingToken["nEnd"]) + oToken["sValue"];
@@ -976,6 +988,7 @@ class TextParser {
                         console.log("  MERGED TOKEN: " + oMergingToken["sValue"]);
                     }
                     bKeepToken = false;
+                    bKeepToken0 = false;
                 }
                 if (oToken.hasOwnProperty("nMergeUntil")) {
                     if (iToken > nMergeUntil) { // this token is not already merged with a previous token
@@ -1019,12 +1032,19 @@ class TextParser {
                     console.log(oToken);
                 }
             }
+            if (this.lTokens0 !== null && bKeepToken0) {
+                lNewTokens0.push(oToken);
+            }
         }
         if (bDebug) {
             console.log("  TEXT REWRITED: " + this.sSentence);
         }
-        this.lToken.length = 0;
-        this.lToken = lNewToken;
+        this.lTokens.length = 0;
+        this.lTokens = lNewToken;
+        if (this.lTokens0 !== null) {
+            this.lTokens0.length = 0;
+            this.lTokens0 = lNewTokens0;
+        }
     }
 };
 

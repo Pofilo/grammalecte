@@ -342,7 +342,7 @@ def main ():
                     for dSentence in lSentences:
                         echo("{nStart}:{nEnd}".format(**dSentence))
                         echo("   <" + dSentence["sSentence"]+">")
-                        for dToken in dSentence["lToken"]:
+                        for dToken in dSentence["lTokens"]:
                             echo("    {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {2} {0[sValue]:<16} {3:<10}   {4}".format(dToken, \
                                                                                                             "×" if dToken.get("bToRemove", False) else " ",
                                                                                                             "!" if dToken["sType"] == "WORD" and not dToken.get("bValidToken", False) else " ",
