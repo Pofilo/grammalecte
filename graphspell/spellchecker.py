@@ -100,7 +100,7 @@ class SpellChecker ():
         self.bPersonalDic = False
 
 
-    # Default suggestions
+    # Lexicographer
 
     def loadLexicographer (self, sLangCode):
         "load default suggestion module for <sLangCode>"
@@ -126,6 +126,11 @@ class SpellChecker ():
                 if aRes:
                     lWordAndMorph.append((sElem, aRes))
         return lWordAndMorph
+
+    def readableMorph (self, sMorph):
+        if not self.lexicographer:
+            return []
+        return self.lexicographer.formatTags(sMorph)
 
 
     # Storage
@@ -235,7 +240,7 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
-        if self.lexicographer.dSugg:
+        if self.lexicographer:
             if sWord in self.lexicographer.dSugg:
                 yield self.lexicographer.dSugg[sWord].split("|")
             elif sWord.istitle() and sWord.lower() in self.lexicographer.dSugg:

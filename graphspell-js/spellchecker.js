@@ -134,11 +134,43 @@ class SpellChecker {
         if (typeof(process) !== 'undefined') {
             this.lexicographer = require(`./lexgraph_${sLangCode}.js`);
         }
-        else if (typeof(require) !== 'undefined') {
-            this.lexicographer = require(`resource://grammalecte/graphspell/lexgraph_${sLangCode}.js`);
+        else if (self && self.hasOwnProperty("lexgraph_"+sLangCode)) { // self is the Worker
+            this.lexicographer = self["lexgraph_"+sLangCode];
         }
     }
 
+    analyze (sWord) {
+        // returns a list of words and their morphologies
+        if (!this.lexicographer) {
+            return [];
+        }
+        let lWordAndMorph = [];
+        for (let sElem of this.lexicographer.split(sWord)) {
+            if (sElem) {
+                let lMorph = this.getMorph(sElem);
+                let sLex = this.lexicographer.analyze(sElem)
+                let aRes = [];
+                if (sLex) {
+                    aRes = [ [lMorph.join(" | "), sLex] ];
+                } else {
+                    for (let sMorph of lMorph) {
+                        aRes.push([sMorph, this.lexicographer.formatTags(sMorph)]);
+                    }
+                }
+                if (aRes.length > 0) {
+                    lWordAndMorph.push([sElem, aRes]);
+                }
+            }
+        }
+        return lWordAndMorph;
+    }
+
+    readableMorph (sMorph) {
+        if (!this.lexicographer) {
+            return [];
+        }
+        return this.lexicographer.formatTags(sMorph);
+    }
 
     // Storage
 
