@@ -9,7 +9,7 @@ import traceback
 import helpers
 import ti_strings
 
-import grammalecte.fr.lexicographe as lxg
+import grammalecte.graphspell.lexgraph_fr as lxg
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
@@ -74,7 +74,7 @@ class TagsInfo (unohelper.Base, XActionListener):
         xFDTitle.Height = 9
         xFDTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDTitle.Name = "Verdana"
-        
+
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDSubTitle.Height = 8
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -97,16 +97,16 @@ class TagsInfo (unohelper.Base, XActionListener):
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY0, 100, nHeight, Label = self.dUI.get("information_section", "#err"), FontDescriptor = xFDTitle)
-        
+
         self._addWidget('save_label', 'FixedText', nX1, nY1, 100, nHeight, Label = self.dUI.get('save', "#err"), FontDescriptor = xFDTitle)
         self._addWidget('save_desc_label', 'FixedText', nX1, nY1+10, 100, nHeight*5, Label = self.dUI.get('save_desc', "#err"), MultiLine=True)
-        
+
         self._addWidget('duplicates_label', 'FixedText', nX1, nY2, 100, nHeight, Label = self.dUI.get('duplicates', "#err"), FontDescriptor = xFDTitle)
         self._addWidget('duplicates_desc_label', 'FixedText', nX1, nY2+10, 100, nHeight*5, Label = self.dUI.get('duplicates_desc', "#err"), MultiLine=True)
 
         self._addWidget('compilation_label', 'FixedText', nX1, nY3, 100, nHeight, Label = self.dUI.get('compilation', "#err"), FontDescriptor = xFDTitle)
         self._addWidget('compilation_desc_label', 'FixedText', nX1, nY3+10, 100, nHeight*7, Label = self.dUI.get('compilation_desc', "#err"), MultiLine=True)
-        
+
         self._addWidget('warning_label', 'FixedText', nX1, nY4, 100, nHeight, Label = self.dUI.get('warning', "#err"), FontDescriptor = xFDTitle)
         self._addWidget('warning_desc_label', 'FixedText', nX1, nY4+10, 100, nHeight*7, Label = self.dUI.get('warning_desc', "#err"), MultiLine=True)
 
