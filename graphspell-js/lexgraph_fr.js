@@ -223,12 +223,12 @@ var lexgraph_fr = {
             [':Cs', [" conjonction de subordination,", "Conjonction de subordination"]],
             [':Ĉs', [" conjonction de subordination (él.),", "Conjonction de subordination (élément)"]],
 
-            [':Ñ', [" locution nominale (él.),", "Locution nominale (élément)"]],
-            [':Â', [" locution adjectivale (él.),", "Locution adjectivale (élément)"]],
-            [':Ṽ', [" locution verbale (él.),", "Locution verbale (élément)"]],
-            [':Ŵ', [" locution adverbiale (él.),", "Locution adverbiale (élément)"]],
-            [':Ŕ', [" locution prépositive (él.),", "Locution prépositive (élément)"]],
-            [':Ĵ', [" locution interjective (él.),", "Locution interjective (élément)"]],
+            [':ÉN', [" locution nominale (él.),", "Locution nominale (élément)"]],
+            [':ÉA', [" locution adjectivale (él.),", "Locution adjectivale (élément)"]],
+            [':ÉV', [" locution verbale (él.),", "Locution verbale (élément)"]],
+            [':ÉW', [" locution adverbiale (él.),", "Locution adverbiale (élément)"]],
+            [':ÉR', [" locution prépositive (él.),", "Locution prépositive (élément)"]],
+            [':ÉJ', [" locution interjective (él.),", "Locution interjective (élément)"]],
 
             [':Zp', [" préfixe,", "Préfixe"]],
             [':Zs', [" suffixe,", "Suffixe"]],
