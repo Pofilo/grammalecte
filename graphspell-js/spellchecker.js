@@ -172,6 +172,14 @@ class SpellChecker {
         return this.lexicographer.formatTags(sMorph);
     }
 
+    setLabelsOnToken (oToken) {
+        if (!this.lexicographer) {
+            return;
+        }
+        this.lexicographer.setLabelsOnToken(oToken);
+    }
+
+
     // Storage
 
     activateStorage () {

@@ -601,35 +601,36 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let xTokenBlock = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_block"});
         // token description
         xTokenBlock.appendChild(this._createTokenDescr2(oToken));
-        // subtoken description
-        if (oToken.aSubElem) {
-            let xSubBlock = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_subblock"});
-            for (let oSubElem of oToken.aSubElem) {
-                xSubBlock.appendChild(this._createTokenDescr2(oSubElem));
-            }
-            xTokenBlock.appendChild(xSubBlock);
-        }
         return xTokenBlock;
     }
 
     _createTokenDescr2 (oToken) {
         try {
             let xTokenDescr = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_descr"});
-            if (oToken.sType == "LOCP") {
-                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_also", textContent: "possiblement › "}));
-            }
             xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
             xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
-            if (oToken.lMorph.length < 2) {
-                // one morphology only
-                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: oToken.lMorph[0]}));
-            } else {
-                // several morphology
-                let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
-                for (let sLabel of oToken.lMorph) {
-                    xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
+            if (oToken.aLabels) {
+                if (oToken.aLabels.length < 2) {
+                    // one morphology only
+                    xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: oToken.aLabels[0]}));
+                } else {
+                    // several morphology
+                    let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
+                    for (let sLabel of oToken.aLabels) {
+                        xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
+                    }
+                    xTokenDescr.appendChild(xMorphList);
                 }
-                xTokenDescr.appendChild(xMorphList);
+            } else {
+                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: "étiquettes non décrites : [" + oToken.lMorph + "]" }));
+            }
+            // other labels description
+            if (oToken.aOtherLabels) {
+                let xSubBlock = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_subblock"});
+                for (let sLabel of oToken.aOtherLabels) {
+                    xSubBlock.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_other_tags", textContent: "• " + sLabel}));
+                }
+                xTokenDescr.appendChild(xSubBlock);
             }
             return xTokenDescr;
         }

@@ -9,7 +9,7 @@ Lexicographer for the French language
 #       if the boolean is True, 4 functions are required:
 #           split(sWord) -> returns a list of string (that will be analyzed)
 #           analyze(sWord) -> returns a string with the meaning of word
-#           formatTags(sTags) -> returns a string with the meaning of tags
+#           readableMorph(sMorph) -> returns a string with the meaning of tags
 #           filterSugg(aWord) -> returns a filtered list of suggestions
 
 
@@ -172,9 +172,12 @@ _dTAGS = {
     ':p': (" pluriel", "pluriel"),
     ':i': (" invariable", "invariable"),
 
-    ':V1': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
-    ':V2': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
-    ':V3': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
+    ':V1_': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
+    ':V2_': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
+    ':V3_': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
+    ':V1e': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
+    ':V2e': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
+    ':V3e': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
     ':V0e': (" verbe,", "Verbe auxiliaire être"),
     ':V0a': (" verbe,", "Verbe auxiliaire avoir"),
 
@@ -274,18 +277,21 @@ _dValues = {
     '-je': " pronom personnel sujet, 1ʳᵉ pers. sing.",
     '-tu': " pronom personnel sujet, 2ᵉ pers. sing.",
     '-il': " pronom personnel sujet, 3ᵉ pers. masc. sing.",
+    '-iel': " pronom personnel sujet, 3ᵉ pers. sing.",
     '-on': " pronom personnel sujet, 3ᵉ pers. sing. ou plur.",
     '-elle': " pronom personnel sujet, 3ᵉ pers. fém. sing.",
     '-t-il': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. masc. sing.",
     '-t-on': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing. ou plur.",
     '-t-elle': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. fém. sing.",
+    '-t-iel': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing.",
     '-nous': " pronom personnel sujet/objet, 1ʳᵉ pers. plur.  ou  COI (à nous), plur.",
     '-vous': " pronom personnel sujet/objet, 2ᵉ pers. plur.  ou  COI (à vous), plur.",
     '-ils': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
     '-elles': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
+    '-iels': " pronom personnel sujet, 3ᵉ pers. plur.",
 
-    "-là": " particule démonstrative",
-    "-ci": " particule démonstrative",
+    "-là": " particule démonstrative (là)",
+    "-ci": " particule démonstrative (ci)",
 
     '-le': " COD, masc. sing.",
     '-la': " COD, fém. sing.",
@@ -326,6 +332,41 @@ _dValues = {
     "-m’en": " (me) pronom personnel objet + (en) pronom adverbial",
     "-t’en": " (te) pronom personnel objet + (en) pronom adverbial",
     "-s’en": " (se) pronom personnel objet + (en) pronom adverbial",
+
+    '.': "point",
+    '·': "point médian",
+    '…': "points de suspension",
+    ':': "deux-points",
+    ';': "point-virgule",
+    ',': "virgule",
+    '?': "point d’interrogation",
+    '!': "point d’exclamation",
+    '(': "parenthèse ouvrante",
+    ')': "parenthèse fermante",
+    '[': "crochet ouvrant",
+    ']': "crochet fermant",
+    '{': "accolade ouvrante",
+    '}': "accolade fermante",
+    '-': "tiret",
+    '—': "tiret cadratin",
+    '–': "tiret demi-cadratin",
+    '«': "guillemet ouvrant (chevrons)",
+    '»': "guillemet fermant (chevrons)",
+    '“': "guillemet ouvrant double",
+    '”': "guillemet fermant double",
+    '‘': "guillemet ouvrant",
+    '’': "guillemet fermant",
+    '"': "guillemets droits (déconseillé en typographie)",
+    '/': "signe de la division",
+    '+': "signe de l’addition",
+    '*': "signe de la multiplication",
+    '=': "signe de l’égalité",
+    '<': "inférieur à",
+    '>': "supérieur à",
+    '⩽': "inférieur ou égal à",
+    '⩾': "supérieur ou égal à",
+    '%': "signe de pourcentage",
+    '‰': "signe pour mille"
 }
 
 
@@ -358,15 +399,19 @@ def analyze (sWord):
     return ""
 
 
-def formatTags (sTags):
+def readableMorph (sMorph):
     "returns string: readable tags"
     sRes = ""
-    sTags = re.sub("(?<=V[1-3])[itpqnmr_eaxz]+", "", sTags)
-    sTags = re.sub("(?<=V0[ea])[itpqnmr_eaxz]+", "", sTags)
-    for m in _zTag.finditer(sTags):
-        sRes += _dTAGS.get(m.group(0), " [{}]".format(m.group(0)))[0]
+    sMorph = re.sub("(?<=V[0123][ea_])[itpqnmr_eaxz]+", "", sMorph)
+    for m in _zTag.finditer(sMorph):
+        if m.group(0) in _dTAGS:
+            sRes += _dTAGS[m.group(0)][0]
+        else:
+            sRes += " [" + m.group(0) + "]?"
     if sRes.startswith(" verbe") and not sRes.endswith("infinitif"):
-        sRes += " [{}]".format(sTags[1:sTags.find("/")])
+        sRes += " [" + sMorph[1:sMorph.find("/")] +"]"
+    if not sRes:
+        return " [" + sMorph + "]: étiquettes inconnues"
     return sRes.rstrip(",")
 
 

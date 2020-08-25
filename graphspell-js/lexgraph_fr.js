@@ -166,9 +166,12 @@ var lexgraph_fr = {
             [':p', [" pluriel", "pluriel"]],
             [':i', [" invariable", "invariable"]],
 
-            [':V1', [" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"]],
-            [':V2', [" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"]],
-            [':V3', [" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"]],
+            [':V1_', [" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"]],
+            [':V2_', [" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"]],
+            [':V3_', [" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"]],
+            [':V1e', [" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"]],
+            [':V2e', [" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"]],
+            [':V3e', [" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"]],
             [':V0e', [" verbe,", "Verbe auxiliaire être"]],
             [':V0a', [" verbe,", "Verbe auxiliaire avoir"]],
 
@@ -279,60 +282,83 @@ var lexgraph_fr = {
             ['m', " impersonnelle"],
         ]),
 
-    dElidedPrefix: new Map([
-            ['d', "(de), déterminant épicène invariable"],
-            ['l', "(le/la), déterminant masculin/féminin singulier"],
-            ['j', "(je), pronom personnel sujet, 1ʳᵉ pers., épicène singulier"],
-            ['m', "(me), pronom personnel objet, 1ʳᵉ pers., épicène singulier"],
-            ['t', "(te), pronom personnel objet, 2ᵉ pers., épicène singulier"],
-            ['s', "(se), pronom personnel objet, 3ᵉ pers., épicène singulier/pluriel"],
-            ['n', "(ne), adverbe de négation"],
-            ['c', "(ce), pronom démonstratif, masculin singulier/pluriel"],
-            ['ç', "(ça), pronom démonstratif, masculin singulier"],
+    dValues: new Map([
+            ['d’', "(de), préposition ou déterminant épicène invariable"],
+            ['l’', "(le/la), déterminant ou pronom personnel objet, masculin/féminin singulier"],
+            ['j’', "(je), pronom personnel sujet, 1ʳᵉ pers., épicène singulier"],
+            ['m’', "(me), pronom personnel objet, 1ʳᵉ pers., épicène singulier"],
+            ['t’', "(te), pronom personnel objet, 2ᵉ pers., épicène singulier"],
+            ['s’', "(se), pronom personnel objet, 3ᵉ pers., épicène singulier/pluriel"],
+            ['n’', "(ne), adverbe de négation"],
+            ['c’', "(ce), pronom démonstratif, masculin singulier/pluriel"],
+            ['ç’', "(ça), pronom démonstratif, masculin singulier"],
             ['qu', "(que), conjonction de subordination"],
-            ['lorsqu', "(lorsque), conjonction de subordination"],
-            ['puisqu', "(lorsque), conjonction de subordination"],
-            ['quoiqu', "(quoique), conjonction de subordination"],
-            ['jusqu', "(jusque), préposition"]
-        ]),
+            ['lorsqu’', "(lorsque), conjonction de subordination"],
+            ['puisqu’', "(lorsque), conjonction de subordination"],
+            ['quoiqu’', "(quoique), conjonction de subordination"],
+            ['jusqu’', "(jusque), préposition"],
 
-    dPronoms: new Map([
-            ['je', " pronom personnel sujet, 1ʳᵉ pers. sing."],
-            ['tu', " pronom personnel sujet, 2ᵉ pers. sing."],
-            ['il', " pronom personnel sujet, 3ᵉ pers. masc. sing."],
-            ['on', " pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
-            ['elle', " pronom personnel sujet, 3ᵉ pers. fém. sing."],
-            ['nous', " pronom personnel sujet/objet, 1ʳᵉ pers. plur."],
-            ['vous', " pronom personnel sujet/objet, 2ᵉ pers. plur."],
-            ['ils', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
-            ['elles', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
+            ['-je', " pronom personnel sujet, 1ʳᵉ pers. sing."],
+            ['-tu', " pronom personnel sujet, 2ᵉ pers. sing."],
+            ['-il', " pronom personnel sujet, 3ᵉ pers. masc. sing."],
+            ['-iel', " pronom personnel sujet, 3ᵉ pers. sing."],
+            ['-on', " pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
+            ['-elle', " pronom personnel sujet, 3ᵉ pers. fém. sing."],
+            ['-t-il', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. masc. sing."],
+            ['-t-on', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
+            ['-t-elle', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. fém. sing."],
+            ['-t-iel', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing."],
+            ['-nous', " pronom personnel sujet/objet, 1ʳᵉ pers. plur.  ou  COI (à nous), plur."],
+            ['-vous', " pronom personnel sujet/objet, 2ᵉ pers. plur.  ou  COI (à vous), plur."],
+            ['-ils', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
+            ['-elles', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
+            ['-iels', " pronom personnel sujet, 3ᵉ pers. plur."],
 
-            ["là", " particule démonstrative"],
-            ["ci", " particule démonstrative"],
+            ["-là", " particule démonstrative (là)"],
+            ["-ci", " particule démonstrative (ci)"],
 
-            ['le', " COD, masc. sing."],
-            ['la', " COD, fém. sing."],
-            ['les', " COD, plur."],
+            ['-le', " COD, masc. sing."],
+            ['-la', " COD, fém. sing."],
+            ['-les', " COD, plur."],
 
-            ['moi', " COI (à moi), sing."],
-            ['toi', " COI (à toi), sing."],
-            ['lui', " COI (à lui ou à elle), sing."],
-            ['nous2', " COI (à nous), plur."],
-            ['vous2', " COI (à vous), plur."],
-            ['leur', " COI (à eux ou à elles), plur."],
+            ['-moi', " COI (à moi), sing."],
+            ['-toi', " COI (à toi), sing."],
+            ['-lui', " COI (à lui ou à elle), sing."],
+            ['-nous2', " COI (à nous), plur."],
+            ['-vous2', " COI (à vous), plur."],
+            ['-leur', " COI (à eux ou à elles), plur."],
 
-            ['y', " pronom adverbial"],
-            ["m'y", " (me) pronom personnel objet + (y) pronom adverbial"],
-            ["t'y", " (te) pronom personnel objet + (y) pronom adverbial"],
-            ["s'y", " (se) pronom personnel objet + (y) pronom adverbial"],
+            ['-le-moi', " COD, masc. sing. + COI (à moi), sing."],
+            ['-le-toi', " COD, masc. sing. + COI (à toi), sing."],
+            ['-le-lui', " COD, masc. sing. + COI (à lui ou à elle), sing."],
+            ['-le-nous', " COD, masc. sing. + COI (à nous), plur."],
+            ['-le-vous', " COD, masc. sing. + COI (à vous), plur."],
+            ['-le-leur', " COD, masc. sing. + COI (à eux ou à elles), plur."],
 
-            ['en', " pronom adverbial"],
-            ["m'en", " (me) pronom personnel objet + (en) pronom adverbial"],
-            ["t'en", " (te) pronom personnel objet + (en) pronom adverbial"],
-            ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
-        ]),
+            ['-la-moi', " COD, fém. sing. + COI (à moi), sing."],
+            ['-la-toi', " COD, fém. sing. + COI (à toi), sing."],
+            ['-la-lui', " COD, fém. sing. + COI (à lui ou à elle), sing."],
+            ['-la-nous', " COD, fém. sing. + COI (à nous), plur."],
+            ['-la-vous', " COD, fém. sing. + COI (à vous), plur."],
+            ['-la-leur', " COD, fém. sing. + COI (à eux ou à elles), plur."],
 
-    dChar: new Map([
+            ['-les-moi', " COD, plur. + COI (à moi), sing."],
+            ['-les-toi', " COD, plur. + COI (à toi), sing."],
+            ['-les-lui', " COD, plur. + COI (à lui ou à elle), sing."],
+            ['-les-nous', " COD, plur. + COI (à nous), plur."],
+            ['-les-vous', " COD, plur. + COI (à vous), plur."],
+            ['-les-leur', " COD, plur. + COI (à eux ou à elles), plur."],
+
+            ['-y', " pronom adverbial"],
+            ["-m’y", " (me) pronom personnel objet + (y) pronom adverbial"],
+            ["-t’y", " (te) pronom personnel objet + (y) pronom adverbial"],
+            ["-s’y", " (se) pronom personnel objet + (y) pronom adverbial"],
+
+            ['-en', " pronom adverbial"],
+            ["-m’en", " (me) pronom personnel objet + (en) pronom adverbial"],
+            ["-t’en", " (te) pronom personnel objet + (en) pronom adverbial"],
+            ["-s’en", " (se) pronom personnel objet + (en) pronom adverbial"],
+
             ['.', "point"],
             ['·', "point médian"],
             ['…', "points de suspension"],
@@ -375,8 +401,8 @@ var lexgraph_fr = {
 
     _zPartDemForm: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-(là|ci)$", "i"),
     _aPartDemExceptList: new Set(["celui", "celle", "ceux", "celles", "de", "jusque", "par", "marie-couche-toi"]),
-    _zInterroVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-(t-(?:il|elle|on)|je|tu|ils?|elles?|on|[nv]ous)$", "i"),
-    _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui)$", "i"),
+    _zInterroVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$", "i"),
+    _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui))$", "i"),
     _zTag: new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g"),
 
 
@@ -406,6 +432,126 @@ var lexgraph_fr = {
         return [sPrefix, sWord, sSuffix];
     },
 
+    analyze: function (sWord) {
+        // return meaning of <sWord> if found else an empty string
+        sWord = sWord.toLowerCase();
+        if (this.dValues.has(sWord)) {
+            return this.dValues.get(sWord);
+        }
+        return "";
+    },
+
+    readableMorph: function (sMorph) {
+        let sRes = "";
+        sMorph = sMorph.replace(/:V([0-3][ea_])[itpqnmr_eaxz]+/, ":V$1");
+        let m;
+        while ((m = this._zTag.exec(sMorph)) !== null) {
+            if (this.dTag.has(m[0])) {
+                sRes += this.dTag.get(m[0])[0];
+            } else {
+                sRes += " [" + m[0] + "]?";
+            }
+        }
+        if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
+            sRes += " [" + sMorph.slice(1, sMorph.indexOf("/")) + "]";
+        }
+        if (!sRes) {
+            return " [" + sMorph + "]: étiquettes inconnues";
+        }
+        return sRes.gl_trimRight(",");
+    },
+
+    setLabelsOnToken (oToken) {
+        // Token: .sType, .sValue, .nStart, .nEnd, .lMorph
+        let m = null;
+        try {
+            switch (oToken.sType) {
+                case 'PUNC':
+                case 'SIGN':
+                    oToken["aLabels"] = [this.dValues.gl_get(oToken.sValue, "signe de ponctuation divers")];
+                    break;
+                case 'NUM':
+                    oToken["aLabels"] = ["nombre"];
+                    break;
+                case 'LINK':
+                    oToken["aLabels"] = ["hyperlien"];
+                    break;
+                case 'TAG':
+                    oToken["aLabels"] = ["étiquette (hashtag)"];
+                    break;
+                case 'HTML':
+                    oToken["aLabels"] = ["balise HTML"];
+                    break;
+                case 'PSEUDOHTML':
+                    oToken["aLabels"] = ["balise pseudo-HTML"];
+                    break;
+                case 'HTMLENTITY':
+                    oToken["aLabels"] = ["entité caractère XML/HTML"];
+                    break;
+                case 'HOUR':
+                    oToken["aLabels"] = ["heure"];
+                    break;
+                case 'WORD_ELIDED':
+                    oToken["aLabels"] = [this.dValues.gl_get(oToken.sValue, "préfixe élidé inconnu")];
+                    break;
+                case 'WORD_ORDINAL':
+                    oToken["aLabels"] = ["nombre ordinal"];
+                    break;
+                case 'FOLDERUNIX':
+                    oToken["aLabels"] = ["dossier UNIX (et dérivés)"];
+                    break;
+                case 'FOLDERWIN':
+                    oToken["aLabels"] = ["dossier Windows"];
+                    break;
+                case 'WORD_ACRONYM':
+                    oToken["aLabels"] = ["sigle ou acronyme"];
+                    break;
+                case 'WORD':
+                    if (oToken.hasOwnProperty("lMorph")  &&  oToken["lMorph"].length > 0) {
+                        // with morphology
+                        oToken["aLabels"] = [];
+                        for (let sMorph of oToken["lMorph"]) {
+                            oToken["aLabels"].push(this.readableMorph(sMorph));
+                        }
+                        if (oToken.hasOwnProperty("sTags")) {
+                            let aTags = [];
+                            for (let sTag of oToken["sTags"]) {
+                                if (this.dValues.has(sTag)) {
+                                    aTags.push(this.dValues.get(sTag))
+                                }
+                            }
+                            if (aTags.length > 0) {
+                                oToken["aOtherLabels"] = aTags;
+                            }
+                        }
+                    } else {
+                        // no morphology, guessing
+                        if (oToken.sValue.gl_count("-") > 4) {
+                            oToken["aLabels"] = ["élément complexe indéterminé"];
+                        }
+                        else if (m = this._zPartDemForm.exec(oToken.sValue)) {
+                            // mots avec particules démonstratives
+                            oToken["aLabels"] = ["mot avec particule démonstrative"];
+                        }
+                        else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
+                            // formes interrogatives
+                            oToken["aLabels"] = ["forme verbale impérative"];
+                        }
+                        else if (m = this._zInterroVerb.exec(oToken.sValue)) {
+                            // formes interrogatives
+                            oToken["aLabels"] = ["forme verbale interrogative"];
+                        }
+                    }
+                    break;
+                default:
+                    oToken["aLabels"] = ["token de nature inconnue"];
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        return null;
+    },
+
     getInfoForToken: function (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
         // return a object {sType, sValue, aLabel}
@@ -417,7 +563,7 @@ var lexgraph_fr = {
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [this.dChar.gl_get(oToken.sValue, "caractère indéterminé")]
+                        aLabel: [this.dValues.gl_get(oToken.sValue, "caractère indéterminé")]
                     };
                     break;
                 case 'NUM':
@@ -470,11 +616,10 @@ var lexgraph_fr = {
                     };
                     break;
                 case 'WORD_ELIDED':
-                    let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [this.dElidedPrefix.gl_get(sTemp, "préfixe élidé inconnu")]
+                        aLabel: [this.dValues.gl_get(oToken.sValue.toLowerCase(), "préfixe élidé inconnu")]
                     };
                     break;
                 case 'WORD_ORDINAL':
@@ -526,8 +671,8 @@ var lexgraph_fr = {
                             sValue: oToken.sValue,
                             aLabel: ["mot avec particule démonstrative"],
                             aSubElem: [
-                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
@@ -537,8 +682,8 @@ var lexgraph_fr = {
                             sValue: oToken.sValue,
                             aLabel: ["forme verbale impérative"],
                             aSubElem: [
-                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
@@ -548,8 +693,8 @@ var lexgraph_fr = {
                             sValue: oToken.sValue,
                             aLabel: ["forme verbale interrogative"],
                             aSubElem: [
-                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (this.oSpellChecker.isValidToken(oToken.sValue)) {
@@ -582,7 +727,7 @@ var lexgraph_fr = {
     _getMorph (sWord) {
         let aElem = [];
         for (let s of this.oSpellChecker.getMorph(sWord)) {
-            if (s.includes(":")) aElem.push(this._formatTags(s));
+            if (s.includes(":")) aElem.push(this.readableMorph(s));
         }
         if (aElem.length == 0) {
             aElem.push("mot inconnu du dictionnaire");
@@ -590,53 +735,12 @@ var lexgraph_fr = {
         return aElem;
     },
 
-    _formatTags (sTags) {
-        let sRes = "";
-        sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
-        let m;
-        while ((m = this._zTag.exec(sTags)) !== null) {
-            sRes += this.dTag.get(m[0])[0];
+    _formatSuffix (sSuffix) {
+        sSuffix = sSuffix.replace(/['’ʼ‘‛´`′‵՚ꞌꞋ]/g, "’").toLowerCase();
+        if (this.dValues.has(sSuffix)) {
+            return this.dValues.get(sSuffix);
         }
-        if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
-            sRes += " [" + sTags.slice(1, sTags.indexOf("/")) + "]";
-        }
-        if (!sRes) {
-            return "#Erreur. Étiquette inconnue : [" + sTags + "]";
-        }
-        return sRes.gl_trimRight(",");
-    },
-
-    _formatTagsLoc (sTags) {
-        let sRes = "";
-        let m;
-        while ((m = this._zTag.exec(sTags)) !== null) {
-            if (m[0].startsWith(":LV")) {
-                sRes += this.dLocTag.get(":LV");
-                for (let c of m[0].slice(3)) {
-                    sRes += this.dLocVerb.get(c);
-                }
-            } else {
-                sRes += this.dLocTag.get(m[0]);
-            }
-        }
-        if (!sRes) {
-            return "#Erreur. Étiquette inconnue : [" + sTags + "]";
-        }
-        return sRes.gl_trimRight(",");
-    },
-
-    _formatSuffix (s) {
-        if (s.startsWith("t-")) {
-            return "“t” euphonique +" + this.dPronoms.get(s.slice(2));
-        }
-        if (!s.includes("-")) {
-            return this.dPronoms.get(s.replace("’", "'"));
-        }
-        if (s.endsWith("ous")) {
-            s += '2';
-        }
-        let nPos = s.indexOf("-");
-        return this.dPronoms.get(s.slice(0, nPos)) + " +" + this.dPronoms.get(s.slice(nPos + 1));
+        return " suffixe inconnu";
     },
 
     getListOfTokens (sText, bInfo=true) {
@@ -656,102 +760,9 @@ var lexgraph_fr = {
         return aElem;
     },
 
-    * generateInfoForTokenList (lToken) {
-        for (let oToken of lToken) {
-            let aRes = this.getInfoForToken(oToken);
-            if (aRes) {
-                yield aRes;
-            }
-        }
-    },
-
-    getListOfTokensReduc (sText, bInfo=true) {
-        let lToken = this.getListOfTokens(sText.replace("'", "’").trim(), false);
-        let iToken = 0;
-        let aElem = [];
-        if (lToken.length == 0) {
-            return aElem;
-        }
-        do {
-            let oToken = lToken[iToken];
-            let sMorphLoc = '';
-            let aTokenTempList = [oToken];
-            if (oToken.sType == "WORD" || oToken.sType == "WORD_ELIDED"){
-                let iLocEnd = iToken + 1;
-                let oLocNode = this.oLocGraph[oToken.sValue.toLowerCase()];
-                while (oLocNode) {
-                    let oTokenNext = lToken[iLocEnd];
-                    iLocEnd++;
-                    if (oTokenNext) {
-                        oLocNode = oLocNode[oTokenNext.sValue.toLowerCase()];
-                    }
-                    if (oLocNode && iLocEnd <= lToken.length) {
-                        sMorphLoc = oLocNode["_:_"];
-                        aTokenTempList.push(oTokenNext);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            if (sMorphLoc) {
-                // we have a locution
-                let sValue = '';
-                for (let oTokenWord of aTokenTempList) {
-                    sValue += oTokenWord.sValue+' ';
-                }
-                let oTokenLocution = {
-                    'nStart': aTokenTempList[0].nStart,
-                    'nEnd': aTokenTempList[aTokenTempList.length-1].nEnd,
-                    'sType': "LOC",
-                    'sValue': sValue.replace('’ ','’').trim(),
-                    'aSubToken': aTokenTempList
-                };
-                if (bInfo) {
-                    let aSubElem = null;
-                    if (sMorphLoc.startsWith("*|")) {
-                        // cette suite de tokens n’est une locution que dans certains cas minoritaires
-                        oTokenLocution.sType = "LOCP";
-                        for (let oElem of this.generateInfoForTokenList(aTokenTempList)) {
-                            aElem.push(oElem);
-                        }
-                        sMorphLoc = sMorphLoc.slice(2);
-                    } else {
-                        aSubElem = [...this.generateInfoForTokenList(aTokenTempList)];
-                    }
-                    // cette suite de tokens est la plupart du temps une locution
-                    let aFormatedTag = [];
-                    for (let sTagLoc of sMorphLoc.split('|') ){
-                        aFormatedTag.push(this._formatTagsLoc(sTagLoc));
-                    }
-                    aElem.push({
-                        sType: oTokenLocution.sType,
-                        sValue: oTokenLocution.sValue,
-                        aLabel: aFormatedTag,
-                        aSubElem: aSubElem
-                    });
-                } else {
-                    aElem.push(oTokenLocution);
-                }
-                iToken = iToken + aTokenTempList.length;
-            }
-            else {
-                // No locution, we just add information
-                if (bInfo) {
-                    let aRes = this.getInfoForToken(oToken);
-                    if (aRes) {
-                        aElem.push(aRes);
-                    }
-                } else {
-                    aElem.push(oToken);
-                }
-                iToken++;
-            }
-        } while (iToken < lToken.length);
-        return aElem;
-    },
 
     // Other functions
+
     filterSugg: function (aSugg) {
         return aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); });
     }

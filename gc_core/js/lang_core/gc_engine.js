@@ -233,6 +233,7 @@ class TextParser {
                         if (!oToken.hasOwnProperty("lMorph")) {
                             oToken["lMorph"] = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
                         }
+                        gc_engine.oSpellChecker.setLabelsOnToken(oToken);
                     }
                     lSentences.push({
                         "nStart": iStart,

@@ -122,15 +122,20 @@ class SpellChecker ():
                 if sLex:
                     aRes = [ (" | ".join(lMorph), sLex) ]
                 else:
-                    aRes = [ (sMorph, self.lexicographer.formatTags(sMorph)) for sMorph in lMorph ]
+                    aRes = [ (sMorph, self.lexicographer.readableMorph(sMorph)) for sMorph in lMorph ]
                 if aRes:
                     lWordAndMorph.append((sElem, aRes))
         return lWordAndMorph
 
     def readableMorph (self, sMorph):
         if not self.lexicographer:
-            return []
-        return self.lexicographer.formatTags(sMorph)
+            return ""
+        return self.lexicographer.readableMorph(sMorph)
+
+    def setLabelsOnToken (dToken):
+        if not self.lexicographer:
+            return
+        self.lexicographer.setLabelsOnToken(dToken)
 
 
     # Storage
