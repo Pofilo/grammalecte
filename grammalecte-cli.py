@@ -346,7 +346,7 @@ def main ():
                     for dSentence in lSentences:
                         echo("{nStart}:{nEnd}  <{sSentence}>".format(**dSentence))
                         for dToken in dSentence["lTokens"]:
-                            if dToken["sType"] == "INFO":
+                            if dToken["sType"] == "INFO" or "bMerged" in dToken:
                                 continue
                             echo("  {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {2} {0[sValue]:<16} {3}".format(dToken, \
                                                                                                         "×" if dToken.get("bToRemove", False) else " ",

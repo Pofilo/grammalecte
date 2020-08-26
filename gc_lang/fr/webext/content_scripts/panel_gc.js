@@ -582,7 +582,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     xSentenceBlock.appendChild(oGrammalecte.createNode("p", {className: "grammalecte_lxg_paragraph_sentence", textContent: oSentence.sSentence}));
                     let xTokenList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
                     for (let oToken of oSentence.lTokens) {
-                        if (oToken["sType"] != "INFO") {
+                        if (oToken["sType"] != "INFO" && !oToken.hasOwnProperty("bMerged")) {
                             xTokenList.appendChild(this._createTokenBlock2(oToken));
                         }
                     }

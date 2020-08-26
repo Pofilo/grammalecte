@@ -284,7 +284,7 @@ class TextParser:
                     self.lTokens = list(_oTokenizer.genTokens(self.sSentence, True))
                     self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lTokens  if dToken["sType"] != "INFO" }
                     if bFullInfo:
-                        self.lTokens0 = list(self.lTokens)  # the list of tokens is duplicated, to keep all tokens from being deleted when analysis
+                        self.lTokens0 = list(self.lTokens)  # the list of tokens is duplicated, to keep tokens from being deleted when analysis
                     self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                     if bFullInfo:
                         for dToken in self.lTokens0:
@@ -842,7 +842,6 @@ class TextParser:
         dTokenMerger = {}
         for iToken, dToken in enumerate(self.lTokens):
             bKeepToken = True
-            bKeepToken0 = True
             if dToken["sType"] != "INFO":
                 if nMergeUntil and iToken <= nMergeUntil:
                     # token to merge
@@ -850,8 +849,8 @@ class TextParser:
                     dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
                         echo("  MERGED TOKEN: " + dTokenMerger["sValue"])
+                    dToken["bMerged"] = True
                     bKeepToken = False
-                    bKeepToken0 = False
                 if "nMergeUntil" in dToken:
                     # first token to be merge with
                     if iToken > nMergeUntil: # this token is not to be merged with a previous token
@@ -884,12 +883,7 @@ class TextParser:
                 except KeyError:
                     echo(self)
                     echo(dToken)
-            if self.lTokens0 is not None and bKeepToken0:
-                lNewTokens0.append(dToken)
         if bDebug:
             echo("  TEXT REWRITED: " + self.sSentence)
         self.lTokens.clear()
         self.lTokens = lNewTokens
-        if self.lTokens0 is not None:
-            self.lTokens0.clear()
-            self.lTokens0 = lNewTokens0

@@ -222,7 +222,7 @@ class TextParser {
                 }
                 if (bFullInfo) {
                     this.lTokens0 = Array.from(this.lTokens);
-                    // the list of tokens is duplicated, to keep all tokens from being deleted when analysis
+                    // the list of tokens is duplicated, to keep tokens from being deleted when analysis
                 }
                 this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
                 if (bFullInfo) {
@@ -975,12 +975,10 @@ class TextParser {
             console.log("REWRITE");
         }
         let lNewToken = [];
-        let lNewTokens0 = [];
         let nMergeUntil = 0;
         let oMergingToken = null;
         for (let [iToken, oToken] of this.lTokens.entries()) {
             let bKeepToken = true;
-            let bKeepToken0 = true;
             if (oToken["sType"] != "INFO") {
                 if (nMergeUntil && iToken <= nMergeUntil) {
                     oMergingToken["sValue"] += " ".repeat(oToken["nStart"] - oMergingToken["nEnd"]) + oToken["sValue"];
@@ -988,8 +986,8 @@ class TextParser {
                     if (bDebug) {
                         console.log("  MERGED TOKEN: " + oMergingToken["sValue"]);
                     }
+                    oToken["bMerged"] = true;
                     bKeepToken = false;
-                    bKeepToken0 = false;
                 }
                 if (oToken.hasOwnProperty("nMergeUntil")) {
                     if (iToken > nMergeUntil) { // this token is not already merged with a previous token
@@ -1033,19 +1031,12 @@ class TextParser {
                     console.log(oToken);
                 }
             }
-            if (this.lTokens0 !== null && bKeepToken0) {
-                lNewTokens0.push(oToken);
-            }
         }
         if (bDebug) {
             console.log("  TEXT REWRITED: " + this.sSentence);
         }
         this.lTokens.length = 0;
         this.lTokens = lNewToken;
-        if (this.lTokens0 !== null) {
-            this.lTokens0.length = 0;
-            this.lTokens0 = lNewTokens0;
-        }
     }
 };
 
