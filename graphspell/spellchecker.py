@@ -132,7 +132,7 @@ class SpellChecker ():
             return ""
         return self.lexicographer.readableMorph(sMorph)
 
-    def setLabelsOnToken (dToken):
+    def setLabelsOnToken (self, dToken):
         if not self.lexicographer:
             return
         self.lexicographer.setLabelsOnToken(dToken)
