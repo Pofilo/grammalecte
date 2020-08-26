@@ -549,7 +549,6 @@ var lexgraph_fr = {
         } catch (e) {
             console.error(e);
         }
-        return null;
     },
 
     getInfoForToken: function (oToken) {
