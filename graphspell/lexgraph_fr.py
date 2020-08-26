@@ -415,6 +415,71 @@ def readableMorph (sMorph):
     return sRes.rstrip(",")
 
 
+_zPartDemForm = re.compile("([\\w]+)-(là|ci)$")
+_zInterroVerb = re.compile("([\\w]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$")
+_zImperatifVerb = re.compile("([\\w]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui))$")
+
+def setLabelsOnToken (dToken):
+    # Token: .sType, .sValue, .nStart, .nEnd, .lMorph
+    try:
+        if dToken["sType"] == "PUNC" or dToken["sType"] == "SIGN":
+            dToken["aLabels"] = [_dValues.get(dToken["sValue"], "signe de ponctuation divers")]
+        elif dToken["sType"] == 'NUM':
+            dToken["aLabels"] = ["nombre"]
+        elif dToken["sType"] == 'LINK':
+            dToken["aLabels"] = ["hyperlien"]
+        elif dToken["sType"] == 'TAG':
+            dToken["aLabels"] = ["étiquette (hashtag)"]
+        elif dToken["sType"] == 'HTML':
+            dToken["aLabels"] = ["balise HTML"]
+        elif dToken["sType"] == 'PSEUDOHTML':
+            dToken["aLabels"] = ["balise pseudo-HTML"]
+        elif dToken["sType"] == 'HTMLENTITY':
+            dToken["aLabels"] = ["entité caractère XML/HTML"]
+        elif dToken["sType"] == 'HOUR':
+            dToken["aLabels"] = ["heure"]
+        elif dToken["sType"] == 'WORD_ELIDED':
+            dToken["aLabels"] = [_dValues.get(dToken["sValue"], "préfixe élidé inconnu")]
+        elif dToken["sType"] == 'WORD_ORDINAL':
+            dToken["aLabels"] = ["nombre ordinal"]
+        elif dToken["sType"] == 'FOLDERUNIX':
+            dToken["aLabels"] = ["dossier UNIX (et dérivés)"]
+        elif dToken["sType"] == 'FOLDERWIN':
+            dToken["aLabels"] = ["dossier Windows"]
+        elif dToken["sType"] == 'WORD_ACRONYM':
+            dToken["aLabels"] = ["sigle ou acronyme"]
+        elif dToken["sType"] == 'WORD':
+            if "lMorph" in dToken and dToken["lMorph"]:
+                # with morphology
+                dToken["aLabels"] = []
+                for sMorph in dToken["lMorph"]:
+                    dToken["aLabels"].append(readableMorph(sMorph))
+                if "sTags" in dToken:
+                    aTags = []
+                    for sTag in dToken["sTags"]:
+                        if sTag in _dValues:
+                            aTags.append(_dValues[sTag])
+                    if aTags:
+                        dToken["aOtherLabels"] = aTags
+            else:
+                # no morphology, guessing
+                if dToken["sValue"].count("-") > 4:
+                    dToken["aLabels"] = ["élément complexe indéterminé"]
+                elif _zPartDemForm.search(dToken["sValue"]):
+                    # mots avec particules démonstratives
+                    dToken["aLabels"] = ["mot avec particule démonstrative"]
+                elif _zImperatifVerb.search(dToken["sValue"]):
+                    # formes interrogatives
+                    dToken["aLabels"] = ["forme verbale impérative"]
+                elif _zInterroVerb.search(dToken["sValue"]):
+                    # formes interrogatives
+                    dToken["aLabels"] = ["forme verbale interrogative"]
+        else:
+            dToken["aLabels"] = ["token de nature inconnue"]
+    except:
+        return
+
+
 # Other functions
 
 def filterSugg (aSugg):
