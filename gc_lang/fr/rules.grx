@@ -8807,6 +8807,9 @@ __conf_cour_cours_court_courre__
     en cour d’ >assise
         <<- !1:2>>
 
+    au long [court|cour|courre]
+        <<- /conf/ --1>> cours                              && Locution “au long cours”.|https://fr.wiktionary.org/wiki/au_long_cours
+
     court d’ eau
         <<- /conf/ morph(<1, ":(?:D.*:[me]:[si]|R)") -1>> cours     && Confusion. Écrivez “cours d’eau”.|https://fr.wiktionary.org/wiki/cours_d%E2%80%99eau
 
@@ -8814,12 +8817,12 @@ __conf_cour_cours_court_courre__
         <<- /conf/ morph(<1, ":(?:D.*:[me]:[pi]|R)") -1>> cours     && Confusion. Écrivez “cours d’eau”.|https://fr.wiktionary.org/wiki/cours_d%E2%80%99eau
 
     en cour
-        <<- /conf/ ->> en cours                             && Confusion probable. Une cour… Un cours… Adjectif : court(e).
+        <<- /conf/ ->> en cours                             && Confusion probable. Locution “en cours…”|https://fr.wiktionary.org/wiki/en_cours
 
     [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains|maints] [court+s] [de|d’]
         || [allemand|anglais|arabe|arabe|bengali|bhodjpouri|cantonais|coréen|égyptien|espagnol|français|grec|gujarati|haoussa|hébreu|hindi|indonésien|italien|italien|latin|japonais|javanais|mandarin|marathi|minnan|ourdou|pendjabi|persan|portugais|russe|sanskrit|sanscrit|swahili|tamoul|thaï|turc|tégoulou|vietnamien|wu]
     [<start>|,|en|un|le|ce|mon|notre|votre|leur|des|les|mes|tes|ses|ces|nos|vos|leurs|quelques|plusieurs|certains|maints] [court+s] [de|d’]
-        || [>administration|>agriculture|>agronomie|>art|>biologie|>chant|>commerce|>culture|>cristallographie|>conduite|>cuisine|>danse|>dessin|>ébénisterie|>écriture|>épistémologie|>droit|>éducation|>électronique|>électrotechnique|>élocution|>éthique|>géographie|>gestion|>histoire|>karaté|>kung-fu|>informatique|>langue|>lettre|>littérature|>orientation|>morale|maintien|>mathématique|>math|>mécanique|>médecine|>menuiserie|>musique|>odontologie|>pâtisserie|>peinture|>philosophie|>philo|>physique|>programmation|>psychologie|>science|>sport|>théâtre|>théologie]
+        || [>administration|>agriculture|>agronomie|>art|>biologie|>chant|>commerce|>culture|>cristallographie|>conduite|>cuisine|>danse|>dessin|>ébénisterie|>écriture|>épistémologie|>droit|>éducation|>électronique|>électrotechnique|>élocution|>éthique|>géographie|>gestion|>histoire|>karaté|>kung-fu|>informatique|>interpellation|>langue|>lettre|>littérature|>orientation|>morale|maintien|>mathématique|>math|>mécanique|>médecine|>menuiserie|>musique|>odontologie|>pâtisserie|>peinture|>philosophie|>philo|>physique|>programmation|>psychologie|>science|>sport|>théâtre|>théologie]
         <<- /conf/ -2>> cours                               && Confusion probable : “court” signifie “de peu de longueur”. Pour un enseignement, écrivez “cours”.|https://fr.wiktionary.org/wiki/cours
 
     >couper  ?@:[WX]¿  [cour+s|courre+s|courts]
@@ -8842,6 +8845,7 @@ TEST: elle va en {{court}} de lettres
 TEST: il suit un {{court}} de physique appliquée
 TEST: Nous allons bientôt être à {{cours}} d’argent.
 TEST: le rendement {{à cours terme}} est excellent.
+TEST: Mais, entre une relation nouée au long {{court}} perdue subitement et un nouveau partenariat, l’enjeu n’est pas le même.
 TEST: à {{cours}} d’argent
 TEST: le portage a encore {{cour}}
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
@@ -14026,12 +14030,15 @@ __purge_locutions_temporelles_diverses__
     tout à coup
     toute affaire cessante
     toutes affaires cessantes
-    tôt
     tôt ou tard
     un jour ou l’autre
     un peu [moins|plus] ?[près|loin|tôt|tard]¿ que prévu
     [voici|voilà] belle lurette
         <<- ~>> *
+
+    tôt
+        <<- not (value(>1, "|fait|") and value(>2, "|de|d’|") and morph(<1, ">avoir/")) ~>> *
+
 
 __purge_locutions_échéance__
     à ?[si|très|trop]¿ [brève|courte|longue] échéance
@@ -14437,7 +14444,7 @@ __purge_locutions__
     à quatre pattes
     à qui [de|d’] droit
     à qui mieux mieux
-    à qui que ce soit
+    à qui [que|qu’] ce soit
     à quelque distance
     à quelques [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière] près
     à quelques-uns d’ entre [nous|vous|eux]
@@ -14490,7 +14497,7 @@ __purge_locutions__
     à vue d’ œil
     à ?bien¿ y regarder [de|d’] plus près
     à ?bien¿ y [penser|réfléchir|songer|repenser]
-    advienne que pourra
+    advienne [que|qu’] pourra
     ah
     ailleurs
     alors
@@ -14519,7 +14526,7 @@ __purge_locutions__
     au lieu [de|d’] [cela|ceci|ça|quoi]
     au milieu [de|d’] nulle part
     au moment opportun
-    au même titre que n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
+    au même titre [que|qu’] n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
     au pas [de|d’] [charge|course]
     au petit bonheur la chance
     au plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
@@ -14540,16 +14547,16 @@ __purge_locutions__
     auparavant
     aussitôt
     aux [abois|aguets|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
-    autant que [nécessaire|possible|prévu]
-    autant que faire se peut
+    autant [que|qu’] [nécessaire|possible|prévu]
+    autant [que|qu’] faire se peut
     autrement dit
     avant tout le monde
     avant toute chose
     avant toutes choses
     avant d’ aller plus loin
     avant d’ en arriver là
-    avant [de|d’] faire quoi que ce soit
-    avant [de|d’] faire quoi que ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
+    avant [de|d’] faire quoi [que|qu’] ce soit
+    avant [de|d’] faire quoi [que|qu’] ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
     avant qu’ il ne soit trop tard
     avant un bon bout [de|d’] temps
     avec beaucoup [de|d’] [circonspection|prudence]
@@ -14557,8 +14564,8 @@ __purge_locutions__
     avec autre chose
     avec le plus grand soin
     avec pertes et fracas
-    avec tout le respect que je [vous|te|leur|lui] dois
-    avec tout le respect que nous [vous|te|leur|lui] devons
+    avec tout le respect [que|qu’] je [vous|te|leur|lui] dois
+    avec tout le respect [que|qu’] nous [vous|te|leur|lui] devons
     avec tout un chacun
     avec un peu [de|d’] chance
     ayant pignon sur rue
@@ -14604,7 +14611,7 @@ __purge_locutions__
     contre vents et marées
     contre [mon|ton|son|notre|votre|leur] gré
     côte à côte
-    [coute|coûte] que [coute|coûte]
+    [coute|coûte] [que|qu’] [coute|coûte]
     [crois-le|croyons-le|croyez-le] ou [non|pas]
     cul par-dessus tête
     dans le cas contraire
@@ -14859,7 +14866,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ mauvais état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ mauvaise [posture|santé]
     en nombre suffisant
-    en nombre plus que suffisant
+    en nombre plus [que|qu’] suffisant
     en ordre [dispersé|serré]
     en partant [de|d’] zéro
     en partie ou en totalité
@@ -14881,7 +14888,7 @@ __purge_locutions__
     en provenance du monde entier
     en pure perte
     en quantité suffisante
-    en quantité plus que suffisante
+    en quantité plus [que|qu’] suffisante
     en quelque sorte
     en queue [de|d’] peloton
     en rangs [dispersés|serrés]
@@ -14896,7 +14903,7 @@ __purge_locutions__
     en sous-main
     en sous-nombre ?[évident|flagrant]¿
     en sous nombre ?[évident|flagrant]¿
-    en tant que >tel
+    en tant [que|qu’] >tel
     en tête à tête
     en tête-à-tête
     en si peu [de|d’] temps
@@ -15002,9 +15009,9 @@ __purge_locutions__
     malgré [ça|cela|ceci|tout]
     manu militari
     mezza voce
-    mieux [vaut|valait] tard que jamais
+    mieux [vaut|valait] tard [que|qu’] jamais
     moins [tôt|tard]
-    moins que [nécessaire|prévu]
+    moins [que|qu’] [nécessaire|prévu]
     moitié *WORD ?,¿ moitié *WORD
     mot [à|pour] mot
     mouais
@@ -15063,12 +15070,12 @@ __purge_locutions__
     peut-être
     pile poil
     plein [nord|sud|ouest]
-    plus bas que terre
+    plus bas [que|qu’] terre
     plus du tout
     plus ou moins
-    plus que [nécessaire|prévu|jamais]
-    plus que tout au monde
-    plus que toute autre chose
+    plus [que|qu’] [nécessaire|prévu|jamais]
+    plus [que|qu’] tout au monde
+    plus [que|qu’] toute autre chose
     plutôt
     pour [ce|c’] [que|qu’] [ça|cela|ceci] vaut
     pour [ce|c’] [que|qu’] j’ en [sais|savais|sus|saurai|saurais]
@@ -15077,14 +15084,14 @@ __purge_locutions__
     pour [ce|c’] [que|qu’] nous en [savons|savions|sûmes|saurons|saurions]
     pour [ce|c’] [que|qu’] vous en [savez|saviez|sûtes|saurez|sauriez]
     pour [ce|c’] [que|qu’] [ils|elles|iels] en [savent|savaient|surent|sauront|sauraient]
-    pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
-    pour [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
+    pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] [que|qu’] [ça|cela|ceci] intéresse
+    pour [celui|celle|ceux|celles] [que|qu’] [ça|cela|ceci] intéresse
     pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
     pour [mon|ton|son|notre|votre|leur] propre [compte|bien]
     pour [m’|t’|s’|nous|vous|leur] en rendre compte
     pour ainsi dire
     pour ce faire
-    pour ce que [j’|tu] en [sais|savais]
+    pour ce [que|qu’] [j’|tu] en [sais|savais]
     pour couronner le tout
     pour [de|d’] bon
     pour faire bonne mesure
@@ -15187,7 +15194,7 @@ __purge_locutions__
     si [bas|haut|longtemps|nécessaire|peu|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous|iel|iels]
     si besoin est
-    si le besoin s’en [fait|faisait] sentir
+    si le besoin s’ en [fait|faisait] sentir
     si le besoin [doit|devait] s’en faire sentir
     si tel est le cas
     si tant est que ce ?[ne|n’]¿ [soit|fût] ?pas¿ @:A.*:[me]:[si]
@@ -15317,14 +15324,15 @@ __purge_x_par_après_x__
 
 __gestion_mots_grammaticaux__
     à [bord|bout|cause|contre-courant|côté|défaut|destination|disposition|distance|droite]                              [de|du|d’|des]
-    à [flanc|gauche|hauteur|partir|portée|proximité|propos|rebours]                                                     [de|du|d’|des]
+    à [flanc|gauche|hauteur|mesure|portée|proximité|propos|rebours]                                                     [de|du|d’|des]
+    à [compter|partir]                                                                                                  [de|du|d’|des]
     à [court|titre]                                                                                                     [de|d’]
     à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
     à peu [de|d’] distance                                                                                              [de|du|d’|des]
     à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|encontre|est|exception|extérieur]                         [de|du|d’|des]
     à l’ [insu|instar|instigation|intérieur|inverse|issue|opposé|orée|ouest|unisson]                                    [de|du|d’|des]
     à l’ autre bout                                                                                                     [de|du|d’|des]
-    à la [barbe|hauteur|merci|portée|proximité|recherche|suite]                                                         [de|du|d’|des]
+    à la [barbe|différence|hauteur|merci|portée|proximité|recherche|suite]                                              [de|du|d’|des]
     à la grande surprise                                                                                                [de|du|d’|des]
     à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                [de|du|d’|des]
     à [quelques|plusieurs] [dizaines|centaines|milliers] [de|d’] [mètres|kilomètres]                                    [de|du|d’|des]
@@ -15332,7 +15340,7 @@ __gestion_mots_grammaticaux__
     à grand renfort                                                                                                     [de|d’]
     à grands coups                                                                                                      [de|d’]
     au [bout|chevet|courant|côté|cours|début|détriment|fond|gré|lieu|large|long|milieu|nord]                            [de|du|d’|des]
-    au [profit|ras|sein|secours|sommet|sortir|sud|sujet|vu]                                                             [de|du|d’|des]
+    au [profit|ras|sein|secours|sommet|sud|sujet|vu]                                                                    [de|du|d’|des]
     au beau milieu                                                                                                      [de|du|d’|des]
     au fin fond                                                                                                         [de|du|d’|des]
     au grand [dam|désespoir]                                                                                            [de|du|d’|des]
@@ -15997,6 +16005,7 @@ __substantifs_multi_mots__
     >coque [de|d’] noix
     >corbeille à >pain
     >correspondant [de|d’] guerre
+    >cotte [de|d’] mailles
     >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|éponge|épée|estoc|État|foudre|fil|filet|force|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|>tatane|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
     >coup [de|d’] baguette ?magique¿
     >coup d’ épée dans l’ eau
@@ -16219,6 +16228,7 @@ __substantifs_multi_mots__
     >minute d’ arc
     >miroir aux alouettes
     >mise en danger de la vie d’ autrui
+    >mouchoir [de|d’] poche
     >mode [de|d’] [emploi|paiement|scrutin|vie]
     >monnaie [de|d’] [échange|réserve|singe]
     >montée en puissance
@@ -16339,7 +16349,7 @@ __substantifs_multi_mots__
     [>resto|>restau] u
     >retour à la case départ
     >retour à la normale
-    >retour [de|d’] bâton
+    >retour [de|d’] [bâton|flamme]
     >retour en arrière
     >revue [de|d’] presse
     >rivière à sec
@@ -17903,6 +17913,8 @@ TEST: Ce bâtiment a repris son erre.
 TEST: Les erres sont rompues : Les traces sont effacées.
 TEST: Les hautes erres : Se dit quand il y a un certain temps qu’un cerf est passé.
 TEST: Suivre les erres, marcher sur les erres, aller sur les erres de quelqu’un : Tenir la même conduite que lui, l’imiter.
+TEST: pour quoi faire ?
+TEST: elle s’est servie de son enfant
 
 
 @@@@
@@ -19650,6 +19662,7 @@ TEST: Ils pêchent des lieus.
 TEST: Faire un état des lieux.
 TEST: Les lieux de prière.
 TEST: un immeuble situé à quelques centaines de mètres des lieux de la fusillade
+TEST: c’est à mille lieues de nos préoccupations.
 
 
 # avoir/donner lieu
@@ -21220,6 +21233,7 @@ TEST: les {{éventuels}} {{fiches}}
 TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
+TEST: les agrandissements photo
 
 
 __gn_leurs_1m__
@@ -23280,6 +23294,9 @@ __infi_qqch_de__
     >avoir ?tout¿ loisir                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir loisir de”, le verbe devrait être à l’infinitif.
 
+    >avoir tôt fait                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir tôt fait de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/avoir_t%C3%B4t_fait_de
+
     >avoir besoin                               [de|d’]  [le|les|nous|vous|lui]    ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
 
@@ -23411,6 +23428,7 @@ TEST: non contente de l’{{ignorée}}, elle en était fière.                  
 TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements                        ->> pousser
 TEST: d’crainte d’l’{{touché}}, m’sieur…                                                            ->> toucher
 TEST: il faut bien prendre garde de la {{foulée}} au pied                                           ->> fouler
+TEST: ils auront tôt fait de la {{poussée}} dans ses derniers retranchements                        ->> pousser
 TEST: il avait besoin d’alliés.
 
 
@@ -30148,6 +30166,7 @@ TEST: les plus grands font aussi des erreurs
 TEST: à pied ou à cheval
 TEST: tout ça pour prouver qu’il va bien
 TEST: c’étaient bien les Français qui avaient procédé ainsi
+TEST: les hommes haut placés
 
 
 
