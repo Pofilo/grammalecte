@@ -2682,6 +2682,16 @@ __imp_verbes_composés_impératifs__
         <<- /imp/ ->> =\1[:-1]                              && Le pronom personnel objet ne prend pas de “s” ; “leurs” est un déterminant (exemple : leurs affaires).
         <<- />> -leur|-COI|_VCimp_
 
+    ~^\w\w+-y$
+        <<- /imp/ morphVC(\1, ":V", ":(?:E|V1.*:Ip.*:2s)") ->> =suggVerbImpe(\1, True)              && Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         && Ceci n’est pas une forme verbale impérative.
+        <<- />> -y|_VCimp_
+
+    ~^\w\w+-en$
+        <<- /imp/ morphVC(\1, ":V", ":(?:E|V1.*:Ip.*:2s)") ->> =suggVerbImpe(\1, True)              && Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         && Ceci n’est pas une forme verbale impérative.
+        <<- />> -en|_VCimp_
+
 TEST: {{donnent-les-nous}}
 TEST: {{donnait-nous-en}}
 TEST: {{donne-là-moi}}
@@ -2703,8 +2713,17 @@ TEST: {{Expliques-leur}} comment faire.
 TEST: {{fou-leur}} la paix
 TEST: {{explique-leurs}} de quoi il est question.
 TEST: {{calcul-leurs}} ça.
+TEST: {{aller-y}}
+TEST: {{dépenser-en}}
+TEST: {{appuis-en}}
+TEST: {{appuis-y}}
 TEST: c’est mon chez-moi
 TEST: c’est ton chez-toi
+TEST: penses-y
+TEST: dépenses-en encore
+TEST: prenez-en
+TEST: prends-en
+TEST: allez-y
 
 
 
@@ -8699,7 +8718,7 @@ __conf_corps_cor__
         <<- /conf/ ->> à bras-le-corps              && Locution “à bras-le-corps”.|https://fr.wiktionary.org/wiki/%C3%A0_bras-le-corps
 
     !! à corps perdu ¡¡
-    à [>cor|core] [perdu+ses]
+    [à|a] [>cor|core|corps] [perdu+ses]
         <<- /conf/ ->> à corps perdu                                                && Confusion. Locution “à corps perdu”.|https://fr.wiktionary.org/wiki/%C3%A0_corps_perdu
 
     >cor [a|à] >cor
@@ -12530,6 +12549,9 @@ TEST: ne provoque par la colère des dieux !
 TEST: Apollon, dieu du Soleil ; Athéna, déesse de la Guerre
 TEST: quel dieu d’amour ferait une telle chose ?
 TEST: entendez-moi, dieu de la Terre, dieu des Ténèbres et dieu du Ciel.
+TEST: Le bon Dieu sait tout.
+TEST: Grand Dieu…
+TEST: Bon dieu !
 
 
 # Église
@@ -12543,8 +12565,8 @@ __maj_Église__
     [>chef|>rite|>sacrement] [de|d’] l’ église
         <<- /maj/ \4.islower() -4>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
 
-    [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>roman|~^Saint-[A-ZÉÊ]]
-    ,                    [Église|Églises] [>baroque|>gothique|>roman|~^Saint-[A-ZÉÊ]]
+    [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
+    ,                    [Église|Églises] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
         <<- /maj/ -2:>> église                                      && Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
 
 TEST: L’{{église}} orthodoxe.                                           ->> Église
@@ -12558,14 +12580,23 @@ TEST: Un homme d’{{église}}.                                            ->> �
 # Points cardinaux
 __maj_Nord_Sud_Est_Ouest__
     [Afrique|Amérique|Asie|Corée|Galles|Europe|Irlande|Soudan|Rhodésie|Territoire] du [nord|sud]
-        <<- /maj/ \3.islower() -3>> =\3.capitalize()                && Majuscule manquante.
-
     [Afrique|Allemagne|ex-Allemagne|Asie|Europe|Pays] de l’ [ouest|est]
-        <<- /maj/ \4.islower() -4>> =\4.capitalize()                && Majuscule manquante.
+    >pôle [nord|sud]
+    >pôle [nord|sud] et [nord|sud]
+        <<- /maj/ \-1.islower() --1>> =\-1.capitalize()                 && Majuscule manquante.
 
-TEST: Ça se passe en Europe du {{nord}}.
-TEST: J’ai visité toute l’Afrique du {{sud}}.
-TEST: Dans l’Europe de l’{{ouest}}.
+TEST: Ça se passe en Europe du {{nord}}.                    ->> Nord
+TEST: J’ai visité toute l’Afrique du {{sud}}.               ->> Sud
+TEST: Dans l’Europe de l’{{ouest}}.                         ->> Ouest
+TEST: le pôle {{nord}}                                      ->> Nord
+
+
+# Océans
+__maj_océans__
+    océan [atlantique|arctique|antarctique|austral|indien|pacifique]
+        <<- /maj/ \-1.islower() --1>> =\-1.capitalize()                 && Mettez une majuscule sur le nom des océans.
+
+TEST: océan {{pacifique}}                                   ->> Pacifique
 
 
 # Unités de mesure
@@ -14449,6 +14480,7 @@ __purge_locutions__
     à tue-tête
     à usage [interne|unique]
     à visage [découvert|humain]
+    à vitesse constante
     à vitesse grand V
     à vive allure
     à voile et à vapeur
@@ -14760,6 +14792,7 @@ __purge_locutions__
     eh bien
     en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
     en réalité ?[augmentée|virtuelle]¿
+    en âge [de|d’] procréer
     en aucun cas
     en aucune [façon|manière]
     en ?[assez|si|très|trop]¿ bas âge
@@ -15878,6 +15911,7 @@ __substantifs_multi_mots__
     >bruit [de|d’] fond
     >bureau [de|d’] [tabac|vote]
     >business as usual
+    >cabine [de|d’] pilotage
     >cabinet [de|d’] [toilette|travail]
     >cadeau [de|d’] [anniversaire|mariage|Noël]
     >camp [de|d’] [concentration|été|hiver|internement|rééducation|travail|vacances]
@@ -16047,7 +16081,7 @@ __substantifs_multi_mots__
     >femme à poigne
     >femme à tout faire
     >fer à cheval
-    >fer à repasser
+    >fer à [repasser|souder]
     >fer [de|d’] lance
     >ferme à >clic
     >fermeture à glissière
@@ -16372,6 +16406,7 @@ __substantifs_multi_mots__
     >tête d’ enterrement
     >tête [de|d’] [linotte|déterré+ses|mule|pont]
     >terrain à découvert
+    >terrain [de|d’] jeu
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
     >tir à boulets rouges
@@ -20435,6 +20470,7 @@ __conf_tant_temps_tan__
     c’ >être [le|l’] bon ?vieux¿ [tant|>tan]
     >prendre du [tant|>tan]
     au bon vieux [tant|>tan]
+    combien [de|d’] [>tan|tant]
         <<- /conf/ --1>> temps                                      && Confusion. Pour parler d’un période heureuse, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
     les [tant|>tan] >changer
@@ -23095,6 +23131,7 @@ TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
 TEST: sans pour autant la {{vouée}} aux gémonies.
 TEST: Il faut être sans préjugés.
 TEST: je craignais d’être pour toujours abandonnée
+TEST: ils tiennent pour sacrées les lois de la robotique
 
 
 __infi_commencer_finir_par__
@@ -24080,10 +24117,11 @@ __purge_prépositions_pronoms__
     ?[de|d’]? avec ou sans                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     ?[de|d’]? en paix avec                  {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     ?[de|d’]? par-devers                    {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
-    ?[de|d’]? par égard pour                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? par >égard pour               {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     ?[de|d’]? par gratitude pour            {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     ?[de|d’]? pour ou contre                {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     ?[de|d’]? ?tout¿ près [de|d’]           {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
+    ?[de|d’]? sans >égard pour              {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
     quant à                                 {pronom_obj}  [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:-2>> *
 
