@@ -11,8 +11,8 @@ dStrings = {
         "spell_info": "L’apparence du soulignement des erreurs orthographiques (trait ondulé rouge) n’est pas modifiable",
 
         "linetype_section": "Style de ligne (pour LibreOffice 6.3+)",
-        "wave_line": "Trait ondulé fin (réglage par défaut de Writer)",
-        "boldwave_line": "Trait ondulé épais (réglage par défaut de Grammalecte)",
+        "wave_line": "Trait ondulé fin (réglage par défaut)",
+        "boldwave_line": "Trait ondulé épais",
         "bold_line": "Trait droit épais",
 
         "color_section": "Couleurs (pour LibreOffice 6.2+)",
@@ -31,8 +31,8 @@ dStrings = {
         "spell_info": "Appearance of underlines for spelling mistakes (red thin wiggly line) can’t be modified",
 
         "linetype_section": "Line style (for LibreOffice 6.3+)",
-        "wave_line": "Thin wiggly line (default setting of Writer)",
-        "boldwave_line": "Thick wiggly line (default setting of Grammalecte)",
+        "wave_line": "Thin wiggly line (default setting)",
+        "boldwave_line": "Thick wiggly line",
         "bold_line": "Thick straight line",
 
         "color_section": "Colors (for LibreOffice 6.2+)",

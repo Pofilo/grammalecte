@@ -122,7 +122,7 @@ class GraphicOptions (unohelper.Base, XActionListener, XJobExecutor):
                 elif self.xBoldLine.State:
                     sLineType = "BOLD"
                 else:
-                    sLineType = "BOLDWAVE"
+                    sLineType = "WAVE"
                 xChild.setPropertyValue("line_type", sLineType)
                 self.xGLOptionNode.commitChanges()
             except:
