@@ -2319,7 +2319,6 @@ __fusions_noms_communs__
     drama >queen
     jet set
     machine [learning+s]
-    nec plus ultra
     standing >ovation
     star [system+s]
     quantitative easing
@@ -2336,7 +2335,9 @@ __fusions_noms_communs__
         <<- ~>> ␣
         <<- =>> change_meta(\1, "WORD")
 
+    nec plus ultra
     terra incognita
+    statu quo
         <<- ~>> ␣
 
     *NUM : *NUM
@@ -7071,6 +7072,23 @@ TEST: Aussi {{absurdes}} que soit cette remarque, nous sommes tenus d’y répon
 TEST: Aussi {{désobligeante}} que furent ces réponses, il fallut trouver un terrain d’entente.
 
 
+__conf_start_nom_ppas__
+    [<start>|,|(]  *WORD  @:V1.*:Y
+        <<- /conf/ morph(\2, ":N", "*") --1>> =suggVerbPpas(\-1)
+        && Confusion probable. Si “\-1” est un qualificatif se rapportant au nom “\2”, n’utilisez pas un verbe à l’infinitif, mais le participe passé.
+
+    [<start>|,|(]  *WORD  [assez|aussi|presque|très|trop|peu]  @:V1.*:Y
+    [<start>|,|(]  *WORD  ?[assez|aussi|presque|très|trop]¿  [bien|mal|peu]  @:V1.*:Y
+        <<- /conf/ morph(\2, ":N", ":(?:G|V0)") --1>> =suggVerbPpas(\-1)
+        && Confusion probable. Si “\-1” est un qualificatif se rapportant au nom “\2”, n’utilisez pas un verbe à l’infinitif, mais le participe passé.
+
+TEST: écrivain {{ignorer}} par ses contemporains
+TEST: téléphone bien {{charger}}
+TEST: époque très bien {{documenter}} grâce à la méticulosité de l’administration
+TEST: bien manger, c’est essentiel
+TEST: C’est le bien mal servir qu’agir à son insu.
+
+
 !!
 !!
 !!!! Confusions spécifiques                                                                       !!
@@ -8925,7 +8943,7 @@ __conf_davantage_d_avantages__
         <<- /conf/ --1>> d’avantages                                                && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
     $:V  d’ >avantage
-        <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant|sorte|type)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            && Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
     [/-je|/-tu|/-il|/-on|/-elle|/-nous|/-vous|/-ils|/-elles|/-iel|/-iels]  d’  >avantage
@@ -8950,6 +8968,7 @@ TEST: faire {{d’avantage}}
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
 TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
+TEST: toutes sortes d’avantages
 
 
 # de part en part
@@ -12593,6 +12612,7 @@ TEST: Ça se passe en Europe du {{nord}}.                    ->> Nord
 TEST: J’ai visité toute l’Afrique du {{sud}}.               ->> Sud
 TEST: Dans l’Europe de l’{{ouest}}.                         ->> Ouest
 TEST: le pôle {{nord}}                                      ->> Nord
+TEST: les vents glaciaux venant du nord
 
 
 # Océans
@@ -13838,6 +13858,8 @@ __purge_locutions_temps__
     en ce temps-là
     en d’ autres temps
     en d’ autres temps et d’ autres lieux
+    en des temps [moins|plus] [anciens|récents]
+    en des temps meilleurs
     en même temps
     en moins [de|d’] temps qu’ il ?[ne|n’]¿ [faut|fallut|faudra|faudrait] pour [le|l’] [dire|prononcer|raconter]
     en moins [de|d’] temps qu’ il ?[ne|n’]¿ [faut|fallut|faudra|faudrait] pour [le|l’] faire comprendre
@@ -14324,7 +14346,7 @@ __purge_locutions__
     à *NUM reprises
     à $:B:e:p reprises
     à [plusieurs|quelques|maintes] reprises
-    à [de|d’]  [nombreuses|multiples|innombrables]  reprises
+    à [de|d’]  ?[assez|aussi|si|très|trop]¿  [nombreuses|multiples|innombrables]  reprises
     à double [titre|tranchant]
     à en juger par [mon|ton|son|notre|votre|leur] ?immense¿ expérience
     à en juger par [ma|ta|sa|notre|votre|leur] [grande|petite] expérience
@@ -15874,7 +15896,7 @@ __substantifs_multi_mots__
     >arc à poulies
     >arme à feu
     >armée [de|d’] l’ air
-    >armée [de|d’] [réserve|terre]
+    >armée [de|d’] [occupation|réserve|terre]
     >arme à enquerre
     >arme [de|d’] [poing|guerre]
     >arme [de|d’] destruction massive
@@ -15922,6 +15944,8 @@ __substantifs_multi_mots__
     >cabine [de|d’] pilotage
     >cabinet [de|d’] [toilette|travail]
     >cadeau [de|d’] [anniversaire|mariage|Noël]
+    >camarade [de|d’] classe
+    >caméra [de|d’] [surveillance|vidéoprotection|vidéo-protection]
     >camp [de|d’] [concentration|été|hiver|internement|rééducation|travail|vacances]
     >campagne [de|d’] presse
     >canne à [pêche|sucre]
@@ -16043,6 +16067,7 @@ __substantifs_multi_mots__
     >donneur [de|d’] >leçon
     >dossier d’ inscription ?[administrative|scolaire]¿
     >dossier [de|d’] presse
+    >drone [de|d’] [combat|surveillance]
     >drogue [de|d’] synthèse
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
@@ -16076,6 +16101,8 @@ __substantifs_multi_mots__
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
     >état d’ extrême urgence
     >état [de|d’] l’ art
+    >étoile [de|d’] mer
+    >étoile à neutrons
     >étui à cigarettes
     >examen d’ entrée
     >expérience [utilisateur|utilisateurs]
@@ -16119,6 +16146,7 @@ __substantifs_multi_mots__
     >fontaine à eau
     >force d’ assaut
     >force [de|d’] caractère
+    >formule [de|d’] politesse
     >fosse à [merde|>ordure|purin]
     >fosse aux lions
     >fou à lier
@@ -16303,6 +16331,7 @@ __substantifs_multi_mots__
     >poignée [de|d’] porte
     >police [de|d’] [caractères|écriture]
     >policier en civil
+    >politesse d’ usage
     >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
     >pompe à [chaleur|essence|fric|>incendie]
@@ -16365,6 +16394,7 @@ __substantifs_multi_mots__
     >roue [de|d’] secours
     >rouge à lèvres
     >roulement à billes
+    >roulement [de|d’] >tambour
     [>ru|>ruisseau] à sec
     >ruée vers l’ or
     >sac à [bandoulière|dos|main|langer|merde|foutre]
@@ -16392,6 +16422,7 @@ __substantifs_multi_mots__
     >sortie [de|d’] secours
     >soue à >cochon
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
+    >souvenir d’ enfance
     >sujet [de|d’] [prédilection|préoccupation]
     >suspension [de|d’] séance
     >système d’ exploitation
@@ -16425,7 +16456,7 @@ __substantifs_multi_mots__
     >tiret d’ incise
     >tireur d’ élite
     >titre [de|d’] [noblesse|propriété|séjour]
-    >toile de fond
+    >toile [de|d’] fond
     >tondeuse à gazon
     >tour d’ horizon
     >tour [de|d’] [contrôle|guet|passe-passe]
@@ -16449,6 +16480,7 @@ __substantifs_multi_mots__
     >tueur à gages
     >tueur en série
     >turbine à [gaz|vapeur]
+    >université d’ été
     >usine à gaz
     >usurpation d’ identité
     vacances [de|d’] [automne|printemps|Noël|pâques]
@@ -16495,6 +16527,7 @@ __substantifs_multi_mots__
     >con comme la lune
     >con comme un balai
     >con comme une valise sans >poignée
+    >con comme une bite
     >condamné à mort
     >corvéable à merci
     >court sur pattes
@@ -16504,6 +16537,7 @@ __substantifs_multi_mots__
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
     >droit comme un i
+    >étroit d’ esprit
     >fort en gueule
     >fou à lier
     >fou [de|d’] rage ?[contenue|retenue]¿
