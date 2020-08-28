@@ -1010,15 +1010,6 @@ class TextParser {
                     delete oToken["sNewValue"];
                 }
             }
-            else {
-                try {
-                    this.dTokenPos.delete(oToken["nStart"]);
-                }
-                catch (e) {
-                    console.log(this.asString());
-                    console.log(oToken);
-                }
-            }
         }
         if (bDebug) {
             console.log("  TEXT REWRITED: " + this.sSentence);

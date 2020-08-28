@@ -863,12 +863,6 @@ class TextParser:
                     sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
                     self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
-            else:
-                try:
-                    del self.dTokenPos[dToken["nStart"]]
-                except KeyError:
-                    echo(self)
-                    echo(dToken)
         if bDebug:
             echo("  TEXT REWRITED: " + self.sSentence)
         self.lToken.clear()
