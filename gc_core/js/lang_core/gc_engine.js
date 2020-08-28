@@ -265,7 +265,8 @@ class TextParser {
             sText = sText.replace(/‑/g, "-"); // Non-Breaking Hyphen (U+2011)
         }
         if (sText.includes("@@")) {
-            sText = sText.replace(/@@+/g, "");
+            sText = sText.replace(/@@+/g, (sMatch, nOffest, sSource) => { return " ".repeat(sMatch.length) });
+            // function as replacement: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
         }
         return sText;
     }

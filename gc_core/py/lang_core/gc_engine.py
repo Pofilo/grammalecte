@@ -314,7 +314,8 @@ class TextParser:
         if "‑" in sText:
             sText = sText.replace("‑", "-") # Non-Breaking Hyphen (U+2011)
         if "@@" in sText:
-            sText = re.sub("@@+", "", sText)
+            sText = re.sub("@@+", lambda m: " " * len(m.group(0)), sText)
+            # function as replacement: https://docs.python.org/3.7/library/re.html#re.sub
         return sText
 
     def parseText (self, sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext):
