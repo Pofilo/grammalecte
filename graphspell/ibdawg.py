@@ -157,7 +157,7 @@ class IBDAWG:
         # lexicographer module ?
         self.lexicographer = None
         try:
-            self.lexicographer = importlib.import_module("graphspell.lexgraph_"+self.sLangCode)
+            self.lexicographer = importlib.import_module(".lexgraph_"+self.sLangCode, "grammalecte.graphspell")
         except ImportError:
             print("# No module <graphspell.lexgraph_"+self.sLangCode+".py>")
 
