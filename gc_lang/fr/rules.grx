@@ -3658,7 +3658,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 # élisions
 __eleu_élisions_manquantes__
     [le|la|de]  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
@@ -8124,6 +8124,10 @@ __conf_aile_elle__
         <<- /conf/ -2>> aile
         && Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
 
+    [sous|sur] [mon|ton|son|notre|votre|leur] [elle+s]
+        <<- /conf/ --1>> aile
+        && Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
+
     [des|mes|tes|ses|ces|nos|vos] ([elle+s])
     les ([elle+s]) [de|des|du|d’]
     [sous|sur] leurs ([elle+s]) [<end>|,|$:R]
@@ -8138,6 +8142,7 @@ __conf_aile_elle__
 TEST: l’{{elle}} est en feu.
 TEST: sous l’{{elle}} de sa mère, il ne craint rien
 TEST: sur son {{elle}} droite
+TEST: le prendre sous son {{elle}}, c’était au-dessus de ses forces
 TEST: des {{elles}} enduites de pétrole
 TEST: De l’autre côté du mur, dans l’{{elle}} réservée aux femmes, il y a des jeunes filles dont nul n’a parlé
 TEST: vous réfugier sous leurs {{elles}}.
@@ -8814,6 +8819,10 @@ __conf_cour_cours_court_courre__
     [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court+s|courre+s]
         <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
 
+    >changer le [cour|court+s|courre+s] [de|des|du|d’]
+        <<- /conf/ --2>> cours                              && Confusion. Changer le cours de quelque chose.
+
+
 TEST: au {{court}} de cette journée
 TEST: les exercices {{en cour}} se déroulent bien.
 TEST: je vais couper {{cours}} à ces conneries.
@@ -8827,6 +8836,7 @@ TEST: le portage a encore {{cour}}
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 TEST: un {{court}} d’eau
 TEST: desdits {{courts}} d’eau
+TEST: elle décida alors de changer le {{court}} de sa vie
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
@@ -10113,7 +10123,9 @@ __conf_nez_né__
     au [né+ses]
     [dans|sur|sous] le [né+ses]
     >crotte [de|d’] [né+ses]
+    >saignement [de|d’] [né+ses]
     [>mettre|>fourrer] ?@:[WX]¿ [le|mon|ton|son|notre|votre|leur] [né+ses]
+    >pendre ?@:[WX]¿ [au|aux] [né+s]
     >voir ?@:[WX]¿ plus loin [que|qu’] [le|mon|ton|son|notre|votre|leur] [né+ses]
     >voir ?@:[WX]¿ plus loin [que|qu’] le bout [de|d’] [mon|ton|son|notre|votre|leur] [né+ses]
     >avoir du [né+ses]
@@ -10301,6 +10313,9 @@ __conf_où_ou__
     [là|>aller] ou le vent
         <<- /conf/ -2>> où                                  && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
+    <start> ou /_VCint_ <end>
+        <<- /conf/ -2>> où                                  && Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
+
 TEST: {{Ou}} sont tes affaires ?                                    ->> Où
 TEST: au moment {{ou}} elle allait enfin réussir                    ->> où
 TEST: je ne sais même pas par {{ou}} commencer                      ->> où
@@ -10318,6 +10333,9 @@ TEST: nous sommes dans une situation {{ou}} il faut avancer         ->> où
 TEST: j’irai là {{ou}} le vent me portera                           ->> où
 TEST: il fait ça n’importe {{ou}}                                   ->> où
 TEST: toutes les fois {{ou}} nous avons couvert votre cul           ->> où
+TEST: {{ou}} va-t-il                                                ->> où
+TEST: {{ou}} irons-nous                                             ->> où
+TEST: {{ou}} allait-elle                                            ->> où
 TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
 TEST: c’en est où ?
 
@@ -10893,6 +10911,9 @@ __conf_prix_pris!7__
     [à|a] pris [coûtant|coutant]
         <<- /conf/ ->> à prix coûtant                                       && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
+    [au|aux] pris [fort+s]
+        <<- /conf/ ->> au prix fort                                         && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
+
     prix à la gorge
     prix dans [la|une|cette] [tourmente|tempête|tornade]
     prix dans [la|une|cette] coulée de [boue|lave]
@@ -10908,6 +10929,7 @@ TEST: réussir à n’importe quel {{pris}}.
 TEST: quel est leur {{pris}} ?
 TEST: {{prix}} par surprise,
 TEST: vendre {{à pris coûtant}}
+TEST: encore un jeu vendu en kit {{au pris fort}}
 
 
 # puits / puis
@@ -11833,6 +11855,7 @@ TEST: nous nous embrassâmes tous les uns les autres, têtes contre têtes
 __conf_toi_toit__
     [chez|pour|contre|avec] toit
     >parler ?@:[WX]¿ de toit
+    c’ >être toit
         <<- /conf/ --1>> toi                        && Confusion. Le toit est constitué d’une toiture. Pour le pronom personnel à la 2ᵉ personne, écrivez “toi”.|https://fr.wiktionary.org/wiki/toi
 
     [sous|sur] [mon|ton|son|notre|votre|leur] toi
@@ -13499,12 +13522,12 @@ __purge_horaires_et_durée__
     jusqu’ à pas d’ heure
     sur l’ heure
     tout à l’ heure
-    trois quarts d’ heure plus [tôt|tard]
-    trois quarts d’ heure auparavant
-    un quart d’ heure plus [tôt|tard]
-    un quart d’ heure auparavant
-    une fraction [de|d’] seconde auparavant
-    une fraction [de|d’] seconde plus [tard|tôt]
+    ?[de|d’]¿ trois quarts d’ heure plus [tôt|tard]
+    ?[de|d’]¿ trois quarts d’ heure auparavant
+    ?d’¿ un quart d’ heure plus [tôt|tard]
+    ?d’¿ un quart d’ heure auparavant
+    ?d’¿ une fraction [de|d’] seconde auparavant
+    ?d’¿ une fraction [de|d’] seconde plus [tard|tôt]
     vers [midi|minuit]
         <<- ~>> *
 
@@ -13847,6 +13870,8 @@ __purge_locutions_instant_moment__
     à un moment donné
     à un moment ou à un autre
     au [dernier|même|bon|mauvais] [moment|instant]
+    au bon endroit ?,¿ au bon moment
+    au mauvais endroit ?,¿ au mauvais moment
     au bout d’ un [instant|moment]
     dans ces moments-là
     d’ instant en instant
@@ -15828,6 +15853,7 @@ __substantifs_multi_mots__
     >armoire à [>glace|>pharmacie]
     >argent [de|d’] poche
     >arnaque à l’ assurance
+    >arrêt [de|d’] bus
     >article [de|d’] presse
     >article à >sensation
     >assignation à [comparaître|comparaitre|résidence]
@@ -15835,6 +15861,7 @@ __substantifs_multi_mots__
     >attaque à main armée
     >attestation sur l’ honneur
     >atteinte aux bonnes mœurs
+    >auberge [de|d’] jeunesse
     >avion à [>hélice|réaction]
     ayants droit
     >bac à légumes
@@ -15926,6 +15953,7 @@ __substantifs_multi_mots__
     >clin d’ œil
     >clause [de|d’] [confidentialité|non-concurrence]
     >clause [de|d’] non concurrence
+    >clou du spectacle
     >clown [de|d’] service
     >code d’ accès
     >code [de|d’] ?bonne¿ conduite
@@ -16018,6 +16046,7 @@ __substantifs_multi_mots__
     >erreur d’ appréciation
     >escroquerie à l’ assurance
     >espérance [de|d’] vie
+    >espérance [de|d’] vie en bonne santé
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
     >état d’ extrême urgence
     >état [de|d’] l’ art
@@ -16202,7 +16231,7 @@ __substantifs_multi_mots__
     >ordre du jour
     orge [perlé|mondé|carré]
     >nuit [de|d’] noces
-    >pacte [de|d’] non-agression
+    >pacte [de|d’] [non-agression|sang]
     >pain au levain ?liquide¿
     >pain [de|d’] mie
     >palais d’ [été|hiver]
@@ -16312,6 +16341,7 @@ __substantifs_multi_mots__
     >ruée vers l’ or
     >sac à [bandoulière|dos|main|langer|merde|foutre]
     >sac [de|d’] [couchage|sport|voyage]
+    >saignement [de|d’] nez
     >salaire à vie
     >salle à manger
     >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
@@ -16327,6 +16357,7 @@ __substantifs_multi_mots__
     >service [de|d’] renseignement
     >seuil [de|d’] tolérance
     >seuil [de|d’] tolérance à la douleur
+    >signal d’ alarme
     >silo à [>grains|blé]
     >site [de|d’] lancement
     >soldat d’ élite
@@ -16399,7 +16430,7 @@ __substantifs_multi_mots__
     >vague à l’ âme
     >vecteur [>accélération|>position|>rotation|>vitesse]
     >véhicule [de|d’] location
-    >vente à [domicile|emporter]
+    >vente à [découvert|domicile|emporter]
     >vente aux enchères
     >vérification [de|d’] routine
     vernis à ongles
@@ -16417,6 +16448,7 @@ __substantifs_multi_mots__
     >volée [de|d’] bois vert
     >voiture [de|d’] location
     >vote par correspondance ?électronique¿
+    [vue+s] d’ ensemble
     >wagon à bestiaux
     >zone [de|d’] [confort|non-droit]
     >zone [de|d’] transit ?principal¿
@@ -16627,7 +16659,7 @@ __simplification_noms_propres__
     [la|cette]  [baronne|docteur|docteure|députée|duchesse|ministre|sœur|princesse|présidente|professeure|reine|sénatrice]  @:M[12]
         <<- ~3>> *
 
-    [Mr|Mlle|Mme|Mgr|miss]  /_Maj_
+    [Mr|Mʳ|Mlle|Mˡˡᵉ|Mme|Mᵐᵉ|Mgr|Mᵍʳ|miss]  /_Maj_
         <<- ~2>> *
 
 
@@ -16640,6 +16672,7 @@ __purge_pronom_aussi__
 
     il      *WORD  lui aussi
     elle    *WORD  elle aussi
+    iel     *WORD  iel aussi
     on      *WORD  nous aussi
         <<- morph(\2, ":3s") ~3:0>> *
 
@@ -16651,6 +16684,7 @@ __purge_pronom_aussi__
 
     ils     *WORD  eux aussi
     elles   *WORD  elles aussi
+    iels    *WORD  iels aussi
         <<- morph(\2, ":3p") ~3:0>> *
 
 
@@ -17845,6 +17879,7 @@ TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
 TEST: Il faut donc examiner ensemble les panneaux et les parois latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et les parois latérales.
+TEST: ce jour verrait la violence se déchaîner, le sang couler, le chaos tout emporter
 
 
 @@@@
