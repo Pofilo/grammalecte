@@ -801,7 +801,8 @@ TEST: __md__    ces **{{femme}}**
 
 __[i](eepi_écriture_épicène_tous_toutes)__
     tous?[.(/·•⋅–—-]te[.)/·•⋅–—-]?s
-        <<- option("eepi") ->> tous et toutes|toutes et tous                                        && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") ->> tous et toutes|toutes et tous
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{tou.tes}} sont là.                                              ->> tous et toutes|toutes et tous
@@ -809,7 +810,8 @@ TEST: {{tou.tes}} sont là.                                              ->> tou
 
 __[i](eepi_écriture_épicène_ceux_celles)__
     c[./·•⋅–—-]?eux?[./·•⋅–—-]elles
-        <<- option("eepi") ->> ceux et celles|celles et ceux                                        && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") ->> ceux et celles|celles et ceux
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux et celles|celles et ceux
@@ -817,8 +819,10 @@ TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux
 
 __[u](eepi_écriture_épicène_pluriel_eur_divers)__
     ({w_2})eurs?[.(/·•⋅–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·•⋅–—-]?s  @@0,**
-        <<- option("eepi") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                       && Écriture épicène dystypographique et imprononçable.
-        <<- option("eepi") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                   && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
+        <<- option("eepi") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: travaillons avec les {{instituteur.trice.s}}                          ->> instituteurs et institutrices|institutrices et instituteurs
@@ -827,38 +831,42 @@ TEST: La communauté des {{développeur·se·s}} open source                    
 
 __[u](eepi_écriture_épicène_pluriel_eux_euses)__
     ({w_2})eux[.(/·•⋅–—-](?:[tdsi]?euse|se)[.)/·•⋅–—-]?s  @@0
-        <<- option("eepi") ->> \1eux et \1euses|\1euses et \1eux                                    && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") ->> \1eux et \1euses|\1euses et \1eux
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   ->> nombreux et nombreuses|nombreuses et nombreux
 
 
-__[u](eepi_écriture_épicène_pluriel_aux_ales)__
-    ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?a?le[.)/·•⋅–—-]?s  @@0
-        <<- option("eepi") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                             && Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
-        <<- ~>> =normalizeInclusiveWriting(\0)
-
-TEST: {{locaux·ales}}                                                   ->> locaux et locales|locales et locaux|local·e·s
-TEST: LOCAL·E·S
-TEST: amical·e·s
-
-
-__[u](eepi_écriture_épicène_pluriel_er_ère)__
-    ({w_2})[eè]rs?[.(/·•⋅–—-]i?è?re[.)/·•⋅–—-]?s  @@0
-        <<- option("eepi") ->> \1ers et \1ères|\1ères et \1ers                                      && Écriture épicène dystypographique et imprononçable.
-        <<- ~>> =normalizeInclusiveWriting(\0)
-
-TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers
-#TEST: les {{artificièr.e.s}}                                            ->> artificiers et artificières|artificières et artificiers
-
-
 __[u](eepi_écriture_épicène_pluriel_if_ive)__
     ({w_2})ifs?[.(/·•⋅–—-][std]?i?ve[.)/·•⋅–—-]?s  @@0
-        <<- option("eepi") ->> \1ifs et \1ives|\1ives et \1ifs                                      && Écriture épicène dystypographique et imprononçable.
+        <<- option("eepi") ->> \1ifs et \1ives|\1ives et \1ifs
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{inclusif.ive.s}}                                                ->> inclusifs et inclusives|inclusives et inclusifs
 TEST: {{offensif.ve.s}}                                                 ->> offensifs et offensives|offensives et offensifs
+
+
+__[u](eepi_écriture_épicène_pluriel_er_ère)__
+    ({w_2})[eè]rs?[.(/·•⋅–—-]i?è?re[.)/·•⋅–—-]?s  @@0
+        <<- option("eepi") and not re.search("[rR]·[eE]·[sS]$", \0) ->> \1ers et \1ères|\1ères et \1ers|\1er·e·s
+        && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
+        <<- ~>> =normalizeInclusiveWriting(\0)
+
+TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers|conseiller·e·s
+#TEST: les {{artificièr.e.s}}                                            ->> artificiers et artificières|artificières et artificiers
+
+
+__[u](eepi_écriture_épicène_pluriel_aux_ales)__
+    ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?a?le[.)/·•⋅–—-]?s  @@0
+        <<- option("eepi") ->> \1al·e·s|\1aux et \1ales|\1ales et \1aux
+        && Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
+        <<- ~>> =normalizeInclusiveWriting(\0)
+
+TEST: {{locaux·ales}}                                                   ->> local·e·s|locaux et locales|locales et locaux
+TEST: LOCAL·E·S
+TEST: amical·e·s
 
 
 __[u](eepi_écriture_épicène_pluriel_e)__
@@ -866,16 +874,16 @@ __[u](eepi_écriture_épicène_pluriel_e)__
         <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
         <<- ~>> =normalizeInclusiveWriting(\0)
         <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("(?i)·[ntlf]?e·s$", \0) >>>
-        <<- \1.endswith("s") or \1.endswith("S") ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
-        <<- __else__ ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                          && Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+        <<- \1.endswith("s") or \1.endswith("S") ->> \1·\2·s|\1 et \1\2s|\1\2s et \1                && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
+        <<- __else__ ->> \1·\2·s|\1s et \1\2s|\1\2s et \1s                                          && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
 
 TEST: nous sommes {{déconsidéré-e-s}}.
 TEST: serons-nous toujours {{perdu.e.s}}.
 TEST: les illustres {{inconnu(e)s}}.
 TEST: la situation des {{salarié/e/s}}.
-TEST: des {{Iranien-ne-s}} sont venues                                  ->> Iraniens et Iraniennes|Iraniennes et Iraniens|Iranien·ne·s
-TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> écrivains et écrivaines|écrivaines et écrivains|écrivain·e·s
-TEST: Avec les {{Berlinois.e.s}}                                        ->> Berlinois et Berlinoises|Berlinoises et Berlinois|Berlinois·e·s
+TEST: des {{Iranien-ne-s}} sont venues                                  ->> Iranien·ne·s|Iraniens et Iraniennes|Iraniennes et Iraniens
+TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> écrivain·e·s|écrivains et écrivaines|écrivaines et écrivains
+TEST: Avec les {{Berlinois.e.s}}                                        ->> Berlinois·e·s|Berlinois et Berlinoises|Berlinoises et Berlinois
 TEST: la graphie “{{militant(e)s}}”.
 TEST: ces militant·e·s {{acharné}}.
 TEST: chez les {{immortel.le.s}}
@@ -893,17 +901,19 @@ __[i](eepi_écriture_épicène_singulier)__
         <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
             and not ((\0.endswith("-le") or \0.endswith("-Le") or \0.endswith("-LE")) and not (\1.endswith("l") or \1.endswith("L"))) >>>
         <<- ~>> =normalizeInclusiveWriting(\0)
-        <<- option("eepi") and (\1 == "un" or \1 == "Un" or \1 == "UN") ->> un ou une|une ou un                 && Écriture épicène imprononçable. Préférez écrire lisiblement.
-        <<- __else__ and option("eepi") and not re.search("(?i)·[ntl]?e$", \2) ->> =\1+"·"+\2[1:].rstrip(")")   && Écriture épicène. Utilisez un point médian.
+        <<- option("eepi") and re.search("^[uU][nN][-–—.•⋅/][eE]$", \0) ->> un·e|un ou une|une ou un                    && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
+        <<- __else__ and option("eepi") and not re.search("(?i)·[ntl]?e$", \2) ->> =\1+"·"+\2[1:].rstrip(")")           && Écriture épicène. Utilisez un point médian.
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.                      ->> déconsidéré·e
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.               ->> auteur·e
 TEST: le ou la {{patron/ne}}                                            ->> patron·ne
 TEST: Totalement {{con(ne)}}                                            ->> con·ne
 TEST: un ou une {{intellectuel.le}}                                     ->> intellectuel·le
+TEST: {{un/e}} immortel·le                                              ->> un·e|un ou une|une ou un
 TEST: INTELLECTUEL·LE
 TEST: électricien·ne
 TEST: Épuisé·e
+TEST: un·e idiot·e
 
 
 __[i](typo_écriture_invariable)__
@@ -2322,6 +2332,7 @@ __fusions_noms_communs__
     standing >ovation
     star [system+s]
     quantitative easing
+    R & D
         <<- ~>> ␣
 
     jusqu’ [au-boutiste+s|au-boutisme+s]
@@ -12611,9 +12622,8 @@ __maj_Église__
     [>chef|>rite|>sacrement] [de|d’] l’ église
         <<- /maj/ \4.islower() -4>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
 
-    [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
-    ,                    [Église|Églises] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
-        <<- /maj/ -2:>> église                                      && Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
+    [Église+s] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
+        <<- /maj/ not value(<1, "|<start>|") -1:>> église           && Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
 
 TEST: L’{{église}} orthodoxe.                                           ->> Église
 TEST: un homme d’{{église}}                                             ->> Église
@@ -12621,6 +12631,9 @@ TEST: les sacrements de l’{{église}}                                    ->> �
 TEST: Une {{Église}} baroque.                                           ->> église
 TEST: L’{{Église}} Saint-Paul.                                          ->> église
 TEST: Un homme d’{{église}}.                                            ->> Église
+TEST: Église romane
+TEST: Églises gothiques
+TEST: Église baroque
 
 
 # Points cardinaux
@@ -12648,10 +12661,8 @@ TEST: océan {{pacifique}}                                   ->> Pacifique
 
 # Unités de mesure
 __maj_unités__
-    *NUM  [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
-    $:B   [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
-    *NUM  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
-    $:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
+    [*NUM|$:B]  [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
+    [*NUM|$:B]  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
         <<- /maj/ not \2.isupper() -2:>> =\2.lower()                && Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
 
 TEST: J’en veux 3 {{Mètres}}.                           ->> mètres
@@ -16033,6 +16044,7 @@ __substantifs_multi_mots__
     >clause [de|d’] non concurrence
     >clou du spectacle
     >clown [de|d’] service
+    >cochon [de|d’] lait
     >code d’ accès
     >code [de|d’] ?bonne¿ conduite
     >code [de|d’] la route
@@ -16091,6 +16103,7 @@ __substantifs_multi_mots__
     [>dîner|>diner] aux chandelles
     [>dîner|>diner] [de|d’] gala
     >discipline [de|d’] [acier|fer]
+    >doigt de fée
     >don en nature
     >donneur [de|d’] >leçon
     >dossier d’ inscription ?[administrative|scolaire]¿
@@ -16223,7 +16236,7 @@ __substantifs_multi_mots__
     >intermittent du spectacle
     >invité d’ honneur
     >invité surprise
-    >issue de secours
+    >issue [de|d’] secours
     >jeu d’ [échecs|enfant]
     >jeu [de|d’] [dupes|>rôle]
     >journal [de|d’] bord
@@ -16235,6 +16248,7 @@ __substantifs_multi_mots__
     >lampe [de|d’] chevet
     >langue [de|d’] bois
     >lavage [de|d’] cerveau
+    >leçon à en tirer
     >lettre [de|d’] [change|démission|motivation|recommandation|référence|résiliation]
     >lettre [de|d’] procuration ?bancaire¿
     >liaison sans lendemain
@@ -16318,6 +16332,7 @@ __substantifs_multi_mots__
     >pacte [de|d’] [non-agression|sang]
     >pain au levain ?liquide¿
     >pain [de|d’] mie
+    >pain d’ épices
     >palais d’ [été|hiver]
     >panier à linge
     >papier à [>lettre|musique]
@@ -16514,8 +16529,8 @@ __substantifs_multi_mots__
     >université d’ été
     >usine à gaz
     >usurpation d’ identité
-    vacances [de|d’] [automne|printemps|Noël|pâques]
-    vacances d’ [été|hiver]
+    vacances [de|d’] [printemps|Noël|pâques]
+    vacances d’ [automne|été|hiver]
     >vache à lait
     >vague à l’ âme
     >vecteur [>accélération|>position|>rotation|>vitesse]
@@ -24008,7 +24023,7 @@ TEST: Qu’est-ce que rapporte réellement Dassault & Co au budget
 
 __infi_locutions__
     >laisser [tombé+ses]
-        <<- /infi/ -2>> tomber                                                                      && Laisser tomber. Utilisez l’infinitif.
+        <<- /infi/ -2>> tomber                                                                      && Locution “laisser tomber”. Utilisez l’infinitif.
 
     >sentir le vent tourné
         <<- /infi/ --1>> tourner                                                                    && Locution “sentir le vent tourner ”. Utilisez l’infinitif.
