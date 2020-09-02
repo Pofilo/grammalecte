@@ -21,7 +21,8 @@ _PATTERNS = {
             r'(?P<HOUR>\d\d?[h:]\d\d(?:[m:]\d\ds?|)\b)',
             r'(?P<NUM>\d+(?:[.,]\d+))',
             r'(?P<SIGN>[&%‰€$+±=*/<>⩾⩽#|×¥£§¢¬÷@-])',
-            r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
+            r"(?P<WORD>[\w\u0300-\u036f]+(?:[’'`-][\w\u0300-\u036f]+)*)",        # with combining diacritics
+            r"(?P<OTHER>\S)"
         ),
     "fr":
         (
@@ -38,7 +39,8 @@ _PATTERNS = {
             r'(?P<HOUR>\d\d?[h:]\d\d(?:[m:]\d\ds?|)\b)',
             r'(?P<NUM>\d+(?:[.,]\d+|))',
             r'(?P<SIGN>[&%‰€$+±=*/<>⩾⩽#|×¥£¢§¬÷@-])',
-            r"(?P<WORD>[\w\u0300-\u036f]+(?:[’'`-][\w\u0300-\u036f]+)*)"
+            r"(?P<WORD>[\w\u0300-\u036f]+(?:[’'`-][\w\u0300-\u036f]+)*)",        # with combining diacritics
+            r"(?P<OTHER>\S)"
         )
 }
 
