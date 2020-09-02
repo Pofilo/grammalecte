@@ -9167,6 +9167,9 @@ __conf_différent_différend__
     >différend
         <<- /conf/ morph(<1, ":W") ->> =\1.replace("nd", "nt").replace("ND", "NT")  && Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez “différent”.
 
+    >différend @:N¬*
+        <<- /conf/ -1>> =\1.replace("nd", "nt").replace("ND", "NT")     && Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez “différent”.
+
     [mon|notre|votre|leur]  différent  @:[GVX]¬:[NAQ]
     [mon|notre|votre|leur]  différent  <end>
         <<- /conf/ -2>> différend                                       && Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
@@ -9191,6 +9194,7 @@ __conf_différent_différend__
         <<- /conf/ --1>> =\-1.replace("nd", "nt").replace("ND", "NT")   && Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
 TEST: Très {{différends}} de nous, ces gens-là !
+TEST: {{différends}} hommes                                             ->> différents
 TEST: Régler votre {{différent}}.
 TEST: Notre {{différent}} avec eux perdure.
 TEST: son {{différent}} avec lui n’en finit pas.
@@ -9359,11 +9363,15 @@ __conf_entrée__
         <<- /conf/ --1>> entrée                                         && Confusion. Écrivez “entrée” pour évoquer l’arrivée ou le passage par lequel on entre.
 
     [les|des|des|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs] entrés
-        <<- /conf/ --1>> entrées                                        && Confusion. Écrivez “allers” pour évoquer un voyage. Écrivez “allées” pour évoquer une voie de passage.
+        <<- /conf/ --1>> entrées                                        && Confusion. Écrivez “entrée” pour évoquer l’arrivée ou le passage par lequel on entre.
+
+    [>porte|>port] d’ [entré+s]
+        <<- /conf/ --1>> entrée                                         && Confusion. Écrivez “entrée” pour évoquer l’arrivée ou le passage par lequel on entre.
 
 TEST: à l’{{entré}} en guerre                               ->> entrée
 TEST: Des {{entrés}}                                        ->> entrées
 TEST: à l’{{entré}} de la grotte                            ->> entrée
+TEST: le port d’{{entré}}                                   ->> entrée
 TEST: les entrées sont toutes verrouillées
 
 
@@ -9377,10 +9385,10 @@ TEST: entre Patrick {{est}} Marcia, ça ne se passe pas bien.    ->> et
 
 # étant donné que
 __conf_étant_donné_que__
-    étant [donner|donnait|donnais] [que|qu’]
+    étant [donner|donnait|donnais|donnai] [que|qu’]
         <<- /conf/ -2>> donné                               && Confusion probable. Locution “étant donné que”.|https://fr.wiktionary.org/wiki/%C3%A9tant_donn%C3%A9_que
 
-TEST: étant {{donnait}} qu’il ne sait pas de quoi il parle, ignorons-le.
+TEST: étant {{donnait}} qu’il ne sait pas de quoi il parle, ignorons-le.        ->> donné
 
 
 # évidement / évidemment
@@ -10367,7 +10375,7 @@ __conf_où_ou__
     [là|>aller] ou le vent
         <<- /conf/ -2>> où                                  && Confusion. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
-    <start> ou /_VCint_ <end>
+    <start> ou /_VCint_ ?$:Y¿ <end>
         <<- /conf/ -2>> où                                  && Confusion probable. La conjonction “ou” signale une alternative. Pour évoquer un lieu, un temps ou une situation, écrivez “où”.
 
 TEST: {{Ou}} sont tes affaires ?                                    ->> Où
@@ -10390,6 +10398,7 @@ TEST: toutes les fois {{ou}} nous avons couvert votre cul           ->> où
 TEST: {{ou}} va-t-il                                                ->> où
 TEST: {{ou}} irons-nous                                             ->> où
 TEST: {{ou}} allait-elle                                            ->> où
+TEST: {{ou}} pense-t-elle aller                                     ->> où
 TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche, ou qu’elles se trouvent dans de bonnes dispositions à notre égard.
 TEST: c’en est où ?
 
@@ -14908,7 +14917,7 @@ __purge_locutions__
     en ?[assez|si|très|trop|plus|moins]¿ grand nombre
     en ?[assez|si|très|trop]¿            grande [difficulté|majorité|partie|pompe]
     en ?[assez|si|très|trop|plus|moins]¿ haut lieu
-    en ?[assez|si|très|trop]¿            haute [estime|mer]
+    en ?[assez|si|très|trop]¿            haute [estime|mer|montagne]
     en l’ absence [de|d’] preuve suffisante
     en l’ absence [de|d’] preuve suffisante du contraire
     en l’ absence [de|d’] preuves suffisantes
@@ -20470,7 +20479,7 @@ __conf_tâche_tache__
     taches [accomplies|administratives|conceptuelles|dévalorisantes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|intellectuelles|manuelles|menées|ménagères|valorisantes]
     >tache [>chronophage|>complexe|>domestique|>insoluble]
     >tache consistant à
-    >tache à accomplir
+    >tache à [accomplir|effectuer|terminer|finir]
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
@@ -28873,6 +28882,8 @@ TEST: L’électricité, l’hydrogène, l’air comprimé n’existent pas…
 TEST: la Syrie, l’Irak, la Mésopotamie tombaient.
 TEST: Le sentiment d’humiliation, la colère nous indiquent que…
 TEST: la majorité survenaient sous la contrainte
+TEST: la plupart avançaient en rangs serrés
+TEST: un grand nombre avaient été humiliés par ces pratiques délétères
 
 
 __conj_det_sing_nom__
@@ -30251,6 +30262,7 @@ TEST: à pied ou à cheval
 TEST: tout ça pour prouver qu’il va bien
 TEST: c’étaient bien les Français qui avaient procédé ainsi
 TEST: les hommes haut placés
+TEST: Votre père est on ne peut plus aimable
 
 
 
