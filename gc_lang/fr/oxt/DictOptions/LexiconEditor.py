@@ -412,7 +412,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 lFile = xFilePicker.getFiles()
                 #print(lFile)
                 #MessageBox(self.xDocument, "File(s): " + str(lFile), "DEBUG", INFOBOX)
-                spfImported = lFile[0][8:] # remove file:///
+                spfImported = lFile[0][5:].lstrip("/") # remove file://
+                if platform.system() != "Windows":
+                    spfImported = "/" + spfImported
         except:
             spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json") # workaround
         if spfImported and os.path.isfile(spfImported):
@@ -463,7 +465,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
             if nResult == 1:
                 # lFile = xFilePicker.getSelectedFiles()
                 lFile = xFilePicker.getFiles()
-                spfExported = lFile[0][8:] # remove file:///
+                spfExported = lFile[0][5:].lstrip("/") # remove file://
+                if platform.system() != "Windows":
+                    spfExported = "/" + spfExported
                 #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
                 sJSON = self.xOptionNode.getPropertyValue("personal_dic")
                 if sJSON:
