@@ -64,7 +64,9 @@ var oGrammalecteTextEditor = {
     },
 
     purgeText: function (sText) {
-        return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        console.log(sText);
+        // return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/\r\n/g, "\n").replace(/\r/g, "\n"); // probably useless now
+        return sText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     },
 
     clear: function () {
