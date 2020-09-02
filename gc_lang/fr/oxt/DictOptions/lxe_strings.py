@@ -18,7 +18,7 @@ dStrings = {
         "nom_adj": "Nom et adjectif",
         "nom": "Nom",
         "adj": "Adjectif",
-        "alt_lemma": "[optionnel] Autre forme (masculine, féminine, etc.)",
+        "alt_lemma": "[optionnel] Autre forme (masculine, féminine, etc.)",
 
         "proper_name": "Nom propre",
         "M1": "Prénom",
@@ -102,7 +102,7 @@ dStrings = {
         "nom_adj": "Nom et adjectif",
         "nom": "Nom",
         "adj": "Adjectif",
-        "alt_lemma": "[optionnel] Autre forme (masculine, féminine, etc.)",
+        "alt_lemma": "[optionnel] Autre forme (masculine, féminine, etc.)",
 
         "proper_name": "Nom propre",
         "M1": "Prénom",
