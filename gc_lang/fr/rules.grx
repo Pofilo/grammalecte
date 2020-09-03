@@ -7769,7 +7769,6 @@ __conf_à_a_locutions__
     a [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
     a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
-    a [mes|tes|ses|nos|vos|leurs] risques et périls
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
@@ -7977,7 +7976,7 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 __conf_à_bout__
     !! à bout ¡¡
     [à|a] [>boue|bous|bout+s]
-        <<- /conf/ morph(<1, ">(?:être|rester|demeurer)/") ->> à bout                           && Confusion. Locution “à bout”.|https://fr.wiktionary.org/wiki/%C3%A0_bout
+        <<- /conf/ morph(<1, ":V.e") ->> à bout                                                 && Confusion. Locution “à bout”.|https://fr.wiktionary.org/wiki/%C3%A0_bout
 
     !! à bout portant ¡¡
     [à|a] [>boue|bous|bout+s] [>pore|>porc|>port|por|>porte] [tant|>tan|temps|>an|en]
@@ -7997,6 +7996,15 @@ __conf_à_en_juger_par__
 
 TEST: {{a en jugé part}} cet article, c’est bientôt la fin.
 TEST: ils sont à en juger par leurs résultats les prochains champions.
+
+
+__conf_à_risques_et_périls__
+    !! à [mes|tes|ses|nos|vos|leurs] risques et périls ¡¡
+    [a|à] [mes|tes|ses|nos|vos|leur|leurs] [risque+s] [et|est|é|eh|hé|ai|aie+s|ait] [péril+s|>pérille]
+        <<- /conf/ ->> à \2 risques et périls       && Confusion. Locution “à ses risques et périls”.|https://fr.wiktionary.org/wiki/%C3%A0_ses_risques_et_p%C3%A9rils
+
+TEST: {{à leurs risques et périlles}}                               ->> à leurs risques et périls
+TEST: à nos risques et périls
 
 
 __conf_à_prendre_ou_à_laisser__
@@ -16098,6 +16106,7 @@ __substantifs_multi_mots__
     >cuillère à [café|soupe]
     >cure [de|d’] [désintoxication|désintox]
     >date butoir
+    >date d’ expiration
     >débat sans fin
     >déclaration sur l’ honneur
     >degré d’ arc
@@ -16261,7 +16270,7 @@ __substantifs_multi_mots__
     >lettre [de|d’] [change|démission|motivation|recommandation|référence|résiliation]
     >lettre [de|d’] procuration ?bancaire¿
     >liaison sans lendemain
-    >ligne [de|d’] [conduite|mire]
+    >ligne [de|d’] [conduite|fracture|mire]
     >ligne [de|d’] chemin [de|d’] fer
     >lime à >ongle
     >liquide [de|d’] refroidissement
@@ -20503,7 +20512,7 @@ __conf_tâche_tache__
         && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.|https://fr.wiktionary.org/wiki/t%C3%A2cher
 
     [>avoir|>donner|>recevoir] pour [tache+s] [de|d’]
-    [>avoir|>donner|>recevoir] [la|les] [tache+s] [de|d’]
+    [>avoir|>donner|>faciliter|>recevoir] [la|les] [tache+s] [de|d’]
     [>distribuer|>répartir] les taches
         <<- /conf/ -3>> =\1.replace("a", "â").replace("A", "Â")
         && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
