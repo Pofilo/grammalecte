@@ -8,6 +8,7 @@ import json
 import re
 import os
 import traceback
+import platform
 
 import helpers
 import lxe_strings
@@ -416,7 +417,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 if platform.system() != "Windows":
                     spfImported = "/" + spfImported
         except:
-            spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json") # workaround
+            spfImported = os.path.join(os.path.expanduser("~"), "fr.__personal__.json") # workaround
         if spfImported and os.path.isfile(spfImported):
             with open(spfImported, "r", encoding="utf-8") as hDst:
                 sJSON = hDst.read()
@@ -440,7 +441,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         for i in range(xGridDataModel.RowCount):
             lEntry.append(xGridDataModel.getRowData(i))
         if lEntry:
-            oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "fr.personal", "Dictionnaire personnel")
+            oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "fr.__personal__", "Dictionnaire personnel")
             self.oPersonalDicJSON = oDAWG.getBinaryAsJSON()
             self.xOptionNode.setPropertyValue("personal_dic", json.dumps(self.oPersonalDicJSON, ensure_ascii=False))
             self.xSettingNode.commitChanges()
