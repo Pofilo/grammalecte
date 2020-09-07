@@ -468,7 +468,7 @@ var lexgraph_fr = {
             switch (oToken.sType) {
                 case 'PUNC':
                 case 'SIGN':
-                    oToken["aLabels"] = [this.dValues.gl_get(oToken.sValue, "signe de ponctuation divers")];
+                    oToken["aLabels"] = [this.dValues.gl_get(oToken["sValue"], "signe de ponctuation divers")];
                     break;
                 case 'NUM':
                     oToken["aLabels"] = ["nombre"];
@@ -492,7 +492,7 @@ var lexgraph_fr = {
                     oToken["aLabels"] = ["heure"];
                     break;
                 case 'WORD_ELIDED':
-                    oToken["aLabels"] = [this.dValues.gl_get(oToken.sValue, "préfixe élidé inconnu")];
+                    oToken["aLabels"] = [this.dValues.gl_get(oToken["sValue"].toLowerCase(), "préfixe élidé inconnu")];
                     break;
                 case 'WORD_ORDINAL':
                     oToken["aLabels"] = ["nombre ordinal"];
@@ -526,20 +526,23 @@ var lexgraph_fr = {
                         }
                     } else {
                         // no morphology, guessing
-                        if (oToken.sValue.gl_count("-") > 4) {
+                        if (oToken["sValue"].gl_count("-") > 4) {
                             oToken["aLabels"] = ["élément complexe indéterminé"];
                         }
-                        else if (m = this._zPartDemForm.exec(oToken.sValue)) {
+                        else if (m = this._zPartDemForm.exec(oToken["sValue"])) {
                             // mots avec particules démonstratives
                             oToken["aLabels"] = ["mot avec particule démonstrative"];
                         }
-                        else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
+                        else if (m = this._zImperatifVerb.exec(oToken["sValue"])) {
                             // formes interrogatives
                             oToken["aLabels"] = ["forme verbale impérative"];
                         }
-                        else if (m = this._zInterroVerb.exec(oToken.sValue)) {
+                        else if (m = this._zInterroVerb.exec(oToken["sValue"])) {
                             // formes interrogatives
                             oToken["aLabels"] = ["forme verbale interrogative"];
+                        }
+                        else {
+                            oToken["aLabels"] = ["mot inconnu du dictionnaire"];
                         }
                     }
                     break;
