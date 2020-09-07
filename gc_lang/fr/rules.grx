@@ -12039,39 +12039,30 @@ TEST: j’ai le vague à l’âme
 
 # verre / vers / vert / ver
 __conf_ver_vers_verre_vert__
-    ce [ver|>verre|vert] quoi
+    ce [ver|>verre|vert+s] quoi
         <<- /conf/ -2>> vers                                        && Confusion. Dans la locution “ce vers quoi”, écrivez “vers” (qui signifie “en direction de”).
 
     >plat [>fond] [de|d’] [vert+s|>ver]
     >plafond [de|d’] [vert+s|>ver]
         <<- /conf/ --1>> verre                                      && Confusion. Locution “plafond de verre”.|https://fr.wiktionary.org/wiki/plafond_de_verre
 
-    [le|ce|du|un] [>verre|vert|verts|vers] ?qui¿ [ai|ait|es|est|>étai|était|étais|serais|serai|serait|fut|fût|fus] dans le fruit
-    [le|ce|du|un] [>verre|vert|verts|vers] dans le fruit
+    [le|ce|du|un] [>verre|vert+s|vers] ?qui¿ [ai|ait|es|est|>étai|était|étais|serais|serai|serait|fut|fût|fus] dans le fruit
+    [le|ce|du|un] [>verre|vert+s|vers] dans le fruit
         <<- /conf/ -2>> ver
         && Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
 
-    [>verre|vert|verts] de terre
+    [>verre|vert+s] de terre
         <<- /conf/ -1>> verre|verres
         && Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
 
-    [>ver|vert|verts] [de|d’] [>bière|>cidre|>contact|>champagne|>chianti|>dégustation|jus|>lait|>limonade|>rosé|>rhum|>sécurité|>thé|>vin|>whisky|>alcool|>absinthe|>eau|>urine]
+    [>ver|vert+s] [de|d’] [>bière|>cidre|>contact|>champagne|>chianti|>dégustation|jus|>lait|>limonade|>rosé|>rhum|>sécurité|>thé|>vin|>whisky|>alcool|>absinthe|>eau|>urine]
         <<- /conf/ -1>> verre|verres
         && Confusion probable. Verre = matière. Vert = couleur. Ver = animal invertébré rampant. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
-    en route [>vert|ver|>verre]
+    en route [vert+s|ver|>verre]
     >faire ?@:[WX]¿ route [>vert|ver|>verre]
         <<- /conf/ --1>> vers
         && Confusion. Pour dire “en direction de” écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
-
-    [ver|>verre] [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-        <<- /conf/ morph(<1, ">,|<start>|:V", ":D") -1>> vers
-        && Confusion probable. Pour dire “en direction de” écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
-
-    !! >tirer ?@:[WX]¿  les vers du nez ¡¡
-    >tirer ?@:[WX]¿  les [>verre|verts|vers] du [nez|né]
-        <<- /conf/ --3:0>> vers du nez
-        && Confusion. Locution “tirer les vers du nez”.|https://fr.wiktionary.org/wiki/tirer_les_vers_du_nez
 
 TEST: ce {{vert}} quoi nous allons, c’est une catastrophe à l’échelle planétaire.
 TEST: en finir avec le {{vert}} qui était dans le fruit.
@@ -15435,6 +15426,7 @@ __gestion_mots_grammaticaux__
     au fur et à mesure                                                                                                  [de|du|d’|des]
     au vu et au su                                                                                                      [de|du|d’|des]
     au nez et à la barbe                                                                                                [de|du|d’|des]
+    au secours                                                                                                          [de|du|d’|des]
     au sortir                                                                                                           [de|du|d’|des]
     aux [abords|côtés|dépens]                                                                                           [de|du|d’|des]
     aux [dizaines|douzaines|vingtaines|centaines|milliers|millions|milliards|trillions|trilliards]                      [de|d’]
@@ -16282,6 +16274,7 @@ __substantifs_multi_mots__
     >lampe à [huile|incandescence|pétrole]
     >lampe [de|d’] chevet
     >langue [de|d’] bois
+    laps [de|d’] temps
     >lavage [de|d’] cerveau
     >leçon à en tirer
     >lettre [de|d’] [change|démission|motivation|recommandation|référence|résiliation]
@@ -16518,6 +16511,7 @@ __substantifs_multi_mots__
     >tableau [de|d’] chasse
     >table à repasser
     >table [de|d’] [calcul|chevet|nuit]
+    >tâche à accomplir
     >taille *NUM
     tas [de|d’] ferraille ?rouillée¿
     >talon >aiguille
@@ -17425,8 +17419,12 @@ __purge_locutions_potentielles__
     [avec|pour|contre|sous|sur] plus [de|d’] $:N [que|qu’] jamais
         <<- ~>> *
 
-    par précaution  @:¬:A.*:[fe]:[si]
-    par précaution  [<end>|,|)]
+    par caractère  @:¬:A.*:[me]:[si]
+    par caractère  [<end>|,|)]
+        <<- ~1:-2>> *
+
+    par [précaution|vocation]  @:¬:A.*:[fe]:[si]
+    par [précaution|vocation]  [<end>|,|)]
         <<- ~1:-2>> *
 
     pour cette raison même
@@ -20683,13 +20681,30 @@ TEST: il aurait mieux {{fallu}} que nous trouvions nous-mêmes une solution.    
 # venimeux / vénéneux
 __conf_venimeux_vénéreux__
     [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneux
-        <<- /conf/ -2>> =\1.replace("énén", "enim").replace("ÉNÉN", "ENIM")                         && Confusion : “vénéneux” se dit des plantes, employez “venimeux”.
+        <<- /conf/ -2>> =\1.replace("énén", "enim").replace("ÉNÉN", "ENIM")                         && Confusion : “vénéneux” se dit des plantes. Employez “venimeux”.|https://fr.wiktionary.org/wiki/venimeux
 
     [>plante|>champignon|>lépiote|>baie|>fruit|>herbe|>fleur|>chair|>moule|humus|>substance|>végétal]  >venimeux
-        <<- /conf/ -2>> =\1.replace("enim", "énén").replace("ENIM", "ÉNÉN")                         && Confusion : pas de venin ici.
+        <<- /conf/ -2>> =\1.replace("enim", "énén").replace("ENIM", "ÉNÉN")                         && Confusion : pas de venin ici, écrivez “vénéneux”.|https://fr.wiktionary.org/wiki/v%C3%A9n%C3%A9neux
 
 TEST: ces araignées {{vénéneuses}}.
 TEST: ce champignon {{venimeux}}.
+
+
+__conf_ver_vers_verre_vert2__
+    [ver|>verre] [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
+        <<- /conf/ morph(<1, ">,|<start>|:V", ":D") -1>> vers
+        && Confusion probable. Pour dire “en direction de” écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
+
+    !! >tirer les vers du nez ¡¡
+    >tirer les [>verre|verts|vers] du [nez|né]
+        <<- /conf/ --3:0>> vers du nez
+        && Confusion. Locution “tirer les vers du nez”.|https://fr.wiktionary.org/wiki/tirer_les_vers_du_nez
+
+TEST: On va lui tirer les {{verts du nez}}
+TEST: il vient {{ver}} moi
+TEST: {{verre}} nous, il approchait                                     ->> vers
+TEST: il arriva {{ver}} eux                                             ->> vers
+TEST: on va lui tirer les vers du nez
 
 
 
@@ -25682,6 +25697,10 @@ __ppas_avoir_été__
         <<- /ppas/ morph(\3, ":V1..t.*:Y", ":[AN]") and not morph(>1, ":D")
         -3>> =suggVerbPpas(\3)                                                       && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
 
+    >avoir étés
+        <<- not (value(>1, "|et|ou|") and value(>2, "|hivers|automnes|printemps|"))
+        --1>> été                                                                       && Le participe passé du verbe “être” est invariable.
+
 TEST: j’ai été {{instruis}} par elle
 TEST: avoir été {{prit}} par surprise
 TEST: Ils {{ont été}} {{réaliser}} à partir d’éléments naturels.
@@ -25689,6 +25708,7 @@ TEST: J’{{ai été}} camper dans les Alpes.
 TEST: Tu {{as été}} prendre du bois.
 TEST: J’{{ai été}} chercher du pain.
 TEST: J’{{ai alors été}} mesurer les débits sur chacun des diffuseurs.
+TEST: Les patrons n’ont pas encore {{étés}} débloqués !                                 ->> été
 TEST: Mon grand-père aurait été fier.
 TEST: Ç’eût été prendre des vessies pour des lanternes.
 TEST: C’eût été foncer tête baissée dans la gueule du loup.
