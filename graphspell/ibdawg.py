@@ -73,9 +73,9 @@ class SuggResult:
     def getSuggestions (self, nSuggLimit=10):
         "return a list of suggestions"
         # we sort the better results with the original word
-        if self.dSugg[0]:
+        if len(self.dSugg[0]) > 1:
             self.dSugg[0].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
-        elif self.dSugg[1]:
+        elif len(self.dSugg[1]) > 1:
             self.dSugg[1].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
         lRes = self.dSugg.pop(0)
         for nDist, lSugg in self.dSugg.items():
