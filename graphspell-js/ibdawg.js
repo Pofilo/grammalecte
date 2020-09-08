@@ -57,14 +57,14 @@ class SuggResult {
         }
     }
 
-    getSuggestions (nSuggLimit=10, nDistLimit=-1) {
+    getSuggestions (nSuggLimit=10) {
         // return a list of suggestions
         if (this.dSugg.get(0).length > 1) {
             // we sort the better results with the original word
-            this.dSugg.set(0, [...this.dSugg.get(0)].sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); }));
+            this.dSugg.get(0).sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); });
         }
         else if (this.dSugg.get(1).length > 1) {
-            this.dSugg.set(1, [...this.dSugg.get(1)].sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); }));
+            this.dSugg.get(1).sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); });
         }
         let lRes = [];
         for (let [nDist, lSugg] of this.dSugg.entries()) {
@@ -503,6 +503,7 @@ class IBDAWG {
     // morph (sWord) {
     //     is defined in constructor
     // }
+
     getSimilarEntries (sWord, nSuggLimit=10) {
         // return a list of tuples (similar word, stem, morphology)
         if (sWord == "") {
