@@ -5689,6 +5689,9 @@ __pleo_pléonasmes_divers__
     >collaborer ensemble
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
+    [petite+s|légère+s] >collation
+        <<- /pleo/ ->> \2                                                                   && Pléonasme.|https://fr.wiktionary.org/wiki/collation
+
     >coup [de|d’] foudre [immédiat+s|instantané+ses|soudain]
         <<- /pleo/ ->> \1 de foudre                                                         && Pléonasme.
 
@@ -11081,6 +11084,9 @@ __conf_qu_en_quand_quant__
     [quand|quant]  /_VCint_  [<end>|,|)]
         <<- /conf/ morphVC(\2, ">(?:déduire|penser)/") -1>> qu’en           && Confusion probable. Exemple : Ce qu’il en pense → Qu’en pense-t-il ?
 
+    ce [quand|quant] [>déduire|>penser]
+        <<- /conf/ -2>> qu’en                                               && Confusion probable. Exemple : Ce qu’il en pense → Qu’en pense-t-il ?
+
     [le|les|du|des|ce|ces|quelque|quelques] quand dira-t-on
     [le|les|du|des|ce|ces|quelque|quelques] quand dira t on
     [le|les|du|des|ce|ces|quelque|quelques] quand-dira-t-on
@@ -11090,6 +11096,7 @@ TEST: il comprit {{quand}} prenant son parti, il se protégeait aussi.          
 TEST: {{Quand}} est-il du chien ?                                                               ->> Qu’en
 TEST: {{quand}} penses-tu ?                                                                     ->> qu’en
 TEST: il avait une peur bleue des {{quand dira-t-on}}.                                          ->> qu’en-dira-t-on
+TEST: ce {{quand}} pense cet homme, on s’en moque                                               ->> qu’en
 TEST: il est exact qu’en je ne sais combien de temps il parvint à un résultat inattendu.
 TEST: il comprit trop tard qu’en elle naquit alors le doute qui l’éloigna de lui à jamais.
 
@@ -15950,6 +15957,8 @@ __substantifs_multi_mots__
     >appât du gain ?[facile|rapide]¿
     >appel au secours
     >appel à l’ aide ?humanitaire¿
+    [>arbre|>arbuste|>plante] à feuillage [caduc|persistant]
+    [>arbre|>arbuste|>plante] à feuilles [caduques|persistantes]
     >arc à poulies
     >arme à feu
     >armée [de|d’] l’ air
@@ -15964,6 +15973,8 @@ __substantifs_multi_mots__
     >article [de|d’] presse
     >article à >sensation
     >assignation à [comparaître|comparaitre|résidence]
+    >assistant [de|d’] direction
+    >assistant [de|d’] gestion administrative
     >attaché [de|d’] presse
     >attaque à main armée
     >attestation sur l’ honneur
@@ -16019,6 +16030,7 @@ __substantifs_multi_mots__
     >carton d’ emballage
     cas [de|d’] figure
     cas [de|d’] force majeure
+    >casque à pointe
     >cellule [de|d’] crise
     >cellule [de|d’] détention provisoire
     >centre d’ éducation [populaire|surveillée]
@@ -16344,6 +16356,7 @@ __substantifs_multi_mots__
     >nid [de|d’] résistance
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
+    >nom à particule
     >nounou à domicile
     >nourrice à domicile
     >occasion en or ?massif¿
@@ -17371,11 +17384,14 @@ __purge_locutions_potentielles__
     en de multiples occasions  [<end>|,|)]
         <<- ~1:4>> *
 
+    >dernier  *WORD  en date
+        <<- morph(\2, ":N", ":G") ~3:4>> *
+
     <start> en fait
         <<- ~2:3>> *
 
     en fait
-        <<- not value(<1, "|je|tu|n’|il|on|elle|iel|") ~>> ␣
+        <<- not value(<1, "|je|tu|n’|il|on|elle|iel|") ~>> *
 
     en [mémoire|souvenir] du bon vieux temps @¬:A.*:[me]:[si]
     en [mémoire|souvenir] du bon vieux temps [<end>|,|)]
@@ -17386,7 +17402,7 @@ __purge_locutions_potentielles__
         <<- ~1:3>> *
 
     en sus
-        <<- not value(<1, "|j’|tu|il|elle|on|n’|") ~>> *
+        <<- not value(<1, "|j’|tu|il|elle|iel|on|n’|") ~>> *
 
     entre autres choses  @¬:A.*:[fe]:[pi]
     entre autres choses  [<end>|,|)]
