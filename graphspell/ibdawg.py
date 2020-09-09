@@ -73,16 +73,17 @@ class SuggResult:
     def getSuggestions (self, nSuggLimit=10):
         "return a list of suggestions"
         # we sort the better results with the original word
-        if len(self.dSugg[0]) > 1:
-            self.dSugg[0].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
-        elif len(self.dSugg[1]) > 1:
-            self.dSugg[1].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
-        lRes = self.dSugg.pop(0)
+        lRes = []
+        bFirstListSorted = False
         for nDist, lSugg in self.dSugg.items():
-            if nDist <= self.nDistLimit:
-                lRes.extend(lSugg)
-                if len(lRes) > nSuggLimit:
-                    break
+            if nDist > self.nDistLimit:
+                break
+            if not bFirstListSorted and len(lSugg) > 1:
+                lSugg.sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
+                bFirstListSorted = True
+            lRes.extend(lSugg)
+            if len(lRes) > nSuggLimit:
+                break
         if self.sWord.isupper():
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
