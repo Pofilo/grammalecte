@@ -23920,11 +23920,11 @@ TEST: Et il faut en fait, pour les expliquer, tenir compte de trois éléments c
 
 __infi_faire__
     >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ not morph(<1, ">(?:en|de|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
+        <<- /infi/ not morph(<1, ">(?:en|[mtsnd][e’]|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
         -2>> =suggVerbInfi(\2)                                                                      && Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
     [ne|n’|me|m’|te|t’|se|s’]  >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":M")
+        <<- /infi/ morph(\-1, ":V", ":M") and not value(\-1, "|varié|variée|variés|variées|")
         --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “faire”, le verbe devrait être à l’infinitif.
 
     de  ?[nous|vous|lui|les|le|la|l’]¿  faire   ~(?:ée?s?|ez)$
@@ -23946,6 +23946,7 @@ TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas c
 TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
 TEST: la tonalité des soutiens traditionnels s’est faite plus nuancée.
 TEST: sa simple présence les a fait reculer
+TEST: la fonction se fait plus variée
 
 
 __infi_laisser__
