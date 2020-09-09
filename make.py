@@ -451,7 +451,8 @@ def main ():
                 except ImportError:
                     print(f"# Error. Import failed: grammalecte.{sLang}.tests_core")
                 else:
-                    tests.perf(sVersion, xArgs.perf_memo)
+                    sResultFile = f"gc_lang/{sLang}/perf_memo.text"  if xArgs.perf_memo  else ""
+                    tests.perf(sVersion, sResultFile)
 
             # JavaScript linter
             if xArgs.lint_web_ext:

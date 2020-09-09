@@ -28,7 +28,7 @@ def timeblock (label, hDst):
             hDst.write("{:<12.6}".format(end-start))
 
 
-def perf (sVersion, bMemo=False):
+def perf (sVersion, sResultFile=""):
     "performance tests"
     print("Performance tests")
     gc_engine.load()
@@ -40,7 +40,7 @@ def perf (sVersion, bMemo=False):
         print(f"No file <perf.txt> in <{spHere}>")
         return
     with open(spfPerfTest, "r", encoding="utf-8") as hSrc:
-        hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if bMemo  else None
+        hDst = open(sResultFile, "a", encoding="utf-8", newline="\n")  if sResultFile  else None
         if hDst:
             hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
         for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
