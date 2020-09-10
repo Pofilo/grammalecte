@@ -128,11 +128,20 @@ class SpellChecker ():
         return lWordAndMorph
 
     def readableMorph (self, sMorph):
+        "returns a human readable meaning of tags of <sMorph>"
         if not self.lexicographer:
             return ""
         return self.lexicographer.readableMorph(sMorph)
 
     def setLabelsOnToken (self, dToken):
+        """on <dToken>,
+            adds:
+                - lMorph: list of morphologies
+                - aLabels: list of labels (human readable meaning of tags)
+            for WORD tokens:
+                - bValidToken: True if the token is valid for the spellchecker
+                - lSubTokens for each parts of the split token
+        """
         if not self.lexicographer:
             return
         if "lMorph" not in dToken:
