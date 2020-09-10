@@ -132,6 +132,10 @@ def getCommand ():
 
 def main ():
     "launch the CLI (command line interface)"
+    if sys.version < "3.7":
+        print("Python 3.7+ required")
+        return
+
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-f", "--file", help="parse file (UTF-8 required!) [on Windows, -f is similar to -ff]", type=str)
     xParser.add_argument("-ff", "--file_to_file", help="parse file (UTF-8 required!) and create a result file (*.res.txt)", type=str)
@@ -338,17 +342,26 @@ def main ():
                     if xArgs.textformatter:
                         sParagraph = oTextFormatter.formatText(sParagraph)
                     lParagraphErrors, lSentences = oGrammarChecker.gce.parse(sParagraph, bDebug=xArgs.debug, bFullInfo=True)
-                    echo(txt.getReadableErrors(lParagraphErrors, xArgs.width))
+                    #echo(txt.getReadableErrors(lParagraphErrors, xArgs.width))
                     for dSentence in lSentences:
-                        echo("{nStart}:{nEnd}".format(**dSentence))
-                        echo("   <" + dSentence["sSentence"]+">")
-                        for dToken in dSentence["lToken"]:
-                            echo("    {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {2} {0[sValue]:<16} {3:<10}   {4}".format(dToken, \
-                                                                                                            "×" if dToken.get("bToRemove", False) else " ",
-                                                                                                            "!" if dToken["sType"] == "WORD" and not dToken.get("bValidToken", False) else " ",
-                                                                                                            " ".join(dToken.get("lMorph", "")), \
-                                                                                                            "·".join(dToken.get("aTags", "")) ) )
-                        echo(txt.getReadableErrors(dSentence["lGrammarErrors"], xArgs.width))
+                        echo("{nStart}:{nEnd}  <{sSentence}>".format(**dSentence))
+                        for dToken in dSentence["lTokens"]:
+                            if dToken["sType"] == "INFO" or "bMerged" in dToken:
+                                continue
+                            echo("  {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {2} {0[sValue]:<16} {3}".format(dToken, \
+                                                                                                        "×" if dToken.get("bToRemove", False) else " ",
+                                                                                                        "!" if dToken["sType"] == "WORD" and not dToken.get("bValidToken", False) else " ",
+                                                                                                        " ".join(dToken.get("aTags", "")) ) )
+                            if "lMorph" in dToken:
+                                for sMorph, sLabel in zip(dToken["lMorph"], dToken["aLabels"]):
+                                    echo("            {0:40}  {1}".format(sMorph, sLabel))
+                            if "lSubTokens" in dToken:
+                                for dSubToken in dToken["lSubTokens"]:
+                                    if dSubToken["sValue"]:
+                                        echo("              · {0:20}".format(dSubToken["sValue"]))
+                                        for sMorph, sLabel in zip(dSubToken["lMorph"], dSubToken["aLabels"]):
+                                            echo("                {0:40}  {1}".format(sMorph, sLabel))
+                        #echo(txt.getReadableErrors(dSentence["lGrammarErrors"], xArgs.width))
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:

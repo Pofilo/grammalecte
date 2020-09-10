@@ -9,7 +9,8 @@ Lexicographer for the French language
 #       if the boolean is True, 4 functions are required:
 #           split(sWord) -> returns a list of string (that will be analyzed)
 #           analyze(sWord) -> returns a string with the meaning of word
-#           formatTags(sTags) -> returns a string with the meaning of tags
+#           readableMorph(sMorph) -> returns a string with the meaning of tags
+#           setLabelsOnToken(dToken) -> adds readable information on token
 #           filterSugg(aWord) -> returns a filtered list of suggestions
 
 
@@ -172,9 +173,12 @@ _dTAGS = {
     ':p': (" pluriel", "pluriel"),
     ':i': (" invariable", "invariable"),
 
-    ':V1': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
-    ':V2': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
-    ':V3': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
+    ':V1_': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
+    ':V2_': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
+    ':V3_': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
+    ':V1e': (" verbe (1ᵉʳ gr.),", "Verbe du 1ᵉʳ groupe"),
+    ':V2e': (" verbe (2ᵉ gr.),", "Verbe du 2ᵉ groupe"),
+    ':V3e': (" verbe (3ᵉ gr.),", "Verbe du 3ᵉ groupe"),
     ':V0e': (" verbe,", "Verbe auxiliaire être"),
     ':V0a': (" verbe,", "Verbe auxiliaire avoir"),
 
@@ -219,22 +223,22 @@ _dTAGS = {
     ':Ow': (" pronom adverbial,", "Pronom adverbial"),
     ':Os': (" pronom personnel sujet,", "Pronom personnel sujet"),
     ':Oo': (" pronom personnel objet,", "Pronom personnel objet"),
-    ':Ov': (" préverbe,", "Préverbe (pronom personnel objet, +ne)"),
+    ':Ov': (" préverbe,", "Préverbe"),
     ':O1': (" 1ʳᵉ pers.,", "Pronom : 1ʳᵉ personne"),
     ':O2': (" 2ᵉ pers.,", "Pronom : 2ᵉ personne"),
     ':O3': (" 3ᵉ pers.,", "Pronom : 3ᵉ personne"),
     ':C': (" conjonction,", "Conjonction"),
-    ':Ĉ': (" conjonction (él.),", "Conjonction (élément)"),
     ':Cc': (" conjonction de coordination,", "Conjonction de coordination"),
     ':Cs': (" conjonction de subordination,", "Conjonction de subordination"),
-    ':Ĉs': (" conjonction de subordination (él.),", "Conjonction de subordination (élément)"),
 
-    ':ÉN': (" locution nominale (él.),", "Locution nominale (élément)"),
-    ':ÉA': (" locution adjectivale (él.),", "Locution adjectivale (élément)"),
-    ':ÉV': (" locution verbale (él.),", "Locution verbale (élément)"),
-    ':ÉW': (" locution adverbiale (él.),", "Locution adverbiale (élément)"),
-    ':ÉR': (" locution prépositive (él.),", "Locution prépositive (élément)"),
-    ':ÉJ': (" locution interjective (él.),", "Locution interjective (élément)"),
+    ':ÉC': (" élément de conjonction,", "Élément de conjonction"),
+    ':ÉCs': (" élément de conjonction de subordination,", "Élément de conjonction de subordination"),
+    ':ÉN': (" élément de locution nominale,", "Élément de locution nominale"),
+    ':ÉA': (" élément de locution adjectivale,", "Élément de locution adjectivale"),
+    ':ÉV': (" élément de locution verbale,", "Élément de locution verbale"),
+    ':ÉW': (" élément de locution adverbiale,", "Élément de locution adverbiale"),
+    ':ÉR': (" élément de locution prépositive,", "Élément de locution prépositive"),
+    ':ÉJ': (" élément de locution interjective,", "Élément de locution interjective"),
 
     ':Zp': (" préfixe,", "Préfixe"),
     ':Zs': (" suffixe,", "Suffixe"),
@@ -274,18 +278,21 @@ _dValues = {
     '-je': " pronom personnel sujet, 1ʳᵉ pers. sing.",
     '-tu': " pronom personnel sujet, 2ᵉ pers. sing.",
     '-il': " pronom personnel sujet, 3ᵉ pers. masc. sing.",
+    '-iel': " pronom personnel sujet, 3ᵉ pers. sing.",
     '-on': " pronom personnel sujet, 3ᵉ pers. sing. ou plur.",
     '-elle': " pronom personnel sujet, 3ᵉ pers. fém. sing.",
     '-t-il': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. masc. sing.",
     '-t-on': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing. ou plur.",
     '-t-elle': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. fém. sing.",
+    '-t-iel': " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing.",
     '-nous': " pronom personnel sujet/objet, 1ʳᵉ pers. plur.  ou  COI (à nous), plur.",
     '-vous': " pronom personnel sujet/objet, 2ᵉ pers. plur.  ou  COI (à vous), plur.",
     '-ils': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
     '-elles': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
+    '-iels': " pronom personnel sujet, 3ᵉ pers. plur.",
 
-    "-là": " particule démonstrative",
-    "-ci": " particule démonstrative",
+    "-là": " particule démonstrative (là)",
+    "-ci": " particule démonstrative (ci)",
 
     '-le': " COD, masc. sing.",
     '-la': " COD, fém. sing.",
@@ -326,6 +333,41 @@ _dValues = {
     "-m’en": " (me) pronom personnel objet + (en) pronom adverbial",
     "-t’en": " (te) pronom personnel objet + (en) pronom adverbial",
     "-s’en": " (se) pronom personnel objet + (en) pronom adverbial",
+
+    '.': "point",
+    '·': "point médian",
+    '…': "points de suspension",
+    ':': "deux-points",
+    ';': "point-virgule",
+    ',': "virgule",
+    '?': "point d’interrogation",
+    '!': "point d’exclamation",
+    '(': "parenthèse ouvrante",
+    ')': "parenthèse fermante",
+    '[': "crochet ouvrant",
+    ']': "crochet fermant",
+    '{': "accolade ouvrante",
+    '}': "accolade fermante",
+    '-': "tiret",
+    '—': "tiret cadratin",
+    '–': "tiret demi-cadratin",
+    '«': "guillemet ouvrant (chevrons)",
+    '»': "guillemet fermant (chevrons)",
+    '“': "guillemet ouvrant double",
+    '”': "guillemet fermant double",
+    '‘': "guillemet ouvrant",
+    '’': "guillemet fermant",
+    '"': "guillemets droits (déconseillé en typographie)",
+    '/': "signe de la division",
+    '+': "signe de l’addition",
+    '*': "signe de la multiplication",
+    '=': "signe de l’égalité",
+    '<': "inférieur à",
+    '>': "supérieur à",
+    '⩽': "inférieur ou égal à",
+    '⩾': "supérieur ou égal à",
+    '%': "signe de pourcentage",
+    '‰': "signe pour mille"
 }
 
 
@@ -358,16 +400,90 @@ def analyze (sWord):
     return ""
 
 
-def formatTags (sTags):
+def readableMorph (sMorph):
     "returns string: readable tags"
+    if not sMorph:
+        return "mot inconnu"
     sRes = ""
-    sTags = re.sub("(?<=V[1-3])[itpqnmr_eaxz]+", "", sTags)
-    sTags = re.sub("(?<=V0[ea])[itpqnmr_eaxz]+", "", sTags)
-    for m in _zTag.finditer(sTags):
-        sRes += _dTAGS.get(m.group(0), " [{}]".format(m.group(0)))[0]
+    sMorph = re.sub("(?<=V[0123][ea_])[itpqnmr_eaxz]+", "", sMorph)
+    for m in _zTag.finditer(sMorph):
+        if m.group(0) in _dTAGS:
+            sRes += _dTAGS[m.group(0)][0]
+        else:
+            sRes += " [" + m.group(0) + "]?"
     if sRes.startswith(" verbe") and not sRes.endswith("infinitif"):
-        sRes += " [{}]".format(sTags[1:sTags.find("/")])
+        sRes += " [" + sMorph[1:sMorph.find("/")] +"]"
+    if not sRes:
+        return " [" + sMorph + "]: étiquettes inconnues"
     return sRes.rstrip(",")
+
+
+_zPartDemForm = re.compile("([\\w]+)-(là|ci)$")
+_zInterroVerb = re.compile("([\\w]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$")
+_zImperatifVerb = re.compile("([\\w]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$")
+
+def setLabelsOnToken (dToken):
+    # Token: .sType, .sValue, .nStart, .nEnd, .lMorph
+    try:
+        if dToken["sType"] == "PUNC" or dToken["sType"] == "SIGN":
+            dToken["aLabels"] = [_dValues.get(dToken["sValue"], "signe de ponctuation divers")]
+        elif dToken["sType"] == 'NUM':
+            dToken["aLabels"] = ["nombre"]
+        elif dToken["sType"] == 'LINK':
+            dToken["aLabels"] = ["hyperlien"]
+        elif dToken["sType"] == 'TAG':
+            dToken["aLabels"] = ["étiquette (hashtag)"]
+        elif dToken["sType"] == 'HTML':
+            dToken["aLabels"] = ["balise HTML"]
+        elif dToken["sType"] == 'PSEUDOHTML':
+            dToken["aLabels"] = ["balise pseudo-HTML"]
+        elif dToken["sType"] == 'HTMLENTITY':
+            dToken["aLabels"] = ["entité caractère XML/HTML"]
+        elif dToken["sType"] == 'HOUR':
+            dToken["aLabels"] = ["heure"]
+        elif dToken["sType"] == 'WORD_ELIDED':
+            dToken["aLabels"] = [_dValues.get(dToken["sValue"].lower(), "préfixe élidé inconnu")]
+        elif dToken["sType"] == 'WORD_ORDINAL':
+            dToken["aLabels"] = ["nombre ordinal"]
+        elif dToken["sType"] == 'FOLDERUNIX':
+            dToken["aLabels"] = ["dossier UNIX (et dérivés)"]
+        elif dToken["sType"] == 'FOLDERWIN':
+            dToken["aLabels"] = ["dossier Windows"]
+        elif dToken["sType"] == 'WORD_ACRONYM':
+            dToken["aLabels"] = ["sigle ou acronyme"]
+        elif dToken["sType"] == 'WORD':
+            if "lMorph" in dToken and dToken["lMorph"]:
+                # with morphology
+                dToken["aLabels"] = []
+                for sMorph in dToken["lMorph"]:
+                    dToken["aLabels"].append(readableMorph(sMorph))
+            else:
+                # no morphology, guessing
+                if dToken["sValue"].count("-") > 4:
+                    dToken["aLabels"] = ["élément complexe indéterminé"]
+                elif _zPartDemForm.search(dToken["sValue"]):
+                    # mots avec particules démonstratives
+                    dToken["aLabels"] = ["mot avec particule démonstrative"]
+                elif _zImperatifVerb.search(dToken["sValue"]):
+                    # formes interrogatives
+                    dToken["aLabels"] = ["forme verbale impérative"]
+                elif _zInterroVerb.search(dToken["sValue"]):
+                    # formes interrogatives
+                    dToken["aLabels"] = ["forme verbale interrogative"]
+                else:
+                    dToken["aLabels"] = ["mot inconnu du dictionnaire"]
+            if "lSubTokens" in dToken:
+                for dSubToken in dToken["lSubTokens"]:
+                    if dSubToken["sValue"]:
+                        if dSubToken["sValue"] in _dValues:
+                            dSubToken["lMorph"] = [ "" ]
+                            dSubToken["aLabels"] = [ _dValues[dSubToken["sValue"]] ]
+                        else:
+                            dSubToken["aLabels"] = [ readableMorph(sMorph)  for sMorph in dSubToken["lMorph"] ]
+        else:
+            dToken["aLabels"] = ["token de nature inconnue"]
+    except:
+        return
 
 
 # Other functions

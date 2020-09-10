@@ -100,7 +100,7 @@ class SpellChecker ():
         self.bPersonalDic = False
 
 
-    # Default suggestions
+    # Lexicographer
 
     def loadLexicographer (self, sLangCode):
         "load default suggestion module for <sLangCode>"
@@ -122,10 +122,31 @@ class SpellChecker ():
                 if sLex:
                     aRes = [ (" | ".join(lMorph), sLex) ]
                 else:
-                    aRes = [ (sMorph, self.lexicographer.formatTags(sMorph)) for sMorph in lMorph ]
+                    aRes = [ (sMorph, self.lexicographer.readableMorph(sMorph)) for sMorph in lMorph ]
                 if aRes:
                     lWordAndMorph.append((sElem, aRes))
         return lWordAndMorph
+
+    def readableMorph (self, sMorph):
+        if not self.lexicographer:
+            return ""
+        return self.lexicographer.readableMorph(sMorph)
+
+    def setLabelsOnToken (self, dToken):
+        if not self.lexicographer:
+            return
+        if "lMorph" not in dToken:
+            dToken["lMorph"] = self.getMorph(dToken["sValue"])
+        if dToken["sType"] == "WORD":
+            dToken["bValidToken"] = self.isValidToken(dToken["sValue"])
+            sPrefix, sStem, sSuffix = self.lexicographer.split(dToken["sValue"])
+            if sStem != dToken["sValue"]:
+                dToken["lSubTokens"] = [
+                    { "sType": "WORD", "sValue": sPrefix, "lMorph": self.getMorph(sPrefix) },
+                    { "sType": "WORD", "sValue": sStem,   "lMorph": self.getMorph(sStem)   },
+                    { "sType": "WORD", "sValue": sSuffix, "lMorph": self.getMorph(sSuffix) }
+                ]
+        self.lexicographer.setLabelsOnToken(dToken)
 
 
     # Storage
@@ -235,7 +256,7 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
-        if self.lexicographer.dSugg:
+        if self.lexicographer:
             if sWord in self.lexicographer.dSugg:
                 yield self.lexicographer.dSugg[sWord].split("|")
             elif sWord.istitle() and sWord.lower() in self.lexicographer.dSugg:

@@ -235,7 +235,7 @@ class TextParser:
         self.sSentence = ""
         self.sSentence0 = ""
         self.nOffsetWithinParagraph = 0
-        self.lToken = []
+        self.lTokens = []
         self.dTokenPos = {}         # {position: token}
         self.dTags = {}             # {position: tags}
         self.dError = {}            # {position: error}
@@ -246,7 +246,7 @@ class TextParser:
         s = "===== TEXT =====\n"
         s += "sentence: " + self.sSentence0 + "\n"
         s += "now:      " + self.sSentence  + "\n"
-        for dToken in self.lToken:
+        for dToken in self.lTokens:
             s += '#{i}\t{nStart}:{nEnd}\t{sValue}\t{sType}'.format(**dToken)
             if "lMorph" in dToken:
                 s += "\t" + str(dToken["lMorph"])
@@ -267,6 +267,8 @@ class TextParser:
             self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         except:
             raise
+        self.lTokens = None
+        self.lTokens0 = None
         if bFullInfo:
             lParagraphErrors = list(self.dError.values())
             lSentences = []
@@ -279,18 +281,21 @@ class TextParser:
                     self.sSentence = sText[iStart:iEnd]
                     self.sSentence0 = self.sText0[iStart:iEnd]
                     self.nOffsetWithinParagraph = iStart
-                    self.lToken = list(_oTokenizer.genTokens(self.sSentence, True))
-                    self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+                    self.lTokens = list(_oTokenizer.genTokens(self.sSentence, True))
+                    self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lTokens  if dToken["sType"] != "INFO" }
                     if bFullInfo:
-                        dSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": self.sSentence, "lToken": list(self.lToken) }
-                        for dToken in dSentence["lToken"]:
-                            if dToken["sType"] == "WORD":
-                                dToken["bValidToken"] = _oSpellChecker.isValidToken(dToken["sValue"])
-                        # the list of tokens is duplicated, to keep all tokens from being deleted when analysis
+                        self.lTokens0 = list(self.lTokens)  # the list of tokens is duplicated, to keep tokens from being deleted when analysis
                     self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                     if bFullInfo:
-                        dSentence["lGrammarErrors"] = list(self.dSentenceError.values())
-                        lSentences.append(dSentence)
+                        for dToken in self.lTokens0:
+                            _oSpellChecker.setLabelsOnToken(dToken)
+                        lSentences.append({
+                            "nStart": iStart,
+                            "nEnd": iEnd,
+                            "sSentence": self.sSentence0,
+                            "lTokens": self.lTokens0,
+                            "lGrammarErrors": list(self.dSentenceError.values())
+                        })
                         self.dSentenceError.clear()
                 except:
                     raise
@@ -382,14 +387,14 @@ class TextParser:
     def update (self, sSentence, bDebug=False):
         "update <sSentence> and retokenize"
         self.sSentence = sSentence
-        lNewToken = list(_oTokenizer.genTokens(sSentence, True))
-        for dToken in lNewToken:
+        lNewTokens = list(_oTokenizer.genTokens(sSentence, True))
+        for dToken in lNewTokens:
             if "lMorph" in self.dTokenPos.get(dToken["nStart"], {}):
                 dToken["lMorph"] = self.dTokenPos[dToken["nStart"]]["lMorph"]
             if "aTags" in self.dTokenPos.get(dToken["nStart"], {}):
                 dToken["aTags"] = self.dTokenPos[dToken["nStart"]]["aTags"]
-        self.lToken = lNewToken
-        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+        self.lTokens = lNewTokens
+        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lTokens  if dToken["sType"] != "INFO" }
         if bDebug:
             echo("UPDATE:")
             echo(self)
@@ -553,7 +558,7 @@ class TextParser:
         "parse graph with tokens from the text and execute actions encountered"
         lPointer = []
         bTagAndRewrite = False
-        for iToken, dToken in enumerate(self.lToken):
+        for iToken, dToken in enumerate(self.lTokens):
             if bDebug:
                 echo("TOKEN: " + dToken["sValue"])
             # check arcs for each existing pointer
@@ -594,16 +599,16 @@ class TextParser:
                     # Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
-                        bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
+                        bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(self.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error
                                 iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL = eAct
                                 nTokenErrorStart = nTokenOffset + iTokenStart  if iTokenStart > 0  else nLastToken + iTokenStart
-                                if "bImmune" not in self.lToken[nTokenErrorStart]:
+                                if "bImmune" not in self.lTokens[nTokenErrorStart]:
                                     nTokenErrorEnd = nTokenOffset + iTokenEnd  if iTokenEnd > 0  else nLastToken + iTokenEnd
-                                    nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lToken[nTokenErrorStart]["nEnd"])
-                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lToken[nTokenErrorEnd]["nStart"])
+                                    nErrorStart = self.nOffsetWithinParagraph + (self.lTokens[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lTokens[nTokenErrorStart]["nEnd"])
+                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lTokens[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lTokens[nTokenErrorEnd]["nStart"])
                                     if nErrorStart not in self.dError or nPriority > self.dErrorPriority.get(nErrorStart, -1):
                                         self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, \
                                                                                                sMessage, _rules_graph.dURL.get(iURL, ""), bShowRuleId, sOption, bContext)
@@ -618,12 +623,12 @@ class TextParser:
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
                                 if bDebug:
-                                    echo("    TEXT_PROCESSOR: [{}:{}]  > {}".format(self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"], sWhat))
+                                    echo("    TEXT_PROCESSOR: [{}:{}]  > {}".format(self.lTokens[nTokenStart]["sValue"], self.lTokens[nTokenEnd]["sValue"], sWhat))
                             elif cActionType == "=":
                                 # disambiguation
-                                getattr(gc_functions, sWhat)(self.lToken, nTokenOffset, nLastToken)
+                                getattr(gc_functions, sWhat)(self.lTokens, nTokenOffset, nLastToken)
                                 if bDebug:
-                                    echo("    DISAMBIGUATOR: ({})  [{}:{}]".format(sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
+                                    echo("    DISAMBIGUATOR: ({})  [{}:{}]".format(sWhat, self.lTokens[nTokenOffset+1]["sValue"], self.lTokens[nLastToken]["sValue"]))
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
@@ -633,12 +638,12 @@ class TextParser:
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 for i in range(nTokenStart, nTokenEnd+1):
-                                    if "aTags" in self.lToken[i]:
-                                        self.lToken[i]["aTags"].update(sWhat.split("|"))
+                                    if "aTags" in self.lTokens[i]:
+                                        self.lTokens[i]["aTags"].update(sWhat.split("|"))
                                     else:
-                                        self.lToken[i]["aTags"] = set(sWhat.split("|"))
+                                        self.lTokens[i]["aTags"] = set(sWhat.split("|"))
                                 if bDebug:
-                                    echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"]))
+                                    echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lTokens[nTokenStart]["sValue"], self.lTokens[nTokenEnd]["sValue"]))
                                 for sTag in sWhat.split("|"):
                                     if sTag not in self.dTags:
                                         self.dTags[sTag] = [nTokenStart, nTokenEnd]
@@ -652,14 +657,14 @@ class TextParser:
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
-                                    self.lToken[nTokenStart]["bImmune"] = True
-                                    nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenStart]["nStart"]
+                                    self.lTokens[nTokenStart]["bImmune"] = True
+                                    nErrorStart = self.nOffsetWithinParagraph + self.lTokens[nTokenStart]["nStart"]
                                     if nErrorStart in self.dError:
                                         del self.dError[nErrorStart]
                                 else:
                                     for i in range(nTokenStart, nTokenEnd+1):
-                                        self.lToken[i]["bImmune"] = True
-                                        nErrorStart = self.nOffsetWithinParagraph + self.lToken[i]["nStart"]
+                                        self.lTokens[i]["bImmune"] = True
+                                        nErrorStart = self.nOffsetWithinParagraph + self.lTokens[i]["nStart"]
                                         if nErrorStart in self.dError:
                                             del self.dError[nErrorStart]
                             else:
@@ -697,16 +702,16 @@ class TextParser:
     def _createErrorFromTokens (self, sSugg, nTokenOffset, nLastToken, iFirstToken, nStart, nEnd, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
         if sSugg[0:1] == "=":
-            sSugg = getattr(gc_functions, sSugg[1:])(self.lToken, nTokenOffset, nLastToken)
+            sSugg = getattr(gc_functions, sSugg[1:])(self.lTokens, nTokenOffset, nLastToken)
             lSugg = sSugg.split("|")  if sSugg  else []
         elif sSugg == "_":
             lSugg = []
         else:
             lSugg = self._expand(sSugg, nTokenOffset, nLastToken).split("|")
-        if bCaseSvty and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
+        if bCaseSvty and lSugg and self.lTokens[iFirstToken]["sValue"][0:1].isupper():
             lSugg = list(map(lambda s: s.upper(), lSugg))  if self.sSentence[nStart:nEnd].isupper()  else list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
-        sMessage = getattr(gc_functions, sMsg[1:])(self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
+        sMessage = getattr(gc_functions, sMsg[1:])(self.lTokens, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
         if bShowRuleId:
             sMessage += "  #" + sLineId + " / " + sRuleId
         #
@@ -755,9 +760,9 @@ class TextParser:
     def _expand (self, sText, nTokenOffset, nLastToken):
         for m in re.finditer(r"\\(-?[0-9]+)", sText):
             if m.group(1)[0:1] == "-":
-                sText = sText.replace(m.group(0), self.lToken[nLastToken+int(m.group(1))+1]["sValue"])
+                sText = sText.replace(m.group(0), self.lTokens[nLastToken+int(m.group(1))+1]["sValue"])
             else:
-                sText = sText.replace(m.group(0), self.lToken[nTokenOffset+int(m.group(1))]["sValue"])
+                sText = sText.replace(m.group(0), self.lTokens[nTokenOffset+int(m.group(1))]["sValue"])
         return sText
 
     def rewriteText (self, sText, sRepl, iGroup, m, bUppercase):
@@ -784,31 +789,31 @@ class TextParser:
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
-                self.lToken[nTokenRewriteStart]["bToRemove"] = True
+                self.lTokens[nTokenRewriteStart]["bToRemove"] = True
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
-                    self.lToken[i]["bToRemove"] = True
+                    self.lTokens[i]["bToRemove"] = True
         elif sWhat == "␣":
             # merge tokens
-            self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
+            self.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
         elif sWhat == "_":
             # neutralized token
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
-                self.lToken[nTokenRewriteStart]["sNewValue"] = "_"
+                self.lTokens[nTokenRewriteStart]["sNewValue"] = "_"
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
-                    self.lToken[i]["sNewValue"] = "_"
+                    self.lTokens[i]["sNewValue"] = "_"
         else:
             if sWhat.startswith("="):
-                sWhat = getattr(gc_functions, sWhat[1:])(self.lToken, nTokenOffset, nLastToken)
+                sWhat = getattr(gc_functions, sWhat[1:])(self.lTokens, nTokenOffset, nLastToken)
             else:
                 sWhat = self._expand(sWhat, nTokenOffset, nLastToken)
-            bUppercase = bCaseSvty and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
+            bUppercase = bCaseSvty and self.lTokens[nTokenRewriteStart]["sValue"][0:1].isupper()
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
                 # one token
                 if bUppercase:
                     sWhat = sWhat[0:1].upper() + sWhat[1:]
-                self.lToken[nTokenRewriteStart]["sNewValue"] = sWhat
+                self.lTokens[nTokenRewriteStart]["sNewValue"] = sWhat
             else:
                 # several tokens
                 lTokenValue = sWhat.split("|")
@@ -818,42 +823,47 @@ class TextParser:
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
                     if not sValue or sValue == "*":
-                        self.lToken[i]["bToRemove"] = True
+                        self.lTokens[i]["bToRemove"] = True
                     else:
                         if bUppercase:
                             sValue = sValue[0:1].upper() + sValue[1:]
-                        self.lToken[i]["sNewValue"] = sValue
+                        self.lTokens[i]["sNewValue"] = sValue
 
     def rewriteFromTags (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
         if bDebug:
             echo("REWRITE")
-        lNewToken = []
+        lNewTokens = []
+        lNewTokens0 = []
         nMergeUntil = 0
         dTokenMerger = {}
-        for iToken, dToken in enumerate(self.lToken):
+        for iToken, dToken in enumerate(self.lTokens):
             bKeepToken = True
             if dToken["sType"] != "INFO":
                 if nMergeUntil and iToken <= nMergeUntil:
+                    # token to merge
                     dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                     dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
                         echo("  MERGED TOKEN: " + dTokenMerger["sValue"])
+                    dToken["bMerged"] = True
                     bKeepToken = False
                 if "nMergeUntil" in dToken:
-                    if iToken > nMergeUntil: # this token is not already merged with a previous token
+                    # first token to be merge with
+                    if iToken > nMergeUntil: # this token is not to be merged with a previous token
                         dTokenMerger = dToken
                     if dToken["nMergeUntil"] > nMergeUntil:
                         nMergeUntil = dToken["nMergeUntil"]
                     del dToken["nMergeUntil"]
                 elif "bToRemove" in dToken:
+                    # deletion required
                     if bDebug:
                         echo("  REMOVED: " + dToken["sValue"])
                     self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                     bKeepToken = False
             #
             if bKeepToken:
-                lNewToken.append(dToken)
+                lNewTokens.append(dToken)
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
                     if bDebug:
@@ -866,5 +876,5 @@ class TextParser:
                     del dToken["sNewValue"]
         if bDebug:
             echo("  TEXT REWRITED: " + self.sSentence)
-        self.lToken.clear()
-        self.lToken = lNewToken
+        self.lTokens.clear()
+        self.lTokens = lNewTokens

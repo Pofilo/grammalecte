@@ -231,16 +231,11 @@ function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, oInfo={}) 
     postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, oInfo, true));
 }
 
-function parseFull (sText, sCountry, bDebug, bContext, oInfo={}) {
-    let i = 0;
-    sText = sText.replace(/­/g, "").normalize("NFC");
-    for (let sParagraph of text.getParagraph(sText)) {
-        let lSentence = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext, true);
-        console.log("*", lSentence);
-        postMessage(createResponse("parseFull", {sParagraph: sParagraph, iParaNum: i, lSentence: lSentence}, oInfo, false));
-        i += 1;
-    }
-    postMessage(createResponse("parseFull", null, oInfo, true));
+function parseFull (sParagraph, sCountry, bDebug, bContext, oInfo={}) {
+    sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
+    let [lParagraphErrors, lSentences] = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext, true);
+    //console.log(lSentences);
+    postMessage(createResponse("parseFull", { lParagraphErrors: lParagraphErrors, lSentences: lSentences }, oInfo, true));
 }
 
 function getListOfTokens (sText, oInfo={}) {
@@ -249,7 +244,11 @@ function getListOfTokens (sText, oInfo={}) {
         sText = sText.replace(/­/g, "").normalize("NFC");
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                postMessage(createResponse("getListOfTokens", lexgraph_fr.getListOfTokensReduc(sParagraph, true), oInfo, false));
+                let lTokens = [ ...oTokenizer.genTokens(sParagraph) ];
+                for (let oToken of lTokens) {
+                    oSpellChecker.setLabelsOnToken(oToken);
+                }
+                postMessage(createResponse("getListOfTokens", { sParagraph: sParagraph, lTokens: lTokens }, oInfo, false));
             }
         }
         postMessage(createResponse("getListOfTokens", null, oInfo, true));

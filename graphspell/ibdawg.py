@@ -301,6 +301,8 @@ class IBDAWG:
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
+        if not sWord:
+            return []
         sWord = st.spellingNormalization(sWord)
         l = self.morph(sWord)
         if sWord[0:1].isupper():

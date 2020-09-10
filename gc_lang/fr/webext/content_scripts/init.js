@@ -344,12 +344,12 @@ const oGrammalecteBackgroundPort = {
         this.send("parseAndSpellcheck1", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, { sDestination: sDestination, sParagraphId: sParagraphId });
     },
 
-    getListOfTokens: function (sText) {
-        this.send("getListOfTokens", { sText: sText }, {});
+    parseFull: function (sText, sDestination, sParagraphId) {
+        this.send("parseFull", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, { sDestination: sDestination });
     },
 
-    parseFull: function (sText) {
-        this.send("parseFull", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, {});
+    getListOfTokens: function (sText, sDestination) {
+        this.send("getListOfTokens", { sText: sText }, { sDestination: sDestination });
     },
 
     getVerb: function (sVerb, bStart=true, bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
@@ -422,14 +422,18 @@ const oGrammalecteBackgroundPort = {
                     }
                     break;
                 case "parseFull":
-                    // TODO
+                    if (oInfo.sDestination == "__GrammalectePanel__") {
+                        oGrammalecte.oGCPanel.showParagraphAnalysis(result);
+                    }
                     break;
                 case "getListOfTokens":
-                    if (!bEnd) {
-                        oGrammalecte.oGCPanel.addListOfTokens(result);
-                    } else {
-                        oGrammalecte.oGCPanel.stopWaitIcon();
-                        oGrammalecte.oGCPanel.endTimer();
+                    if (oInfo.sDestination == "__GrammalectePanel__") {
+                        if (!bEnd) {
+                            oGrammalecte.oGCPanel.addListOfTokens(result);
+                        } else {
+                            oGrammalecte.oGCPanel.stopWaitIcon();
+                            oGrammalecte.oGCPanel.endTimer();
+                        }
                     }
                     break;
                 case "getSpellSuggestions":
