@@ -355,6 +355,12 @@ def main ():
                             if "lMorph" in dToken:
                                 for sMorph, sLabel in zip(dToken["lMorph"], dToken["aLabels"]):
                                     echo("            {0:40}  {1}".format(sMorph, sLabel))
+                            if "lSubTokens" in dToken:
+                                for dSubToken in dToken["lSubTokens"]:
+                                    if dSubToken["sValue"]:
+                                        echo("              · {0:20}".format(dSubToken["sValue"]))
+                                        for sMorph, sLabel in zip(dSubToken["lMorph"], dSubToken["aLabels"]):
+                                            echo("                {0:40}  {1}".format(sMorph, sLabel))
                         #echo(txt.getReadableErrors(dSentence["lGrammarErrors"], xArgs.width))
             else:
                 for sParagraph in txt.getParagraph(sText):

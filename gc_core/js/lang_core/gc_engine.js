@@ -227,12 +227,6 @@ class TextParser {
                 this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
                 if (bFullInfo) {
                     for (let oToken of this.lTokens0) {
-                        if (oToken["sType"] == "WORD") {
-                            oToken["bValidToken"] = gc_engine.oSpellChecker.isValidToken(oToken["sValue"]);
-                        }
-                        if (!oToken.hasOwnProperty("lMorph")) {
-                            oToken["lMorph"] = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
-                        }
                         gc_engine.oSpellChecker.setLabelsOnToken(oToken);
                     }
                     lSentences.push({

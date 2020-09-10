@@ -288,10 +288,6 @@ class TextParser:
                     self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                     if bFullInfo:
                         for dToken in self.lTokens0:
-                            if dToken["sType"] == "WORD":
-                                dToken["bValidToken"] = _oSpellChecker.isValidToken(dToken["sValue"])
-                            if "lMorph" not in dToken:
-                                dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
                             _oSpellChecker.setLabelsOnToken(dToken)
                         lSentences.append({
                             "nStart": iStart,

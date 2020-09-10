@@ -401,6 +401,8 @@ def analyze (sWord):
 
 def readableMorph (sMorph):
     "returns string: readable tags"
+    if not sMorph:
+        return "mot inconnu"
     sRes = ""
     sMorph = re.sub("(?<=V[0123][ea_])[itpqnmr_eaxz]+", "", sMorph)
     for m in _zTag.finditer(sMorph):
@@ -454,13 +456,6 @@ def setLabelsOnToken (dToken):
                 dToken["aLabels"] = []
                 for sMorph in dToken["lMorph"]:
                     dToken["aLabels"].append(readableMorph(sMorph))
-                if "sTags" in dToken:
-                    aTags = []
-                    for sTag in dToken["sTags"]:
-                        if sTag in _dValues:
-                            aTags.append(_dValues[sTag])
-                    if aTags:
-                        dToken["aOtherLabels"] = aTags
             else:
                 # no morphology, guessing
                 if dToken["sValue"].count("-") > 4:
@@ -474,6 +469,16 @@ def setLabelsOnToken (dToken):
                 elif _zInterroVerb.search(dToken["sValue"]):
                     # formes interrogatives
                     dToken["aLabels"] = ["forme verbale interrogative"]
+                else:
+                    dToken["aLabels"] = ["mot inconnu du dictionnaire"]
+            if "lSubTokens" in dToken:
+                for dSubToken in dToken["lSubTokens"]:
+                    if dSubToken["sValue"]:
+                        if dSubToken["sValue"] in _dValues:
+                            dSubToken["lMorph"] = [ "" ]
+                            dSubToken["aLabels"] = [ _dValues[dSubToken["sValue"]] ]
+                        else:
+                            dSubToken["aLabels"] = [ readableMorph(sMorph)  for sMorph in dSubToken["lMorph"] ]
         else:
             dToken["aLabels"] = ["token de nature inconnue"]
     except:

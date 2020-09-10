@@ -315,6 +315,9 @@ class IBDAWG {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
+        if (!sWord) {
+            return [];
+        }
         sWord = str_transform.spellingNormalization(sWord);
         let l = this.morph(sWord);
         if (sWord[0].gl_isUpperCase()) {

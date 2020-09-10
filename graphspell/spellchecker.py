@@ -135,6 +135,17 @@ class SpellChecker ():
     def setLabelsOnToken (self, dToken):
         if not self.lexicographer:
             return
+        if "lMorph" not in dToken:
+            dToken["lMorph"] = self.getMorph(dToken["sValue"])
+        if dToken["sType"] == "WORD":
+            dToken["bValidToken"] = self.isValidToken(dToken["sValue"])
+            sPrefix, sStem, sSuffix = self.lexicographer.split(dToken["sValue"])
+            if sStem != dToken["sValue"]:
+                dToken["lSubTokens"] = [
+                    { "sType": "WORD", "sValue": sPrefix, "lMorph": self.getMorph(sPrefix) },
+                    { "sType": "WORD", "sValue": sStem,   "lMorph": self.getMorph(sStem)   },
+                    { "sType": "WORD", "sValue": sSuffix, "lMorph": self.getMorph(sSuffix) }
+                ]
         self.lexicographer.setLabelsOnToken(dToken)
 
 

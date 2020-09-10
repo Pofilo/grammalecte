@@ -176,6 +176,20 @@ class SpellChecker {
         if (!this.lexicographer) {
             return;
         }
+        if (!oToken.hasOwnProperty("lMorph")) {
+            oToken["lMorph"] = this.getMorph(oToken["sValue"]);
+        }
+        if (oToken["sType"] == "WORD") {
+            oToken["bValidToken"] = this.isValidToken(oToken["sValue"]);
+            let [sPrefix, sStem, sSuffix] = this.lexicographer.split(oToken["sValue"]);
+            if (sStem != oToken["sValue"]) {
+                oToken["lSubTokens"] = [
+                    { "sType": "WORD", "sValue": sPrefix, "lMorph": this.getMorph(sPrefix) },
+                    { "sType": "WORD", "sValue": sStem,   "lMorph": this.getMorph(sStem)   },
+                    { "sType": "WORD", "sValue": sSuffix, "lMorph": this.getMorph(sSuffix) }
+                ];
+            }
+        }
         this.lexicographer.setLabelsOnToken(oToken);
     }
 

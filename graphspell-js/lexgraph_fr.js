@@ -423,7 +423,7 @@ var lexgraph_fr = {
             sWord = m[2];
         }
         // mots composés
-        m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$/i.exec(sWord);
+        m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$/i.exec(sWord);
         if (m) {
             sWord = m[1];
             sSuffix = m[2];
@@ -442,6 +442,9 @@ var lexgraph_fr = {
     },
 
     readableMorph: function (sMorph) {
+        if (!sMorph) {
+            return " mot inconnu";
+        }
         let sRes = "";
         sMorph = sMorph.replace(/:V([0-3][ea_])[itpqnmr_eaxz]+/, ":V$1");
         let m;
@@ -513,17 +516,6 @@ var lexgraph_fr = {
                         for (let sMorph of oToken["lMorph"]) {
                             oToken["aLabels"].push(this.readableMorph(sMorph));
                         }
-                        if (oToken.hasOwnProperty("sTags")) {
-                            let aTags = [];
-                            for (let sTag of oToken["sTags"]) {
-                                if (this.dValues.has(sTag)) {
-                                    aTags.push(this.dValues.get(sTag))
-                                }
-                            }
-                            if (aTags.length > 0) {
-                                oToken["aOtherLabels"] = aTags;
-                            }
-                        }
                     } else {
                         // no morphology, guessing
                         if (oToken["sValue"].gl_count("-") > 4) {
@@ -545,6 +537,19 @@ var lexgraph_fr = {
                             oToken["aLabels"] = ["mot inconnu du dictionnaire"];
                         }
                     }
+                    if (oToken.hasOwnProperty("lSubTokens")) {
+                        for (let oSubToken of oToken["lSubTokens"]) {
+                            if (oSubToken["sValue"]) {
+                                if (this.dValues.has(oSubToken["sValue"])) {
+                                    oSubToken["lMorph"] = [ "" ];
+                                    oSubToken["aLabels"] = [ this.dValues.get(oSubToken["sValue"]) ];
+                                }
+                                else {
+                                    oSubToken["aLabels"] = oSubToken["lMorph"].map((sMorph) => this.readableMorph(sMorph));
+                                }
+                            }
+                        }
+                    }
                     break;
                 default:
                     oToken["aLabels"] = ["token de nature inconnue"];
@@ -556,7 +561,7 @@ var lexgraph_fr = {
 
     getInfoForToken: function (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
-        // return a object {sType, sValue, aLabel}
+        // return a object {sType, sValue, aLabels}
         let m = null;
         try {
             switch (oToken.sType) {
@@ -565,91 +570,91 @@ var lexgraph_fr = {
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [this.dValues.gl_get(oToken.sValue, "caractère indéterminé")]
+                        aLabels: [this.dValues.gl_get(oToken.sValue, "caractère indéterminé")]
                     };
                     break;
                 case 'NUM':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["nombre"]
+                        aLabels: ["nombre"]
                     };
                     break;
                 case 'LINK':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabel: ["hyperlien"]
+                        aLabels: ["hyperlien"]
                     };
                     break;
                 case 'TAG':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["étiquette (hashtag)"]
+                        aLabels: ["étiquette (hashtag)"]
                     };
                     break;
                 case 'HTML':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabel: ["balise HTML"]
+                        aLabels: ["balise HTML"]
                     };
                     break;
                 case 'PSEUDOHTML':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["balise pseudo-HTML"]
+                        aLabels: ["balise pseudo-HTML"]
                     };
                     break;
                 case 'HTMLENTITY':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["entité caractère XML/HTML"]
+                        aLabels: ["entité caractère XML/HTML"]
                     };
                     break;
                 case 'HOUR':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["heure"]
+                        aLabels: ["heure"]
                     };
                     break;
                 case 'WORD_ELIDED':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [this.dValues.gl_get(oToken.sValue.toLowerCase(), "préfixe élidé inconnu")]
+                        aLabels: [this.dValues.gl_get(oToken.sValue.toLowerCase(), "préfixe élidé inconnu")]
                     };
                     break;
                 case 'WORD_ORDINAL':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["nombre ordinal"]
+                        aLabels: ["nombre ordinal"]
                     };
                     break;
                 case 'FOLDERUNIX':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabel: ["dossier UNIX (et dérivés)"]
+                        aLabels: ["dossier UNIX (et dérivés)"]
                     };
                     break;
                 case 'FOLDERWIN':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabel: ["dossier Windows"]
+                        aLabels: ["dossier Windows"]
                     };
                     break;
                 case 'WORD_ACRONYM':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["Sigle ou acronyme"]
+                        aLabels: ["Sigle ou acronyme"]
                     };
                     break;
                 case 'WORD':
@@ -657,7 +662,7 @@ var lexgraph_fr = {
                         return {
                             sType: "COMPLEX",
                             sValue: oToken.sValue,
-                            aLabel: ["élément complexe indéterminé"]
+                            aLabels: ["élément complexe indéterminé"]
                         };
                     } else if (m = this._zPartDemForm.exec(oToken.sValue)) {
                         // mots avec particules démonstratives
@@ -665,16 +670,16 @@ var lexgraph_fr = {
                             return {
                                 sType: "WORD",
                                 sValue: oToken.sValue,
-                                aLabel: this._getMorph(oToken.sValue)
+                                aLabels: this._getMorph(oToken.sValue)
                             };
                         }
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: ["mot avec particule démonstrative"],
-                            aSubElem: [
-                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
+                            aLabels: ["mot avec particule démonstrative"],
+                            lSubTokens: [
+                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
@@ -682,10 +687,10 @@ var lexgraph_fr = {
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: ["forme verbale impérative"],
-                            aSubElem: [
-                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
+                            aLabels: ["forme verbale impérative"],
+                            lSubTokens: [
+                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
@@ -693,23 +698,23 @@ var lexgraph_fr = {
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: ["forme verbale interrogative"],
-                            aSubElem: [
-                                { sType: oToken.sType, sValue: m[1], aLabel: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabel: [ this._formatSuffix(m[2]) ] }
+                            aLabels: ["forme verbale interrogative"],
+                            lSubTokens: [
+                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
                             ]
                         };
                     } else if (this.oSpellChecker.isValidToken(oToken.sValue)) {
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: this._getMorph(oToken.sValue)
+                            aLabels: this._getMorph(oToken.sValue)
                         };
                     } else {
                         return {
                             sType: "UNKNOWN_WORD",
                             sValue: oToken.sValue,
-                            aLabel: ["mot inconnu du dictionnaire"]
+                            aLabels: ["mot inconnu du dictionnaire"]
                         };
                     }
                     break;
@@ -717,7 +722,7 @@ var lexgraph_fr = {
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: ["token inconnu"]
+                        aLabels: ["token inconnu"]
                     }
             }
         } catch (e) {
