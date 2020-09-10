@@ -5,12 +5,8 @@ Grammar checker tests for French language
 """
 
 import unittest
-import os
-import re
-import time
 
 from ..graphspell.ibdawg import IBDAWG
-from ..graphspell.echo import echo
 from . import conj
 from . import phonet
 from . import mfsp
