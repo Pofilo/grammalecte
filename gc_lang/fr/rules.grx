@@ -5854,6 +5854,7 @@ TEST: ils sont {{actuellement en train}} de manger  ->> en train
 TEST: avoir un grand {{avenir devant soi}}          ->> avenir
 TEST: {{acculé au pied du mur}}                     ->> acculé
 TEST: {{Avancer en avant}}, pas le choix            ->> Avancer
+TEST: prenons une {{légère collation}}              ->> collation
 TEST: {{dessiner un dessin}}                        ->> dessiner
 TEST: {{joindre ensemble}}                          ->> joindre|mettre ensemble
 TEST: {{collaborer ensemble}}                       ->> collaborer
@@ -10681,7 +10682,7 @@ __conf_peu_peut_peux!6__
         <<- /conf/ -2>> peut                                                && Confusion. Exemples : Il est peu habile, mais il peut y arriver.
 
     [peut|peux]  @:A¬:(?:[MGWYX]|3[sp])
-        <<- /conf/ not morph(\2, ">seul/") and not morph(<1, ">(?:je|tu|il|on|ne)/")
+        <<- /conf/ not morph(\2, ">(?:seul|beau)/") and not morph(<1, ">(?:je|tu|il|on|ne)/")
         -1>> peu                                                            && Confusion probable : « \1 » est une conjugaison de « pouvoir », utilisez « peu ».
 
 TEST: {{peu}} rarement y arriver.
@@ -10701,6 +10702,7 @@ TEST: Et {{peut}} de gens peuvent en dire autant.
 TEST: Pour {{peut}} que quelqu’un se soucie d’eux.
 TEST: pour peu qu’ils soient entendus.
 TEST: Il est guéri et peut de nouveau travailler.
+TEST: l’homme peut bel et bien devenir immortel
 
 
 __conf_peut_être__
@@ -15059,7 +15061,9 @@ __purge_locutions__
     jusqu’ à bac
     jusqu’ à plus soif
     jusqu’ à >preuve du contraire
+    jusqu’ à satiété
     jusqu’ à un certain point
+    jusqu’ à l’ écœurement
     jusqu’ au trognon
     jusque-là
     ?[de|d’]¿ là
@@ -16449,6 +16453,7 @@ __substantifs_multi_mots__
     >quartier d’ hiver
     quelqu’un d’ autre
     >question [de|d’] vie ou [de|d’] mort
+    >rampe d’ accès
     >rampe [de|d’] lancement
     >rapport [de|d’] force
     >rat [de|d’] bibliothèque
