@@ -13443,9 +13443,12 @@ __purge_dates_mois__
     à [compter|partir] du   [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
     [dès|depuis] le         [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
     [le|du]                 [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
-    [avant|après]           [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+    [avant|après] le        [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
     ?jusqu’¿ au             [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
     par rapport au          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
+        <<- ~>> *
+
+    [les|des]               [1er|1ᵉʳ|~^\d\d?$] et ~^\d\d?$ {mois}    ?[derniers|passés|précédents|prochains|~^\d{2,5}$]¿
         <<- ~>> *
 
     dans la nuit du         [1er|1ᵉʳ|~^\d\d?$]  {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
@@ -14537,7 +14540,7 @@ __purge_locutions__
     à rude épreuve
     à s’ y méprendre
     à somme nulle
-    à spectre ?[si|très|trop]¿ large
+    à spectre ?[assez|si|très|trop]¿ large
     à strictement parler
     à tarif réduit
     à tarifs réduits
@@ -14694,6 +14697,7 @@ __purge_locutions__
     contre vents et marées
     contre [mon|ton|son|notre|votre|leur] gré
     côte à côte
+    côté [face|pile]
     [coute|coûte] [que|qu’] [coute|coûte]
     [crois-le|croyons-le|croyez-le] ou [non|pas]
     cul par-dessus tête
@@ -14749,6 +14753,7 @@ __purge_locutions__
     d’ un peu partout
     d’ un revers [de|d’] main
     d’ un revers [de|d’] la main ?[droite|gauche]¿
+    d’ un ?tout¿ autre ordre [de|d’] grandeur
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
     d’ une certaine [façon|manière]
@@ -14798,6 +14803,7 @@ __purge_locutions__
     [de|d’] gré ou [de|d’] force
     [de|d’] guerre lasse
     [de|d’] haut en bas
+    [de|d’] haute main
     [de|d’] là-bas
     [de|d’] la meilleure [manière|façon] possible
     [de|d’] la même [façon|manière]
@@ -16529,6 +16535,7 @@ __substantifs_multi_mots__
     >tableau [de|d’] chasse
     >table à repasser
     >table [de|d’] [calcul|chevet|nuit]
+    >tache [de|d’] rousseur
     >tâche à accomplir
     >taille *NUM
     tas [de|d’] ferraille ?rouillée¿
@@ -20716,6 +20723,10 @@ __conf_ver_vers_verre_vert2__
         <<- /conf/ morph(<1, ">,|<start>|:V", ":D") -1>> vers
         && Confusion probable. Pour dire “en direction de” écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
 
+    [>aller|>arriver|>courir|>foncer|>marcher|>partir|>repartir|>venir|>revenir] ver
+        <<- /conf/ --1>> vers
+        && Confusion probable. Pour dire “en direction de” écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
+
     !! >tirer les vers du nez ¡¡
     >tirer les [>verre|verts|vers] du [nez|né]
         <<- /conf/ --3:0>> vers du nez
@@ -20725,8 +20736,9 @@ TEST: On va lui tirer les {{verts du nez}}
 TEST: il vient {{ver}} moi
 TEST: {{verre}} nous, il approchait                                     ->> vers
 TEST: il arriva {{ver}} eux                                             ->> vers
+TEST: nous allâmes {{ver}} Notre-Dame                                   ->> vers
 TEST: on va lui tirer les vers du nez
-
+TEST: il est revenu vert de rage
 
 
 !!
@@ -23672,6 +23684,21 @@ __infi_que_faire_sinon__
 
 TEST: que faire, sinon s’{{adonnait}} à sa passion                                          ->> adonner
 TEST: que croire sinon la pensée qu’il y a toujours une solution
+
+
+__infi_rien_à_faire_que_sinon__
+    rien à faire [que|qu’|sinon]          ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿ ~..(?:ée?s?|ez|ai[ts]?)$
+    rien à faire [que|qu’|sinon]          ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
+    rien à faire [que|qu’|sinon]          ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
+    rien à faire [que|qu’|sinon]          ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
+    rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿ ~..(?:ée?s?|ez|ai[ts]?)$
+    rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
+    rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
+    rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                      && Après “rien à faire que”, mettez le verbe à l’infinitif.
+
+TEST: rien à faire sinon {{expliqué}} ce qu’il faisait là           ->> expliquer
+TEST: rien d’autre à faire que lui {{donnait}} à manger             ->> donner
 
 
 __infi_nous_vous_verbe__
