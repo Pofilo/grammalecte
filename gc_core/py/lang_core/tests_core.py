@@ -83,8 +83,6 @@ class TestGrammarChecking (unittest.TestCase):
                     sOption = m.group(1)
                 if "->>" in sLine:
                     sErrorText, sExceptedSuggs = self._splitTestLine(sLine)
-                    if sExceptedSuggs.startswith('"') and sExceptedSuggs.endswith('"'):
-                        sExceptedSuggs = sExceptedSuggs[1:-1]
                 else:
                     sErrorText = sLine.strip()
                     sExceptedSuggs = ""
@@ -123,7 +121,10 @@ class TestGrammarChecking (unittest.TestCase):
 
     def _splitTestLine (self, sLine):
         sText, sSugg = sLine.split("->>")
-        return (sText.strip(), sSugg.strip())
+        sSugg = sSugg.strip()
+        if sSugg.startswith('"') and sSugg.endswith('"'):
+            sSugg = sSugg[1:-1]
+        return (sText.strip(), sSugg)
 
     def _getFoundErrors (self, sLine, sOption):
         if sOption:
@@ -135,7 +136,7 @@ class TestGrammarChecking (unittest.TestCase):
         sRes = " " * len(sLine)
         sListErr = ""
         lAllSugg = []
-        for dErr in aErrs:
+        for dErr in sorted(aErrs, key=lambda d: d["nStart"]):
             sRes = sRes[:dErr["nStart"]] + "~" * (dErr["nEnd"] - dErr["nStart"]) + sRes[dErr["nEnd"]:]
             sListErr += "    * {sLineId} / {sRuleId}  at  {nStart}:{nEnd}\n".format(**dErr)
             lAllSugg.append("|".join(dErr["aSuggestions"]))

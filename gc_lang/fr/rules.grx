@@ -728,15 +728,15 @@ TEST: “Le grand homme.{{"}}                                                 ->
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_doubles_ouvrants)__
-    (?:^|[ –—-])('')(?=\w)  @@*
+    (?:^|[ –—-])(['’]['’])(?=\w)  @@*
         <<- -1>> « |“                                                                               && Guillemets typographiques ouvrants.
 __<s>/typo(typo_guillemets_typographiques_simples_doubles_fermants)__
-    [\w.?!…,]('')(?![\w'’])  @@*
+    [\w.?!…,](['’]['’])(?![\w'’])  @@*
         <<- -1>> " »|”"                                                                             && Guillemets typographiques fermants.
 
 TEST: {{''}}Ça{{”}} recommence.                                                 ->> « |“|||
 TEST: Le {{''}}grand{{”}} homme.                                                ->> « |“|||
-TEST: Le {{“}}grand{{''}} homme.                                                ->> " »|”|||"
+TEST: Le {{“}}grand{{''}} homme.                                                ->> ||| »|”
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
@@ -1325,7 +1325,7 @@ TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
 
 
 __<s>/typo(typo_cohérence_guillemets_doubles_ouvrants)__
-    (“)[^”’“«]+?(’)(?!\w)  @@0,$
+    (“)[^”’“«]+?(’)(?![\w'’])  @@0,$
         <<- not before("\\w$") -1>> "‘"                                                             && Guillemet ouvrant différent du guillemet fermant (’).
         <<- -2>> ”                                                                                  && Guillemet fermant différent du guillemet ouvrant (“).
 __<s>/typo(typo_cohérence_guillemets_doubles_fermants)__
@@ -27098,7 +27098,7 @@ __imp_confusion_2e_pers_pluriel__
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
-TEST: {{donner la}} et oublie-moi.                      ->> là|||donnez-la
+TEST: {{donner la}} et oublie-moi.                      ->> donnez-la|||là
 TEST: {{prenait les}} ou volez-les                      ->> prenez-les
 TEST: je vous en prie, {{prenais moi}} avec vous.       ->> prenez-moi
 TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
