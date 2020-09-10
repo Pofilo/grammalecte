@@ -513,7 +513,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 (res) => { window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000); }
             )
             .catch(
-                (e) => { showError(e); this._sendTextToClipboard(sText); }
+                (e) => { showError(e); this._sendTextToClipboardFallback(sText); }
             );
         } else {
             this._sendTextToClipboardFallback(sText);
