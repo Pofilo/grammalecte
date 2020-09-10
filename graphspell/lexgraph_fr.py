@@ -10,6 +10,7 @@ Lexicographer for the French language
 #           split(sWord) -> returns a list of string (that will be analyzed)
 #           analyze(sWord) -> returns a string with the meaning of word
 #           readableMorph(sMorph) -> returns a string with the meaning of tags
+#           setLabelsOnToken(dToken) -> adds readable information on token
 #           filterSugg(aWord) -> returns a filtered list of suggestions
 
 
@@ -419,7 +420,7 @@ def readableMorph (sMorph):
 
 _zPartDemForm = re.compile("([\\w]+)-(là|ci)$")
 _zInterroVerb = re.compile("([\\w]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$")
-_zImperatifVerb = re.compile("([\\w]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui))$")
+_zImperatifVerb = re.compile("([\\w]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$")
 
 def setLabelsOnToken (dToken):
     # Token: .sType, .sValue, .nStart, .nEnd, .lMorph
@@ -441,7 +442,7 @@ def setLabelsOnToken (dToken):
         elif dToken["sType"] == 'HOUR':
             dToken["aLabels"] = ["heure"]
         elif dToken["sType"] == 'WORD_ELIDED':
-            dToken["aLabels"] = [_dValues.get(dToken["sValue"], "préfixe élidé inconnu")]
+            dToken["aLabels"] = [_dValues.get(dToken["sValue"].lower(), "préfixe élidé inconnu")]
         elif dToken["sType"] == 'WORD_ORDINAL':
             dToken["aLabels"] = ["nombre ordinal"]
         elif dToken["sType"] == 'FOLDERUNIX':

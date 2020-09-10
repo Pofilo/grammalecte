@@ -395,29 +395,18 @@ var lexgraph_fr = {
             ['‰', "signe pour mille"],
         ]),
 
-    oSpellChecker: null,
-    oTokenizer: null,
-    oLocGraph: null,
-
     _zPartDemForm: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-(là|ci)$", "i"),
     _aPartDemExceptList: new Set(["celui", "celle", "ceux", "celles", "de", "jusque", "par", "marie-couche-toi"]),
     _zInterroVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$", "i"),
-    _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui))$", "i"),
+    _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$", "i"),
     _zTag: new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g"),
-
-
-    load: function (oSpellChecker, oTokenizer, oLocGraph) {
-        this.oSpellChecker = oSpellChecker;
-        this.oTokenizer = oTokenizer;
-        this.oLocGraph = JSON.parse(oLocGraph);
-    },
 
     split: function (sWord) {
         // returns an arry of strings (prefix, trimed_word, suffix)
         let sPrefix = "";
         let sSuffix = "";
         // préfixe élidé
-        let m = /^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)/i.exec(sWord);
+        let m = /^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)['’ʼ‘‛´`′‵՚ꞌꞋ]([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)/i.exec(sWord);
         if (m) {
             sPrefix = m[1] + "’";
             sWord = m[2];
@@ -557,214 +546,6 @@ var lexgraph_fr = {
         } catch (e) {
             console.error(e);
         }
-    },
-
-    getInfoForToken: function (oToken) {
-        // Token: .sType, .sValue, .nStart, .nEnd
-        // return a object {sType, sValue, aLabels}
-        let m = null;
-        try {
-            switch (oToken.sType) {
-                case 'PUNC':
-                case 'SIGN':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: [this.dValues.gl_get(oToken.sValue, "caractère indéterminé")]
-                    };
-                    break;
-                case 'NUM':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["nombre"]
-                    };
-                    break;
-                case 'LINK':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabels: ["hyperlien"]
-                    };
-                    break;
-                case 'TAG':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["étiquette (hashtag)"]
-                    };
-                    break;
-                case 'HTML':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabels: ["balise HTML"]
-                    };
-                    break;
-                case 'PSEUDOHTML':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["balise pseudo-HTML"]
-                    };
-                    break;
-                case 'HTMLENTITY':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["entité caractère XML/HTML"]
-                    };
-                    break;
-                case 'HOUR':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["heure"]
-                    };
-                    break;
-                case 'WORD_ELIDED':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: [this.dValues.gl_get(oToken.sValue.toLowerCase(), "préfixe élidé inconnu")]
-                    };
-                    break;
-                case 'WORD_ORDINAL':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["nombre ordinal"]
-                    };
-                    break;
-                case 'FOLDERUNIX':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabels: ["dossier UNIX (et dérivés)"]
-                    };
-                    break;
-                case 'FOLDERWIN':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabels: ["dossier Windows"]
-                    };
-                    break;
-                case 'WORD_ACRONYM':
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["Sigle ou acronyme"]
-                    };
-                    break;
-                case 'WORD':
-                    if (oToken.sValue.gl_count("-") > 4) {
-                        return {
-                            sType: "COMPLEX",
-                            sValue: oToken.sValue,
-                            aLabels: ["élément complexe indéterminé"]
-                        };
-                    } else if (m = this._zPartDemForm.exec(oToken.sValue)) {
-                        // mots avec particules démonstratives
-                        if (this._aPartDemExceptList.has(m[1].toLowerCase())) {
-                            return {
-                                sType: "WORD",
-                                sValue: oToken.sValue,
-                                aLabels: this._getMorph(oToken.sValue)
-                            };
-                        }
-                        return {
-                            sType: oToken.sType,
-                            sValue: oToken.sValue,
-                            aLabels: ["mot avec particule démonstrative"],
-                            lSubTokens: [
-                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
-                            ]
-                        };
-                    } else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
-                        // formes interrogatives
-                        return {
-                            sType: oToken.sType,
-                            sValue: oToken.sValue,
-                            aLabels: ["forme verbale impérative"],
-                            lSubTokens: [
-                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
-                            ]
-                        };
-                    } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
-                        // formes interrogatives
-                        return {
-                            sType: oToken.sType,
-                            sValue: oToken.sValue,
-                            aLabels: ["forme verbale interrogative"],
-                            lSubTokens: [
-                                { sType: oToken.sType, sValue: m[1], aLabels: this._getMorph(m[1]) },
-                                { sType: oToken.sType, sValue: m[2], aLabels: [ this._formatSuffix(m[2]) ] }
-                            ]
-                        };
-                    } else if (this.oSpellChecker.isValidToken(oToken.sValue)) {
-                        return {
-                            sType: oToken.sType,
-                            sValue: oToken.sValue,
-                            aLabels: this._getMorph(oToken.sValue)
-                        };
-                    } else {
-                        return {
-                            sType: "UNKNOWN_WORD",
-                            sValue: oToken.sValue,
-                            aLabels: ["mot inconnu du dictionnaire"]
-                        };
-                    }
-                    break;
-                default:
-                    return {
-                        sType: oToken.sType,
-                        sValue: oToken.sValue,
-                        aLabels: ["token inconnu"]
-                    }
-            }
-        } catch (e) {
-            console.error(e);
-        }
-        return null;
-    },
-
-    _getMorph (sWord) {
-        let aElem = [];
-        for (let s of this.oSpellChecker.getMorph(sWord)) {
-            if (s.includes(":")) aElem.push(this.readableMorph(s));
-        }
-        if (aElem.length == 0) {
-            aElem.push("mot inconnu du dictionnaire");
-        }
-        return aElem;
-    },
-
-    _formatSuffix (sSuffix) {
-        sSuffix = sSuffix.replace(/['’ʼ‘‛´`′‵՚ꞌꞋ]/g, "’").toLowerCase();
-        if (this.dValues.has(sSuffix)) {
-            return this.dValues.get(sSuffix);
-        }
-        return " suffixe inconnu";
-    },
-
-    getListOfTokens (sText, bInfo=true) {
-        let aElem = [];
-        if (sText !== "") {
-            for (let oToken of this.oTokenizer.genTokens(sText)) {
-                if (bInfo) {
-                    let aRes = this.getInfoForToken(oToken);
-                    if (aRes) {
-                        aElem.push(aRes);
-                    }
-                } else if (oToken.sType !== "SPACE") {
-                    aElem.push(oToken);
-                }
-            }
-        }
-        return aElem;
     },
 
 

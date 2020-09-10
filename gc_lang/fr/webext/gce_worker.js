@@ -244,7 +244,11 @@ function getListOfTokens (sText, oInfo={}) {
         sText = sText.replace(/­/g, "").normalize("NFC");
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                postMessage(createResponse("getListOfTokens", { sParagraph: sParagraph, lTokens: lexgraph_fr.getListOfTokens(sParagraph, true) }, oInfo, false));
+                let lTokens = [ ...oTokenizer.genTokens(sParagraph) ];
+                for (let oToken of lTokens) {
+                    oSpellChecker.setLabelsOnToken(oToken);
+                }
+                postMessage(createResponse("getListOfTokens", { sParagraph: sParagraph, lTokens: lTokens }, oInfo, false));
             }
         }
         postMessage(createResponse("getListOfTokens", null, oInfo, true));
