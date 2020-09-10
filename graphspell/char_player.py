@@ -3,8 +3,6 @@ List of similar chars
 useful for suggestion mechanism
 """
 
-import re
-
 
 dDistanceBetweenChars = {
     "a": {},
@@ -38,6 +36,7 @@ dDistanceBetweenChars = {
 
 
 def distanceBetweenChars (c1, c2):
+    "returns a float between 0 and 1"
     if c1 == c2:
         return 0
     if c1 not in dDistanceBetweenChars:
