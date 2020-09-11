@@ -57,7 +57,7 @@ class SuggResult:
         self.aAllSugg.add(sSugg)
         if sSugg not in self.aSugg:
             #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
-            nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg))
+            nDist = int(st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
             #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ st.simplifyWord(sSugg) +" -> "+ str(nDist))
             if nDist <= self.nDistLimit:
                 if " " in sSugg:
@@ -81,6 +81,9 @@ class SuggResult:
             if not bFirstListSorted and len(lSugg) > 1:
                 lSugg.sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
                 bFirstListSorted = True
+            #print(nDist, "|".join(lSugg))
+            #for sSugg in lSugg:
+            #    print(sSugg, st.distanceDamerauLevenshtein(self.sWord, sSugg))
             lRes.extend(lSugg)
             if len(lRes) > nSuggLimit:
                 break

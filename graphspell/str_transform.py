@@ -102,7 +102,7 @@ def distanceDamerauLevenshtein (s1, s2):
             )
             if i and j and s1[i] == s2[j-1] and s1[i-1] == s2[j]:
                 d[i, j] = min(d[i, j], d[i-2, j-2] + nCost)     # Transposition
-    return int(d[nLen1-1, nLen2-1])
+    return d[nLen1-1, nLen2-1]
 
 
 def distanceSift4 (s1, s2, nMaxOffset=5):

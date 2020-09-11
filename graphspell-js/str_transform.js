@@ -144,7 +144,7 @@ var str_transform = {
                     }
                 }
             }
-            return Math.floor(matrix[nLen1][nLen2]);
+            return matrix[nLen1][nLen2];
         }
         catch (e) {
             console.error(e);
