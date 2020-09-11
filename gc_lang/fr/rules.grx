@@ -748,7 +748,8 @@ __<i>/html(p_html_gt)__                 &gt; <<- ~>> >
 __<i>/html(p_html_amp)__                &amp; <<- ~>> &
 __<i>/html(p_html_nbsp)__               &nbsp; <<- ~>> @
 __<i>/html(p_html_nbsp2)__              &#(?:160|8239); <<- ~>> @
-__<i>/html(p_html_pseudo_balise)__      \[/?\w+\] <<- ~>> *
+__<i>/html(p_html_pseudo_balise1)__     \[(?:[buiqa]|blockquote|quote)\] <<- ~>> *
+__<i>/html(p_html_pseudo_balise2)__     \[/\w+\] <<- ~>> *
 
 # LaTeX
 __<i]/latex(p_latex1)__     \\[a-z]+ <<- ~>> *
@@ -950,64 +951,6 @@ TEST: OMC-FMI : Les nouveaux maîtres du monde
 
 !!
 !!
-!!!! Virgules                                                                                     !!
-!!
-!!
-
-# virgules manquantes
-__[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     && Avant « etc. », il faut mettre une virgule.
-__[i>/virg(virgule_manquante_avant_car)__
-    ({w_1})( car)(?= (?:j[e’]|tu|ie?ls?|nous|vous|elles?|on|les?|l[a’]|ces?|des?|cette|[mts](?:on|a|es))\b)  @@0,$
-        <<- not morph(\1, ":[DR]") -2>> , car
-        && Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
-__[i>/virg(virgule_manquante_avant_mais)__
-    ({w_1})( mais)(?= (?:j[e’]|tu|ie?ls?|nous|vous|elles?|on)\b)  @@0,$
-        <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels)/") -2>> , mais
-        && Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
-__[i>/virg(virgule_manquante_avant_donc)__
-    ({w_1})( donc)(?= (?:j[e’]|tu|ie?ls?|elles?|on)\b)  @@0,$
-        <<- not morph(\1, ":[VG]") -2>> , donc
-        && Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
-
-TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
-TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                   ->> , car
-TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                     ->> , mais
-TEST: il l’a vu de ses propres yeux{{ donc}} il faut y croire.              ->> , donc
-TEST: il s’est donc tu
-TEST: Chacun peut l’entendre d’une manière différente et donc on se demande bien ce qui est mesuré dans les réponses.
-
-
-__<s>/virg(virgule_point_fin_dialogue)__
-    ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "                                && Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
-__<s>/virg(virgule_fin_dialogue)__
-    (, »,? )[a-zéà]  @@0 <<- -1>> " », | » "                                && Virgule mal placée ou superflue.
-
-TEST: « Ça suffit{{. » }}dit-elle.
-TEST: « J’en ai plus qu’assez{{, » }}dis-je.
-TEST: {{Julien}} donne-moi le sel.
-TEST: dès son premier rendez-vous au centre
-TEST: Depuis combien de temps fumez-vous ?
-
-
-__<s>/virg(virg_virgule_avant_points_suspension)__
-    , *… <<- ->> …                                                          && Typographie : pas de virgule avant les points de suspension.
-
-__<s>/virg(virg_virgule_après_point)__
-    ({w1})([.],)  @@0,$
-        <<- not re.search("^(?:etc|[A-Z]|fig|hab|litt|circ|coll|ref|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp?)$", \1)
-        -2>> ,|.                                                            && Pas de virgule après un point (sauf éventuellement après une abréviation).
-
-TEST: ceci, cela{{, …}}                                                   ->> …
-TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|.
-
-# Fin de paragraphe
-#__<i>/typo__  ({w_2}) *$   @@0
-#    <<- before("[a-zéàùèê][.] ") and not before("^(?:\\d|\w[.])")
-#    -1>> \1.|\1…|\1 !|\1 ?|\1 :|\1 ;|\1,                                               && Il manque une ponctuation finale.
-
-
-!!
-!!
 !!!! Espaces manquants                                                                            !!
 !!
 !!
@@ -1192,14 +1135,6 @@ __[s]/typo(typo_math)__
 TEST: {{cos ω}}                                         ->> cos(ω)|cos ω
 TEST: {{sin γ}}                                         ->> sin(γ)|sin γ
 
-
-#__[s]/virg(virg_nombre)__
-#    [0-9]+[.]([0-9]+)(?![,.])
-#        <<-  ->> =\0.replace(".", ",")                     && En français, le séparateur décimal est la virgule, non le point.
-#
-#TEST: +{{1.5}} dioptrie
-#TEST: j’en veux 2.000
-#TEST: et moi 3.000.000 de dollars
 
 
 !!
@@ -1815,7 +1750,7 @@ __purge_mot_nombre_parenthèses_crochets_accolades__
     [  …  ]
         <<- ~>> *
 
-    [ *WORD ]
+    [  *WORD  ]
         <<- morph(\2, ":G") ~>> |\2|
         <<- __else__ ~>> *
 
@@ -2733,6 +2668,108 @@ TEST: dépenses-en encore
 TEST: prenez-en
 TEST: prends-en
 TEST: allez-y
+
+
+!!
+!!
+!!!! Virgules                                                                                     !!
+!!
+!!
+
+__virg_virgules_manquantes__
+    *WORD  etc  .
+        <<- /virg/ -1.:0>> , etc.                                                                   && Avant « etc. », il faut mettre une virgule.|https://fr.wiktionary.org/wiki/etc.
+
+    *WORD  car  @:(?:Os|D)
+        <<- /virg/ not morph(\1, ":[DR]") -1.:2>> , car
+        && Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
+
+    *WORD  mais  $:Os
+        <<- /virg/ not morph(\1, ":D.*:[me]:[si]") -1.:2>> , mais
+        && Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
+
+    *WORD  donc  [je|j’|il|on]
+        <<- /virg/ not morph(\1, ":[VG]") -1.:2>> , donc
+        && Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
+
+TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
+TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                   ->> , car
+TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                     ->> , mais
+TEST: il l’a vu de ses propres yeux{{ donc}} il faut y croire.              ->> , donc
+TEST: il s’est donc tu
+TEST: c’était donc elles les meilleures
+TEST: c’était eux qui prenaient tous les risques
+TEST: il avançait donc le moyen d’y parvenir
+TEST: Chacun peut l’entendre d’une manière différente et donc on se demande bien ce qui est mesuré dans les réponses.
+
+
+__virg_fin_dialogue__
+    .  »  ~^[a-zéà]
+        <<- /virg/ -1:2>> " »,| »"          && Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
+
+    ,  »  ?,¿  ~^[a-zéà]
+        <<- /virg/ -1:-2>> " »,| »"         && Virgule mal placée ou superflue.
+
+TEST: « Ça suffit{{. »}} dit-elle.                                          ->> " »,| »"
+TEST: « J’en ai plus qu’assez{{, »}} dis-je.                                ->> " »,| »"
+TEST: « C’est ainsi{{, »,}} dis-je.                                         ->> " »,| »"
+TEST: dès son premier rendez-vous au centre
+TEST: Depuis combien de temps fumez-vous ?
+
+
+__virg_virgule_avant_points_suspension__
+    ,  …
+        <<- /virg/ ->> …                    && Typographie : pas de virgule avant les points de suspension.
+
+TEST: ceci, cela{{, …}}                                                     ->> …
+
+
+__virg_virgule_après_point__
+    *WORD  .  ,
+        <<- /virg/ space_after(\1, 0, 0) and space_after(\2, 0, 0)
+            and not value(\1, "|etc|fig|hab|litt|fig|hab|litt|circ|coll|ref|réf|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp|")
+            and \1.__len__() > 1
+        -2:3>> ,|.                                                          && Pas de virgule après un point (sauf éventuellement après une abréviation).
+
+TEST: Les chiens, les chats{{.,}} les poules.                               ->> ,|.
+TEST: A., dans le meilleur des cas, s’abstenait de tout commentaire
+
+
+# Fin de paragraphe
+#__<i>/typo__  ({w_2}) *$   @@0
+#    <<- before("[a-zéàùèê][.] ") and not before("^(?:\\d|\w[.])")
+#    -1>> \1.|\1…|\1 !|\1 ?|\1 :|\1 ;|\1,                                               && Il manque une ponctuation finale.
+
+#__[s]/virg(virg_nombre)__
+#    [0-9]+[.]([0-9]+)(?![,.])
+#        <<-  ->> =\0.replace(".", ",")                     && En français, le séparateur décimal est la virgule, non le point.
+#
+#TEST: +{{1.5}} dioptrie
+#TEST: j’en veux 2.000
+#TEST: et moi 3.000.000 de dollars
+
+
+__virg_après_verbe_COD__
+    [le|la|l’|les]  $:Y¬:N  $:M
+        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
+        -2>> \2,                                                && Si “\-1” marque le début d’une proposition, une virgule est probablement souhaitable.
+
+    [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
+        <<- /virg/ morph(\2, ":[123][sp]", ">appeler/|:[NA]") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
+        -2>> \2,                                                && Si “\-2” est une personne apostrophée, alors il faut mettre le nom en incise.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?Th=2&t1=&id=3412
+
+TEST: Tu vas les {{donner}} Rachel.
+TEST: Il va la {{tuer}} Paul.
+TEST: je le {{sais}} chère Paula
+TEST: Ma fille, je vais l’appeler Deirdre.
+TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
+TEST: Cependant les promesses n’engagent que ceux qui les croient, comme s’évertuait à le dire Jacques Chirac.
+TEST: Avancez comme sait le faire Patrick.
+TEST: plus délirant encore que ne l’imaginait Marie.
+TEST: moins corrompu que ne pouvait le croire Marie.
+TEST: comme vient de le dire Ruth
+TEST: L’antimoine des sages, matière première extraite directement de la mine, « n’est pas proprement minéral et moins encore métallique », ainsi que nous l’enseigne Philalèthe.
+TEST: L’officier Patrick Martel aurait dégaîné son arme
 
 
 
@@ -5233,15 +5270,15 @@ TEST: n’en {{voulez vous}} jamais à ces gens ?
 TEST: je suis, {{penserez vous}}, un imbécile.
 TEST: {{pouvez vous}} réussir ?
 TEST: comment {{pensez vous}} y parvenir
+TEST: {{Osez vous}} remettre en question notre autorité.
+#TEST: Osez vous remettre en question.
 TEST: veuillez vous adresser à notre secretaire pour prendre rendez-vous.
 TEST: Allez vous faire foutre.
 TEST: Venez vous défouler sur ces connards.
 TEST: Vous ne pouvez vous satisfaire de si peu.
-#TEST: Osez vous remettre en question.
 
 
-
-!!!! Virgules                                                                                     !!
+!!!! Virgules (2)                                                                                 !!
 
 __virg_dialogue_après_nom_propre__
     [<start>|,|(]  $:M¬:G  [/-je|/-tu|/-on|/-nous|/-vous|/-ils|/-elles|/-iels|/_VCimp_]
@@ -5250,6 +5287,7 @@ __virg_dialogue_après_nom_propre__
 TEST: {{Maria}} donnez-vous du temps ?
 TEST: {{Marion}} passe-moi le sel.
 TEST: {{Paul}} prends-lui la main.
+TEST: {{Julien}} donne-moi le sel.
 TEST: Alexandre tient-il ses généraux ?
 TEST: Alexandra vient-elle ?
 
@@ -5270,30 +5308,6 @@ TEST: {{donne-le-moi}} Camille.
 TEST: {{écoute-la}} Élodie
 TEST: donne-moi Alice.
 TEST: Tape-toi Patrick.
-
-
-__virg_après_verbe_COD__
-    [le|la|l’|les]  $:Y¬:N  $:M
-        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
-        -2>> \2,                                                && Si “\-1” marque le début d’une proposition, une virgule est probablement souhaitable.
-
-    [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
-        <<- /virg/ morph(\2, ":[123][sp]", ">appeler/|:[NA]") and not tag_before(\1, "_que_") and not tag_before(\1, "_comme_")
-        -2>> \2,                                                && Si “\-2” est une personne apostrophée, alors il faut mettre le nom en incise.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?Th=2&t1=&id=3412
-
-TEST: Tu vas les {{donner}} Rachel.
-TEST: Il va la {{tuer}} Paul.
-TEST: je le {{sais}} chère Paula
-TEST: Ma fille, je vais l’appeler Deirdre.
-TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
-TEST: Cependant les promesses n’engagent que ceux qui les croient, comme s’évertuait à le dire Jacques Chirac.
-TEST: Avancez comme sait le faire Patrick.
-TEST: plus délirant encore que ne l’imaginait Marie.
-TEST: moins corrompu que ne pouvait le croire Marie.
-TEST: comme vient de le dire Ruth
-TEST: L’antimoine des sages, matière première extraite directement de la mine, « n’est pas proprement minéral et moins encore métallique », ainsi que nous l’enseigne Philalèthe.
-TEST: L’officier Patrick Martel aurait dégaîné son arme
-
 
 
 !!!! Apostrophe manquante (2)                                                                     !!
