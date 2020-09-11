@@ -603,28 +603,8 @@ __[i>(p_arborescence_Windows)__
 __[s>(p_chiffres_m)__
     "\d+ (m) "  @@w <<- ~1>> _
 
-# crochets
-__[s](p_points_suspension_entre_crochets)__
-    \[…\] <<- ~>> *
-__[s](p_mot_entre_crochets)__
-    \[({w_1})\] @@1
-        <<- \1.isdigit() ~>> *
-        <<- __else__ and morph(\1, ":G") ~>> =" " + \1 + " "
-        <<- __else__ and \1.isalpha() ~>> " _"
-
-# parenthèses
-__[s](points_suspension_entre_parenthèses)__
-    \(…\)
-        <<- ->> […]                 && Pour indiquer une troncature de texte, on utilise usuellement des crochets.
-        <<- ~>> *
-__<i>(p_préfixes_entre_parenthèses)__
-    " (\(r[eé]\))\w+"  @@1
-        <<- ~1>> *
-
 TEST: par {{O.R.}}                                          ->> OR|O. R.
 TEST: l’{{A.N.P.E.}} n’existe plus
-TEST: ce chien […] ne {{semblez}} pas en forme.
-TEST: ce chat {{(…)}} ne {{ressemblez}} pas aux autres.
 TEST: les tests de la version 3.17.8 {{commence}} demain.
 TEST: ce nouveau moteur de recherche (http://www.cherche-moi-ça.fr/home.php&lang=fr) fonctionne pas mal.
 TEST: La mise à jour 3.3.5 publiée en novembre 2018 marque l’arrivée de la première vraie planète
@@ -647,7 +627,6 @@ TEST: C’est dans le dossier D:\Data
 TEST: Dossier C:\Program Files (x86)\LibreOffice
 TEST: [1] Dossier à revoir.
 TEST: jusqu’à 12h47
-TEST: Allons (re)voir ce film
 TEST: La figure 110 représente…
 
 
@@ -1822,15 +1801,33 @@ __purge_fin_phrase__
 
 __purge_mot_nombre_parenthèses_crochets_accolades__
     (  [*WORD|*NUM]  )
-    [  [*WORD|*NUM]  ]
     {  [*WORD|*NUM]  }
         <<- ~>> *
 
-__purge_chapitres_références__
+    ( … )
+        <<- ->> […]                 && Pour indiquer une troncature de texte, on utilise usuellement des crochets.
+        <<- ~>> *
+
+    (  [re|ré]  )  *WORD
+        <<- space_after(\3, 0, 0) ~1:3>>  *
+
+    [  *NUM  ]
+    [  …  ]
+        <<- ~>> *
+
+    [ *WORD ]
+        <<- morph(\2, ":G") ~>> |\2|
+        <<- __else__ ~>> *
+
+    ## chapitres, références
     (  [*WORD|*NUM]  ,  *NUM  )
     [  [*WORD|*NUM]  ,  *NUM  ]
     {  [*WORD|*NUM]  ,  *NUM  }
         <<- ~>> *
+
+TEST: ce chien […] ne {{semblez}} pas en forme.
+TEST: ce chat {{(…)}} ne {{ressemblez}} pas aux autres.
+TEST: Allons (re)voir ce film
 
 
 !!!
