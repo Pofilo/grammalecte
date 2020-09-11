@@ -3723,7 +3723,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 # élisions
 __eleu_élisions_manquantes__
     [le|la|de]  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|yacht|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
@@ -3745,15 +3745,17 @@ TEST: {{Que }}ils soient heureux
 TEST: Il {{se }}avançait parmi eux.
 TEST: il {{me }}oublie souvent
 TEST: J’ai passé une journée de ouf.
+TEST: le yacht
 
 
 # ce -> cet
 __eleu_euphonie_cet__
     ce  ~^[aâeéèêiîoôuûyœæ]
-        <<- /eleu/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
+        <<- /eleu/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|yacht|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
         -1>> cet                                                                && Euphonie : “ce” devient “cet” devant un mot commençant par une voyelle.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: {{ce}} animal est dangereux
+TEST: ce yacht
 
 
 # Verbe 1ʳᵉ personne du singulier, interrogatif… xxxé-je
