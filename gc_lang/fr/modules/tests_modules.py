@@ -5,11 +5,26 @@ Grammar checker tests for French language
 """
 
 import unittest
+import time
+from contextlib import contextmanager
 
 from ..graphspell.ibdawg import IBDAWG
 from . import conj
 from . import phonet
 from . import mfsp
+
+
+@contextmanager
+def timeblock (label, hDst=None):
+    "performance counter (contextmanager)"
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        end = time.perf_counter()
+        print('{} : {}'.format(label, end - start))
+        if hDst:
+            hDst.write("{:<12.6}".format(end-start))
 
 
 class TestDictionary (unittest.TestCase):
@@ -34,6 +49,11 @@ class TestDictionary (unittest.TestCase):
     def test_isvalid_failed (self):
         for sWord in ["BranchE", "BRanche", "BRAnCHE", "émilie", "éMILIE", "émiLie"]:
             self.assertFalse(self.oDic.isValid(sWord), sWord)
+
+    def test_suggest (self):
+        for sWord in ["déelirranttesss", "vallidasion", "Emilie", "exibission"]:
+            with timeblock(sWord):
+                self.assertNotEqual(0, self.oDic.suggest(sWord))
 
 
 class TestConjugation (unittest.TestCase):
