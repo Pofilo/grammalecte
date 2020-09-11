@@ -179,8 +179,6 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", oInfo={}) {
             oSpellChecker = gc_engine.getSpellChecker();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oTokenizer = new Tokenizer("fr");
-            oLocution =  helpers.loadFile(sExtensionPath + "/grammalecte/fr/locutions_data.json");
-            lexgraph_fr.load(oSpellChecker, oTokenizer, oLocution);
             if (dOptions !== null) {
                 if (!(dOptions instanceof Map)) {
                     dOptions = helpers.objectToMap(dOptions);
