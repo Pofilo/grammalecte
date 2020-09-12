@@ -490,10 +490,6 @@ class IBDAWG {
         return aTails;
     }
 
-    // morph (sWord) {
-    //     is defined in constructor
-    // }
-
     getSimilarEntries (sWord, nSuggLimit=10) {
         // return a list of tuples (similar word, stem, morphology)
         if (sWord == "") {

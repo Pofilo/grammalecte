@@ -143,7 +143,6 @@ class IBDAWG:
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
         self._lastArcMask = 1 << ((self.nBytesArc * 8) - 2)
-        self._addrBitMask = 1 << ((self.nBytesArc * 8) - 3)  # version 2
 
         # function to decode the affix/suffix code
         if self.cStemming == "S":
@@ -202,7 +201,6 @@ class IBDAWG:
         for i in range(1, self.nChar+1):
             self.dChar[self.lArcVal[i]] = i
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.nBytesOffset = 1 # version 3
 
     def _initJSON (self, oJSON):
         "initialize with a JSON text file"
@@ -246,7 +244,6 @@ class IBDAWG:
                 "nCompressionMethod": self.nCompressionMethod,
                 "nBytesArc": self.nBytesArc,
                 "nBytesNodeAddress": self.nBytesNodeAddress,
-                "nBytesOffset": self.nBytesOffset,
                 # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                 # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                 # https://github.com/mozilla/addons-linter/issues/1361
