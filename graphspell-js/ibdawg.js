@@ -124,6 +124,25 @@ class IBDAWG {
             nEntry, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
+        if (!(this.sHeader.startsWith("/grammalecte-fsa/") || this.sHeader.startsWith("/pyfsa/"))) {
+            throw TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: " + this.sHeader);
+        }
+        if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
+            throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
+        }
+        // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
+        this.dChar = helpers.objectToMap(this.dChar);
+        this.dCharVal = this.dChar.gl_reverse();
+        this.a2grams = (this.l2grams) ? new Set(this.l2grams) : null;
+
+        if (this.cStemming == "S") {
+            this.funcStemming = str_transform.changeWordWithSuffixCode;
+        } else if (this.cStemming == "A") {
+            this.funcStemming = str_transform.changeWordWithAffixCode;
+        } else {
+            this.funcStemming = str_transform.noStemming;
+        }
+
         /*
             Bug workaround.
             Mozilla’s JS parser sucks. Can’t read file bigger than 4 Mb!
@@ -155,56 +174,10 @@ class IBDAWG {
         this.byDic = lTemp;
         /* end of bug workaround */
 
-        if (!(this.sHeader.startsWith("/grammalecte-fsa/") || this.sHeader.startsWith("/pyfsa/"))) {
-            throw TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: " + this.sHeader);
-        }
-        if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
-            throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
-        }
-        // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
-        this.dChar = helpers.objectToMap(this.dChar);
-        this.dCharVal = this.dChar.gl_reverse();
-        this.a2grams = (this.l2grams) ? new Set(this.l2grams) : null;
-
-        if (this.cStemming == "S") {
-            this.funcStemming = str_transform.changeWordWithSuffixCode;
-        } else if (this.cStemming == "A") {
-            this.funcStemming = str_transform.changeWordWithAffixCode;
-        } else {
-            this.funcStemming = str_transform.noStemming;
-        }
-
         this._arcMask = (2 ** ((this.nBytesArc * 8) - 3)) - 1;
         this._finalNodeMask = 1 << ((this.nBytesArc * 8) - 1);
         this._lastArcMask = 1 << ((this.nBytesArc * 8) - 2);
 
-
-        // Configuring DAWG functions according to nCompressionMethod
-        switch (this.nCompressionMethod) {
-            case 1:
-                this.morph = this._morph1;
-                this.stem = this._stem1;
-                this._lookupArcNode = this._lookupArcNode1;
-                this._getArcs = this._getArcs1;
-                this._writeNodes = this._writeNodes1;
-                break;
-            case 2:
-                this.morph = this._morph2;
-                this.stem = this._stem2;
-                this._lookupArcNode = this._lookupArcNode2;
-                this._getArcs = this._getArcs2;
-                this._writeNodes = this._writeNodes2;
-                break;
-            case 3:
-                this.morph = this._morph3;
-                this.stem = this._stem3;
-                this._lookupArcNode = this._lookupArcNode3;
-                this._getArcs = this._getArcs3;
-                this._writeNodes = this._writeNodes3;
-                break;
-            default:
-                throw ValueError("# Error: unknown code: " + this.nCompressionMethod);
-        }
         //console.log(this.getInfo());
         this.bAcronymValid = true;
         this.bNumAtLastValid = false;
@@ -333,11 +306,11 @@ class IBDAWG {
             return [];
         }
         sWord = str_transform.spellingNormalization(sWord);
-        let l = this.morph(sWord);
+        let l = this._morph(sWord);
         if (sWord[0].gl_isUpperCase()) {
-            l.push(...this.morph(sWord.toLowerCase()));
+            l.push(...this._morph(sWord.toLowerCase()));
             if (sWord.gl_isUpperCase() && sWord.length > 1) {
-                l.push(...this.morph(sWord.gl_toCapitalize()));
+                l.push(...this._morph(sWord.gl_toCapitalize()));
             }
         }
         return l;
@@ -548,21 +521,19 @@ class IBDAWG {
             console.log("Error in regex pattern");
             console.log(e.message);
         }
-        yield* this._select1(zFlexPattern, zTagsPattern, 0, "");
+        yield* this._select(zFlexPattern, zTagsPattern, 0, "");
     }
 
-    // VERSION 1
-
-    * _select1 (zFlexPattern, zTagsPattern, iAddr, sWord) {
+    * _select (zFlexPattern, zTagsPattern, iAddr, sWord) {
         // recursive generator
-        for (let [nVal, jAddr] of this._getArcs1(iAddr)) {
+        for (let [nVal, jAddr] of this._getArcs(iAddr)) {
             if (nVal <= this.nChar) {
                 // simple character
-                yield* this._select1(zFlexPattern, zTagsPattern, jAddr, sWord + this.lArcVal[nVal]);
+                yield* this._select(zFlexPattern, zTagsPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
                 if (!zFlexPattern || zFlexPattern.test(sWord)) {
                     let sStem = this.funcStemming(sWord, this.lArcVal[nVal]);
-                    for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
+                    for (let [nMorphVal, _] of this._getArcs(jAddr)) {
                         if (!zTagsPattern || zTagsPattern.test(this.lArcVal[nMorphVal])) {
                             yield [sWord, sStem, this.lArcVal[nMorphVal]];
                         }
@@ -572,7 +543,7 @@ class IBDAWG {
         }
     }
 
-    _morph1 (sWord) {
+    _morph (sWord) {
         // returns morphologies of sWord
         let iAddr = 0;
         for (let c of sWord) {
@@ -611,7 +582,7 @@ class IBDAWG {
         return [];
     }
 
-    _stem1 (sWord) {
+    _stem (sWord) {
         // returns stems list of sWord
         let iAddr = 0;
         for (let c of sWord) {
@@ -641,7 +612,7 @@ class IBDAWG {
         return [];
     }
 
-    _lookupArcNode1 (nVal, iAddr) {
+    _lookupArcNode (nVal, iAddr) {
         // looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None
         while (true) {
             let iEndArcAddr = iAddr+1;
@@ -661,7 +632,7 @@ class IBDAWG {
         }
     }
 
-    * _getArcs1 (iAddr) {
+    * _getArcs (iAddr) {
         // generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)
         while (true) {
             let iEndArcAddr = iAddr+1;
@@ -672,33 +643,6 @@ class IBDAWG {
             }
             iAddr = iEndArcAddr+1;
         }
-    }
-
-    // VERSION 2
-    _morph2 (sWord) {
-        // to do
-    }
-
-    _stem2 (sWord) {
-        // to do
-    }
-
-    _lookupArcNode2 (nVal, iAddr) {
-        // to do
-    }
-
-
-    // VERSION 3
-    _morph3 (sWord) {
-        // to do
-    }
-
-    _stem3 (sWord) {
-        // to do
-    }
-
-    _lookupArcNode3 (nVal, iAddr) {
-        // to do
     }
 }
 
