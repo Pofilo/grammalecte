@@ -22,7 +22,7 @@ def timeblock (label, hDst=None):
         yield
     finally:
         end = time.perf_counter()
-        print('{} : {}'.format(label, end - start))
+        print('{:<20} : {}'.format(label, end - start))
         if hDst:
             hDst.write("{:<12.6}".format(end-start))
 
@@ -51,7 +51,7 @@ class TestDictionary (unittest.TestCase):
             self.assertFalse(self.oDic.isValid(sWord), sWord)
 
     def test_suggest (self):
-        for sWord in ["déelirranttesss", "vallidasion", "Emilie", "exibission"]:
+        for sWord in ["déelirranttesss", "vallidasion", "Emilie", "exibission", "ditirembique", "jai", "email"]:
             with timeblock(sWord):
                 self.assertNotEqual(0, self.oDic.suggest(sWord))
 
