@@ -39,7 +39,8 @@ class SuggResult {
         }
         this.aAllSugg.add(sSugg);
         if (!this.aSugg.has(sSugg)) {
-            let nDist = Math.floor(str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, str_transform.simplifyWord(sSugg)));
+            //let nDist = Math.floor(str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, str_transform.simplifyWord(sSugg)));
+            let nDist = Math.floor((1 - str_transform.distanceJaroWinkler(this.sSimplifiedWord, str_transform.simplifyWord(sSugg)))*10);
             if (nDist <= this.nDistLimit) {
                 if (sSugg.includes(" ")) { // add 1 to distance for split suggestions
                     nDist += 1;
@@ -66,7 +67,8 @@ class SuggResult {
                 break;
             }
             if (!bFirstListSorted && lSugg.length > 1) {
-                lRes.sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); });
+                //lRes.sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); });
+                lRes.sort((a, b) => { return str_transform.distanceJaroWinkler(this.sWord, b) - str_transform.distanceJaroWinkler(this.sWord, a); });
                 bFirstListSorted = true;
             }
             lRes.push(...lSugg);
