@@ -51,9 +51,14 @@ class TestDictionary (unittest.TestCase):
             self.assertFalse(self.oDic.isValid(sWord), sWord)
 
     def test_suggest (self):
-        for sWord in ["déelirranttesss", "vallidasion", "Emilie", "exibission", "ditirembique", "jai", "email"]:
+        for sWord in [
+            "déelirranttesss", "vallidasion", "Emilie", "exibission", "ditirembique", "jai", "email",
+            "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "email", "Co2",
+            "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
+        ]:
             with timeblock(sWord):
-                self.assertNotEqual(0, self.oDic.suggest(sWord))
+                aSugg = self.oDic.suggest(sWord)
+                print(sWord, "->", " ".join(aSugg))
 
 
 class TestConjugation (unittest.TestCase):
