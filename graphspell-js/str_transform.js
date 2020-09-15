@@ -70,10 +70,7 @@ var str_transform = {
     cleanWord: function (sWord) {
         // word clean for the user who make commun and preditive error help suggest
         // remove letters repeated more than 2 times
-        if (sWord.match(/(.)(\1){2,}/igm)){
-            sWord = sWord.replace(/(.*)(.)(.\2)/igm,'$1$2').replace(/(.)(\1)+/igm,'$1$1');
-        }
-        return sWord;
+        return sWord.replace(/(.)\1{2,}/ig,'$1$1');
     },
 
     _xTransNumbersToExponent: new Map([
