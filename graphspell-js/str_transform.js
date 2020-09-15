@@ -73,10 +73,6 @@ var str_transform = {
         if (sWord.match(/(.)(\1){2,}/igm)){
             sWord = sWord.replace(/(.*)(.)(.\2)/igm,'$1$2').replace(/(.)(\1)+/igm,'$1$1');
         }
-        // words ending with -ik -> replace with -ique
-        if (sWord.match(/ik$/ig)){
-            sWord = sWord.replace(/(.*)ik$/ig,'$1ique');
-        }
         return sWord;
     },
 

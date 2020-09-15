@@ -357,7 +357,7 @@ class IBDAWG {
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
         let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
         let oSuggResult = new SuggResult(sWord, nSuggLimit);
-        let sWord = str_transform.cleanWord(sWord);
+        sWord = str_transform.cleanWord(sWord);
         if (bSplitTrailingNumbers) {
             this._splitTrailingNumbers(oSuggResult, sWord);
         }
