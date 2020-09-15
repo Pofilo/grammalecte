@@ -15,6 +15,7 @@ import json
 import binascii
 import importlib
 from collections import OrderedDict
+from math import floor
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -40,14 +41,20 @@ def timethis (func):
 class SuggResult:
     """Structure for storing, classifying and filtering suggestions"""
 
-    def __init__ (self, sWord, nDistLimit=-1):
+    def __init__ (self, sWord, nSuggLimit=10, nDistLimit=-1):
         self.sWord = sWord
         self.sSimplifiedWord = st.simplifyWord(sWord)
         self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
         self.nMinDist = 1000
-        self.aSugg = set()
-        self.dSugg = { 0: [],  1: [],  2: [] }
-        self.aAllSugg = set()       # all found words even those refused
+        # Temporary sets
+        self.aAllSugg = set()   # All suggestions, even the one rejected
+        self.dGoodSugg = {}     # Acceptable suggestions
+        self.dBestSugg = {}     # Best suggestions
+        # Parameters
+        self.nSuggLimit = nSuggLimit
+        self.nSuggLimitExt = nSuggLimit + 2             # we add few entries in case suggestions merge after casing modifications
+        self.nBestSuggLimit = floor(nSuggLimit * 1.5)   # n times the requested limit
+        self.nGoodSuggLimit = nSuggLimit * 15           # n times the requested limit
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
@@ -55,44 +62,46 @@ class SuggResult:
         if sSugg in self.aAllSugg:
             return
         self.aAllSugg.add(sSugg)
-        if sSugg not in self.aSugg:
-            #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
-            nDist = int(st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
-            #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ st.simplifyWord(sSugg) +" -> "+ str(nDist))
-            if nDist <= self.nDistLimit:
-                if " " in sSugg:
-                    nDist += 1
-                if nDist not in self.dSugg:
-                    self.dSugg[nDist] = []
-                self.dSugg[nDist].append(sSugg)
-                self.aSugg.add(sSugg)
-                if nDist < self.nMinDist:
-                    self.nMinDist = nDist
-                self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
+        nDistJaro = 1 - st.distanceJaroWinkler(self.sSimplifiedWord, st.simplifyWord(sSugg))
+        nDist = floor(nDistJaro * 10)
+        if nDistJaro < .11:     # Best suggestions
+            self.dBestSugg[sSugg] = round(nDistJaro*1000)
+            if len(self.dBestSugg) > self.nBestSuggLimit:
+                self.nDistLimit = -1  # make suggest() to end search
+        elif nDistJaro < .33:   # Good suggestions
+            self.dGoodSugg[sSugg] = round(nDistJaro*1000)
+            if len(self.dGoodSugg) > self.nGoodSuggLimit:
+                self.nDistLimit = -1  # make suggest() to end search
+        else:
+            if nDist < self.nMinDist:
+                self.nMinDist = nDist
+            self.nDistLimit = min(self.nDistLimit, self.nMinDist)
+        if nDist <= self.nDistLimit:
+            if nDist < self.nMinDist:
+                self.nMinDist = nDist
+            self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
 
-    def getSuggestions (self, nSuggLimit=10):
+    def getSuggestions (self):
         "return a list of suggestions"
         # we sort the better results with the original word
         lRes = []
-        bFirstListSorted = False
-        for nDist, lSugg in self.dSugg.items():
-            if nDist > self.nDistLimit:
-                break
-            if not bFirstListSorted and len(lSugg) > 1:
-                lSugg.sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
-                bFirstListSorted = True
-            #print(nDist, "|".join(lSugg))
-            #for sSugg in lSugg:
-            #    print(sSugg, st.distanceDamerauLevenshtein(self.sWord, sSugg))
-            lRes.extend(lSugg)
-            if len(lRes) > nSuggLimit:
-                break
+        if len(self.dBestSugg) > 0:
+            # sort only with simplified words
+            lResTmp = sorted(self.dBestSugg.items(), key=lambda x: x[1])
+            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
+                lRes.append(lResTmp[i][0])
+        if len(lRes) < self.nSuggLimitExt:
+            # sort with simplified words and original word
+            lResTmp = sorted(self.dGoodSugg.items(), key=lambda x: ((1-st.distanceJaroWinkler(self.sWord, x[0]))*10, x[1]))
+            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
+                lRes.append(lResTmp[i][0])
+        # casing
         if self.sWord.isupper():
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
             # dont’ use <.istitle>
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))) # use dict, when Python 3.6+
-        return lRes[:nSuggLimit]
+        return lRes[:self.nSuggLimit]
 
     def reset (self):
         "clear data"
@@ -322,12 +331,13 @@ class IBDAWG:
         nMaxDel = len(sWord) // 5
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         nMaxJump = max(len(sWord) // 4, 1)
-        oSuggResult = SuggResult(sWord)
+        oSuggResult = SuggResult(sWord, nSuggLimit)
+        sWord = st.cleanWord(sWord)
         if bSplitTrailingNumbers:
             self._splitTrailingNumbers(oSuggResult, sWord)
         self._splitSuggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
-        aSugg = oSuggResult.getSuggestions(nSuggLimit)
+        aSugg = oSuggResult.getSuggestions()
         if self.lexicographer:
             aSugg = self.lexicographer.filterSugg(aSugg)
         if sSfx or sPfx:
