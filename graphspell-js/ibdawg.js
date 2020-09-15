@@ -22,60 +22,84 @@ if (typeof(process) !== 'undefined') {
 class SuggResult {
     // Structure for storing, classifying and filtering suggestions
 
-    constructor (sWord, nDistLimit=-1) {
+    constructor (sWord, nSuggLimit=10, nDistLimit=-1) {
         this.sWord = sWord;
         this.sSimplifiedWord = str_transform.simplifyWord(sWord);
         this.nDistLimit = (nDistLimit >= 0) ? nDistLimit :  Math.floor(sWord.length / 3) + 1;
         this.nMinDist = 1000;
-        this.aSugg = new Set();
-        this.dSugg = new Map([ [0, []],  [1, []],  [2, []] ]);
-        this.aAllSugg = new Set();      // all found words even those refused
+        // Temporary sets
+        this.aAllSugg = new Set();  // All suggestions, even the one rejected
+        this.dGoodSugg = new Map(); // Acceptable suggestions
+        this.dBestSugg = new Map(); // Best suggestions
+        // Parameters
+        this.nSuggLimit = nSuggLimit;
+        this.nSuggLimitExt = nSuggLimit + 2;                // we add few entries in case suggestions merge after casing modifications
+        this.nBestSuggLimit = Math.floor(nSuggLimit * 1.5); // n times the requested limit
+        this.nGoodSuggLimit = nSuggLimit * 15;              // n times the requested limit
     }
 
-    addSugg (sSugg, nDeep=0) {
+    addSugg (sSugg) {
         // add a suggestion
         if (this.aAllSugg.has(sSugg)) {
             return;
         }
         this.aAllSugg.add(sSugg);
-        if (!this.aSugg.has(sSugg)) {
-            //let nDist = Math.floor(str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, str_transform.simplifyWord(sSugg)));
-            let nDist = Math.floor((1 - str_transform.distanceJaroWinkler(this.sSimplifiedWord, str_transform.simplifyWord(sSugg)))*10);
-            if (nDist <= this.nDistLimit) {
-                if (sSugg.includes(" ")) { // add 1 to distance for split suggestions
-                    nDist += 1;
-                }
-                if (!this.dSugg.has(nDist)) {
-                    this.dSugg.set(nDist, []);
-                }
-                this.dSugg.get(nDist).push(sSugg);
-                this.aSugg.add(sSugg);
-                if (nDist < this.nMinDist) {
-                    this.nMinDist = nDist;
-                }
-                this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+1);
+        // jaro 0->1 1 les chaines sont égale
+        let nDistJaro = 1 - str_transform.distanceJaroWinkler(this.sSimplifiedWord, str_transform.simplifyWord(sSugg));
+        let nDist = Math.floor(nDistJaro * 10);
+        if (nDistJaro < .11) {        // Best suggestions
+            this.dBestSugg.set(sSugg, Math.round(nDistJaro*1000));
+            if (this.dBestSugg.size > this.nBestSuggLimit) {
+                this.nDistLimit = -1; // make suggest() to end search
             }
+        } else if (nDistJaro < .33) { // Good suggestions
+            this.dGoodSugg.set(sSugg, Math.round(nDistJaro*1000));
+            if (this.dGoodSugg.size > this.nGoodSuggLimit) {
+                this.nDistLimit = -1; // make suggest() to end search
+            }
+        } else {
+            if (nDist < this.nMinDist) {
+                this.nMinDist = nDist;
+            }
+            this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist);
+        }
+        if (nDist <= this.nDistLimit) {
+            if (nDist < this.nMinDist) {
+                this.nMinDist = nDist;
+            }
+            this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+1);
         }
     }
 
-    getSuggestions (nSuggLimit=10) {
+    getSuggestions () {
         // return a list of suggestions
         let lRes = [];
-        let bFirstListSorted = false;
-        for (let [nDist, lSugg] of this.dSugg.entries()) {
-            if (nDist > this.nDistLimit) {
-                break;
-            }
-            if (!bFirstListSorted && lSugg.length > 1) {
-                //lRes.sort((a, b) => { return str_transform.distanceDamerauLevenshtein(this.sWord, a) - str_transform.distanceDamerauLevenshtein(this.sWord, b); });
-                lRes.sort((a, b) => { return str_transform.distanceJaroWinkler(this.sWord, b) - str_transform.distanceJaroWinkler(this.sWord, a); });
-                bFirstListSorted = true;
-            }
-            lRes.push(...lSugg);
-            if (lRes.length > nSuggLimit) {
-                break;
+        if (this.dBestSugg.size > 0) {
+            // sort only with simplified words
+            let lResTmp = [...this.dBestSugg.entries()].sort((a, b) => { return a[1] - b[1]; });
+            let nSize = Math.min(this.nSuggLimitExt, lResTmp.length);
+            for (let i=0;  i < nSize;  i++){
+                lRes.push(lResTmp[i][0]);
             }
         }
+        if (lRes.length < this.nSuggLimitExt) {
+            // sort with simplified words and original word
+            let lResTmp = [...this.dGoodSugg.entries()].sort((a, b) => {
+                // Low precision to rely more on simplified words
+                let nJaroA = Math.round(str_transform.distanceJaroWinkler(this.sWord, a[0]) * 10);
+                let nJaroB = Math.round(str_transform.distanceJaroWinkler(this.sWord, b[0]) * 10);
+                if (nJaroA == nJaroB) {
+                    return a[1] - b[1];     // warning: both lists are NOT sorted the same way (key: a-b)
+                } else {
+                    return nJaroB - nJaroA; // warning: both lists are NOT sorted the same way (key: b-a)
+                }
+            }).slice(0, this.nSuggLimitExt);
+            let nSize = Math.min(this.nSuggLimitExt, lResTmp.length);
+            for (let i=0;  i < nSize;  i++){
+                lRes.push(lResTmp[i][0]);
+            }
+        }
+        // casing
         if (this.sWord.gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
             lRes = [...new Set(lRes)];
@@ -84,12 +108,13 @@ class SuggResult {
             lRes = lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
             lRes = [...new Set(lRes)];
         }
-        return lRes.slice(0, nSuggLimit);
+        return lRes.slice(0, this.nSuggLimit);
     }
 
     reset () {
-        this.aSugg.clear();
         this.dSugg.clear();
+        this.dGoodSugg.clear();
+        this.dBestSugg.clear();
     }
 }
 
@@ -331,13 +356,14 @@ class IBDAWG {
         let nMaxDel = Math.floor(sWord.length / 5);
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
         let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
-        let oSuggResult = new SuggResult(sWord);
+        let oSuggResult = new SuggResult(sWord, nSuggLimit);
+        let sWord = str_transform.cleanWord(sWord);
         if (bSplitTrailingNumbers) {
             this._splitTrailingNumbers(oSuggResult, sWord);
         }
         this._splitSuggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
-        let aSugg = oSuggResult.getSuggestions(nSuggLimit);
+        let aSugg = oSuggResult.getSuggestions();
         if (this.lexicographer) {
             aSugg = this.lexicographer.filterSugg(aSugg);
         }

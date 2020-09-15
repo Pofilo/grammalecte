@@ -67,6 +67,19 @@ var str_transform = {
         return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "éi").replace(/ei/g, "é").replace(/ph/g, "f");
     },
 
+    cleanWord: function (sWord) {
+        // word clean for the user who make commun and preditive error help suggest
+        // remove letters repeated more than 2 times
+        if (sWord.match(/(.)(\1){2,}/igm)){
+            sWord = sWord.replace(/(.*)(.)(.\2)/igm,'$1$2').replace(/(.)(\1)+/igm,'$1$1');
+        }
+        // words ending with -ik -> replace with -ique
+        if (sWord.match(/ik$/ig)){
+            sWord = sWord.replace(/(.*)ik$/ig,'$1ique');
+        }
+        return sWord;
+    },
+
     _xTransNumbersToExponent: new Map([
         ["0", "⁰"], ["1", "¹"], ["2", "²"], ["3", "³"], ["4", "⁴"], ["5", "⁵"], ["6", "⁶"], ["7", "⁷"], ["8", "⁸"], ["9", "⁹"]
     ]),
@@ -209,7 +222,7 @@ var str_transform = {
               for (let j = 0; j < b_len; j++) {
                 if (!b_flag[j]) {
                   if (adjwt[a[i]] && adjwt[a[i]][b[j]]) {
-                    N_simi += adjwt[a[i]][b[j]] * 10; // le fois 10 est un ajustement pour que ça fonctionne bien dans cette fonction
+                    N_simi += adjwt[a[i]][b[j]];
                     b_flag[j] = 2;
                     break;
                   }
