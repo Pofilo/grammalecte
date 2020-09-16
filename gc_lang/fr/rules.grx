@@ -4540,7 +4540,7 @@ TEST: {{par dessus}}                                                            
 TEST: Que vas-tu faire {{vis à vis}} d’eux                                      ->> vis-à-vis
 
 
-__tu_substantifs__
+__tu_substantifs!7__
     l’ à [côté|coup|peu-près|pic|plat-ventrisme|propos|valoir]
         <<- /tu/ -2:0>> \2-\3                                   && Mettez des traits d’union pour ces noms communs.
 
@@ -4612,6 +4612,9 @@ __tu_substantifs__
 
     bouche à [bouche|>oreille]
         <<- /tu/ morph(<1, ":D") ->> \1-\2-\3                   && Il manque les traits d’union.
+
+    [céder|cédé+ses|cédez] le passage
+        <<- morph(<1, ":D", ">d[e’]/") ->> cédez-le-passage     && Il manque les traits d’union.|https://fr.wiktionary.org/wiki/c%C3%A9dez-le-passage
 
     >centre >ville
         <<- /tu/ ->> centre-ville|centres-villes                && Il manque un trait d’union.
@@ -4736,10 +4739,13 @@ __tu_substantifs__
         <<- /tu/ morph(<1, ":[DR]|<start>|>,") ->> rendez-vous  && Il manque un trait d’union.
 
     rez de >chaussée
-        <<- /tu/ ->> rez-de-chaussée                            && Il manque un trait d’union.
+        <<- /tu/ ->> rez-de-chaussée                            && Il manque les traits d’union.
 
     [rond+s] de cuir
         <<- /tu/ ->> \1-\2-\3                                   && Il manque les traits d’union.|https://fr.wiktionary.org/wiki/rond-de-cuir
+
+    >rond >point
+        <<- /tu/ ->> rond-point|ronds-points                    && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/rond-point
 
     science fiction
         <<- /tu/ ->> science-fiction                            && Il manque un trait d’union.
@@ -4801,6 +4807,7 @@ TEST: sur le {{bas côté}}
 TEST: les {{beaux arts}}
 TEST: marre de ces {{blancs becs}} qui croient tout savoir
 TEST: {{le}} {{bouche à oreille}}
+TEST: au {{céder le passage}}                                                   ->> cédez-le-passage
 TEST: un {{cessez le feu}}
 TEST: {{chef lieu}} de ce canton
 TEST: un {{chassé croisé}}
@@ -4841,14 +4848,15 @@ TEST: je connais le {{ras le bol}}
 TEST: {{Quelques unes}} sont très habiles.
 TEST: {{quelques un}} seront blâmés, les autres pardonnés
 TEST: en avoir ras le bol de ces conneries
-TEST: des {{rendez vous}}                               ->> rendez-vous
+TEST: des {{rendez vous}}                                                       ->> rendez-vous
 TEST: un Mars par {{rendez vous}}
 TEST: Habiter au {{rez de chaussée}}, quelle horreur.
+TEST: encore un {{rond point}}                                                  ->> rond-point|ronds-points
 TEST: J’en ai ma claque de ces {{ronds de cuir}}
 TEST: C’est de la {{science fiction}}.
 TEST: des {{stock options}}
 TEST: Tout ce {{soi disant}} esprit religieux
-TEST: implications {{sous jacentes}}                    ->> sous-jacentes
+TEST: implications {{sous jacentes}}                                            ->> sous-jacentes
 TEST: c’est du {{sur mesure}}
 TEST: leur {{terre plein}}
 TEST: Ils versent dans leur terre plein de poisons.
@@ -4858,8 +4866,10 @@ TEST: {{un}} {{trompe l’œil}}
 TEST: un {{va et vient}} incessant me casse la tête
 TEST: il va et vient sans mot dire
 TEST: Il a été nommé {{vice président}}
-TEST: un super {{week end}}                             ->> week-end
+TEST: un super {{week end}}                                                     ->> week-end
 TEST: commencez par cesser le feu
+TEST: ici, il convient de céder le passage
+TEST: ils finiront par céder le passage
 
 
 __tu_chez_pronom__
