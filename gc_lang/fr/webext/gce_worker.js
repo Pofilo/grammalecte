@@ -292,13 +292,22 @@ function resetOptions (oInfo={}) {
 }
 
 function tests () {
-    console.log(conj.getConj("devenir", ":E", ":2s"));
+    /*console.log(conj.getConj("devenir", ":E", ":2s"));
     console.log(mfsp.getMasForm("emmerdeuse", true));
     console.log(mfsp.getMasForm("pointilleuse", false));
     console.log(phonet.getSimil("est"));
     let aRes = gc_engine.parse("Je suit...");
     for (let oErr of aRes) {
         console.log(text.getReadableError(oErr));
+    }*/
+    for (let sWord of ["fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "email", "Co2", "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"]) {
+        console.time("Suggestions for " + sWord);
+        for (let aSugg of oSpellChecker.suggest(sWord)) {
+            if (aSugg.length) {
+                console.log(sWord + " -> ", aSugg.join(" "));
+            }
+        }
+        console.timeEnd("Suggestions for " + sWord);
     }
 }
 

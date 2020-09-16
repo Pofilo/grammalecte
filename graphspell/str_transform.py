@@ -5,8 +5,9 @@ Operations on strings:
 """
 
 import unicodedata
+import re
 
-from .char_player import distanceBetweenChars
+from .char_player import distanceBetweenChars, dDistanceBetweenChars
 
 
 #### N-GRAMS
@@ -51,6 +52,11 @@ def simplifyWord (sWord):
         if c != sWord[i:i+1] or (c == 'e' and sWord[i:i+2] != "ee"):  # exception for <e> to avoid confusion between crée / créai
             sNewWord += c
     return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "éi").replace("ei", "é").replace("ph", "f")
+
+
+def cleanWord (sWord):
+    "remove letters repeated more than 2 times"
+    return re.sub("(.)\\1{2,}", '\\1\\1', sWord)
 
 
 _xTransNumbersToExponent = str.maketrans({
@@ -105,6 +111,83 @@ def distanceDamerauLevenshtein (s1, s2):
             if i and j and s1[i] == s2[j-1] and s1[i-1] == s2[j]:
                 d[i, j] = min(d[i, j], d[i-2, j-2] + nCost)     # Transposition
     return d[nLen1-1, nLen2-1]
+
+
+def distanceJaroWinkler (a, b, boost = .666):
+    # https://github.com/thsig/jaro-winkler-JS
+    #if (a == b): return 1.0
+    a_len = len(a)
+    b_len = len(b)
+    nMax = max(a_len, b_len)
+    a_flag = [None for _ in range(nMax)]
+    b_flag = [None for _ in range(nMax)]
+    search_range = (max(a_len, b_len) // 2) - 1
+    minv = min(a_len, b_len)
+
+    # Looking only within the search range, count and flag the matched pairs.
+    Num_com = 0
+    yl1 = b_len - 1
+    for i in range(a_len):
+        lowlim = i - search_range  if i >= search_range  else 0
+        hilim  = i + search_range  if (i + search_range) <= yl1  else yl1
+        for j in range(lowlim, hilim+1):
+            if b_flag[j] != 1 and a[j:j+1] == b[i:i+1]:
+                a_flag[j] = 1
+                b_flag[i] = 1
+                Num_com += 1
+                break
+
+    # Return if no characters in common
+    if Num_com == 0:
+        return 0.0
+
+    # Count the number of transpositions
+    k = 0
+    N_trans = 0
+    for i in range(a_len):
+        if a_flag[i] == 1:
+            for j in range(k, b_len):
+                if b_flag[j] == 1:
+                    k = j + 1
+                    break
+            if a[i] != b[j]:
+                N_trans += 1
+    N_trans = N_trans // 2
+
+    # Adjust for similarities in nonmatched characters
+    N_simi = 0
+    if minv > Num_com:
+        for i in range(a_len):
+            if not a_flag[i]:
+                for j in range(b_len):
+                    if not b_flag[j]:
+                        if a[i] in dDistanceBetweenChars and b[j] in dDistanceBetweenChars[a[i]]:
+                            N_simi += dDistanceBetweenChars[a[i]][b[j]]
+                            b_flag[j] = 2
+                            break
+
+    Num_sim = (N_simi / 10.0) + Num_com
+
+    # Main weight computation
+    weight = Num_sim / a_len + Num_sim / b_len + (Num_com - N_trans) / Num_com
+    weight = weight / 3
+
+    # Continue to boost the weight if the strings are similar
+    if weight > boost:
+        # Adjust for having up to the first 4 characters in common
+        j = 4  if minv >= 4  else minv
+        i = 0
+        while i < j  and a[i] == b[i]:
+            i += 1
+        if i:
+            weight += i * 0.1 * (1.0 - weight)
+        # Adjust for long strings.
+        # After agreeing beginning chars, at least two more must agree
+        # and the agreeing characters must be more than half of the
+        # remaining characters.
+        if minv > 4  and  Num_com > i + 1  and  2 * Num_com >= minv + i:
+            weight += (1 - weight) * ((Num_com - i - 1) / (a_len * b_len - i*2 + 2))
+    return weight
 
 
 def distanceSift4 (s1, s2, nMaxOffset=5):

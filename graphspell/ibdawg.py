@@ -15,6 +15,7 @@ import json
 import binascii
 import importlib
 from collections import OrderedDict
+from math import floor
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -40,14 +41,20 @@ def timethis (func):
 class SuggResult:
     """Structure for storing, classifying and filtering suggestions"""
 
-    def __init__ (self, sWord, nDistLimit=-1):
+    def __init__ (self, sWord, nSuggLimit=10, nDistLimit=-1):
         self.sWord = sWord
         self.sSimplifiedWord = st.simplifyWord(sWord)
         self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
         self.nMinDist = 1000
-        self.aSugg = set()
-        self.dSugg = { 0: [],  1: [],  2: [] }
-        self.aAllSugg = set()       # all found words even those refused
+        # Temporary sets
+        self.aAllSugg = set()   # All suggestions, even the one rejected
+        self.dGoodSugg = {}     # Acceptable suggestions
+        self.dBestSugg = {}     # Best suggestions
+        # Parameters
+        self.nSuggLimit = nSuggLimit
+        self.nSuggLimitExt = nSuggLimit + 2             # we add few entries in case suggestions merge after casing modifications
+        self.nBestSuggLimit = floor(nSuggLimit * 1.5)   # n times the requested limit
+        self.nGoodSuggLimit = nSuggLimit * 15           # n times the requested limit
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
@@ -55,44 +62,46 @@ class SuggResult:
         if sSugg in self.aAllSugg:
             return
         self.aAllSugg.add(sSugg)
-        if sSugg not in self.aSugg:
-            #nDist = min(st.distanceDamerauLevenshtein(self.sWord, sSugg), st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
-            nDist = int(st.distanceDamerauLevenshtein(self.sSimplifiedWord, st.simplifyWord(sSugg)))
-            #logging.info((nDeep * "  ") + "__" + sSugg + "__ :" + self.sSimplifiedWord +"|"+ st.simplifyWord(sSugg) +" -> "+ str(nDist))
-            if nDist <= self.nDistLimit:
-                if " " in sSugg:
-                    nDist += 1
-                if nDist not in self.dSugg:
-                    self.dSugg[nDist] = []
-                self.dSugg[nDist].append(sSugg)
-                self.aSugg.add(sSugg)
-                if nDist < self.nMinDist:
-                    self.nMinDist = nDist
-                self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
+        nDistJaro = 1 - st.distanceJaroWinkler(self.sSimplifiedWord, st.simplifyWord(sSugg))
+        nDist = floor(nDistJaro * 10)
+        if nDistJaro < .11:     # Best suggestions
+            self.dBestSugg[sSugg] = round(nDistJaro*1000)
+            if len(self.dBestSugg) > self.nBestSuggLimit:
+                self.nDistLimit = -1  # make suggest() to end search
+        elif nDistJaro < .33:   # Good suggestions
+            self.dGoodSugg[sSugg] = round(nDistJaro*1000)
+            if len(self.dGoodSugg) > self.nGoodSuggLimit:
+                self.nDistLimit = -1  # make suggest() to end search
+        else:
+            if nDist < self.nMinDist:
+                self.nMinDist = nDist
+            self.nDistLimit = min(self.nDistLimit, self.nMinDist)
+        if nDist <= self.nDistLimit:
+            if nDist < self.nMinDist:
+                self.nMinDist = nDist
+            self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
 
-    def getSuggestions (self, nSuggLimit=10):
+    def getSuggestions (self):
         "return a list of suggestions"
         # we sort the better results with the original word
         lRes = []
-        bFirstListSorted = False
-        for nDist, lSugg in self.dSugg.items():
-            if nDist > self.nDistLimit:
-                break
-            if not bFirstListSorted and len(lSugg) > 1:
-                lSugg.sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
-                bFirstListSorted = True
-            #print(nDist, "|".join(lSugg))
-            #for sSugg in lSugg:
-            #    print(sSugg, st.distanceDamerauLevenshtein(self.sWord, sSugg))
-            lRes.extend(lSugg)
-            if len(lRes) > nSuggLimit:
-                break
+        if len(self.dBestSugg) > 0:
+            # sort only with simplified words
+            lResTmp = sorted(self.dBestSugg.items(), key=lambda x: x[1])
+            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
+                lRes.append(lResTmp[i][0])
+        if len(lRes) < self.nSuggLimitExt:
+            # sort with simplified words and original word
+            lResTmp = sorted(self.dGoodSugg.items(), key=lambda x: ((1-st.distanceJaroWinkler(self.sWord, x[0]))*10, x[1]))
+            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
+                lRes.append(lResTmp[i][0])
+        # casing
         if self.sWord.isupper():
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
             # dont’ use <.istitle>
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))) # use dict, when Python 3.6+
-        return lRes[:nSuggLimit]
+        return lRes[:self.nSuggLimit]
 
     def reset (self):
         "clear data"
@@ -120,10 +129,29 @@ class IBDAWG:
 
         self.sFileName = source  if isinstance(source, str)  else "[None]"
 
+        # Performance trick:
+        #     Instead of converting bytes to integers each times we parse the binary dictionary,
+        #     we do it once, then parse the array
+        nAcc = 0
+        byBuffer = b""
+        lTemp = []
+        nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
+        for i in range(0, len(self.byDic)):
+            byBuffer += self.byDic[i:i+1]
+            if nAcc == (self.nBytesArc - 1):
+                lTemp.append(int.from_bytes(byBuffer, byteorder="big"))
+                byBuffer = b""
+            elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
+                lTemp.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
+                byBuffer = b""
+                nAcc = -1
+            nAcc = nAcc + 1
+        self.byDic = lTemp;
+
+        # masks
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
         self._lastArcMask = 1 << ((self.nBytesArc * 8) - 2)
-        self._addrBitMask = 1 << ((self.nBytesArc * 8) - 3)  # version 2
 
         # function to decode the affix/suffix code
         if self.cStemming == "S":
@@ -132,28 +160,6 @@ class IBDAWG:
             self.funcStemming = st.changeWordWithAffixCode
         else:
             self.funcStemming = st.noStemming
-
-        # Configuring DAWG functions according to nCompressionMethod
-        if self.nCompressionMethod == 1:
-            self.morph = self._morph1
-            self.stem = self._stem1
-            self._lookupArcNode = self._lookupArcNode1
-            self._getArcs = self._getArcs1
-            self._writeNodes = self._writeNodes1
-        elif self.nCompressionMethod == 2:
-            self.morph = self._morph2
-            self.stem = self._stem2
-            self._lookupArcNode = self._lookupArcNode2
-            self._getArcs = self._getArcs2
-            self._writeNodes = self._writeNodes2
-        elif self.nCompressionMethod == 3:
-            self.morph = self._morph3
-            self.stem = self._stem3
-            self._lookupArcNode = self._lookupArcNode3
-            self._getArcs = self._getArcs3
-            self._writeNodes = self._writeNodes3
-        else:
-            raise ValueError("  # Error: unknown code: {}".format(self.nCompressionMethod))
 
         self.bAcronymValid = False
         self.bNumAtLastValid = False
@@ -204,7 +210,6 @@ class IBDAWG:
         for i in range(1, self.nChar+1):
             self.dChar[self.lArcVal[i]] = i
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.nBytesOffset = 1 # version 3
 
     def _initJSON (self, oJSON):
         "initialize with a JSON text file"
@@ -248,7 +253,6 @@ class IBDAWG:
                 "nCompressionMethod": self.nCompressionMethod,
                 "nBytesArc": self.nBytesArc,
                 "nBytesNodeAddress": self.nBytesNodeAddress,
-                "nBytesOffset": self.nBytesOffset,
                 # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                 # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                 # https://github.com/mozilla/addons-linter/issues/1361
@@ -300,18 +304,18 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return False
-        return bool(int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask)
+        return bool(self.byDic[iAddr] & self._finalNodeMask)
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
         if not sWord:
             return []
         sWord = st.spellingNormalization(sWord)
-        l = self.morph(sWord)
+        l = self._morph(sWord)
         if sWord[0:1].isupper():
-            l.extend(self.morph(sWord.lower()))
+            l.extend(self._morph(sWord.lower()))
             if sWord.isupper() and len(sWord) > 1:
-                l.extend(self.morph(sWord.capitalize()))
+                l.extend(self._morph(sWord.capitalize()))
         return l
 
     #@timethis
@@ -327,12 +331,13 @@ class IBDAWG:
         nMaxDel = len(sWord) // 5
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         nMaxJump = max(len(sWord) // 4, 1)
-        oSuggResult = SuggResult(sWord)
+        oSuggResult = SuggResult(sWord, nSuggLimit)
+        sWord = st.cleanWord(sWord)
         if bSplitTrailingNumbers:
             self._splitTrailingNumbers(oSuggResult, sWord)
         self._splitSuggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
-        aSugg = oSuggResult.getSuggestions(nSuggLimit)
+        aSugg = oSuggResult.getSuggestions()
         if self.lexicographer:
             aSugg = self.lexicographer.filterSugg(aSugg)
         if sSfx or sPfx:
@@ -356,7 +361,7 @@ class IBDAWG:
     def _suggest (self, oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # recursive function
         #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain)
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+        if self.byDic[iAddr] & self._finalNodeMask:
             if not sRemain:
                 oSuggResult.addSugg(sNewWord, nDeep)
                 for sTail in self._getTails(iAddr):
@@ -423,7 +428,7 @@ class IBDAWG:
         aTails = set()
         for nVal, jAddr in self._getArcs(iAddr):
             if nVal <= self.nChar:
-                if int.from_bytes(self.byDic[jAddr:jAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                if self.byDic[jAddr] & self._finalNodeMask:
                     aTails.add(sTail + self.dCharVal[nVal])
                 if n and not aTails:
                     aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
@@ -471,26 +476,22 @@ class IBDAWG:
         except re.error:
             print("# Error in regex pattern")
             traceback.print_exc()
-        yield from self._select1(zFlexPattern, zTagsPattern, 0, "")
+        yield from self._select(zFlexPattern, zTagsPattern, 0, "")
 
-    # def morph (self, sWord):
-    #     is defined in __init__
-
-    # VERSION 1
-    def _select1 (self, zFlexPattern, zTagsPattern, iAddr, sWord):
+    def _select (self, zFlexPattern, zTagsPattern, iAddr, sWord):
         # recursive generator
-        for nVal, jAddr in self._getArcs1(iAddr):
+        for nVal, jAddr in self._getArcs(iAddr):
             if nVal <= self.nChar:
                 # simple character
-                yield from self._select1(zFlexPattern, zTagsPattern, jAddr, sWord + self.lArcVal[nVal])
+                yield from self._select(zFlexPattern, zTagsPattern, jAddr, sWord + self.lArcVal[nVal])
             else:
                 if not zFlexPattern or zFlexPattern.search(sWord):
                     sStem = self.funcStemming(sWord, self.lArcVal[nVal])
-                    for nMorphVal, _ in self._getArcs1(jAddr):
+                    for nMorphVal, _ in self._getArcs(jAddr):
                         if not zTagsPattern or zTagsPattern.search(self.lArcVal[nMorphVal]):
                             yield [sWord, sStem, self.lArcVal[nMorphVal]]
 
-    def _morph1 (self, sWord):
+    def _morph (self, sWord):
         "returns morphologies of <sWord>"
         iAddr = 0
         for c in sWord:
@@ -499,29 +500,29 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+        if self.byDic[iAddr] & self._finalNodeMask:
             l = []
             nRawArc = 0
             while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+                iEndArcAddr = iAddr + 1
+                nRawArc = self.byDic[iAddr]
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
                     # This value is not a char, this is a stemming code
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    iAddr2 = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
+                    iAddr2 = self.byDic[iEndArcAddr]
                     nRawArc2 = 0
                     while not nRawArc2 & self._lastArcMask:
-                        iEndArcAddr2 = iAddr2 + self.nBytesArc
-                        nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
+                        iEndArcAddr2 = iAddr2 + 1
+                        nRawArc2 = self.byDic[iAddr2]
                         l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
-                        iAddr2 = iEndArcAddr2+self.nBytesNodeAddress
-                iAddr = iEndArcAddr+self.nBytesNodeAddress
+                        iAddr2 = iEndArcAddr2 + 1
+                iAddr = iEndArcAddr + 1
             return l
         return []
 
-    def _stem1 (self, sWord):
+    def _stem (self, sWord):
         "returns stems list of <sWord>"
         iAddr = 0
         for c in sWord:
@@ -530,269 +531,56 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+        if self.byDic[iAddr] & self._finalNodeMask:
             l = []
             nRawArc = 0
             while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+                iEndArcAddr = iAddr + 1
+                nRawArc = self.byDic[iAddr]
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
                     # This value is not a char, this is a stemming code
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
-                iAddr = iEndArcAddr+self.nBytesNodeAddress
+                iAddr = iEndArcAddr + 1
             return l
         return []
 
-    def _lookupArcNode1 (self, nVal, iAddr):
+    def _lookupArcNode (self, nVal, iAddr):
         "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
         while True:
-            iEndArcAddr = iAddr+self.nBytesArc
-            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+            iEndArcAddr = iAddr + 1
+            nRawArc = self.byDic[iAddr]
             if nVal == (nRawArc & self._arcMask):
                 # the value we are looking for
                 # we return the address of the next node
-                return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
+                return self.byDic[iEndArcAddr]
             # value not found
             if nRawArc & self._lastArcMask:
                 return None
-            iAddr = iEndArcAddr+self.nBytesNodeAddress
+            iAddr = iEndArcAddr + 1
 
-    def _getArcs1 (self, iAddr):
+    def _getArcs (self, iAddr):
         "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
         while True:
-            iEndArcAddr = iAddr+self.nBytesArc
-            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-            yield nRawArc & self._arcMask, int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
+            iEndArcAddr = iAddr + 1
+            nRawArc = self.byDic[iAddr]
+            yield nRawArc & self._arcMask, self.byDic[iEndArcAddr]
             if nRawArc & self._lastArcMask:
                 break
-            iAddr = iEndArcAddr+self.nBytesNodeAddress
+            iAddr = iEndArcAddr + 1
 
-    def _writeNodes1 (self, spfDest):
+    def _writeNodes (self, spfDest):
         "for debugging only"
         print(" > Write binary nodes")
         with open(spfDest, 'w', 'utf-8', newline="\n") as hDst:
             iAddr = 0
             hDst.write("i{:_>10} -- #{:_>10}\n".format("0", iAddr))
             while iAddr < len(self.byDic):
-                iEndArcAddr = iAddr+self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+                iEndArcAddr = iAddr + 1
+                nRawArc = self.byDic[iAddr]
                 nArc = nRawArc & self._arcMask
-                hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", \
-                                                                            int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], \
-                                                                                           byteorder='big')))
-                iAddr = iEndArcAddr+self.nBytesNodeAddress
+                hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", self.byDic[iEndArcAddr]))
+                iAddr = iEndArcAddr + 1
                 if (nRawArc & self._lastArcMask) and iAddr < len(self.byDic):
-                    hDst.write("\ni{:_>10} -- #{:_>10}\n".format("?", iAddr))
-            hDst.close()
-
-    # VERSION 2
-    def _morph2 (self, sWord):
-        "returns morphologies of <sWord>"
-        iAddr = 0
-        for c in sWord:
-            if c not in self.dChar:
-                return []
-            iAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if iAddr is None:
-                return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-            l = []
-            nRawArc = 0
-            while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code
-                    sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
-                    # Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    if not nRawArc & self._addrBitMask:
-                        iAddr2 = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                    else:
-                        # we go to the end of the node
-                        iAddr2 = iEndArcAddr
-                        while not nRawArc & self._lastArcMask:
-                            nRawArc = int.from_bytes(self.byDic[iAddr2:iAddr2+self.nBytesArc], byteorder='big')
-                            iAddr2 += self.nBytesArc + self.nBytesNodeAddress
-                    nRawArc2 = 0
-                    while not nRawArc2 & self._lastArcMask:
-                        iEndArcAddr2 = iAddr2 + self.nBytesArc
-                        nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
-                        l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
-                        iAddr2 = iEndArcAddr2+self.nBytesNodeAddress  if not nRawArc2 & self._addrBitMask else iEndArcAddr2
-                iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr
-            return l
-        return []
-
-    def _stem2 (self, sWord):
-        "returns stems list of <sWord>"
-        iAddr = 0
-        for c in sWord:
-            if c not in self.dChar:
-                return []
-            iAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if iAddr is None:
-                return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-            l = []
-            nRawArc = 0
-            while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code
-                    l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
-                    # Now , we go to the next node
-                    if not nRawArc & self._addrBitMask:
-                        iAddr2 = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                    else:
-                        # we go to the end of the node
-                        iAddr2 = iEndArcAddr
-                        while not nRawArc & self._lastArcMask:
-                            nRawArc = int.from_bytes(self.byDic[iAddr2:iAddr2+self.nBytesArc], byteorder='big')
-                            iAddr2 += self.nBytesArc + self.nBytesNodeAddress
-                iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr
-            return l
-        return []
-
-    def _lookupArcNode2 (self, nVal, iAddr):
-        "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
-        while True:
-            iEndArcAddr = iAddr+self.nBytesArc
-            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-            if nVal == (nRawArc & self._arcMask):
-                # the value we are looking for
-                if not nRawArc & self._addrBitMask:
-                    # we return the address of the next node
-                    return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                # we go to the end of the node
-                iAddr = iEndArcAddr
-                while not nRawArc & self._lastArcMask:
-                    nRawArc = int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big')
-                    iAddr += self.nBytesArc + self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else self.nBytesArc
-                return iAddr
-            # value not found
-            if nRawArc & self._lastArcMask:
-                return None
-            iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr
-
-    def _writeNodes2 (self, spfDest):
-        "for debugging only"
-        print(" > Write binary nodes")
-        with open(spfDest, 'w', 'utf-8', newline="\n") as hDst:
-            iAddr = 0
-            hDst.write("i{:_>10} -- #{:_>10}\n".format("0", iAddr))
-            while iAddr < len(self.byDic):
-                iEndArcAddr = iAddr+self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if not nRawArc & self._addrBitMask:
-                    iNextNodeAddr = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                    hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", iNextNodeAddr))
-                    iAddr = iEndArcAddr+self.nBytesNodeAddress
-                else:
-                    hDst.write("  {:<20}  {:0>16}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:]))
-                    iAddr = iEndArcAddr
-                if nRawArc & self._lastArcMask:
-                    hDst.write("\ni{:_>10} -- #{:_>10}\n".format("?", iAddr))
-            hDst.close()
-
-    # VERSION 3
-    def _morph3 (self, sWord):
-        "returns morphologies of <sWord>"
-        iAddr = 0
-        for c in sWord:
-            if c not in self.dChar:
-                return []
-            iAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if iAddr is None:
-                return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-            l = []
-            nRawArc = 0
-            iAddrNode = iAddr
-            while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code
-                    sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
-                    # Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    if not nRawArc & self._addrBitMask:
-                        iAddr2 = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                    else:
-                        iAddr2 = iAddrNode + int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesOffset], byteorder='big')
-                    nRawArc2 = 0
-                    while not nRawArc2 & self._lastArcMask:
-                        iEndArcAddr2 = iAddr2 + self.nBytesArc
-                        nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
-                        l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
-                        iAddr2 = iEndArcAddr2+self.nBytesNodeAddress  if not nRawArc2 & self._addrBitMask  else iEndArcAddr2+self.nBytesOffset
-                iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr+self.nBytesOffset
-            return l
-        return []
-
-    def _stem3 (self, sWord):
-        "returns stems list of <sWord>"
-        iAddr = 0
-        for c in sWord:
-            if c not in self.dChar:
-                return []
-            iAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if iAddr is None:
-                return []
-        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-            l = []
-            nRawArc = 0
-            #iAddrNode = iAddr
-            while not nRawArc & self._lastArcMask:
-                iEndArcAddr = iAddr + self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code
-                    l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
-                iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr+self.nBytesOffset
-            return l
-        return []
-
-    def _lookupArcNode3 (self, nVal, iAddr):
-        "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
-        iAddrNode = iAddr
-        while True:
-            iEndArcAddr = iAddr+self.nBytesArc
-            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-            if nVal == (nRawArc & self._arcMask):
-                # the value we are looking for
-                if not nRawArc & self._addrBitMask:
-                    return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                return iAddrNode + int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesOffset], byteorder='big')
-            # value not found
-            if nRawArc & self._lastArcMask:
-                return None
-            iAddr = iEndArcAddr+self.nBytesNodeAddress  if not nRawArc & self._addrBitMask  else iEndArcAddr+self.nBytesOffset
-
-    def _writeNodes3 (self, spfDest):
-        "for debugging only"
-        print(" > Write binary nodes")
-        with open(spfDest, 'w', 'utf-8', newline="\n") as hDst:
-            iAddr = 0
-            hDst.write("i{:_>10} -- #{:_>10}\n".format("0", iAddr))
-            while iAddr < len(self.byDic):
-                iEndArcAddr = iAddr+self.nBytesArc
-                nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
-                nArc = nRawArc & self._arcMask
-                if not nRawArc & self._addrBitMask:
-                    iNextNodeAddr = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
-                    hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", iNextNodeAddr))
-                    iAddr = iEndArcAddr+self.nBytesNodeAddress
-                else:
-                    iNextNodeAddr = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesOffset], byteorder='big')
-                    hDst.write("  {:<20}  {:0>16}  i{:>10}   +{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", iNextNodeAddr))
-                    iAddr = iEndArcAddr+self.nBytesOffset
-                if nRawArc & self._lastArcMask:
                     hDst.write("\ni{:_>10} -- #{:_>10}\n".format("?", iAddr))
             hDst.close()
