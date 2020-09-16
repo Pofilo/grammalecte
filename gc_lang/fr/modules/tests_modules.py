@@ -56,9 +56,10 @@ class TestDictionary (unittest.TestCase):
             "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "email", "Co2",
             "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
         ]:
-            with timeblock(sWord):
-                aSugg = self.oDic.suggest(sWord)
-                print(sWord, "->", " ".join(aSugg))
+            aSugg = self.oDic.suggest(sWord)
+            #with timeblock(sWord):
+            #    aSugg = self.oDic.suggest(sWord)
+            #    print(sWord, "->", " ".join(aSugg))
 
 
 class TestConjugation (unittest.TestCase):
