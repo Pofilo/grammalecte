@@ -1143,7 +1143,7 @@ class Flexion:
         "err": ":F",
         "ponc": ":@p", "sign": ":@s",
         # LEX
-        "symb": ";S", "unit": ";U"
+        "symb": ";S", "unit": ";U", "col": ";C"
     }
 
     def _getSimpleTags (self):
