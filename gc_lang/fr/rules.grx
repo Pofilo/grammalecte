@@ -7807,19 +7807,24 @@ __conf_à_a_locutions__
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
-TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
-TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
-TEST: ils viennent nous attaquer {{a}} tout bout de champ
-TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.
-TEST: on fait ça {{a}} la va-vite.
-TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
-TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.
-TEST: Je sais qu’ils sont {{a}} toi.
-TEST: Attention {{a}} ne pas la réveiller.
-TEST: J’en serai. {{A}} titre personnel.
-TEST: Que faire {{a}} propos de ça ?
-TEST: des planètes {{a}} la portée des nouveaux vaisseaux.
-TEST: Il l’a fait {{a}} cause de toi.
+    a caractère @:A.*:[me]:[si]¬:G
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$") and morph(<1, ":N")
+        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.                            ->> à
+TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.           ->> à
+TEST: ils viennent nous attaquer {{a}} tout bout de champ                               ->> à
+TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.           ->> à
+TEST: on fait ça {{a}} la va-vite.                                                      ->> à
+TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.                  ->> à
+TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.                       ->> à
+TEST: Je sais qu’ils sont {{a}} toi.                                                    ->> à
+TEST: Attention {{a}} ne pas la réveiller.                                              ->> à
+TEST: J’en serai. {{A}} titre personnel.                                                ->> À
+TEST: Que faire {{a}} propos de ça ?                                                    ->> à
+TEST: des planètes {{a}} la portée des nouveaux vaisseaux.                              ->> à
+TEST: Il l’a fait {{a}} cause de toi.                                                   ->> à
+TEST: Seront exclus d’office tous contenus {{a}} caractère haineux                      ->> à
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -8357,7 +8362,19 @@ TEST: elle passe {{avent}} nous
 TEST: le calendrier de l’{{avant}}                                  ->> Avent
 
 
-# blanle-bas de combat
+# boue / bout
+__conf_bout_boue__
+    >joindre ?@:[WX]¿ les deux bout
+        <<- /conf/ =>> =select(\-1, ":N")
+
+    >joindre ?@:[WX]¿ les deux [>boue|bous]
+        <<- /conf/ --1>> bouts                                      && Confusion. La boue est un mélange de terre et d’eau. Pour l’extrêmité de quelque chose, écrivez “bout”.
+
+TEST: joindre les deux {{bout}}                                     ->> bouts
+TEST: joindre les deux {{boues}}                                    ->> bouts
+TEST: elle ne parvient pas à joindre les deux {{bous}}              ->> bouts
+
+# branle-bas de combat
 __conf_branle_bas_de_combat__
     [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] >combat
     [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] [con|+s] [ba|bas|bat+s|>bât]
@@ -14797,6 +14814,7 @@ __purge_locutions__
     d’ un ?tout¿ autre ordre [de|d’] grandeur
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
+    d’ une [façon|manière] aussi @:A.*:[fe]:[si] que possible
     d’ une certaine [façon|manière]
     d’ une tout autre ampleur
     d’ utilité publique
@@ -17728,6 +17746,7 @@ __da_locutions_verbales__
     >charger à blanc
     >chauffer à blanc
     >classer sans suite
+    >commencer à zéro
     >compter à rebours
     >condamner à mort
     >couler à ?grands¿ flots
@@ -17823,6 +17842,7 @@ __da_locutions_verbales__
     >prêter main forte
     >prêter main-forte
     >rebrousser chemin
+    >recommencer à zéro
     >réduire à néant
     >réduire en miettes
     >refaire surface
@@ -18206,6 +18226,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >charger a blanc
     >chauffer a blanc
     >chuter a terre
+    >commencer a zéro
     >être a bloc
     [>enfermer|>fermer|>refermer] a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
@@ -18220,6 +18241,7 @@ TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit
     >pleuvoir a >torrent
     >prendre a la légère
     >prêter a >confusion
+    >recommencer a zéro
     >réduire a néant
     >rester a >flot
     >saigner a blanc
