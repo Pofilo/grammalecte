@@ -913,6 +913,11 @@ class TextParser {
             // merge tokens
             this.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
         }
+        else if (sWhat.startsWith("␣")) {
+            sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
+            this.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
+            this.lTokens[nTokenRewriteStart]["sMergedValue"] = sWhat.slice(1);
+        }
         else if (sWhat === "_") {
             // neutralized token
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
@@ -983,6 +988,11 @@ class TextParser {
                     }
                     oToken["bMerged"] = true;
                     bKeepToken = false;
+                    if (iToken == nMergeUntil && oMergingToken.hasOwnProperty("sMergedValue")) {
+                        oMergingToken["sValue"] = oMergingToken["sMergedValue"];
+                        let sSpaceFiller = " ".repeat(oToken["nEnd"] - oMergingToken["nStart"] - oMergingToken["sMergedValue"].length);
+                        this.sSentence = this.sSentence.slice(0, oMergingToken["nStart"]) + oMergingToken["sMergedValue"] + sSpaceFiller + this.sSentence.slice(oToken["nEnd"]);
+                    }
                 }
                 if (oToken.hasOwnProperty("nMergeUntil")) {
                     if (iToken > nMergeUntil) { // this token is not already merged with a previous token

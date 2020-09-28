@@ -796,6 +796,10 @@ class TextParser:
         elif sWhat == "␣":
             # merge tokens
             self.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
+        elif sWhat.startswith("␣"):
+            sWhat = self._expand(sWhat, nTokenOffset, nLastToken)
+            self.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
+            self.lTokens[nTokenRewriteStart]["sMergedValue"] = sWhat[1:]
         elif sWhat == "_":
             # neutralized token
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -848,6 +852,10 @@ class TextParser:
                         echo("  MERGED TOKEN: " + dTokenMerger["sValue"])
                     dToken["bMerged"] = True
                     bKeepToken = False
+                    if iToken == nMergeUntil and "sMergedValue" in dTokenMerger:
+                        dTokenMerger["sValue"] = dTokenMerger["sMergedValue"]
+                        sSpaceFiller = " " * (dToken["nEnd"] - dTokenMerger["nStart"] - len(dTokenMerger["sMergedValue"]))
+                        self.sSentence = self.sSentence[:dTokenMerger["nStart"]] + dTokenMerger["sMergedValue"] + sSpaceFiller + self.sSentence[dToken["nEnd"]:]
                 if "nMergeUntil" in dToken:
                     # first token to be merge with
                     if iToken > nMergeUntil: # this token is not to be merged with a previous token
