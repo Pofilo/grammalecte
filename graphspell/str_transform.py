@@ -21,7 +21,8 @@ def getNgrams (sWord, n=2):
 #### WORD NORMALIZATION
 
 _xTransCharsForSpelling = str.maketrans({
-    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st'
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st',
+    "'": '’'
 })
 
 def spellingNormalization (sWord):

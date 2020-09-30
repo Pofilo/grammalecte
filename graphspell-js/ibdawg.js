@@ -277,9 +277,6 @@ class IBDAWG {
         if (!sWord) {
             return true;
         }
-        if (sWord.includes("'")) { // ugly hack
-            sWord = sWord.replace("'", "’");
-        }
         if (this.lookup(sWord)) {
             return true;
         }
