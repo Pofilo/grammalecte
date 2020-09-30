@@ -213,6 +213,7 @@ class SpellChecker ():
 
     def isValidToken (self, sToken):
         "checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)"
+        sToken = sToken.strip("_")
         if self.oMainDic.isValidToken(sToken):
             return True
         if self.bCommunityDic and self.oCommunityDic.isValidToken(sToken):
@@ -243,6 +244,7 @@ class SpellChecker ():
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
+        sWord = sWord.strip("_")
         if self.bStorage and sWord in self._dMorphologies:
             return self._dMorphologies[sWord]
         lMorph = self.oMainDic.getMorph(sWord)
@@ -257,6 +259,7 @@ class SpellChecker ():
 
     def getLemma (self, sWord):
         "retrieves lemmas"
+        sWord = sWord.strip("_")
         if self.bStorage:
             if sWord not in self._dLemmas:
                 self.getMorph(sWord)
@@ -265,6 +268,7 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
+        sWord = sWord.strip("_")
         if self.lexicographer:
             if sWord in self.lexicographer.dSugg:
                 yield self.lexicographer.dSugg[sWord].split("|")

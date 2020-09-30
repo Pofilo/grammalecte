@@ -278,7 +278,7 @@ class IBDAWG:
     def isValid (self, sWord):
         "checks if <sWord> is valid (different casing tested if the first letter is a capital)"
         if not sWord:
-            return None
+            return True
         if "'" in sWord: # ugly hack
             sWord = sWord.replace("'", "’")
         if self.lookup(sWord):

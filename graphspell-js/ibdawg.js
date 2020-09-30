@@ -275,7 +275,7 @@ class IBDAWG {
     isValid (sWord) {
         // checks if sWord is valid (different casing tested if the first letter is a capital)
         if (!sWord) {
-            return null;
+            return true;
         }
         if (sWord.includes("'")) { // ugly hack
             sWord = sWord.replace("'", "’");
