@@ -22,7 +22,7 @@ def timeblock (label, hDst=None):
         yield
     finally:
         end = time.perf_counter()
-        print('{:<20} : {}'.format(label, end - start))
+        print('{:<20} : {}'.format(label, end-start))
         if hDst:
             hDst.write("{:<12.6}".format(end-start))
 
@@ -42,12 +42,16 @@ class TestDictionary (unittest.TestCase):
         for sWord in ["Branche", "BRANCHE", "BranchE", "BRanche", "BRAnCHE", "émilie"]:
             self.assertFalse(self.oDic.lookup(sWord), sWord)
 
+    def test_isvalidtoken (self):
+        for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd'hui", "aujourd’hui", "Aujourd'hui", "Aujourd’hui", "je-suis-vraiment-fatigué", ""]:
+            self.assertTrue(self.oDic.isValidToken(sWord), sWord)
+
     def test_isvalid (self):
-        for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd'hui", "aujourd’hui", "Aujourd'hui", "Aujourd’hui"]:
+        for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd’hui", "Aujourd’hui"]:
             self.assertTrue(self.oDic.isValid(sWord), sWord)
 
     def test_isvalid_failed (self):
-        for sWord in ["BranchE", "BRanche", "BRAnCHE", "émilie", "éMILIE", "émiLie"]:
+        for sWord in ["BranchE", "BRanche", "BRAnCHE", "émilie", "éMILIE", "émiLie", "aujourd'hui", "Aujourd'hui", ]:
             self.assertFalse(self.oDic.isValid(sWord), sWord)
 
     def test_suggest (self):
