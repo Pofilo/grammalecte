@@ -751,23 +751,28 @@ __<i>/html(p_html_nbsp2)__              &#(?:160|8239); <<- ~>> @
 __<i>/html(p_html_pseudo_balise1)__     \[(?:[buiqa]|blockquote|quote)\] <<- ~>> *
 __<i>/html(p_html_pseudo_balise2)__     \[/\w+\] <<- ~>> *
 
+TEST: __html__  des <b>{{homme}}</b>                            ->> hommes
+TEST: __html__  des [b]{{femme}}[/b]                            ->> femmes
+TEST: __html__  il est venu&nbsp;: c’était bien…
+
+
 # LaTeX
 __<i]/latex(p_latex1)__     \\[a-z]+ <<- ~>> *
 __<i>/latex(p_latex2)__     \\[,;/\\] <<- ~>> *
 __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
 
 # Markdown
-__<s>/md(p_md_span_ouvrant)__   " ([*_]+)\w" @@1 <<- ~1>> *
-__<i>/md(p_md_span_fermant)__   "[a-z0-9àéîïôûüù]([*_]+)[,.;:!?) ]" @@1 <<- ~1>> *
+__<s>/md(p_md_span_ouvrant)__   "(?:[   ]|^)([*_]+)\w" @@1 <<- ~1>> *
+__<i>/md(p_md_span_fermant)__   "[a-z0-9àéîïôûüù]([*_]+)(?:[,.;:!?)   ]|$)" @@1 <<- ~1>> *
 __<s>/md(p_md_titre_début)__    "^#+" <<- ~>> *
 __<s>/md(p_md_titre_fin)__      "#+ *$" <<- ~>> *
 __<s>/md(p_md_liste)__          "^ *[*+] " <<- ~>> *
 __<s>/md(p_md_citation)__       "^>[ >]+ " <<- ~>> *
 
-TEST: __html__  des <b>{{homme}}</b>
-TEST: __html__  des [b]{{femme}}[/b]
-TEST: __html__  il est venu&nbsp;: c’était bien…
-TEST: __md__    ces **{{femme}}**
+TEST: __md__    ces **{{femme}}**                               ->> femmes
+TEST: __md__    _il {{peux}}_ y parvenir                        ->> peut
+TEST: __md__    # elle {{prends}} le chemin                     ->> prend
+
 
 
 !!
@@ -1744,13 +1749,15 @@ __purge_mot_nombre_parenthèses_crochets_accolades__
         <<- ~>> *
 
     (  [re|ré]  )  *WORD
+    [  [re|ré]  ]  *WORD
         <<- space_after(\3, 0, 0) ~1:3>>  *
 
     [  *NUM  ]
     [  …  ]
         <<- ~>> *
 
-    [  *WORD  ]
+    **  [  *WORD  ]  **
+        <<- space_after(\1, 1, 3) and space_after(\-2, 1, 3) >>>
         <<- morph(\2, ":G") ~>> |\2|
         <<- __else__ ~>> *
 
@@ -2155,6 +2162,15 @@ __tag_verbes__
         <<- />> _en_
 
 
+__tag_usage_pronominal__
+    [se|s’]     ?[le|la|l’|les|en|y]¿  $:V¬:G
+    je          ?[ne|n’]¿  [me|m’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
+    tu          ?[ne|n’]¿  [te|t’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
+    nous        ?[ne|n’]¿  nous     ?[le|la|l’|les|en|y]¿  $:V¬:G
+    vous        ?[ne|n’]¿  vous     ?[le|la|l’|les|en|y]¿  $:V¬:G
+        <<- /-1>> _upron_
+
+
 __tag_prop__
     à [qui|quoi]
     auquel
@@ -2168,6 +2184,9 @@ __tag_prop__
 
     ce [que|qu’]
         <<- />> _ceque_|_propsub_
+
+    ce qui
+        <<- />> _cequi_|_propsub_
 
     comme
         <<- />> _comme_
@@ -2242,6 +2261,15 @@ __fusions_mots_grammaticaux__
     quelqu’ [un|une]
         <<- ~>> ␣
         <<- =>> change_meta(\1, "WORD")
+
+
+    [  [m|t|s]  ]  [a|on|es]
+    [  [n|v]    ]  [otre|ôtre]
+        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and space_after(\3, 0, 0) ~>> ␣\2\4
+        <<- =>> change_meta(\1, "WORD")
+
+TEST: [s]es {{homme}}                                           ->> hommes
+TEST: des effets sur [s]es états d’âme, [s]on corps
 
 
 __fusions_noms_communs__
@@ -2447,6 +2475,7 @@ __inte_verbes_composés_interrogatifs__
         <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") ->> =suggVerb(\1, ":1ś", None, True)                && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":1[sśŝ]", False, True)    && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- />> -je|_VCint_
+        <<- value(<1, "|me|m’|") />> _upron_
 
     aie-je
         <<- /vmode/ ->> ai-je                                                                       && Forme interrogative. N’employez pas le subjonctif présent.
@@ -2455,29 +2484,34 @@ __inte_verbes_composés_interrogatifs__
         <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", None, True)            && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":2s", False, True)        && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- />> -tu|_VCint_
+        <<- value(<1, "|te|t’|") />> _upron_
 
     ~\w-[iI]l$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"              && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                 && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:t|voilà)/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -il|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[eE]lle$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"    && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)       && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -elle|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]el$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"    && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)       && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -iel|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[oO]n$
         <<- /inte/ morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                    && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -on|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[cCs]e$
         <<- /inte/ morphVC(\1, ":V", ":(?:3s|V0e.*:3p)")
@@ -2486,21 +2520,25 @@ __inte_verbes_composés_interrogatifs__
         ->> =suggSimil(\1, ":3s", False, True)              && Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- /conf/ \1.endswith("se") ->> =\1[:-2]+"ce"      && Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- />> -ce|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]ls$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -ils|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[eE]lles$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -elles|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]els$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -iels|_VCint_
+        <<- value(<1, "|se|s’|") />> _upron_
 
 TEST: {{Vas-je}}                                            ->> Vais-je
 TEST: mais {{aie-je}} seulement le choix ?                   ->> ai-je
@@ -8850,6 +8888,7 @@ __conf_coup_cout_cou1__
 
     violence des [>cou|>coût|>cout]
     violence [de|d’] [ces|mes|tes|ses|nos|vos|leurs] [>cou|>coût|>cout]
+    quatre >cent [>cou|>coût|>cout]
         <<- /conf/ --1>> coups          && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
 
     [>cou|>coup] de [>base|revient|reviens|>distribution|>développement|>production|>maintenance|>construction|>fonctionnement|>fabrication|>financement|>formation|>renonciation|>stockage|>transaction|>transfert|>transport|>transformation|>viabilisation]
@@ -11997,8 +12036,8 @@ __conf_toi_toit__
         <<- /conf/ --1>> toi                        && Confusion. Le toit est constitué d’une toiture. Pour le pronom personnel à la 2ᵉ personne, écrivez “toi”.|https://fr.wiktionary.org/wiki/toi
 
     [sous|sur] [mon|ton|son|notre|votre|leur] toi
-    [sous|sur] [le|ce|un] toi
-        <<- /conf/ -3>> toit                        && Confusion : “toi” est le pronom personnel à la 2ᵉ personne. Pour évoquer le sommet d’un bâtiment, écrivez “toit”.|https://fr.wiktionary.org/wiki/toit
+    [sous|sur] [le|ce|un] ?même¿ toi
+        <<- /conf/ --1>> toit                       && Confusion : “toi” est le pronom personnel à la 2ᵉ personne. Pour évoquer le sommet d’un bâtiment, écrivez “toit”.|https://fr.wiktionary.org/wiki/toit
 
 TEST: ce n’est pas contre {{toit}}
 TEST: sous son {{toi}}, c’est sa loi qui prime.
@@ -12609,7 +12648,7 @@ __maj_gentilés__
             or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:f:[si]") )
             or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
-            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
+            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|argotique|correct|courant|parfait|facile|haché|aisé|impeccable|incompréhensible|prononcé|baragouiné)") ) )
         -1>> =\1.capitalize()                                                                       && S’il s’agit d’un gentilé, mettez une majuscule.
 
     [un|une|certains|certaines|maints|maintes|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européen|>parisien|>lyonnais|>marseillais|>lillois|>toulousain|>nantais|>strasbourgeois|>montpelliérain|>bordelais|>bruxellois|>montréalais|>londonien|>genévois|>zurichois|>bâlois|>berlinois|>romain|>californien]
@@ -14081,6 +14120,7 @@ __purge_locutions_temporelles_diverses__
     dès [maintenant|lors|aujourd’hui]
     dès [mon|ton|son|notre|votre|leur] plus jeune âge
     dès [ma|ta|sa|notre|votre|leur] première rencontre
+    dès potron-minet
     dès que possible
     déjà
     désormais
@@ -14828,7 +14868,7 @@ __purge_locutions__
     [de|d’] ?[assez|si|très|trop]¿ haut [rang|vol]
     [de|d’] ?[assez|si|très|trop]¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
     [de|d’] *NUM %
-    [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|plain-pied|préférence|rechange|routine|surcroît|surcroit|traviole|visu]
+    [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|plain-pied|pacotille|préférence|rechange|routine|surcroît|surcroit|traviole|visu]
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
@@ -14954,7 +14994,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ bas âge
     en ?[assez|si|très|trop]¿ bon état ?général¿
     en ?[assez|si|très|trop]¿ bon état [de|d’] [fonctionnement|marche]
-    en ?[assez|si|très|trop]¿ bonne [compagnie|place|posture|voie]
+    en ?[assez|si|très|trop]¿ bonne [compagnie|logique|place|posture|voie]
     en bonne et due forme
     en ?[assez|si|très|trop]¿ bonne santé ?[générale|physique|mentale|psychique]¿
     en bout [de|d’] course
@@ -15191,7 +15231,7 @@ __purge_locutions__
     par acquit [de|d’] conscience
     par [beau|mauvais] temps
     par bien des [aspects|côtés]
-    par bonté [de|d’] [âme|cœur]
+    par ?[pure|simple]¿ bonté [de|d’] [âme|cœur]
     par ce biais
     par certains [aspects|côtés]
     par définition
@@ -15387,7 +15427,7 @@ __purge_locutions__
     tout [bonnement|simplement]
     tout au plus
     tout aussi bien
-    tout bien [considéré|réfléchi]
+    tout bien [considéré|réfléchi|pesé]
     tout compte fait
     tout [de|d’] même ?[pas|jamais]¿
     tout du long
@@ -16054,6 +16094,8 @@ __substantifs_multi_mots__
     ayants droit
     >bac à légumes
     >bain [de|d’] sang
+    >balle [de|d’] [tennis|ping-pong]
+    >ballon [de|d’] [foot|football|rubgy]
     >banc [de|d’] touche
     >bandit [de|d’] grand chemin
     >bandit [de|d’] grands chemins
@@ -16073,6 +16115,7 @@ __substantifs_multi_mots__
     >bonnet [de|d’] nuit
     [bonne+s|>bonniche] à tout faire
     >boucle d’ >oreille
+    >bouffée d’ air [frais|pur]
     >bout [de|d’] gras
     bras d’ honneur
     bras [de|d’] fer
@@ -16165,6 +16208,7 @@ __substantifs_multi_mots__
     >compte offshore
     concours [de|d’] beauté
     >conférence [de|d’] presse
+    >conflit d’ intérêts
     >congé [maternité|paternité]
     >conseiller d’ orientation [scolaire|professionnelle]
     >connexion ?à¿ Internet
@@ -16218,7 +16262,7 @@ __substantifs_multi_mots__
     >drogue [de|d’] synthèse
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
-    >écart [de|d’] conduite
+    >écart [de|d’] [conduite|langage]
     >économie [de|d’] >bout [de|d’] >chandelle
     >économie [de|d’] [échelle|guerre]
     >écran [de|d’] fumée
@@ -16246,7 +16290,7 @@ __substantifs_multi_mots__
     >escroquerie à l’ assurance
     >espérance [de|d’] vie
     >espérance [de|d’] vie en bonne santé
-    >état [de|d’] [âme|esprit|urgence|conservation|fait]
+    >état [de|d’] [âme|conservation|esprit|fait|service|urgence]
     >état d’ extrême urgence
     >état [de|d’] l’ art
     >étoile [de|d’] mer
@@ -16260,6 +16304,7 @@ __substantifs_multi_mots__
     faits et gestes
     farces et attrapes
     >fard à [joues|paupières]
+    >fée du logis
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage|paix|parole|pouvoir|valeur]
     >femme d’ âge mûr
     >femme à poigne
@@ -16350,10 +16395,11 @@ __substantifs_multi_mots__
     >invité surprise
     >issue [de|d’] secours
     >jeu d’ [échecs|enfant]
-    >jeu [de|d’] [dupes|>rôle]
+    >jeu [de|d’] [cartes|dupes|>rôle|société]
     >journal [de|d’] bord
     >journal à >sensation
     >juge d’ instruction
+    jus [de|d’] chaussettes ?sales¿
     >langue [de|d’] bois
     >lame [de|d’] fond
     >lampe à [huile|incandescence|pétrole]
@@ -16381,7 +16427,7 @@ __substantifs_multi_mots__
     >longueur d’ avance
     >lune [de|d’] miel
     >lutte à outrance
-    >machine à [café|coudre|écrire|laver|sous|voter]
+    >machine à [café|coudre|écrire|laver|sous|vapeur|voter]
     >machine à remonter le temps
     >machine [de|d’] guerre
     >maillot [de|d’] bain
@@ -16442,6 +16488,7 @@ __substantifs_multi_mots__
     >opération [de|d’] nuit
     >ordre du jour
     orge [perlé|mondé|carré]
+    >outrage à personne dépositaire de l’ autorité publique
     >nuit [de|d’] noces
     >pacte [de|d’] [non-agression|sang]
     >pain au levain ?liquide¿
@@ -16471,6 +16518,7 @@ __substantifs_multi_mots__
     >pièce à conviction
     >pièce [de|d’] [théâtre|monnaie|rechange]
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >pied [de|d’] biche
     >pile à [combustible|hydrogène]
     >pince à linge
     [>piqûre|>piqure] [de|d’] rappel
@@ -16529,6 +16577,7 @@ __substantifs_multi_mots__
     >rayon [de|d’] soleil
     >réaction en [chaîne|chaine]
     >région Grand Est
+    >règle d’ or
     >règle [de|d’] base
     >règlement [de|d’] comptes
     >relation à distance
@@ -16595,6 +16644,7 @@ __substantifs_multi_mots__
     >système d’ exploitation
     >système [de|d’] santé
     >système D
+    >tabac à [chicha|chiquer|mâcher|priser|rouler|rouler]
     >tableau [de|d’] chasse
     >table à repasser
     >table [de|d’] [calcul|chevet|nuit]
@@ -16657,6 +16707,7 @@ __substantifs_multi_mots__
     vacances d’ [automne|été|hiver]
     >vache à lait
     >vague à l’ âme
+    >valet [de|d’] [chambre|pied]
     >vecteur [>accélération|>position|>rotation|>vitesse]
     >véhicule [de|d’] location
     >vente à [découvert|domicile|emporter]
@@ -17178,7 +17229,7 @@ __purge_avant_adjectifs_adverbes__
         <<- ~3:4>> *
 
     la  @:[NAQ].*:[fe]¬:G  la  plus  @:A.*:[fe]
-        <<- ~3:4>> *
+        <<- not(value(\2, "|fois|") and value(<1, "|à|")) ~3:4>> *
 
     [les|mes|tes|ses|nos|vos|leurs]  @:[NA].*:[pi]¬:[123][sp]  les  plus  @:A.*:[pi]
         <<- ~3:4>> *
@@ -18121,12 +18172,6 @@ TEST: Tout est bien qui finit bien.
 TEST: on est tous à la base basé sur quelque chose
 TEST: seulement, c’était la dernière chose au monde qu’il ambitionnât
 TEST: Ceux que tu convoques en tant que témoins
-TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
-TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
-TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
-TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
-TEST: Il faut donc examiner ensemble les panneaux et les parois latéraux.
-TEST: Il faut donc examiner ensemble les panneaux et les parois latérales.
 TEST: Les chevaux tapaient du fer, culaient aux ridelles et grinçonnaient sur les mors et dans les sonnailles. Enfin, la voiture de Randoulet prit de l’erre, doucement à travers les terres meubles qui entouraient la ferme.
 TEST: Aller grand-erre : Aller bon train, aller vite.
 TEST: Par monts, par vaux, le drôle allait déjà grand-erre.
@@ -18141,6 +18186,8 @@ TEST: pour quoi faire ?
 TEST: elle s’est servie de son enfant
 TEST: ce jour verrait la violence se déchaîner, le sang couler, le chaos tout emporter
 TEST: À l’origine spécifiquement américain, le mouvement complotiste QAnon n’en commence pas moins à faire des petits en Europe.
+TEST: je mesure tout ce qu’a d’ardu la condition de nos délégués dans les pays neutres.
+TEST: C’est à la fois la plus intéressante du livre et la plus délicate.
 
 
 @@@@
@@ -18428,7 +18475,7 @@ __conf_être_accro__
     >accroc aux [antidépresseurs|anti-dépresseurs|bonbons|hommes|mecs|femmes|gonzesses|médicaments|médocs|jeux|séries|sucreries]
         <<- /conf/ -1>> =\1.replace("oc", "o")      && Confusion : “accroc” signifie “déchirure”, “incident”, etc. tandis que “accro” est un terme familier qui signifie “dépendant”.
 
-    >faire [un|des] >accro  à [des|mes|tes|ses|nos|vos|leurs] [principes|collants]
+    >faire [un|des] >accro  à [des|ces|mes|tes|ses|nos|vos|leurs] [principes|collants]
     >faire [un|des] >accro  à [mon|ton|son|notre|votre|leur] [caleçon|pantalon]
     >faire [un|des] >accro  à [la|ma|ta|sa|notre|votre|leur] [chemise|chemisier|culotte|jupe|veste]
     >faire [un|des] >accro  aux [principes|collants|caleçons|pantalons|chemises|chemisiers|culottet|jupes|vestes]
@@ -20327,6 +20374,20 @@ TEST: Elle prend son {{mal en patiente}}.
 TEST: Il {{prie}} une fois de plus son mal en patience.
 
 
+# prit / prie
+__conf_prie_prit__
+    [me|te|le|la|nous|vous|les] prit [de|d’] [ne|n’|me|m’|te|t’|se|s’]
+    [me|te|le|la|nous|vous|les] prit [de|d’] [le|la|l’|les|en|nous|vous|lui|leur|y]  $:Y
+    [me|te|le|la|nous|vous|les] prit [de|d’] [nous|vous]     [le|la|l’|les|en|y]     $:Y
+    [me|te|le|la|nous|vous|les] prit [de|d’] [le|la|l’|les]  [lui|leur|en|y]         $:Y
+    [me|te|le|la|nous|vous|les] prit [de|d’] [lui|leur|y]    en                      $:Y
+    [me|te|le|la|nous|vous|les] prit [de|d’] $:Y
+        <<- /conf/ not tag_before(\1, "_cequi_") -2>> prie              && Confusion probable. Si vous voulez dire “prier de faire quelque chose”, écrivez “prie”.|https://fr.wiktionary.org/wiki/prier
+
+TEST: elle me {{prit}} d’obéir
+TEST: je ne sais pas ce qui me prit de lui écrire
+
+
 # prêt / près / pré
 __conf_suivre_de_près__
     >suivre ?[ça|cela|ceci]¿ de [>prêt|>pré]
@@ -20590,6 +20651,7 @@ __conf_tache_tâche__
 
     [>nom|>honneur|>réputation|>vêtement] sans >tâche
     >faire tâche
+    >maculer [de|d’] >tâche
     [>nettoyer|>laver|>essuyer|>gratter]  $:D  >tâche
         <<- /conf/ --1>> =\-1.replace("â", "a").replace("Â", "A")
         && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
@@ -20989,6 +21051,10 @@ __gn_la_2m__
 TEST: La plus grande {{cinglé}}.
 TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.
 TEST: je voyais de la pluie {{noires}}
+TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
+TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
 
 
 __gn_leur_1m__
@@ -21533,6 +21599,8 @@ TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
 TEST: les agrandissements photo
+TEST: Il faut donc examiner ensemble les panneaux et les parois latéraux.
+TEST: Il faut donc examiner ensemble les panneaux et les parois latérales.
 
 
 __gn_leurs_1m__
@@ -23606,6 +23674,9 @@ __infi_qqch_de__
     à [condition|défaut|même]                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à \2 de”, le verbe devrait être à l’infinitif.
 
+    à deux doigts                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à deux doigts de”, le verbe devrait être à l’infinitif.
+
     à >seul >fin                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à seule fin de”, le verbe devrait être à l’infinitif.
 
@@ -23727,6 +23798,7 @@ __infi_qqch_de__
     sous peine                                  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “sous peine de”, le verbe devrait être à l’infinitif.
 
+TEST: à deux doigts de la {{dénoncée}} aux autorités                                                ->> dénoncer
 TEST: afin de leur {{percée}} une ouverture                                                         ->> percer
 TEST: en train de {{percées}}                                                                       ->> percer
 TEST: au lieu de la {{travaillée}}, elle restait les bras ballants                                  ->> travailler
@@ -24031,6 +24103,7 @@ TEST: ils voulaient les damnés prêts à se battre comme des lions
 __infi_devoir_pouvoir_savoir_vouloir_interrogatif!5__
     /_VCint_  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
+            and not( tag(\1, "_upron_") and morphVC(\1, ">(?:savoir|vouloir)/") and morph(\-1, ":[AQ]") )
         --1>> =suggVerbInfi(\-1)                                                        && Après “\1”, le verbe devrait être à l’infinitif.
 
     /_VCint_  [le|la|l’|les]  *WORD
@@ -25019,17 +25092,23 @@ TEST: Le mieux serait de le faire glisser
 
 __tag_locutions_verbales_d_état__
     ## verbes d’état
+
     [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]
-        <<- />> _VE_
+        <<- /1>> _VE_
+
+    /_VCint_
+        <<- morph(\1, ":V[0-3]e") /1>> _VEI_
+
 
     ## locutions verbales d’état
+
     >avoir [été|semblé|paru]
     >avoir [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir [envie|horreur|peur]                               [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir l’ [envie|exigence|illusion|impression|intention]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir le [désir|sentiment]                               [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir la ?ferme¿ [intention|volonté]                     [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    [>être|>sembler|>demeurer|>paraître|>paraitre] [loin|près] d’ [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir [envie|horreur|peur]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    [>être|>sembler|>demeurer|>paraître|>paraitre] [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     [>être|>sembler] [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
@@ -25045,15 +25124,87 @@ __tag_locutions_verbales_d_état__
         <<- />> _LVE_
         <<- /-1>> _LVEF_
 
-    ## locutions verbales d’état pronominales
-    [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
-        <<- /1>> _VEP_
+    /_VCint_  [été|semblé|paru]
+    /_VCint_  [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  [envie|horreur|peur]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+        <<- morphVC(\1, ">avoir/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
 
-    >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+        <<- morphVC(\1, ">(?:être|sembler|demeurer|para[îi]tre)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
+        <<- morphVC(\1, ">(?:être|sembler)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+        <<- morphVC(\1, ">(?:aller|adorer|affirmer|aimer|croire|déclarer|désirer|détester|devoir|dire|estimer|imaginer|para[îi]tre|penser|pouvoir|préférer|risquer|savoir|sembler|souhaiter|vouloir)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  ?[en|y]¿ être [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
+    /_VCint_  ?[en|y]¿ avoir [été|semblé|paru]
+        <<- morphVC(\1, ">(?:adorer|affirmer|aimer|croire|déclarer|désirer|détester|devoir|dire|estimer|imaginer|para[îi]tre|penser|pouvoir|préférer|risquer|savoir|sembler|souhaiter|vouloir)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+        <<- morphVC(\1, ">(?:arriver|commencer|parvenir|renoncer|réussir|travailler)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+        <<- morphVC(\1, ">(?:cesser|continuer|craindre|demander|exiger|redouter|rêver|refuser|risquer|venir)/") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+    /_VCint_  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible] [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+        <<- morphVC(\1, ":V[0-3]e") >>>
+        <<- /1>> _LVEID_
+        <<- />> _LVEI_
+        <<- /-1>> _LVEIF_
+
+
+    ## locutions verbales d’état pronominales
+
+    [me|m’] ?[en|y]¿ [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
+    [te|t’] ?[en|y]¿ [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
+    nous    ?[en|y]¿ [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
+    vous    ?[en|y]¿ [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
+    [se|s’] ?[en|y]¿ [>avouer|>faire|>montrer|>penser|>révéler|>savoir|>sentir|>tenir|>voir|>vouloir]
+        <<- /-1>> _VEP_
+
+    [me|m’] ?[en|y]¿ /-je
+    [te|t’] ?[en|y]¿ /-tu
+    nous    ?[en|y]¿ /-nous
+    vous    ?[en|y]¿ /-vous
+    [se|s’] ?[en|y]¿ [/-il|/-elle|/-on|/-iel|/-ils|/-elles|/-iels]
+        <<- morphVC(\-1, ">(?:avouer|faire|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir)/") /-1>> _VEPI_
+
     >efforcer  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
         <<- /1>> _LVEPD_
         <<- />> _LVEP_
         <<- /-1>> _LVEPF_
+
+    /_VCint_  [de|d’] ?[ne|n’]¿ ?[en|y]¿  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+        <<- morphVC(\1, ">efforcer/") >>>
+        <<- /1>> _LVEPID_
+        <<- />> _LVEPI_
+        <<- /-1>> _LVEPIF_
 
 
 
@@ -25438,6 +25589,32 @@ __ppas_je_tu_verbe_état__
     tu         ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:[NAQ].*:p¬:[GWYsi]
         <<- /ppas/ not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggSing(\-1)                                  && Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
+    [/-je|/-tu]  @:(?:[123][sp]|Y|[NAQ].*:p)¬:[GWsi]
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggSing(\2)                                              && Accord avec “\1” : “\2” devrait être au singulier.
+
+    [/-je|/-tu]  @:(?:[123][sp]|[NAQ].*:p)¬:[GWYsi]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggSing(\2)                                              && Accord avec “\1” : “\2” devrait être au singulier.
+
+    /-je  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_     @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le sujet “je” : “\-1” devrait être au singulier.
+
+    /-tu  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_     @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le sujet “tu” : “\-1” devrait être au singulier.
+
+    [me|m’]  /-je  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_VEPI_") --1>> =suggSing(\-1)               && Accord avec le sujet “je” : “\-1” devrait être au singulier.
+
+    [te|t’]  /-tu  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_VEPI_") --1>> =suggSing(\-1)               && Accord avec le sujet “tu” : “\-1” devrait être au singulier.
+
+    [me|m’]  /-je  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_LVEPID_") --1>> =suggSing(\-1)             && Accord avec le sujet “je” : “\-1” devrait être au singulier.
+
+    [te|t’]  /-tu  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_LVEPID_") --1>> =suggSing(\-1)             && Accord avec le sujet “tu” : “\-1” devrait être au singulier.
+
 TEST: j’étais {{perdus}}                                                          ->> perdu
 TEST: j’aurais été {{perdus}} sans toi                                            ->> perdu
 TEST: je n’étais pas {{perdus}}                                                   ->> perdu
@@ -25479,6 +25656,17 @@ TEST: je ne m’avouais pas {{vaincus}}
 TEST: je me tenais {{informées}} des derniers évènements
 TEST: quand tu te montres {{infaillibles}}
 TEST: tu te tiens {{prêts}}
+TEST: serais-je {{fâchés}} contre vous ?
+TEST: Demeurerais-je {{dingues}} d’elle ?
+TEST: Es-tu {{arriver}} ?
+TEST: Es-tu déjà {{arriver}} ?
+TEST: Resteras-tu {{amorphes}} encore longtemps ?
+TEST: imaginais-je être {{invincibles}}                                             ->> invincible
+TEST: sembles-tu devenir plus {{habiles}}                                           ->> habile
+TEST: me révélais-je {{faibles}}                                                    ->> faible
+TEST: te sais-tu {{vaincus}}                                                        ->> vaincu
+TEST: m’efforcerais-je d’être {{convaincus}} par ces sottises ?                     ->> convaincu
+TEST: t’efforceras-tu de devenir {{humbles}} en sa présence ?                       ->> humble
 TEST: je voudrais bien être dans ses souliers
 
 
@@ -25498,7 +25686,34 @@ __ppas_3sg_mas_verbe_état__
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
+        --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    /-il  @:(?:[123][sp]|Y|[NAQ].*:[pf])¬:(?:G|W|[me]:[si])
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:[123]s") and not value(\-1, "|légion|néant|réalité|question|")
+        -2>> =suggMasSing(\2)                                                                       && Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
+
+    /-il  @:(?:[123][sp]|[NAQ].*:[pf])¬:(?:G|W|Y|[me]:[si])
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:[123]s") and not value(\-1, "|légion|néant|réalité|question|")
+        -2>> =suggMasSing(\2)                                                                       && Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
+
+    /-il  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":3s") and not value(\-1, "|légion|néant|réalité|question|")
+        --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “il” : “\-1” devrait être au masculin singulier.
+
+    [se|s’]  /-il  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3s") and not value(\-1, "|légion|néant|réalité|question|")
+        --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “il” : “\-1” devrait être au masculin singulier.
+
+    [se|s’]  /-il  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3s") and not value(\-1, "|légion|néant|réalité|question|")
+        --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “il” : “\-1” devrait être au masculin singulier.
+
+    /-ce  *WORD
+        <<- /ppas/ morphVC(\1, ":V0e.*:3s") and morph(\2, ":(?:[123][sp]|[AQ].*:[pf])", ":(?:G|W|Y|[me]:[si])")
+        -2>> =suggMasSing(\2)                                           && Accord avec le sujet “\1” : “\2” devrait être au masculin singulier.
+        <<- /ppas/ __else__ and morphVC(\1, ":V0e.*:3p") and morph(\2, ":(?:[123][sp]|[AQ].*:[sf])", ":(?:G|W|Y|[me]:[pi])")
+        -2>> =suggMasPlur(\2)                                           && Accord avec le sujet “\1” : “\2” devrait être au masculin pluriel.
 
     ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
@@ -25612,6 +25827,24 @@ TEST: il se révéla totalement {{incapables}} d’y parvenir.
 TEST: ceci se veut {{différents}} des autres.
 TEST: celui-là qui ne se montre jamais {{reconnaissants}}
 TEST: lequel se veut {{imbattables}} ?
+TEST: Est-il {{arriver}} ?
+TEST: Est-il déjà {{arriver}} ?
+TEST: N’est-il pas {{aveugles}}
+TEST: Est-il souvent {{arrivait}} de se tromper ?
+TEST: Était-il {{prit}} dans la tourmente ?
+TEST: Serait-il {{reconnut}} dans la tourmente ?
+TEST: restera-t-il coûte que coûte {{connut}} du grand public
+#TEST: Semblait-il {{fatiguées}} ?
+TEST: était-ce {{difficiles}}
+TEST: étaient-ce {{grande}} intentions qui nous sauveraient ?
+TEST: sait-il être {{surveillées}}                                                  ->> surveillé
+TEST: se révéla-t-il {{faibles}}                                                    ->> faible
+TEST: s’efforce-t-il de paraître {{savante}}                                        ->> savant
+TEST: Est-ce former de futurs travailleurs ou bien des citoyens
+TEST: Est-ce peine perdue ?
+TEST: semble-t-il savoir de quoi il parle ?
+TEST: Parait-il ennuyer l’assistance ?
+TEST: Est-il question de ceci ou de cela ?
 TEST: C’est donc seules que les deux femmes sont amenées à comparaître
 TEST: C’eût été pure imagination.
 TEST: Je n’arrêtais pas de me répéter que tout cela était peut-être pure imagination
@@ -25634,25 +25867,46 @@ __ppas_3sg_fem_verbe_état__
     ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
         <<- /ppas/ not tag(\1, "_enum_") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggFemSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+        --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
     ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggFemSing(\-1) && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
+        --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
+
+    /-elle  @:(?:[123][sp]|Y|[NAQ].*:[pm])¬:(?:G|W|[fe]:[si])
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:[123]s") and not value(<1, "|se|s’|")
+        -2>> =suggFemSing(\2)                                                                       && Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
+
+    /-elle  @:(?:[123][sp]|[NAQ].*:[pm])¬:(?:G|W|Y|[fe]:[si])
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:[123]s")
+        -2>> =suggFemSing(\2)                                                                       && Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
+
+    /-elle  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":3s") and not value(\-1, "|néant|")
+        --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “elle” : “\-1” devrait être au féminin singulier.
+
+    [se|s’]  /-elle  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3s") and not value(\-1, "|néant|")
+        --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “elle” : “\-1” devrait être au féminin singulier.
+
+    [se|s’]  /-elle  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3s") and not value(\-1, "|néant|")
+        --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “elle” : “\-1” devrait être au féminin singulier.
 
     laquelle ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     laquelle ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
     laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-        <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)                                                          && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+        <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)                                      && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
     [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[fe]:[si])
     [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[fe]:[si])
     [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|[fe]:[si])
     [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|[fe]:[si])
-        <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and morph(\1, ":(?:[123]s|P)")
+        <<- /ppas/ not value(\-1, "|néant|") and morph(\1, ":(?:[123]s|P)")
         --1>> =suggFemSing(\-1)                                                                     && Accord erroné : “une” et “\-1” ne sont pas accordés, l’adjectif devrait être au féminin singulier.
 
 TEST: elle a été {{perdu}} par ses parents                                          ->> perdue
@@ -25696,11 +25950,35 @@ TEST: Une de nos fleurs n’est pas {{fané}}                                   
 TEST: Une de leurs fleurs n’y semble pas {{arrosé}}                                 ->> arrosée
 TEST: une des mères se fait {{beau}}                                                ->> belle
 TEST: une de mes amies s’y efforçait de paraître {{désintéressé}}                   ->> désintéressée
+TEST: croit-elle devenir aussi {{fortes}} que son amie                              ->> forte
 TEST: Elle se sait plus {{fortes}} qu’eux tous.
 TEST: elle se vit {{abandonné}}
 TEST: à celle qui se révélera {{attentif}} à tous ces problèmes.
 TEST: laquelle ne se sentit {{légitimes}} malgré ses compétences dans ce domaine.
+TEST: Est-elle {{arriver}} ?
+TEST: Est-elle déjà {{arriver}} ?
+TEST: Était-elle {{fatiguer}} ?
+TEST: Paraissait-elle {{surpris}} ?
+TEST: se pensait-elle {{vaincus}}                                                   ->> vaincue
+TEST: s’efforce-t-elle de paraître {{fortes}}                                       ->> forte
 TEST: elle se sent vide.
+TEST: elle est néant
+
+
+__ppas_inversion_être_on__
+    /-on  @:(?:[123][sp]|Y)¬:[GWQ]
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
+        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “on”.
+
+    /-on  @:[123][sp]¬:[GWYQ]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “on”.
+
+TEST: est-on déjà {{passer}} de ce côté-là
+TEST: Aurait-on déjà {{finit}} notre tour du monde ?
+TEST: Deviendrait-on {{meurtrit}} ?
+TEST: parait-on {{désespérait}} à ce point
+TEST: ne serait-on pas surpris par la mort
 
 
 __ppas_iel_verbe_état__
@@ -25709,7 +25987,24 @@ __ppas_iel_verbe_état__
     iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[NAQ].*:p¬:[GWYsi]
     iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:p¬:[GWYsi]
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(<1, ":[RV]") and morph(\1, ":(?:3s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggSing(\-1)                                                                                            && Accord avec le sujet “iel” : “\-1” devrait être au pluriel.
+        --1>> =suggSing(\-1)                                                                        && Accord avec le sujet “iel” : “\-1” devrait être au pluriel.
+
+    /-iel  @:(?:[123][sp]|Y|[NAQ].*:p)¬:[GWsi]
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:[123]s")
+        -2>> =suggSing(\2)                                                                          && Accord avec le sujet “iel” : “\2” devrait être au singulier.
+
+    /-iel  @:(?:[123][sp]|[NAQ].*:p)¬:[GWYsi]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:[123]s")
+        -2>> =suggSing(\2)                                                                          && Accord avec le sujet “iel” : “\2” devrait être au singulier.
+
+    /-iel  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ morphVC(\1, ":3s") --1>> =suggSing(\-1)                                          && Accord avec le sujet “iel” : “\-1” devrait être au singulier.
+
+    [se|s’]  /-iel  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3s") --1>> =suggSing(\-1)                    && Accord avec le sujet “iel” : “\-1” devrait être au singulier.
+
+    [se|s’]  /-iel  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:[NAQ].*:p¬:[GWYsi]
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3s") --1>> =suggSing(\-1)                  && Accord avec le sujet “iel” : “\-1” devrait être au singulier.
 
 TEST: iel paraît {{faibles}}
 TEST: iel paraît avoir été complètement {{prises}} de panique.
@@ -25723,6 +26018,11 @@ TEST: iel reste susceptible de devenir {{dingues}}
 TEST: iel s’efforce de sembler {{humbles}}
 TEST: iel ne s’efforce pas d’être {{meilleurs}}
 TEST: iel ne s’y efforce pas de devenir plus {{charmantes}} à leurs yeux.
+TEST: serait-iel {{fâchés}} contre vous ?
+TEST: Demeurerait-iel {{dingues}} d’elle ?
+TEST: pense-t-iel être devenu plus {{malins}} qu’elle                                       ->> malin
+TEST: s’avoua-t-iel {{coupables}}                                                           ->> coupable
+TEST: s’efforça-t-iel d’être {{discrets}}                                                   ->> discret
 TEST: iel est légion.
 TEST: iel ne paraît pas avoir été affecté, bien qu’iel eût été frappé par un obus.
 TEST: iel est devenu fort.
@@ -25734,10 +26034,30 @@ __ppas_nous_verbe_état__
     nous ?[ne|n’]¿ nous ?[en|y]¿    (/_VEP_)                                                @:[NAQ].*:s¬:[GWYpi]
     nous ?[ne|n’]¿ nous ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:[GWYpi]
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(<1, ":[RV]|>(?:ne|nous)/") and morph(\1, ":(?:1p|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggPlur(\-1)                                                                                            && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+
+    /-nous  @:(?:[123][sp]|Y|[NAQ].*:s)¬:[GWpi]|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:1p") and not value(\-1, "|légion|néant|réalité|") and not value(<1, "|nous|")
+        -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “nous” : “\2” devrait être au pluriel.
+
+    /-nous  @:(?:[123][sp]|[NAQ].*:s)¬:[GWYpi]|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:1p") and not value(\-1, "|légion|néant|réalité|")
+        -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “nous” : “\2” devrait être au pluriel.
+
+    /-nous  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":1p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+
+    nous  /-nous  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":1p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
+
+    nous  /-nous  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":1p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
 TEST: nous paraissons {{faible}}
-TEST: Nous paraissons avoir été complètement {{prise}} de panique.                ->> prises
+TEST: Nous paraissons avoir été complètement {{prise}} de panique.                          ->> prises
 TEST: Nous devons avoir été bien {{méchant}} pour être traité de la sorte.
 TEST: nous ne pouvons devenir aussi {{perspicace}} avec tout cet alcool ingurgité.
 TEST: nous pensons être {{désiré}}
@@ -25749,9 +26069,32 @@ TEST: nous ne nous efforcerons pas de devenir {{meilleur}}
 TEST: nous ne nous y efforçâmes guère de paraître {{dépourvu}} de moyens…
 TEST: nous paraissons susceptibles d’être {{choisi}}
 TEST: nous nous pensions {{invincible}} jusqu’au jour où tout a basculé.
+TEST: Sommes-nous {{arriver}} ?
+TEST: Sommes-nous déjà {{arriver}} ?
+TEST: Ne sommes-nous pas {{aveugle}}
+TEST: Paraissons-nous {{faible}} ?
+TEST: saurons-nous devenir aussi {{puissant}}                                               ->> puissants
+TEST: nous avouons-nous {{vaincu}}                                                          ->> vaincus
+TEST: nous efforcerons-nous d’être {{reconnu}}                                              ->> reconnus
 TEST: nous sommes légion.
 TEST: nous ne paraissions pas avoir été légion, mais l’effet eut autant de force que si nous avions été des millions.
 TEST: nous sommes devenus néant.
+
+
+__ppas_inversion_être_vous__
+    /-vous  @:(?:[123][sp]|Y)¬:[GWisp]
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|vous|")
+        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “vous”.
+
+    /-vous  @:[123][sp]¬:[GWYisp]
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “vous”.
+
+TEST: Êtes-vous {{connut}} en ce milieu ?
+TEST: semblez-vous {{prit}} par votre travail ?
+TEST: êtes-vous surpris ?
+TEST: Resterez-vous manger ?
+TEST: Ton rendez-vous arrive bientôt.
 
 
 __ppas_3pl_mas_verbe_état__
@@ -25760,27 +26103,48 @@ __ppas_3pl_mas_verbe_état__
     ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+
+    /-ils  @:(?:[123][sp]|Y|[NAQ].*:[sf])¬:(?:G|W|[me]:[pi])|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:3p") and not value(\-1, "|légion|néant|réalité|") and not value(<1, "|se|s’|")
+        -2>> =suggMasPlur(\2)                                                                       && Accord avec le sujet “ils” : “\2” devrait être au masculin pluriel.
+
+    /-ils  @:(?:[123][sp]|[NAQ].*:[sf])¬:(?:G|W|Y|[me]:[pi])|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:3p") and not value(\-1, "|légion|néant|réalité|")
+        -2>> =suggMasPlur(\2)                                                                       && Accord avec le sujet “ils” : “\2” devrait être au masculin pluriel.
+
+    /-ils  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “ils” : “\-1” devrait être au masculin pluriel.
+
+    [se|s’]  /-ils  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “ils” : “\-1” devrait être au masculin pluriel.
+
+    [se|s’]  /-ils  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “ils” : “\-1” devrait être au masculin pluriel.
 
     ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
     ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggMasPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
     lesquels ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     lesquels ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
     lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|néant|réalité|") --1>> =suggMasPlur(\-1)             && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
 TEST: ils sont {{parti}}.                                                           ->> partis
 TEST: ils sont {{parties}}.                                                         ->> partis
@@ -25818,6 +26182,16 @@ TEST: agissons eux qui se montrent tellement {{arrogantes}} qu’ils méritent u
 TEST: lesquels se pensent encore {{anonyme}}
 TEST: ils sont loin d’être aussi {{malin}} qu’ils l’imaginent
 TEST: ils avaient la ferme intention d’être {{vainqueur}} ce soir
+TEST: Sont-ils {{arriver}} ?
+TEST: Sont-ils déjà {{arriver}} ?
+TEST: Sont-ils vraiment {{aveugle}}
+TEST: Redeviennent-ils {{incapable}} avec l’âge ?
+TEST: semblent-ils {{oublié}}
+TEST: croient-ils avoir été {{oubliée}}                                             ->> oubliés
+TEST: s’avouèrent-ils {{vaincue}}                                                   ->> vaincus
+TEST: s’efforcèrent-ils de paraître {{instruites}} des faits                        ->> instruits
+TEST: Que se sont-ils dit ?
+TEST: ne se sont-ils pas demandé quelle main les avait frappés
 TEST: ils étaient devenus réalité.
 
 
@@ -25827,20 +26201,41 @@ __ppas_3pl_fem_verbe_état__
     ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggFemPlur(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
     ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|néant|réalité|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggFemPlur(\-1)                                                                                         && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
+
+    /-elles  @:(?:[123][sp]|Y|[NAQ].*:[sm])¬:(?:G|W|[fe]:[pi])|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:3p") and not value(\-1, "|légion|néant|réalité|") and not value(<1, "|se|s’|")
+        -2>> =suggFemPlur(\2)                                                                       && Accord avec le sujet “elles” : “\2” devrait être au féminin pluriel.
+
+    /-elles  @:(?:[123][sp]|[NAQ].*:[sm])¬:(?:G|W|Y|[fe]:[pi])|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:3p") and not value(\-1, "|légion|néant|réalité|")
+        -2>> =suggFemPlur(\2)                                                                       && Accord avec le sujet “elles” : “\2” devrait être au féminin pluriel.
+
+    /-elles  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “elles” : “\-1” devrait être au féminin pluriel.
+
+    [se|s’]  /-elles  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “elles” : “\-1” devrait être au féminin pluriel.
+
+    [se|s’]  /-elles  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “elles” : “\-1” devrait être au féminin pluriel.
 
     lesquelles ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     lesquelles ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
     lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|néant|réalité|") --1>> =suggFemPlur(\-1)             && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
+        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
 TEST: elles n’ont tout de même pas été {{attaqué}}                                  ->> attaquées
 TEST: Elles sont {{affamé}}.                                                        ->> affamées
@@ -25868,6 +26263,13 @@ TEST: lesquelles se savaient, à en croire certains, {{estimés}} en haut lieu  
 TEST: elles se sentent {{perdu}}                                                    ->> perdues
 TEST: contre celles qui se veulent {{ignorante}} des réalités.                      ->> ignorantes
 TEST: Lesquelles s’y montraient {{dure}}.                                           ->> dures
+TEST: Étaient-elles {{arriver}} ?
+TEST: Sont-elles tout à fait {{arriver}} ?
+TEST: Ne sont-elles pas {{aveugle}}
+TEST: demeurent-elles {{présente}}
+TEST: pensent-elles devenir plus {{habile}} avec si peu ?                           ->> habiles
+TEST: se révélèrent-elles aussi {{forts}} que prévu                                 ->> fortes
+TEST: s’efforcèrent-elles de paraître {{instruit}} des faits                        ->> instruites
 TEST: celles-là imaginent être devenues légion
 TEST: lesquelles se savaient à en croire certains estimées en haut lieu
 
@@ -25878,10 +26280,30 @@ __ppas_3pl_épi_verbe_état__
     ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[NAQ].*:s¬:[GWYpi]
     ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:[GWYpi]
         <<- /ppas/ not value(\-1, "|légion|néant|réalité|") and not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
-        --1>> =suggPlur(\-1)                                                                                            && Accord avec le sujet “\1” : “\-1” devrait être au pluriel.
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “\1” : “\-1” devrait être au pluriel.
+
+    /-iels  @:(?:[123][sp]|Y|[NAQ].*:s)¬:[GWpi]|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/.*:3p") and not value(\-1, "|légion|néant|réalité|") and not value(<1, "|se|s’|")
+        -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “iels” : “\2” devrait être au pluriel.
+
+    /-iels  @:(?:[123][sp]|[NAQ].*:s)¬:[GWYpi]|>dire/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/.*:3p") and not value(\-1, "|légion|néant|réalité|")
+        -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “iels” : “\2” devrait être au pluriel.
+
+    /-iels  ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ ?/_LVEI_¿ /_LVEIF_  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\1, "_LVEID_") and morphVC(\1, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “iels” : “\-1” devrait être au pluriel.
+
+    [se|s’]  /-iels  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\2, "_VEPI_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “iels” : “\-1” devrait être au pluriel.
+
+    [se|s’]  /-iels  ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ ?/_LVEPI_¿ /_LVEPIF_  @:[NAQ].*:s¬:[GWYpi]
+        <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|néant|réalité|")
+        --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “iels” : “\-1” devrait être au pluriel.
 
 TEST: iels paraissent {{faible}}
-TEST: iels paraissent avoir été complètement {{prise}} de panique.                ->> prises
+TEST: iels paraissent avoir été complètement {{prise}} de panique.                  ->> prises
 TEST: iels doivent avoir été bien {{méchant}} pour être traité de la sorte.
 TEST: iels ne peuvent devenir aussi {{perspicace}} avec tout cet alcool ingurgité.
 TEST: iels pensent être {{désiré}}
@@ -25892,6 +26314,14 @@ TEST: iels s’efforcent de paraitre {{humble}}
 TEST: iels ne s’efforcèrent guère d’être {{entendu}}
 TEST: iels ne s’y efforceront pas de paraître {{raisonnable}}
 TEST: iels devenaient susceptibles de paraître {{coupable}}
+TEST: Étaient-iels {{arriver}} ?
+TEST: Étaient-iels déjà {{arriver}} ?
+TEST: Ne paraissent-iels pas {{aveugle}}
+TEST: paraissent-iels {{faible}} ?
+TEST: peuvent-iels être {{informé}} ?                                               ->> informés
+TEST: sauront-iels avoir été {{dupée}} ?                                            ->> dupées
+TEST: s’avouèrent-iels {{perdu}}                                                    ->> perdus
+TEST: s’efforceront-iels de sembler {{instruit}} des faits                          ->> instruits
 TEST: iels sont légion.
 TEST: iels ne paraissent pas avoir été légion, mais l’effet eut autant de force que si iels avaient été des millions.
 TEST: iels sont devenus faibles.
@@ -25899,15 +26329,15 @@ TEST: iels sont devenus faibles.
 
 __ppas_avoir_été__
     >avoir  été  *WORD
-        <<- /ppas/ morph(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(\3)          && Après “avoir été”, il faut un participe passé.
+        <<- /ppas/ morph(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(\3)         && Après “avoir été”, il faut un participe passé.
         <<- /ppas/ not before("[çcCÇ]’$|[cC][eE] n’$|[çÇ][aA] (?:[nN]’|)$") and not before("(?i)^ *ne pas ") and not morph(<1, ":Y") >>>
-        <<- /ppas/ morph(\3, ":Y", ":[AN]") -1:2>> _                                 && Tournure familière. Utilisez “être allé” plutôt que “avoir été”.
+        <<- /ppas/ morph(\3, ":Y", ":[AN]") -1:2>> _                                && Tournure familière. Utilisez “être allé” plutôt que “avoir été”.
         <<- /ppas/ morph(\3, ":V1..t.*:Y", ":[AN]") and not morph(>1, ":D")
-        -3>> =suggVerbPpas(\3)                                                       && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
+        -3>> =suggVerbPpas(\3)                                                      && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
 
     >avoir étés
         <<- not (value(>1, "|et|ou|") and value(>2, "|hivers|automnes|printemps|"))
-        --1>> été                                                                       && Le participe passé du verbe “être” est invariable.
+        --1>> été                                                                   && Le participe passé du verbe “être” est invariable.
 
 TEST: j’ai été {{instruis}} par elle
 TEST: avoir été {{prit}} par surprise
@@ -26532,196 +26962,6 @@ TEST: Ses enfants ont l’air espiègle que leur père avait à leur âge.
 TEST: Sa robe a l’air élégant des créations des grands couturiers.
 TEST: Ses amies ont l’air distant, mais l’âme généreuse.
 
-
-!!
-!!
-!!!! Participes passés: inversion verbe/sujet                                                     !!
-!!
-!!
-
-__ppas_inversion_être_je__
-    /-je  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “je” : “\2” devrait être au singulier.
-
-    /-je  @:(?:[123][sp]|[NA].*:p)¬:[GWYsi]
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “je” : “\2” devrait être au singulier.
-
-TEST: serais-je {{fâchés}} contre vous ?
-TEST: Demeurerais-je {{dingues}} d’elle ?
-
-
-__ppas_inversion_être_tu__
-    /-tu  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “tu” : “\2” devrait être au singulier.
-
-    /-tu  @:(?:[123][sp]|[NA].*:p)¬:[GWYsi]
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “tu” : “\2” devrait être au singulier.
-
-TEST: Es-tu {{arriver}} ?
-TEST: Es-tu déjà {{arriver}} ?
-TEST: Resteras-tu {{amorphes}} encore longtemps ?
-
-
-__ppas_inversion_être_il__
-    /-il  @:(?:[123][sp]|Y|[NA].*:[pf])¬:(?:G|W|[me]:[si])|question/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
-        -2>> =suggMasSing(\2)                                           && Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
-
-    /-il  @:(?:[123][sp]|[NA].*:[pf])¬:(?:G|W|Y|[me]:[si])|question/
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggMasSing(\2)                                           && Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
-
-TEST: Est-il {{arriver}} ?
-TEST: Est-il déjà {{arriver}} ?
-TEST: N’est-il pas {{aveugles}}
-TEST: Est-il souvent {{arrivait}} de se tromper ?
-TEST: Était-il {{prit}} dans la tourmente ?
-TEST: Serait-il {{reconnut}} dans la tourmente ?
-TEST: restera-t-il coûte que coûte {{connut}} du grand public
-#TEST: Semblait-il {{fatiguées}} ?
-TEST: semble-t-il savoir de quoi il parle ?
-TEST: Parait-il ennuyer l’assistance ?
-TEST: Est-il question de ceci ou de cela ?
-
-
-__ppas_inversion_être_ce__
-    /-ce  *WORD
-        <<- /ppas/ morphVC(\1, ":V0e.*:3s") and morph(\2, ":(?:[123][sp]|A.*:[pf])", ":(?:G|W|Y|[me]:[si])")
-        -2>> =suggMasSing(\2)                                           && Accord avec le sujet “\1” : “\2” devrait être au masculin singulier.
-        <<- /ppas/ __else__ and morphVC(\1, ":V0e.*:3p") and morph(\2, ":(?:[123][sp]|A.*:[sf])", ":(?:G|W|Y|[me]:[pi])")
-        -2>> =suggMasPlur(\2)                                           && Accord avec le sujet “\1” : “\2” devrait être au masculin pluriel.
-
-TEST: était-ce {{difficiles}}
-TEST: étaient-ce {{grande}} intentions qui nous sauveraient ?
-TEST: Est-ce former de futurs travailleurs ou bien des citoyens
-TEST: Est-ce peine perdue ?
-
-
-__ppas_inversion_être_elle__
-    /-elle  @:(?:[123][sp]|Y|[NA].*:[pm])¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
-        -2>> =suggFemSing(\2)                                           && Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
-
-    /-elle  @:(?:[123][sp]|[NA].*:[pm])¬:(?:G|W|Y|[fe]:[si])
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggFemSing(\2)                                           && Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
-
-TEST: Est-elle {{arriver}} ?
-TEST: Est-elle déjà {{arriver}} ?
-TEST: Était-elle {{fatiguer}} ?
-TEST: Paraissait-elle {{surpris}} ?
-
-
-__ppas_inversion_être_iel__
-    /-iel  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “iel” : “\2” devrait être au singulier.
-
-    /-iel  @:(?:[123][sp]|[NA].*:p)¬:[GWYsi]
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggSing(\2)                                              && Accord avec le sujet “iel” : “\2” devrait être au singulier.
-
-TEST: serait-iel {{fâchés}} contre vous ?
-TEST: Demeurerait-iel {{dingues}} d’elle ?
-
-
-__ppas_inversion_être_on__
-    /-on  @:(?:[123][sp]|Y)¬:[GWQ]
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
-        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “on”.
-
-    /-on  @:[123][sp]¬:[GWYQ]
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “on”.
-
-TEST: est-on déjà {{passer}} de ce côté-là
-TEST: Aurait-on déjà {{finit}} notre tour du monde ?
-TEST: Deviendrait-on {{meurtrit}} ?
-TEST: parait-on {{désespérait}} à ce point
-TEST: ne serait-on pas surpris par la mort
-
-
-__ppas_inversion_être_nous__
-    /-nous  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|nous|")
-        -2>> =suggPlur(\2)                                              && Accord avec le sujet “nous” : “\2” devrait être au pluriel.
-
-    /-nous  @:(?:[123][sp]|[NA].*:s)¬:[GWYpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggPlur(\2)                                              && Accord avec le sujet “nous” : “\2” devrait être au pluriel.
-
-TEST: Sommes-nous {{arriver}} ?
-TEST: Sommes-nous déjà {{arriver}} ?
-TEST: Ne sommes-nous pas {{aveugle}}
-TEST: Paraissons-nous {{faible}} ?
-
-
-__ppas_inversion_être_vous__
-    /-vous  @:(?:[123][sp]|Y)¬:[GWisp]
-        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|vous|")
-        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “vous”.
-
-    /-vous  @:[123][sp]¬:[GWYisp]
-        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggVerbPpas(\2)                                          && Accord avec le sujet “vous”.
-
-TEST: Êtes-vous {{connut}} en ce milieu ?
-TEST: semblez-vous {{prit}} par votre travail ?
-TEST: êtes-vous surpris ?
-TEST: Resterez-vous manger ?
-TEST: Ton rendez-vous arrive bientôt.
-
-
-__ppas_inversion_être_ils__
-    /-ils  @:(?:[123][sp]|Y|[NA].*:[sf])¬:(?:G|W|[me]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
-        -2>> =suggMasPlur(\2)                                           && Accord avec “ils” : “\2” devrait être au masculin pluriel.
-
-    /-ils  @:(?:[123][sp]|[NA].*:[sf])¬:(?:G|W|Y|[me]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggMasPlur(\2)                                           && Accord avec “ils” : “\2” devrait être au masculin pluriel.
-
-TEST: Sont-ils {{arriver}} ?
-TEST: Sont-ils déjà {{arriver}} ?
-TEST: Sont-ils vraiment {{aveugle}}
-TEST: Redeviennent-ils {{incapable}} avec l’âge ?
-TEST: semblent-ils {{oublié}}
-TEST: Que se sont-ils dit ?
-TEST: ne se sont-ils pas demandé quelle main les avait frappés
-
-
-__ppas_inversion_être_elles__
-    /-elles  @:(?:[123][sp]|Y|[NA].*:[sm])¬:(?:G|W|[fe]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
-        -2>> =suggFemPlur(\2)                                           && Accord avec “elles” : “\2” devrait être au féminin pluriel.
-
-    /-elles  @:(?:[123][sp]|[NA].*:[sm])¬:(?:G|W|Y|[fe]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggFemPlur(\2)                                           && Accord avec “elles” : “\2” devrait être au féminin pluriel.
-
-TEST: Étaient-elles {{arriver}} ?
-TEST: Sont-elles tout à fait {{arriver}} ?
-TEST: Ne sont-elles pas {{aveugle}}
-TEST: demeurent-elles {{présente}}
-
-
-__ppas_inversion_être_iels__
-    /-iels  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|nous|")
-        -2>> =suggPlur(\2)                                              && Accord avec le sujet “iels” : “\2” devrait être au pluriel.
-
-    /-iels  @:(?:[123][sp]|[NA].*:s)¬:[GWYpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
-        -2>> =suggPlur(\2)                                              && Accord avec le sujet “iels” : “\2” devrait être au pluriel.
-
-TEST: Étaient-iels {{arriver}} ?
-TEST: Étaient-iels déjà {{arriver}} ?
-TEST: Ne paraissent-iels pas {{aveugle}}
-TEST: paraissent-iels {{faible}} ?
 
 
 __ppas_ayant_été_pronom_ppas__
@@ -28362,16 +28602,6 @@ __tag_verbe_infinitif_sujet__
     [<start>|,|(]  [ne|n’]  $:Y
     [<start>|,|(]  $:Y
         <<- /2>> _sujinfi_
-
-
-__tag_usage_pronominal__
-    [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
-    nous nous            ?[le|la|l’|les|en|y]¿  $:V¬:G
-    vous vous            ?[le|la|l’|les|en|y]¿  $:V¬:G
-    [me|m’|te|t’|se|s’]                         /_VCint_
-    nous                                        /-nous
-    vous                                        /-vous
-        <<- /-1>> _upron_
 
 
 __énumérations_substantifs__
