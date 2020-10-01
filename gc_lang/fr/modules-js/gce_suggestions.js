@@ -671,10 +671,10 @@ function undoLigature (c) {
 
 
 const _dNormalizedCharsForInclusiveWriting = new Map([
-    ['(', '_'],  [')', '_'],
-    ['.', '_'],  ['·', '_'],  ['•', '_'],
-    ['–', '_'],  ['—', '_'],
-    ['/', '_']
+    ['(', '·'],  [')', '·'],
+    ['.', '·'],  ['·', '·'],  ['•', '·'],
+    ['–', '·'],  ['—', '·'],
+    ['/', '·']
 ]);
 
 function normalizeInclusiveWriting (sToken) {
@@ -686,5 +686,6 @@ function normalizeInclusiveWriting (sToken) {
             sRes += c;
         }
     }
+    sRes = sRes.replace("èr·", "er·").replace("ÈR·", "ER·");
     return sRes;
 }

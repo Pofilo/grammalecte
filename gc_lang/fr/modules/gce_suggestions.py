@@ -529,13 +529,13 @@ def undoLigature (c):
 
 
 _xNormalizedCharsForInclusiveWriting = str.maketrans({
-    '(': '_',  ')': '_',
-    '.': '_',  '·': '_',  '•': '_',
-    '–': '_',  '—': '_',
-    '/': '_'
+    '(': '·',  ')': '·',
+    '.': '·',  '·': '·',  '•': '·',
+    '–': '·',  '—': '·',
+    '/': '·'
 })
 
 
 def normalizeInclusiveWriting (sToken):
     "typography: replace word separators used in inclusive writing by underscore (_)"
-    return sToken.translate(_xNormalizedCharsForInclusiveWriting)
+    return sToken.translate(_xNormalizedCharsForInclusiveWriting).replace("èr·", "er·").replace("ÈR·", "ER·")

@@ -564,13 +564,13 @@ __[s>(p_sigle2)__
         <<- \0.__len__() == 4 ->> =\0.replace(".", "").upper() + "|" + \0[0:2] + " " + \0[2:4]
         && Sigle. Il est recommandé d’ôter les points pour les sigles. (S’il s’agit d’un prénom et d’un nom, mettez un espace.)|https://fr.wikipedia.org/wiki/Sigle#Typographie
         <<- __else__ ->> =\0.replace(".", "").upper()                                               && Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
-        <<- \0 != "b.a." ~>> =\0.replace(".", "_")
+        <<- \0 != "b.a." ~>> =\0.replace(".", "-")
 __[s>(p_sigle3)__
     J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
 
 # Mr et MM
 __[s>(p_M_point)__
-    (M[.]) (?:[A-ZÉÈÎ]\w*|l[e'’])  @@0 <<- ~1>> Mr
+    (M[.]) (?:[A-ZÉÈÎ]\w*|l[ae'’])  @@0 <<- ~1>> Mr
 __[s>(p_MM_point)__
     MM[.] <<- ~>> "MM "
 __[s>(p_Mr_Mgr_Mme_point)__
@@ -586,7 +586,7 @@ __[s>(p_prénom_lettre_point)__
 
 # Patronymes composés avec Le/La/Les
 __[s](p_patronyme_composé_avec_le_la_les)__
-    [A-ZÉÈÂÎ][\w-]+[-–—]L(?:es?|a) [A-ZÉÈÂÎ][\w-]+ <<- ~>> =\0.replace(" ", "_")
+    [A-ZÉÈÂÎ][\w-]+[-–—]L(?:es?|a) [A-ZÉÈÂÎ][\w-]+ <<- ~>> =\0.replace(" ", "-")
 
 # IP
 __[s](p_adresse_IP)__
@@ -791,6 +791,7 @@ __[i](eepi_écriture_épicène_tous_toutes)__
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{tou.tes}} sont là.                                              ->> tous et toutes|toutes et tous
+TEST: {{tou·tes}} sont là.                                              ->> tous et toutes|toutes et tous
 
 
 __[i](eepi_écriture_épicène_ceux_celles)__
@@ -800,9 +801,10 @@ __[i](eepi_écriture_épicène_ceux_celles)__
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux et celles|celles et ceux
+TEST: {{c·eux·elles}}                                                   ->> ceux et celles|celles et ceux
 
 
-__[u](eepi_écriture_épicène_pluriel_eur_divers)__
+__[i](eepi_écriture_épicène_pluriel_eur_divers)__
     ({w_2})eurs?[.(/·•⋅–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·•⋅–—-]?s  @@0,**
         <<- option("eepi") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs
         && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
@@ -814,7 +816,7 @@ TEST: travaillons avec les {{instituteur.trice.s}}                          ->> 
 TEST: La communauté des {{développeur·se·s}} open source                    ->> développeurs et développeuses|développeuses et développeurs
 
 
-__[u](eepi_écriture_épicène_pluriel_eux_euses)__
+__[i](eepi_écriture_épicène_pluriel_eux_euses)__
     ({w_2})eux[.(/·•⋅–—-](?:[tdsi]?euse|se)[.)/·•⋅–—-]?s  @@0
         <<- option("eepi") ->> \1eux et \1euses|\1euses et \1eux
         && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
@@ -823,7 +825,7 @@ __[u](eepi_écriture_épicène_pluriel_eux_euses)__
 TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   ->> nombreux et nombreuses|nombreuses et nombreux
 
 
-__[u](eepi_écriture_épicène_pluriel_if_ive)__
+__[i](eepi_écriture_épicène_pluriel_if_ive)__
     ({w_2})ifs?[.(/·•⋅–—-][std]?i?ve[.)/·•⋅–—-]?s  @@0
         <<- option("eepi") ->> \1ifs et \1ives|\1ives et \1ifs
         && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
@@ -833,32 +835,34 @@ TEST: {{inclusif.ive.s}}                                                ->> incl
 TEST: {{offensif.ve.s}}                                                 ->> offensifs et offensives|offensives et offensifs
 
 
-__[u](eepi_écriture_épicène_pluriel_er_ère)__
-    ({w_2})[eè]rs?[.(/·•⋅–—-]i?è?re[.)/·•⋅–—-]?s  @@0
-        <<- option("eepi") and not re.search("[rR]·[eE]·[sS]$", \0) ->> \1ers et \1ères|\1ères et \1ers|\1er·e·s
+__[i](eepi_écriture_épicène_pluriel_er_ère)__
+    ({w_2})[eè]rs?[.(/·•⋅–—-](?:i?è?re|e)[.)/·•⋅–—-]?s  @@0
+        <<- option("eepi") and not re.search("[eE][rR]·[eE]·[sS]$", \0) ->> \1er·e·s|\1ers et \1ères|\1ères et \1ers
         && Écriture épicène dystypographique et imprononçable. À des fins de lisibilité, il est préférable d’éviter l’abus de graphies épicènes trop complexes.
         <<- ~>> =normalizeInclusiveWriting(\0)
 
-TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers|conseiller·e·s
-#TEST: les {{artificièr.e.s}}                                            ->> artificiers et artificières|artificières et artificiers
+TEST: les {{conseiller.ière.s}}                                         ->> conseiller·e·s|conseillers et conseillères|conseillères et conseillers
+TEST: les {{artificièr.e.s}}                                            ->> artificier·e·s|artificiers et artificières|artificières et artificiers
+TEST: les {{artificièr·e·s}}                                            ->> artificier·e·s|artificiers et artificières|artificières et artificiers
+TEST: les artificier·e·s
 
 
-__[u](eepi_écriture_épicène_pluriel_aux_ales)__
+__[i](eepi_écriture_épicène_pluriel_aux_ales)__
     ({w_2})aux[.(/·•⋅–—-][tnmcpbd]?a?le[.)/·•⋅–—-]?s  @@0
         <<- option("eepi") ->> \1al·e·s|\1aux et \1ales|\1ales et \1aux
         && Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
         <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{locaux·ales}}                                                   ->> local·e·s|locaux et locales|locales et locaux
-TEST: LOCAL·E·S
-TEST: amical·e·s
+TEST: NOUS SOMMES LOCAL·E·S
+TEST: nous sommes amical·e·s
 
 
-__[u](eepi_écriture_épicène_pluriel_e)__
-    ({w_1}[éuitsrnldf])[-·–—.•⋅(/]([ntlf]?e)[-·–—.•⋅)/]?s  @@0,**
+__[i](eepi_écriture_épicène_pluriel_e)__
+    ({w_1}[éuitsnldf])[-·–—.•⋅(/]([ntlf]?e)[-·–—.•⋅)/]?s  @@0,**
         <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
         <<- ~>> =normalizeInclusiveWriting(\0)
-        <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("(?i)·[ntlf]?e·s$", \0) >>>
+        <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("·[ntlfNTLF]?[eE]·[sS]$", \0) >>>
         <<- \1.endswith("s") or \1.endswith("S") ->> \1·\2·s|\1 et \1\2s|\1\2s et \1                && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
         <<- __else__ ->> \1·\2·s|\1s et \1\2s|\1\2s et \1s                                          && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
 
@@ -876,9 +880,12 @@ TEST: Nous sommes {{tombé.es}} par hasard
 TEST: Nous avons été {{révolté.es}} de cette novlangue politique
 TEST: Pour survivre, nous sommes {{devenu.es}} des archéologues.
 TEST: {{enthousiasmé.es}} par un tri collectif de noix
-TEST: IMMORTEL·LE·S
-TEST: Berlinois·e·s
-TEST: Iranien·ne·s
+TEST: LES IMMORTEL·LE·S
+TEST: les mortel·le·s
+TEST: des Berlinois·e·s
+TEST: les Iranien·ne·s
+TEST: les chef·fe·s
+TEST: nos descendant·e·s
 
 
 __[i](eepi_écriture_épicène_singulier)__
@@ -895,9 +902,9 @@ TEST: le ou la {{patron/ne}}                                            ->> patr
 TEST: Totalement {{con(ne)}}                                            ->> con·ne
 TEST: un ou une {{intellectuel.le}}                                     ->> intellectuel·le
 TEST: {{un/e}} immortel·le                                              ->> un·e|un ou une|une ou un
-TEST: INTELLECTUEL·LE
-TEST: électricien·ne
-TEST: Épuisé·e
+TEST: UN OU UNE INTELLECTUEL·LE
+TEST: un ou une électricien·ne
+TEST: femme ou homme épuisé·e
 TEST: un·e idiot·e
 
 
@@ -910,7 +917,6 @@ __[i](typo_écriture_invariable)__
 TEST: la ou les {{fille(s)}}                                            ->> fille·s
 TEST: le ou les patron·s
 TEST: combien de rad/s
-
 
 
 !!
@@ -1473,9 +1479,9 @@ TEST: __ocr__ {{[e}} chien a faim
 
 __[i]/conf(conf_1e_1a_1es)__
     [1[\]][ea]s?
-        <<- \0.endswith("e") and (morph(word(1), ":(?:N.*:[me]:[si]|V)", ":G") or morph(word(-1), ">ne/")) ->> le       && Erreur de frappe ?
-        <<- \0.endswith("a") and (morph(word(1), ":(?:N.*:[fe]:[si]|V)", ":G") or morph(word(-1), ">ne/")) ->> la       && Erreur de frappe ?
-        <<- \0.endswith("es") and (morph(word(1), ":(?:N.*:[pi]|V)", ":G") or morph(word(-1), ">ne/")) ->> les          && Erreur de frappe ?
+        <<- \0.endswith("e") and (morph(word(1), ":(?:[NA].*:[me]:[si]|V)", ":G") or morph(word(-1), ">ne/")) ->> le       && Erreur de frappe ?
+        <<- \0.endswith("a") and (morph(word(1), ":(?:[NA].*:[fe]:[si]|V)", ":G") or morph(word(-1), ">ne/")) ->> la       && Erreur de frappe ?
+        <<- \0.endswith("es") and (morph(word(1), ":(?:[NA].*:[pi]|V)", ":G") or morph(word(-1), ">ne/")) ->> les          && Erreur de frappe ?
 
 TEST: {{1e}} marginal                                           ->> le
 TEST: {{1a}} venue des problèmes                                ->> la
@@ -1603,16 +1609,6 @@ __[s]/num(num_lettre_O_zéro2)__  [1-9]O <<- not option("ocr") ->> =\0.replace("
 TEST: année {{2O11}}                                                      ->> 2011
 TEST: {{3O}} (chiffre avec un O).                                         ->> 30
 
-
-!!!! Écritures épicènes invariables                                                               !!
-
-__[i](d_eepi_écriture_épicène_pluriel)__
-    ({w_1}[éuitsrn])_(?:[nt]|)e_s  @@0
-        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
-
-__[i](d_eepi_écriture_épicène_singulier)__
-    ({w_2}[éuitsrn])_e  @@0
-        <<- morph(\1, ":[NAQ]") =>> define(\1, ":N:A:Q:e:s")
 
 
 !!!! Purge des références aux notes                                                               !!
@@ -2390,6 +2386,49 @@ __fusions_noms_propres__
     ~^[A-ZÀÂÉÈÊÎÔ]. Airways
         <<- ~>> ␣
         <<- =>> define(\2, ":MP:e:i")
+
+
+__écritures_épicènes_invariables__
+    [tous|tou]  ·  tes
+    [tous|tou]  ·  te  ·  s
+        <<- ~>> ␣
+
+    c · [eu|eux]  ·  [elles|celles]
+    [ceu|ceux]  ·  [elles|celles]
+        <<- ~>> ␣
+
+    *WORD  ·  e  ·  s
+    *WORD  ·  [ce|rice|drice|price|trice]   ·  s
+    *WORD  ·  [fe|ffe] ·  s
+    *WORD  ·  [le|ale|bale|cale|dale|male|nale|pale|tale]  ·  s
+    *WORD  ·  [ne|ane|ène|ine|nne|enne]  ·  s
+    *WORD  ·  [ire|ière|ère|re]  ·  s
+    *WORD  ·  [se|euse|ieuse|deuse|peuse|teuse]  ·  s
+    *WORD  ·  [eresse|oresse] ·  s
+    *WORD  ·  [ve|ive|dive|sive|tive]  ·  s
+    *WORD  ·  [te|ate|ète|ite|tte] ·  s
+    *WORD  ·  es
+    *WORD  ·  [ces|rices|drices|prices|trices]
+    *WORD  ·  [fes|ffes]
+    *WORD  ·  [les|ales|bales|cales|dales|males|nales|pales|tales]
+    *WORD  ·  [nes|anes|ènes|ines|nnes|ennes]
+    *WORD  ·  [res|ires|ières|ères]
+    *WORD  ·  [ses|euses|ieuses|deuses|peuses|teuses]
+    *WORD  ·  [eresses|oresses]
+    *WORD  ·  [ves|ives|dives|sives|tives]
+    *WORD  ·  [tes|ates|ètes|ites|ttes]
+        <<- ~>> ␣
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
+
+    *WORD  ·  [e|fe|le|ne|se|te]
+        <<- not value(>1, "|·|") >>>
+        <<- ~>> ␣
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:s")
+
+    *WORD  ·  s
+        <<- not value(<1, "|·|") >>>
+        <<- ~>> ␣
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
 
 
 __immunités__

@@ -230,7 +230,6 @@ class SpellChecker {
 
     isValidToken (sToken) {
         // checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)
-        sToken = sToken.gl_trim("_");
         if (this.oMainDic.isValidToken(sToken)) {
             return true;
         }
@@ -273,7 +272,6 @@ class SpellChecker {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
-        sWord = sWord.gl_trim("_");
         if (this.bStorage && this._dMorphologies.has(sWord)) {
             return this._dMorphologies.get(sWord);
         }
@@ -294,7 +292,6 @@ class SpellChecker {
 
     getLemma (sWord) {
         // retrieves lemmas
-        sWord = sWord.gl_trim("_");
         if (this.bStorage) {
             if (!this._dLemmas.has(sWord)) {
                 this.getMorph(sWord);
@@ -306,7 +303,6 @@ class SpellChecker {
 
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
-        sWord = sWord.gl_trim("_");
         if (this.lexicographer) {
             if (this.lexicographer.dSugg.has(sWord)) {
                 yield this.lexicographer.dSugg.get(sWord).split("|");
