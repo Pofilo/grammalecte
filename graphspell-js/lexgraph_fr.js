@@ -195,7 +195,7 @@ var lexgraph_fr = {
             [':1p', [" 1ʳᵉ p. pl.,", "verbe : 1ʳᵉ personne du pluriel"]],
             [':2p', [" 2ᵉ p. pl.,", "verbe : 2ᵉ personne du pluriel"]],
             [':3p', [" 3ᵉ p. pl.,", "verbe : 3ᵉ personne du pluriel"]],
-            [':3p!', [" 3ᵉ p. pl.,", "verbe : 3ᵉ personne du pluriel (prononciation distinctive)"]],
+            [':3p!', [" 3ᵉ p. pl.,", "verbe : 3ᵉ personne du pluriel"]],
 
             [':G', ["[mot grammatical]", "Mot grammatical"]],
             [':X', [" adverbe de négation,", "Adverbe de négation"]],
@@ -233,26 +233,6 @@ var lexgraph_fr = {
             [':ÉR', [" élément de locution prépositive,", "Élément de locution prépositive"]],
             [':ÉJ', [" élément de locution interjective,", "Élément de locution interjective"]],
 
-            [':Zp', [" préfixe,", "Préfixe"]],
-            [':Zs', [" suffixe,", "Suffixe"]],
-
-            [':H', ["", "<Hors-norme, inclassable>"]],
-
-            [':@',  ["", "<Caractère non alpha-numérique>"]],
-            [':@p', ["signe de ponctuation", "Signe de ponctuation"]],
-            [':@s', ["signe", "Signe divers"]],
-
-            [';S', [" : symbole (unité de mesure)", "Symbole (unité de mesure)"]],
-
-            ['/*', ["", "Sous-dictionnaire <Commun>"]],
-            ['/C', [" <classique>", "Sous-dictionnaire <Classique>"]],
-            ['/M', ["", "Sous-dictionnaire <Moderne>"]],
-            ['/R', [" <réforme>", "Sous-dictionnaire <Réforme 1990>"]],
-            ['/A', ["", "Sous-dictionnaire <Annexe>"]],
-            ['/X', ["", "Sous-dictionnaire <Contributeurs>"]]
-        ]),
-
-    dLocTag: new Map([
             [':L', "locution"],
             [':LN', "locution nominale"],
             [':LA', "locution adjectivale"],
@@ -264,45 +244,34 @@ var lexgraph_fr = {
             [':LC', "locution conjonctive"],
             [':LJ', "locution interjective"],
 
-            [':B', " cardinale"],
-            [':e', " épicène"],
-            [':m', " masculine"],
-            [':f', " féminine"],
-            [':s', " singulière"],
-            [':p', " plurielle"],
-            [':i', " invariable"],
-            ['/L', " (latin)"]
-        ]),
+            [':Zp', [" préfixe,", "Préfixe"]],
+            [':Zs', [" suffixe,", "Suffixe"]],
 
-    dLocVerb: new Map([
-            ['i', " intransitive"],
-            ['n', " transitive indirecte"],
-            ['t', " transitive directe"],
-            ['p', " pronominale"],
-            ['m', " impersonnelle"],
+            [':H', ["", "<Hors-norme, inclassable>"]],
+
+            [':@',  ["", "<Caractère non alpha-numérique>"]],
+            [':@p', ["signe de ponctuation", "Signe de ponctuation"]],
+            [':@s', ["signe", "Signe divers"]],
+
+            [';S', [" : symbole (unité de mesure)", "Symbole (unité de mesure)"]],
+            [';C', [" : couleur", "Couleur"]],
+            [';G', [" : gentilé", "Gentilé"]],
+
+            ['/*', ["", "Sous-dictionnaire <Commun>"]],
+            ['/C', [" <classique>", "Sous-dictionnaire <Classique>"]],
+            ['/M', ["", "Sous-dictionnaire <Moderne>"]],
+            ['/R', [" <réforme>", "Sous-dictionnaire <Réforme 1990>"]],
+            ['/A', ["", "Sous-dictionnaire <Annexe>"]],
+            ['/X', ["", "Sous-dictionnaire <Contributeurs>"]]
         ]),
 
     dValues: new Map([
-            ['d’', "(de), préposition ou déterminant épicène invariable"],
-            ['l’', "(le/la), déterminant ou pronom personnel objet, masculin/féminin singulier"],
-            ['j’', "(je), pronom personnel sujet, 1ʳᵉ pers., épicène singulier"],
-            ['m’', "(me), pronom personnel objet, 1ʳᵉ pers., épicène singulier"],
-            ['t’', "(te), pronom personnel objet, 2ᵉ pers., épicène singulier"],
-            ['s’', "(se), pronom personnel objet, 3ᵉ pers., épicène singulier/pluriel"],
-            ['n’', "(ne), adverbe de négation"],
-            ['c’', "(ce), pronom démonstratif, masculin singulier/pluriel"],
-            ['ç’', "(ça), pronom démonstratif, masculin singulier"],
-            ['qu', "(que), conjonction de subordination"],
-            ['lorsqu’', "(lorsque), conjonction de subordination"],
-            ['puisqu’', "(lorsque), conjonction de subordination"],
-            ['quoiqu’', "(quoique), conjonction de subordination"],
-            ['jusqu’', "(jusque), préposition"],
-
             ['-je', " pronom personnel sujet, 1ʳᵉ pers. sing."],
             ['-tu', " pronom personnel sujet, 2ᵉ pers. sing."],
             ['-il', " pronom personnel sujet, 3ᵉ pers. masc. sing."],
             ['-iel', " pronom personnel sujet, 3ᵉ pers. sing."],
             ['-on', " pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
+            ['-ce', " pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
             ['-elle', " pronom personnel sujet, 3ᵉ pers. fém. sing."],
             ['-t-il', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. masc. sing."],
             ['-t-on', " “t” euphonique + pronom personnel sujet, 3ᵉ pers. sing. ou plur."],
