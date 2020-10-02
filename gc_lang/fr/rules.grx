@@ -1681,7 +1681,7 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: graphe0|g0                                                                       _
+@@@@GRAPH: graphe0|g0                                                                              _
 @@@@
 @@@@
 @@@@
@@ -2018,10 +2018,10 @@ __da_groupe_nominal__
         <<- =>> exclude(\2, ":[123][sp]")
 
     plein  [de|d’]  @:[AN]
-        <<- not morph(<1, ":D.*:m|>(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, ":G")
+        <<- not morph(<1, ":(?:D.*:m|V[0-3]e)") =>> =define(\1, ":G")
 
     source [de|d’]
-        <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, ":LV")
+        <<- morph(<1, ":V[0-3]e") =>> define(\1, ":ÉV")
 
     très  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
@@ -2043,11 +2043,11 @@ __da_groupe_nominal__cas_particuliers__
 
     l’ un comme l’ autre
         <<- ~>> ␣
-        <<- =>> define(\1, ":LN:m:p")
+        <<- =>> define(\1, ":GN:m:p")
 
     l’ une comme l’ autre
         <<- ~>> ␣
-        <<- =>> define(\1, ":LN:f:p")
+        <<- =>> define(\1, ":GN:f:p")
 
     en peine
         <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
@@ -2331,8 +2331,10 @@ TEST: iels étaient mari et femme
 
 __fusions_noms_communs_séparés_slah__
     *WORD  /  *WORD
-        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and morph(\1, ":N") and morph(\-1, ":N") ~>> ␣
-        <<- =>> define(\1, ":N:e:i")
+        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and morph(\1, ":N") and morph(\-1, ":N") and not (morph(\1, "[123][sp]") and morph(<1, ":O[vs]")) ~>> ␣
+        <<- __also__ =>> define(\1, ":N:e:i")
+
+TEST: Elle peut se cacher / rendre visible par le petit “+” au-dessus.
 
 
 __fusions_noms_propres__
@@ -2361,7 +2363,7 @@ __fusions_noms_propres__
 
     Mai 68
         <<- ~>> ␣
-        <<- =>> define(\1, ":N:m:i")
+        <<- =>> define(\1, ":MP:m:i")
 
     ~^[A-ZÀÂÉÈÊÎÔ].  ~^[A-ZÀÂÉÈÊÎÔ].
         <<- analyse_with_next(\1, " ", ":") ~>> ␣
@@ -2371,18 +2373,13 @@ __fusions_noms_propres__
         <<- =>> define(\1, ":T")
         <<- ~1>> *
 
-    [la|cette]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
+    [la|cette|the]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
         <<- ~2:0>> ␣
         <<- =>> define(\2, ":MP:f:s")
 
-    [le|au|du|ce]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Challenge|Championship|Chronicle|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
+    [le|au|du|ce|the]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Challenge|Championship|Chronicle|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, ":MP:m:s")
-
-    the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Administration|Area|Army|Assocation|Avenue|Chamber|Church|City|Community|Court|Company|Corporation|Cup|Enterprise|Foundation|Fraternity|Gallery|Highway|House|Initiative|League|Library|Mansion|Nation|Navy|Organization|Reserve|Road|River|Sea|Society|Station|Sorority|Tavern|Tower|University|Valley]
-    the  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Challenge|Championship|Chronicle|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
-        <<- ~2:0>> ␣
-        <<- =>> define(\2, ":MP:e:s")
 
     ~^[A-ZÀÂÉÈÊÎÔ]. Airways
         <<- ~>> ␣
@@ -2394,8 +2391,8 @@ __écritures_épicènes_invariables__
     [tous|tou]  ·  te  ·  s
         <<- ~>> ␣
 
-    c · [eu|eux]  ·  [elles|celles]
-    [ceu|ceux]  ·  [elles|celles]
+    c · [eu|eux]  ·  [les|lles|elles|celles]
+    [ceu|ceux]  ·  [les|lles|elles|celles]
         <<- ~>> ␣
 
     *WORD  ·  e  ·  s
@@ -15709,7 +15706,7 @@ __gestion_mots_grammaticaux__
 
     le pour et le contre
         <<- ~>> ␣
-        <<- =>> define(\1, ":LN:m:p")
+        <<- =>> define(\1, ":GN:m:p")
 
     le [pressentiment|sentiment] [que|qu’]
         <<- ~1>> _
@@ -17022,7 +17019,7 @@ __purge_après_être__
     [>être|>devenir|>rester] pieds et poings liés
     [>être|>devenir|>rester] pieds nus
         <<- ~2:0>> ␣
-        <<- =>> define(\2, ":LV")
+        <<- =>> define(\2, ":ÉV")
 
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] [bon|meilleur] marché
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] de passage
@@ -17034,7 +17031,7 @@ __purge_après_être__
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] pieds nus
         <<- ~2>> *
         <<- ~3:0>> ␣
-        <<- =>> define(\3, ":LV")
+        <<- =>> define(\3, ":ÉV")
 
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ avant tout
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ du moins
@@ -17061,7 +17058,7 @@ __purge_après_être__
     /_VCint_ pieds nus
     /_VCint_ père et mère
         <<- morphVC(\1, ">(?:être|devenir|rester)/") ~2:0>> ␣
-        <<- __also__ =>> define(\2, ":LV")
+        <<- __also__ =>> define(\2, ":ÉV")
 
     /_VCint_ [pas|jamais|plus|guère|point] [bon|meilleur] marché
     /_VCint_ [pas|jamais|plus|guère|point] de passage
@@ -17073,7 +17070,7 @@ __purge_après_être__
     /_VCint_ [pas|jamais|plus|guère|point] pieds nus
         <<- morphVC(\1, ">(?:être|devenir|rester)/") ~2>> *
         <<- __also__ ~3:0>> ␣
-        <<- __also__ =>> define(\3, ":LV")
+        <<- __also__ =>> define(\3, ":ÉV")
 
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ avant tout
     /_VCint_ ?[pas|jamais|plus|guère|point]¿ du moins
@@ -17142,7 +17139,7 @@ __purge_après_avoir__
     >avoir  partie [gagnée|liée]
     >avoir  voix au chapitre
         <<- ~2:0>> ␣
-        <<- =>> define(\2, ":LV")
+        <<- =>> define(\2, ":ÉV")
 
     >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  [pas|jamais|plus|guère|point]  bon [dos|fond]
@@ -17154,7 +17151,7 @@ __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]  quartier libre
     >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- ~3:0>> ␣
-        <<- =>> define(\3, ":LV")
+        <<- =>> define(\3, ":ÉV")
 
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
@@ -17196,7 +17193,7 @@ __purge_après_avoir__
     /_VCint_  partie [gagnée|liée]
     /_VCint_  voix au chapitre
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
-        <<- __also__ =>> define(\2, ":LV")
+        <<- __also__ =>> define(\2, ":ÉV")
 
     /_VCint_  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /_VCint_  [pas|jamais|plus|guère|point]  bon [dos|fond]
@@ -17208,7 +17205,7 @@ __purge_après_avoir__
     /_VCint_  [pas|jamais|plus|guère|point]  quartier libre
     /_VCint_  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
-        <<- __also__ =>> define(\3, ":LV")
+        <<- __also__ =>> define(\3, ":ÉV")
 
     /_VCint_  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /_VCint_  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B:e:p  @:(?:Q|V1.*:Y)
@@ -17968,7 +17965,7 @@ __da_locutions_verbales__
     [>venir|>revenir] je [ne|n’] sais ?pas¿ ?trop¿ d’ où
     [>venir|>revenir] on [ne|n’] sait ?pas¿ ?trop¿ d’ où
         <<- ~2:0>> ␣
-        <<- =>> define(\2, ":LV")
+        <<- =>> define(\2, ":ÉV")
 
 
 __passer_temps_adj__
@@ -21784,7 +21781,7 @@ TEST: ils disent finalement tous les deux la même chose
 
 __gn_des_2m__
     des  *WORD  *WORD
-        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs|LV)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not morph(\3, ">(?:seul|minimum|maximum)/") >>>
+        <<- /gn/ (morph(<1, ":(?:[VRBXÉ]|Cs)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not morph(\3, ">(?:seul|minimum|maximum)/") >>>
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                && Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 && Accord de genre erroné avec « \3 ».
@@ -27313,7 +27310,7 @@ TEST: c’est le pouvoir en place qui les a envoyés exercer leur métier
 
 __ppas_det_plur_COD_que_avoir__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
-        <<- /ppas/ morph(\2, ":[NA]") and not morph(>1, ":(?:Y|Ov|D|LV)")
+        <<- /ppas/ morph(\2, ":[NA]") and not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggPlur(\-1, \2)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
