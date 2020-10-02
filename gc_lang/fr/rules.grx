@@ -762,7 +762,7 @@ __<i>/latex(p_latex2)__     \\[,;/\\] <<- ~>> *
 __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
 
 # Markdown
-__<s>/md(p_md_span_ouvrant)__   "(?:[   ]|^)([*_]+)\w" @@1 <<- ~1>> *
+__<s>/md(p_md_span_ouvrant)__   "(?:[   ]|^)([*_]+)\w" @@* <<- ~1>> *
 __<i>/md(p_md_span_fermant)__   "[a-z0-9àéîïôûüù]([*_]+)(?:[,.;:!?)   ]|$)" @@1 <<- ~1>> *
 __<s>/md(p_md_titre_début)__    "^#+" <<- ~>> *
 __<s>/md(p_md_titre_fin)__      "#+ *$" <<- ~>> *
@@ -770,7 +770,8 @@ __<s>/md(p_md_liste)__          "^ *[*+] " <<- ~>> *
 __<s>/md(p_md_citation)__       "^>[ >]+ " <<- ~>> *
 
 TEST: __md__    ces **{{femme}}**                               ->> femmes
-TEST: __md__    _il {{peux}}_ y parvenir                        ->> peut
+TEST: __md__    peut-être, _il {{peux}}_ y parvenir             ->> peut
+TEST: __md__    Mais, tu sais, _elle_ {{peux}} y parvenir       ->> peut
 TEST: __md__    # elle {{prends}} le chemin                     ->> prend
 
 
