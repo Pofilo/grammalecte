@@ -22,6 +22,7 @@ _PATTERNS = {
             r'(?P<NUM>\d+(?:[.,]\d+))',
             r'(?P<SIGN>[&%‰€$+±=*/<>⩾⩽#|×¥£§¢¬÷@-])',
             r"(?P<WORD>(?:(?!_)[\w\u0300-\u036f])+(?:[’'`-](?:(?!_)[\w\u0300-\u036f])+)*)",        # with combining diacritics
+            r"(?P<UNDERSCORE>_+)",
             r"(?P<OTHER>\S)"
         ),
     "fr":
@@ -40,6 +41,7 @@ _PATTERNS = {
             r'(?P<NUM>\d+(?:[.,]\d+|))',
             r'(?P<SIGN>[&%‰€$+±=*/<>⩾⩽#|×¥£¢§¬÷@-])',
             r"(?P<WORD>(?:(?!_)[\w\u0300-\u036f])+(?:[’'`-](?:(?!_)[\w\u0300-\u036f])+)*)",        # with combining diacritics
+            r"(?P<UNDERSCORE>_+)",
             r"(?P<OTHER>\S)"
         )
 }
