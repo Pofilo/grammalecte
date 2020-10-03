@@ -1143,7 +1143,9 @@ class Flexion:
         "err": ":F",
         "ponc": ":@p", "sign": ":@s",
         # LEX
-        "symb": ";S", "unit": ";U", "col": ";C"
+        "symb": ";S", "unit": ";U", "col": ";C", "hm": ";É", "pel": ";é",
+        # SEM
+        "gent": ";G"
     }
 
     def _getSimpleTags (self):
@@ -1162,6 +1164,9 @@ class Flexion:
             if sTag in self._dTagReplacement:
                 s += self._dTagReplacement[sTag]
         # SEM
+        for sTag in self.oEntry.se.split():
+            if sTag in self._dTagReplacement:
+                s += self._dTagReplacement[sTag]
         #s += "~" + self.oEntry.se  if self.oEntry.se and self.oEntry.se != "@"  else ""
         # ETY
         #s += "<" + self.oEntry.et  if self.oEntry.et and self.oEntry.et != "@"  else ""
