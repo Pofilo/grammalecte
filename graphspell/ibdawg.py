@@ -134,19 +134,18 @@ class IBDAWG:
         #     we do it once, then parse the array
         nAcc = 0
         byBuffer = b""
-        lTemp = []
+        self.lByDic = []
         nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
         for i in range(0, len(self.byDic)):
             byBuffer += self.byDic[i:i+1]
             if nAcc == (self.nBytesArc - 1):
-                lTemp.append(int.from_bytes(byBuffer, byteorder="big"))
+                self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
                 byBuffer = b""
             elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
-                lTemp.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
+                self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
                 byBuffer = b""
                 nAcc = -1
             nAcc = nAcc + 1
-        self.byDic = lTemp;
 
         # masks
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
@@ -302,7 +301,7 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return False
-        return bool(self.byDic[iAddr] & self._finalNodeMask)
+        return bool(self.lByDic[iAddr] & self._finalNodeMask)
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
@@ -359,7 +358,7 @@ class IBDAWG:
     def _suggest (self, oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # recursive function
         #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain)
-        if self.byDic[iAddr] & self._finalNodeMask:
+        if self.lByDic[iAddr] & self._finalNodeMask:
             if not sRemain:
                 oSuggResult.addSugg(sNewWord, nDeep)
                 for sTail in self._getTails(iAddr):
@@ -426,7 +425,7 @@ class IBDAWG:
         aTails = set()
         for nVal, jAddr in self._getArcs(iAddr):
             if nVal <= self.nChar:
-                if self.byDic[jAddr] & self._finalNodeMask:
+                if self.lByDic[jAddr] & self._finalNodeMask:
                     aTails.add(sTail + self.dCharVal[nVal])
                 if n and not aTails:
                     aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
@@ -498,22 +497,22 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return []
-        if self.byDic[iAddr] & self._finalNodeMask:
+        if self.lByDic[iAddr] & self._finalNodeMask:
             l = []
             nRawArc = 0
             while not nRawArc & self._lastArcMask:
                 iEndArcAddr = iAddr + 1
-                nRawArc = self.byDic[iAddr]
+                nRawArc = self.lByDic[iAddr]
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
                     # This value is not a char, this is a stemming code
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    iAddr2 = self.byDic[iEndArcAddr]
+                    iAddr2 = self.lByDic[iEndArcAddr]
                     nRawArc2 = 0
                     while not nRawArc2 & self._lastArcMask:
                         iEndArcAddr2 = iAddr2 + 1
-                        nRawArc2 = self.byDic[iAddr2]
+                        nRawArc2 = self.lByDic[iAddr2]
                         l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
                         iAddr2 = iEndArcAddr2 + 1
                 iAddr = iEndArcAddr + 1
@@ -529,12 +528,12 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr is None:
                 return []
-        if self.byDic[iAddr] & self._finalNodeMask:
+        if self.lByDic[iAddr] & self._finalNodeMask:
             l = []
             nRawArc = 0
             while not nRawArc & self._lastArcMask:
                 iEndArcAddr = iAddr + 1
-                nRawArc = self.byDic[iAddr]
+                nRawArc = self.lByDic[iAddr]
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
                     # This value is not a char, this is a stemming code
@@ -547,11 +546,11 @@ class IBDAWG:
         "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
         while True:
             iEndArcAddr = iAddr + 1
-            nRawArc = self.byDic[iAddr]
+            nRawArc = self.lByDic[iAddr]
             if nVal == (nRawArc & self._arcMask):
                 # the value we are looking for
                 # we return the address of the next node
-                return self.byDic[iEndArcAddr]
+                return self.lByDic[iEndArcAddr]
             # value not found
             if nRawArc & self._lastArcMask:
                 return None
@@ -561,8 +560,8 @@ class IBDAWG:
         "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
         while True:
             iEndArcAddr = iAddr + 1
-            nRawArc = self.byDic[iAddr]
-            yield nRawArc & self._arcMask, self.byDic[iEndArcAddr]
+            nRawArc = self.lByDic[iAddr]
+            yield nRawArc & self._arcMask, self.lByDic[iEndArcAddr]
             if nRawArc & self._lastArcMask:
                 break
             iAddr = iEndArcAddr + 1
@@ -573,12 +572,12 @@ class IBDAWG:
         with open(spfDest, 'w', 'utf-8', newline="\n") as hDst:
             iAddr = 0
             hDst.write("i{:_>10} -- #{:_>10}\n".format("0", iAddr))
-            while iAddr < len(self.byDic):
+            while iAddr < len(self.lByDic):
                 iEndArcAddr = iAddr + 1
-                nRawArc = self.byDic[iAddr]
+                nRawArc = self.lByDic[iAddr]
                 nArc = nRawArc & self._arcMask
-                hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", self.byDic[iEndArcAddr]))
+                hDst.write("  {:<20}  {:0>16}  i{:>10}   #{:_>10}\n".format(self.lArcVal[nArc], bin(nRawArc)[2:], "?", self.lByDic[iEndArcAddr]))
                 iAddr = iEndArcAddr + 1
-                if (nRawArc & self._lastArcMask) and iAddr < len(self.byDic):
+                if (nRawArc & self._lastArcMask) and iAddr < len(self.lByDic):
                     hDst.write("\ni{:_>10} -- #{:_>10}\n".format("?", iAddr))
             hDst.close()

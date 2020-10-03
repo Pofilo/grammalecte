@@ -181,24 +181,23 @@ class IBDAWG {
             Instead of converting bytes to integers each times we parse the binary dictionary,
             we do it once, then parse the array
         */
+        this.lByDic = [];
         let nAcc = 0;
         let lBytesBuffer = [];
-        let lTemp = [];
         let nDivisor = (this.nBytesArc + this.nBytesNodeAddress) / 2;
         for (let i = 0;  i < this.sByDic.length;  i+=2) {
             lBytesBuffer.push(parseInt(this.sByDic.slice(i, i+2), 16));
             if (nAcc == (this.nBytesArc - 1)) {
-                lTemp.push(this._convBytesToInteger(lBytesBuffer));
+                this.lByDic.push(this._convBytesToInteger(lBytesBuffer));
                 lBytesBuffer = [];
             }
             else if (nAcc == (this.nBytesArc + this.nBytesNodeAddress - 1)) {
-                lTemp.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
+                this.lByDic.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
                 lBytesBuffer = [];
                 nAcc = -1;
             }
             nAcc = nAcc + 1;
         }
-        this.byDic = lTemp;
         /* end of bug workaround */
 
         this._arcMask = (2 ** ((this.nBytesArc * 8) - 3)) - 1;
@@ -321,7 +320,7 @@ class IBDAWG {
                 return false;
             }
         }
-        return Boolean(this.byDic[iAddr] & this._finalNodeMask);
+        return Boolean(this.lByDic[iAddr] & this._finalNodeMask);
     }
 
     getMorph (sWord) {
@@ -394,7 +393,7 @@ class IBDAWG {
     _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
-        if (this.byDic[iAddr] & this._finalNodeMask) {
+        if (this.lByDic[iAddr] & this._finalNodeMask) {
             if (sRemain == "") {
                 oSuggResult.addSugg(sNewWord);
                 for (let sTail of this._getTails(iAddr)) {
@@ -504,7 +503,7 @@ class IBDAWG {
         let aTails = new Set();
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
             if (nVal <= this.nChar) {
-                if (this.byDic[jAddr] & this._finalNodeMask) {
+                if (this.lByDic[jAddr] & this._finalNodeMask) {
                     aTails.add(sTail + this.dCharVal.get(nVal));
                 }
                 if (n && aTails.size == 0) {
@@ -576,22 +575,22 @@ class IBDAWG {
                 return [];
             }
         }
-        if (this.byDic[iAddr] & this._finalNodeMask) {
+        if (this.lByDic[iAddr] & this._finalNodeMask) {
             let l = [];
             let nRawArc = 0;
             while (!(nRawArc & this._lastArcMask)) {
                 let iEndArcAddr = iAddr + 1;
-                nRawArc = this.byDic[iAddr];
+                nRawArc = this.lByDic[iAddr];
                 let nArc = nRawArc & this._arcMask;
                 if (nArc > this.nChar) {
                     // This value is not a char, this is a stemming code
                     let sStem = ">" + this.funcStemming(sWord, this.lArcVal[nArc]);
                     // Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    let iAddr2 = this.byDic[iEndArcAddr];
+                    let iAddr2 = this.lByDic[iEndArcAddr];
                     let nRawArc2 = 0;
                     while (!(nRawArc2 & this._lastArcMask)) {
                         let iEndArcAddr2 = iAddr2 + 1;
-                        nRawArc2 = this.byDic[iAddr2];
+                        nRawArc2 = this.lByDic[iAddr2];
                         l.push(sStem + "/" + this.lArcVal[nRawArc2 & this._arcMask]);
                         iAddr2 = iEndArcAddr2 + 1;
                     }
@@ -615,12 +614,12 @@ class IBDAWG {
                 return [];
             }
         }
-        if (this.byDic[iAddr] & this._finalNodeMask) {
+        if (this.lByDic[iAddr] & this._finalNodeMask) {
             let l = [];
             let nRawArc = 0;
             while (!(nRawArc & this._lastArcMask)) {
                 let iEndArcAddr = iAddr + 1;
-                nRawArc = this.byDic[iAddr];
+                nRawArc = this.lByDic[iAddr];
                 let nArc = nRawArc & this._arcMask;
                 if (nArc > this.nChar) {
                     // This value is not a char, this is a stemming code
@@ -637,11 +636,11 @@ class IBDAWG {
         // looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None
         while (true) {
             let iEndArcAddr = iAddr+1;
-            let nRawArc = this.byDic[iAddr];
+            let nRawArc = this.lByDic[iAddr];
             if (nVal == (nRawArc & this._arcMask)) {
                 // the value we are looking for
                 // we return the address of the next node
-                return this.byDic[iEndArcAddr];
+                return this.lByDic[iEndArcAddr];
             }
             else {
                 // value not found
@@ -657,8 +656,8 @@ class IBDAWG {
         // generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)
         while (true) {
             let iEndArcAddr = iAddr+1;
-            let nRawArc = this.byDic[iAddr];
-            yield [nRawArc & this._arcMask, this.byDic[iEndArcAddr]];
+            let nRawArc = this.lByDic[iAddr];
+            yield [nRawArc & this._arcMask, this.lByDic[iEndArcAddr]];
             if (nRawArc & this._lastArcMask) {
                 break;
             }
