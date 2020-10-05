@@ -37,8 +37,8 @@ def rewriteCode (sCode):
     sCode = sCode.replace("__also__", "bCondMemo")
     sCode = sCode.replace("__else__", "not bCondMemo")
     sCode = sCode.replace("sContext", "_sAppContext")
-    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
-    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
+    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|meta|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
+    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|meta|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
     sCode = re.sub(r"\b(select|exclude|define|define_from|rewrite|add_morph|change_meta)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
     sCode = re.sub(r"\b(select|exclude|define|define_from|rewrite|add_morph|change_meta)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
     sCode = re.sub(r"\b(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', sCode)
@@ -47,10 +47,10 @@ def rewriteCode (sCode):
     sCode = re.sub(r"\bspace_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
     sCode = re.sub(r"\banalyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
     sCode = re.sub(r"\banalyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
-    sCode = re.sub(r"\b(morph|analyse|tag|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token
-    sCode = re.sub(r"\b(morph|analyse|tag|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                       # previous token
-    sCode = re.sub(r"\b(morph|analyse|tag|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)        # next token
-    sCode = re.sub(r"\b(morph|analyse|tag|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)    # previous token
+    sCode = re.sub(r"\b(morph|analyse|tag|meta|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token
+    sCode = re.sub(r"\b(morph|analyse|tag|meta|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                       # previous token
+    sCode = re.sub(r"\b(morph|analyse|tag|meta|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)        # next token
+    sCode = re.sub(r"\b(morph|analyse|tag|meta|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)    # previous token
     sCode = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', sCode)
     sCode = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', sCode)          # before(sCode)
     sCode = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                 # after(sCode)
