@@ -3797,8 +3797,8 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 
 # élisions
 __eleu_élisions_manquantes__
-    [le|la|de]  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|yacht|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+    [le|la|de]  ~^[aâeéèêiîoôuûyœæh].
+        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|yacht|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and morph(\2, ":", ":G|;é")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
@@ -3807,20 +3807,41 @@ __eleu_élisions_manquantes__
     que [il|ils|elle|elles|on|iel|iels]
         <<- /eleu/ space_after(\1, 1, 1) -1:.2>> qu’                        && Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
-    [me|te|se]  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ not \1.isupper() and space_after(\1, 1, 1) and morph(\2, ":V", ":Q")
+    [je|ne|me|te|se]  ~^[aâeéèêiîoôuûyœæh].
+        <<- /eleu/ not \1.isupper() and space_after(\1, 1, 1) and morph(\2, ":V", ":Q|;é")
         -1:.2>> =\1[0:1]+"’"                                                && Il faut élider le pronom “\1” et l’accoler au verbe.|http://fr.wikipedia.org/wiki/Élision
 
-TEST: {{le }}amour                                                        ->> l’
-TEST: {{la }}imagination                                                  ->> l’
-TEST: {{de }}amour                                                        ->> d’
-TEST: {{de }}est                                                          ->> d’
-TEST: je crois que {{si }}ils viennent, ils seront mécontents
-TEST: {{Que }}ils soient heureux
-TEST: Il {{se }}avançait parmi eux.
-TEST: il {{me }}oublie souvent
+TEST: {{le }}amour                                                          ->> l’
+TEST: {{la }}imagination                                                    ->> l’
+TEST: {{de }}amour                                                          ->> d’
+TEST: {{de }}est en ouest                                                   ->> d’
+TEST: je crois que {{si }}ils viennent, ils seront mécontents               ->> s’
+TEST: {{Que }}ils soient heureux                                            ->> Qu’
+TEST: Il {{se }}avançait parmi eux.                                         ->> s’
+TEST: il {{me }}oublie souvent                                              ->> m’
+TEST: je {{ne }}arrive pas à comprendre                                     ->> n’
+TEST: {{je }}arrive                                                         ->> j’
 TEST: J’ai passé une journée de ouf.
 TEST: le yacht
+TEST: de i1 à i2
+
+
+__eleu_élisions_superflues__
+    l’  @>[aâeéèêiîoôuûyœæh].*;é
+        <<- /eleu/ morph(\2, ":(?:[123][sp]|[NA].*:e)") -1>> le|la          && Pas d’élision.
+        <<- /eleu/ __else__ and morph(\2, ":[NA].*:m") -1>> le              && Pas d’élision.
+        <<- /eleu/ __else__ and morph(\2, ":[NA].*:f") -1>> la              && Pas d’élision.
+        <<- /eleu/ __else__ -1>> le|la                                      && Pas d’élision.
+
+    [d’|qu’|j’|n’|m’|t’|s’]  @^[aâeéèêiîoôuûyœæh].*;é
+        <<- /eleu/ -1>> =\1[0:-1]+"e"                                       && Pas d’élision.
+
+TEST: {{l’}}haricot                                                         ->> le
+TEST: {{l’}}ouistiti                                                        ->> le
+TEST: {{j’}}hâble                                                           ->> je
+TEST: {{l’}}énième                                                          ->> le|la
+TEST: {{l’}}hulotte                                                         ->> la
+TEST: combien {{d’}}iourtes                                                 ->> de
 
 
 # ce -> cet
@@ -6048,7 +6069,7 @@ TEST: {{reporter à plus tard}}                  ->> reporter
 ## 1sg
 __conj_je__
     je est un autre
-        <<- !2>>
+        <<- !1:2>>
 
     je  @:V¬:(?:1s|Ov)
         <<- /conj/ not (morph(\-1, ":[PQ]") and morph(<1, ":V0.*:1s"))
@@ -12678,18 +12699,19 @@ __maj_gentilés__
     à [la|l’] [afghane|albanaise|algérienne|allemande|américaine|andorrane|anglaise|angolaise|arabe|argentine|arménienne|australienne|autrichienne|asiatique|azerbaïdjanaise|bahamienne|bangladaise|bengladeshie|barbadienne|basque|belge|bélizienne|béninoise|bretonne|bhoutanaise|biélorusse|birmane|bolivienne|bosnienne|botswanaiso|brésilienne|britannique|brunéiene|bulgare|burkinabé|burundaise|cambodgienne|camerounaise|canadienne|capverdienne|centrafricaine|chilienne|chinoise|chypriote|colombienne|comorienne|congolaise|nord-coréenne|corse|costaricienne|croate|cubaine|danoise|djiboutienne|dominicaine|égyptienne|émiratie|équatorienne|érythréenne|estonienne|espagnole|étatsunienne|états-unienne|étasunienne|éthiopienne|fidjienne|finlandaise|formosane|française|gabonaise|gambienne|géorgienne|ghanéenne|grecque|grenadienne|guadeloupéenne|guatémaltèque|guinéenne|équato-guinéenne|guyanienne|haïtienne|honduriene|hollandaise|hongroise|indienne|indochinoise|indonésienne|irakienne|italienne|iranienne|irlandaise|islandaise|israélienne|ivoirienne|jamaïcaine|japonaise|jordanienne|kazakhe|kényane|kosovare|koweïtienne|laotienne|lapone|lettone|libanaise|libérienne|libyenne|liechtensteinoise|lituanienne|luxembourgeois|macédonienne|maghrébine|malgache|malaisienne|malawite|maldivienne|malienne|maltaise|maorie|marocaine|martienne|mauricienne|mauritanienne|mexicaine|micronésienne|moldave|monégasque|monténégrine|mongole|mozambicaine|namibiene|népalaise|nicaraguayenne|nigérienne|nigériane|néerlandaise|norvégienne|néo-zélandaise|ougandaise|ouzbèke|pakistanaise|palestinienne|panaméenne|paraguayenne|perse|péruvienne|philippine|polonaise|polynésienne|portugaise|québécoise|qatarie|roumaine|russe|rwandaise|saoudienne|scandinave|salvadorienne|sénégalaise|serbe|singapourienne|slovaque|slovène|somalienne|soudanaise|soviétique|srilankaise|suédoise|suisse|surinamaise|syrienne|sud-africaine|sud-coréenne|américaine|tadjike|tanzanienne|tchadienne|tchèque|thaïlandaise|togolaise|tahitienne|tunisiene|turkmène|turque|taïwanaise|ukrainienne|uruguayenne|vénézuélienne|vietnamienne|yéménite|yougoslave|zaïroise|zambienne|zimbabwéenne]
         <<- !-1>>
 
-    [>afghan|>albanais|>algérien|>allemand|>américain|>andorran|>anglais|>angolais|>arabe|>argentin|>arménien|>australien|>autrichien|>asiatique|>azerbaïdjanais|>bahamien|>bangladais|>bengladeshi|>barbadien|>basque|>belge|>bélizien|>béninois|>breton|>bhoutanais|>biélorusse|>birman|>bolivien|>bosnien|>botswanais|>brésilien|>britannique|>brunéien|>bulgare|>burkinabé|>burundais|>cambodgien|>camerounais|>canadien|>capverdien|>centrafricain|>chilien|>chinois|>chypriote|>colombien|>comorien|>congolais|>nord-coréen|>corse|>costaricien|>croate|>cubain|>danois|>djiboutien|>dominicain|>égyptien|>émirati|>équatorien|>érythréen|>estonien|>espagnol|>étatsunien|>états-unien|>étasunien|>éthiopien|>fidjien|>finlandais|>formosan|>français|>gabonais|>gambien|>géorgien|>ghanéen|>grec|>grenadien|>guadeloupéen|>guatémaltèque|>guinéen|>équato-guinéen|>guyanien|>haïtien|>hondurien|>hollandais|>hongrois|>indien|>indochinois|>indonésien|>irakien|>italien|>iranien|>irlandais|>islandais|>israélien|>ivoirien|>jamaïcain|>japonais|>jordanien|>kazakh|>kényan|>kosovar|>koweïtien|>laotien|>lapon|>letton|>libanais|>libérien|>libyen|>liechtensteinois|>lituanien|>luxembourgeois|>macédonien|>maghrébin|>malgache|>malaisien|>malawite|>maldivien|>malien|>maltais|>maori|>marocain|>martien|>mauricien|>mauritanien|>mexicain|>micronésien|>moldave|>monégasque|>monténégrin|>mongol|>mozambicain|>namibien|>népalais|>nicaraguayen|>nigérien|>nigérian|>néerlandais|>norvégien|>néo-zélandais|>ougandais|>ouzbek|>pakistanais|>palestinien|>panaméen|>paraguayen|>perse|>péruvien|>philippin|>polonais|>polynésien|>portugais|>québécois|>qatari|>roumain|>russe|>rwandais|>saoudien|>scandinave|>salvadorien|>sénégalais|>serbe|>singapourien|>slovaque|>slovène|>somalien|>soudanais|>soviétique|>srilankais|>suédois|>suisse|>surinamais|>syrien|>sud-africain|>sud-coréen|>américain|>tadjik|>tanzanien|>tchadien|>tchèque|>thaïlandais|>togolais|>tahitien|>tunisien|>turkmène|>turc|>taïwanais|>ukrainien|>uruguayen|>vénézuélien|>vietnamien|>yéménite|>yougoslave|>zaïrois|>zambien|>zimbabwéen]
+    $;G
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          && S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \1.islower() and not \1.startswith("canadienne") and
             ( value(<1, "|certains|certaines|maints|maintes|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|")
-            or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") )
+            or ( value(<1, "|le|") and not morph(\1, ";L") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:f:[si]") )
             or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
-            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|argotique|correct|courant|parfait|facile|haché|aisé|impeccable|incompréhensible|prononcé|baragouiné)") ) )
-        -1>> =\1.capitalize()                                                                       && S’il s’agit d’un gentilé, mettez une majuscule.
+            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|argotique|correct|courant|parfait|facile|haché|aisé|impeccable|incompréhensible|prononcé|baragouiné)") )
+            or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") ) )
+        -1>> =\1.capitalize()                                                                       && S’il s’agit d’un gentilé, mettez une majuscule.|https://fr.wiktionary.org/wiki/gentil%C3%A9
 
     [un|une|certains|certaines|maints|maintes|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européen|>parisien|>lyonnais|>marseillais|>lillois|>toulousain|>nantais|>strasbourgeois|>montpelliérain|>bordelais|>bruxellois|>montréalais|>londonien|>genévois|>zurichois|>bâlois|>berlinois|>romain|>californien]
-        <<- /maj/ \2.islower() -2>> =\2.capitalize()                                                && S’il s’agit d’un gentilé, mettez une majuscule.
+        <<- /maj/ \2.islower() -2>> =\2.capitalize()                                                && S’il s’agit d’un gentilé, mettez une majuscule.|https://fr.wiktionary.org/wiki/gentil%C3%A9
 
 TEST: deux {{français}}                                                 ->> Français
 TEST: des {{français}} sont arrivés                                     ->> Français
@@ -14469,6 +14491,11 @@ __purge_locutions_distance__
     à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] plus loin
     à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] à la ronde
     à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] aux alentours
+    à un jet [de|d’] pierre [de|d’] [distance|ici]
+    à un jet [de|d’] pierre en [amont|aval]
+    à un jet [de|d’] pierre plus loin
+    à un jet [de|d’] pierre à la ronde
+    à un jet [de|d’] pierre aux alentours
         <<- ~>> *
 
     à ?[moins|plus|si|très|trop]¿ haute altitude
