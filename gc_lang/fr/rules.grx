@@ -3831,7 +3831,6 @@ __eleu_élisions_superflues__
         <<- /eleu/ morph(\2, ":(?:[123][sp]|[NA].*:e)") -1>> le|la          && Pas d’élision.
         <<- /eleu/ __else__ and morph(\2, ":[NA].*:m") -1>> le              && Pas d’élision.
         <<- /eleu/ __else__ and morph(\2, ":[NA].*:f") -1>> la              && Pas d’élision.
-        <<- /eleu/ __else__ -1>> le|la                                      && Pas d’élision.
 
     [d’|qu’|j’|n’|m’|t’|s’]  @>[aâeéèêiîoôuûyœæh].*;é
         <<- /eleu/ -1>> =\1[0:-1]+"e"                                       && Pas d’élision.
@@ -12695,14 +12694,12 @@ TEST: C’est une prérogative de l’{{état-nation}}                        ->
 __maj_gentilés__
     océan Indien
     [îles|iles] Britanniques
-    [le|ce|un|de|mon|ton|son|notre|votre|leur|quel] malaise
-    [de|des|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs|certains] malaises
     à [la|l’] [afghane|albanaise|algérienne|allemande|américaine|andorrane|anglaise|angolaise|arabe|argentine|arménienne|australienne|autrichienne|asiatique|azerbaïdjanaise|bahamienne|bangladaise|bengladeshie|barbadienne|basque|belge|bélizienne|béninoise|bretonne|bhoutanaise|biélorusse|birmane|bolivienne|bosnienne|botswanaiso|brésilienne|britannique|brunéiene|bulgare|burkinabé|burundaise|cambodgienne|camerounaise|canadienne|capverdienne|centrafricaine|chilienne|chinoise|chypriote|colombienne|comorienne|congolaise|nord-coréenne|corse|costaricienne|croate|cubaine|danoise|djiboutienne|dominicaine|égyptienne|émiratie|équatorienne|érythréenne|estonienne|espagnole|étatsunienne|états-unienne|étasunienne|éthiopienne|fidjienne|finlandaise|formosane|française|gabonaise|gambienne|géorgienne|ghanéenne|grecque|grenadienne|guadeloupéenne|guatémaltèque|guinéenne|équato-guinéenne|guyanienne|haïtienne|honduriene|hollandaise|hongroise|indienne|indochinoise|indonésienne|irakienne|italienne|iranienne|irlandaise|islandaise|israélienne|ivoirienne|jamaïcaine|japonaise|jordanienne|kazakhe|kényane|kosovare|koweïtienne|laotienne|lapone|lettone|libanaise|libérienne|libyenne|liechtensteinoise|lituanienne|luxembourgeois|macédonienne|maghrébine|malgache|malaisienne|malawite|maldivienne|malienne|maltaise|maorie|marocaine|martienne|mauricienne|mauritanienne|mexicaine|micronésienne|moldave|monégasque|monténégrine|mongole|mozambicaine|namibiene|népalaise|nicaraguayenne|nigérienne|nigériane|néerlandaise|norvégienne|néo-zélandaise|ougandaise|ouzbèke|pakistanaise|palestinienne|panaméenne|paraguayenne|perse|péruvienne|philippine|polonaise|polynésienne|portugaise|québécoise|qatarie|roumaine|russe|rwandaise|saoudienne|scandinave|salvadorienne|sénégalaise|serbe|singapourienne|slovaque|slovène|somalienne|soudanaise|soviétique|srilankaise|suédoise|suisse|surinamaise|syrienne|sud-africaine|sud-coréenne|américaine|tadjike|tanzanienne|tchadienne|tchèque|thaïlandaise|togolaise|tahitienne|tunisiene|turkmène|turque|taïwanaise|ukrainienne|uruguayenne|vénézuélienne|vietnamienne|yéménite|yougoslave|zaïroise|zambienne|zimbabwéenne]
         <<- !-1>>
 
     $;G
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          && S’il s’agit d’un adjectif, ne mettez pas de majuscule.
-        <<- /maj/ \1.islower() and not \1.startswith("canadienne") and
+        <<- /maj/ \1.islower() and not value(\1, "|canadienne|canadiennes|malaise|malaises|avare|avares|") and
             ( value(<1, "|certains|certaines|maints|maintes|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|quel|quelle|quels|quelles|")
             or ( value(<1, "|le|") and morph(\1, ":N.*:[me]:[si]", ";L") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:[si]", ";L") )
@@ -21435,7 +21432,7 @@ TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
 
 __gn_det_mas_sing_3m__
     [ledit|un|ce|cet|au|quel|audit|dudit|aucun|nul]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[me]:[si]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:[pf]", "*") and \4.islower()
+        <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[me]:[si]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:[pf]", "*") and \4.islower()
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
 
 TEST: ledit martyr oublié {{réhabilitée}}                       ->> réhabilité
@@ -21486,14 +21483,14 @@ TEST: le ton monte.
 __gn_det_mon_ton_son_3m__
     [mon|ton|son]  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and \4.islower() >>>
-        <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].*:[NA].*:[me]:[si]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:[pf]", "*")
+        <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].*:[NA].*:[me]:[si]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:[pf]", "*")
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
         <<- /gn/ re.search("^[aâeéèêiîoôuûyœæ]", \2) >>>
-        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:[pf]", "*")
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:[pf]", "*")
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
         <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:[pm]", "*")
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:p", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:p", "*")
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: mon petit ami {{décédée}}                                                 ->> décédé
@@ -21540,7 +21537,7 @@ TEST: il fut cette fois ulcéré de voir son entreprise une fois de plus ruinée
 
 __gn_det_fem_sing_3m__
     [ladite|une|cette|ma|ta|sa|quelle|aucune|nulle]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[fe]:[si]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:[pm]", "*") and \4.islower()
+        <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[fe]:[si]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:[pm]", "*") and \4.islower()
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
 
 TEST: une amie prodigieuse {{récompensé}}                          ->> récompensée
@@ -21592,11 +21589,11 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 __gn_det_notre_votre_3m__
     [chaque|quelque|notre|votre]  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and \4.islower() >>>
-        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:f", "*")
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:f", "*")
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:m", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:m", "*")
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]", ":[fe]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: notre grande armée {{fabuleux}}                                           ->> fabuleuse
@@ -21901,11 +21898,11 @@ TEST: Un problème rapporté par maints est l’incapacité à trouver un parten
 __gn_det_les_3m__
     les  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and not morph(\2, ":[123][sp]") and \4.islower() and not morph(\4, ">seul/") >>>
-        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:f", "*")
+        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:f", "*")
         -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:m", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:m", "*")
         -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:s", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:s", "*")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: les heureux imbéciles {{payée}} au lance-pierre.                      ->> payés
@@ -21916,11 +21913,11 @@ TEST: les psychologues hypocrites {{ébranlé}} par la crise                  ->
 __gn_det_leurs_3m__
     leurs  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and not morph(\2, ":[123][sp]") and \4.islower() and not morph(\4, ">seul/") and not before("(?i)\\bune? de +$") >>>
-        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:f", "*")
+        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:f", "*")
         -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:m", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:m", "*")
         -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:s", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:s", "*")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: Leurs grands plans {{dépassées}} par les évènements                   ->> dépassés
@@ -21931,7 +21928,7 @@ TEST: leurs psychologues hypocrites {{condamné}}                            ->>
 __gn_det_mas_plur_3m__
     [quels|certains|maints|lesdits|desdits|auxdits]  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and \4.islower() and not morph(\4, ">seul/") and not before("(?i)\\bune? de +$")
-            and morph(\2, ":[NA].*:[me]:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:[fs]", "*")
+            and morph(\2, ":[NA].*:[me]:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:[fs]", "*")
         -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin pluriel.
 
 TEST: lesdits dentistes ruinés {{oublié}}                                   ->> oubliés
@@ -21941,7 +21938,7 @@ TEST: Prendre goût aux heures passées seul à marcher
 __gn_det_fem_plur_3m__
     [quelles|certaines|maintes|lesdites|desdites|auxdites]  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and \4.islower() and not morph(\4, ">seul/") and not before("(?i)\\bune? de +$")
-            and morph(\2, ":[NA].*:[fe]:[pi]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:[ms]", "*")
+            and morph(\2, ":[NA].*:[fe]:[pi]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:[ms]", "*")
         -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin pluriel.
 
 TEST: quelles belles nuits {{inoubliable}}                                  ->> inoubliables
@@ -21950,11 +21947,11 @@ TEST: quelles belles nuits {{inoubliable}}                                  ->> 
 __gn_det_epi_plur_3m__
     [ces|mes|tes|ses|nos|vos|aux|plusieurs|quelques|moult]  *WORD  *WORD  *WORD
         <<- /gn/ morph(<1, "<start>|:V", "*") and \4.islower() and not morph(\4, ">seul/") and not before("(?i)\\bune? de +$") >>>
-        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:f", "*")
+        <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:f", "*")
         -4>> =suggMasPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:m", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:m", "*")
         -4>> =suggFemPlur(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin pluriel.
-        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)") and morph(\4, ":[NAQ].*:s", "*")
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NAQ].*:s", "*")
         -4>> =suggPlur(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces petites sottes {{venus}} foutre la merde                          ->> venues
