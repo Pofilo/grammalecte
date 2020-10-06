@@ -707,7 +707,7 @@ TEST: “Le grand homme.{{"}}                                                 ->
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_doubles_ouvrants)__
-    (?:^|[ –—-])(['’]['’])(?=\w)  @@*
+    (?:^|[ –—-])(['’‘]['’‘])(?=\w)  @@*
         <<- -1>> « |“                                                                               && Guillemets typographiques ouvrants.
 __<s>/typo(typo_guillemets_typographiques_simples_doubles_fermants)__
     [\w.?!…,](['’]['’])(?![\w'’])  @@*
@@ -716,6 +716,7 @@ __<s>/typo(typo_guillemets_typographiques_simples_doubles_fermants)__
 TEST: {{''}}Ça{{”}} recommence.                                                 ->> « |“|||
 TEST: Le {{''}}grand{{”}} homme.                                                ->> « |“|||
 TEST: Le {{“}}grand{{''}} homme.                                                ->> ||| »|”
+TEST: Le {{‘‘}}barbare{{’’}} dont il faut se défendre à tout prix               ->> « |“||| »|”
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
@@ -1472,10 +1473,11 @@ __[i]/ocr(ocr_le_la_les_regex)__
         <<- __else__ and \0.endswith("à") ->> la|là                                                 && Erreur de numérisation ?
         <<- __else__ ->> le|la                                                                      && Erreur de numérisation ?
 
-TEST: __ocr__ avec {{1e}} chien du policier
-TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
-TEST: __ocr__ {{1c}} chat du voinsin est idiot
-TEST: __ocr__ {{[e}} chien a faim
+TEST: __ocr__ avec {{1e}} chien du policier                                                 ->> le
+TEST: __ocr__ il le jura sur {{1a}} tête de sa mère                                         ->> la
+TEST: __ocr__ {{]à}}                                                                        ->> la|là
+TEST: __ocr__ {{1c}} chat du voinsin est idiot                                              ->> le|la
+TEST: __ocr__ oui, {{[e}} chien a faim                                                      ->> le
 
 
 __[i]/conf(conf_1e_1a_1es)__
@@ -1487,7 +1489,7 @@ __[i]/conf(conf_1e_1a_1es)__
 TEST: {{1e}} marginal                                           ->> le
 TEST: {{1a}} venue des problèmes                                ->> la
 TEST: {{1es}} enfants sont au lit                               ->> les
-TEST: Je… ne {{1e}}… crois pas…
+TEST: Je… ne {{1e}}… crois pas…                                 ->> le
 
 
 __[i]/ocr(ocr_les)__
@@ -2352,10 +2354,13 @@ __fusions_noms_propres__
         <<- =>> define(\1, ":M2:e:i")
 
     cac  40
+    Rio grande
         <<- ~>> ␣
+        <<- =>> define(\1, ":N:m:i")
 
     France [2|3|4|5|0|O]
         <<- ~>> ␣
+        <<- =>> define(\1, ":MP:e:i")
 
     Peugeot  ~^\d0\d\d?$
         <<- ~>> ␣
@@ -2949,6 +2954,7 @@ __ocr_avec__
         <<- /ocr/ ->> avec                                                                          && Erreur de numérisation ?
 
 TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.
+
 
 # avaient / avalent
 __ocr_avaient__
@@ -3798,7 +3804,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 # élisions
 __eleu_élisions_manquantes__
     [le|la|de]  ~^[aâeéèêiîoôuûyœæh].
-        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|oui|ouï-dire|ouistiti|ouate|one-?step|ouf|yacht|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and morph(\2, ":", ":G|;é")
+        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and morph(\2, ":", ":G|;é")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
@@ -3846,7 +3852,7 @@ TEST: combien {{d’}}iourtes                                                 ->
 # ce -> cet
 __eleu_euphonie_cet__
     ce  ~^[aâeéèêiîoôuûyœæ]
-        <<- /eleu/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|yacht|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
+        <<- /eleu/ not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]", ":G|;é")
         -1>> cet                                                                && Euphonie : “ce” devient “cet” devant un mot commençant par une voyelle.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: {{ce}} animal est dangereux
@@ -3867,11 +3873,11 @@ TEST: souhaitè-je
 # ma, ta, sa / mon, ton, son
 __eleu_euphonie_ma_ta_sa__
     [ma|ta]  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ morph(\2, ":[NA]") and not re.search("(?i)^(?:onz|énième|ouf|énième|I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2)
+        <<- /eleu/ morph(\2, ":[NA]", ":G|;é") and not re.search("(?i)^(?:I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2)
         -1>> =\1[0:1]+"on"                                                      && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. Exemple : mon étoile (féminin).|https://fr.wikipedia.org/wiki/Euphonie
 
     sa  ~^[aâeéèêiîoôuûyœæ].
-        <<- /eleu/ not \1.isupper() and morph(\2, ":[NA]") and not re.search("(?i)^(?:onz|énième|ouf|énième|I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2) >>>
+        <<- /eleu/ not \1.isupper() and morph(\2, ":[NA]", ":G|;é") and not re.search("(?i)^(?:I(?:I|V|X|i?[eè]?re|ʳᵉ))", \2) >>>
         <<- /eleu/ morph(\2, ":[123][sp]") -1>> =\1[0:1]+"on|ça"                && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. (À moins que vous ne confondiez “sa” et “ça”.) Exemple : son étoile (féminin), ça existe.|https://fr.wikipedia.org/wiki/Euphonie
         <<- /eleu/ __else__ -1>> =\1[0:1]+"on"                                  && Euphonie : lorsque le déterminant “\1” est suivi d’un nom ou d’un adjectif commençant par une voyelle, il est d’usage d’utiliser le pronom  “mon”, “ton” ou “son” pour respecter l’euphonie. Exemple : son étoile (féminin).|https://fr.wikipedia.org/wiki/Euphonie
 
@@ -14453,7 +14459,7 @@ __purge_locutions_latines__
     sursum corda
     sic transit gloria mundi
         <<- ~>> ␣
-        <<- =>> =define(\1, ":LP")
+        <<- =>> define(\1, ":LP")
 
 
 __purge_locutions_incises__
@@ -14464,7 +14470,7 @@ __purge_locutions_incises__
     [<start>|,|(] entre autres ?choses¿ [<end>|,|)]
     [<start>|,|(] mieux encore [<end>|,|)]
     [<start>|,|(] n’ est-ce pas [<end>|)]
-        <<- ~2:-2>>*
+        <<- ~2:-2>> *
 
 
 __purge_locutions_distance__
@@ -17366,7 +17372,7 @@ __purge_adverbes__
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: purge_passe2|pp2                                                                        _
+@@@@GRAPH: intergraphe12a|ig12a                                                                    _
 @@@@
 @@@@
 @@@@
@@ -17722,7 +17728,7 @@ __purge_tous_deux_trois__
 __purge_tout_tout_tous_toutes__
     tout                    [le|ce|cet|mon|ton|son]
     toute                   [la|cette|ma|ta|sa]
-    [tous|toutes|tout_e_s]  [les|des|mes|tes|ses|ces|nos|vos|leurs]
+    [tous|toutes|tout·e·s]  [les|des|mes|tes|ses|ces|nos|vos|leurs]
         <<- ~1>> *
 
     /-on        [tous|toutes]
@@ -17730,14 +17736,14 @@ __purge_tout_tout_tous_toutes__
     /-vous      [tous|toutes]
     /-ils       [tous|toutes]
     /-elles     [tous|toutes]
-    /-iel       [tous|toutes|tout_e_s]
-    /-iels      [tous|toutes|tout_e_s]
+    /-iel       [tous|toutes|tout·e·s]
+    /-iels      [tous|toutes|tout·e·s]
         <<- ~2>> *
 
-    *WORD       [tous|toutes|tout_e_s]
+    *WORD       [tous|toutes|tout·e·s]
         <<- morph(\1, ":[123]p") ~2>> *
 
-    on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes|tout_e_s]
+    on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes|tout·e·s]
         <<- morph(\-2, ":[123]s") ~-1>> *
 
     [tous|toutes] , sans >exception ,
@@ -17748,7 +17754,7 @@ __purge_tout_tout_tous_toutes__
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: purge_passe3|pp3                                                                        _
+@@@@GRAPH: intergraphe12b|ig12b                                                                    _
 @@@@
 @@@@
 @@@@
@@ -24650,7 +24656,7 @@ __purge_prépositions_pronoms__
     vous    [tous|toutes]   qui
     eux     tous            qui
     elles   toutes          qui
-    iels    tout_e_s        qui
+    iels    tout·e·s        qui
         <<- ~2>> *
 
 TODO: comme
@@ -25099,7 +25105,7 @@ __énumérations_noms_propres__
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: purge_ponctuations2|ppc2                                                                _
+@@@@GRAPH: prégraphe_gv1|pg_gv1                                                                    _
 @@@@
 @@@@
 @@@@
