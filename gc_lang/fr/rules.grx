@@ -2902,13 +2902,41 @@ TEST: __ocr__ {{J }}arrive demain
 
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
 __ocr_lettres_isolées2!2__
-    [á|â|ä|b|c|ç|d|e|é|è|ê|ë|f|g|h|i|í|ì|î|ï|j|k|l|m|n|o|ó|ò|ô|ö|p|q|r|s|t|u|ú|ù|û|ü|v|w|x|z]
-        <<- /ocr/ not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
-        ->> _           && Lettre isolée : erreur de numérisation ?
+    [b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|z]
+        <<- /ocr/ before("[   ]$") and not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
+        ->> _                                                                                       && Lettre isolée : erreur de numérisation ?
+
+    [á|â|ä]
+        <<- /ocr/ ->> à|a                                                                           && Lettre isolée : erreur de numérisation ?
+
+    [é|è|ê|ë]
+        <<- /ocr/ ->> e|à|a                                                                         && Lettre isolée : erreur de numérisation ?
+
+    [í|ì|î|ï]
+        <<- /ocr/ ->> i|à|a                                                                         && Lettre isolée : erreur de numérisation ?
+
+    [ó|ò|ö]
+        <<- /ocr/ ->> ô|o|a|a                                                                       && Lettre isolée : erreur de numérisation ?
+
+    [ú|ù|û|ü]
+        <<- /ocr/ ->> u|à|a                                                                         && Lettre isolée : erreur de numérisation ?
+
+    [ý|ỳ|ÿ|ŷ]
+        <<- /ocr/ ->> y                                                                             && Lettre isolée : erreur de numérisation ?
+
+    ç
+        <<- /ocr/ ->> c|a|à                                                                         && Lettre isolée : erreur de numérisation ?
 
 TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
 TEST: __ocr__ la voix, {{e}} est celle de…
 TEST: __ocr__ ressemble {{h}} une fenêtre de serre.
+TEST: __ocr__ viens {{á}} nous
+TEST: __ocr__ c’est ça avoir {{é}} faire à lui.
+TEST: __ocr__ au point {{í}}
+TEST: __ocr__ c’est {{ö}} combien difficile
+TEST: __ocr__ viens {{ù}} nous
+TEST: __ocr__ elle {{ŷ}} vient
+TEST: __ocr__ {{Ç}} n’est pas là.
 TEST: __ocr__ Ça a duré 3 h.
 TEST: __ocr__ c’est alors que je suis fort.
 TEST: __ocr__ X
@@ -16177,7 +16205,7 @@ __substantifs_multi_mots__
     [>bisphénol|>bisphenol] A
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à [bijoux|gants|outils|sardines]
-    >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
+    >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement|sous-munitions]
     >bombe à rayonnement renforcé
     >bonnet [de|d’] nuit
     [bonne+s|>bonniche] à tout faire
@@ -16300,6 +16328,7 @@ __substantifs_multi_mots__
     >crayon à [lèvres|sourcils]
     >crêpage de >chignon
     >crime [de|d’] guerre
+    >criminel [de|d’] guerre
     >crise de >nerf
     >crotte [de|d’] nez
     >cuillère à [café|soupe]
@@ -16423,6 +16452,7 @@ __substantifs_multi_mots__
     >garde à vue
     >garde du corps
     gaz à >effet [de|d’] serre
+    gaz [de|d’] schiste
     >général [2|3|4|5|deux|trois|quatre|cinq] étoiles
     >genou à terre
     gens de confiance
@@ -16876,8 +16906,8 @@ __substantifs_multi_mots__
     [>grand-père|>grand-mère|>père|>mère|>papa|>maman|>oncle|>tante|>frère|>sœur|beau-frère|belle-sœur|>nièce|>neveu|>cousin] [de|d’] $:B:e:p ans
         <<- ~2:0>> *
 
-    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette] d’ un mètre [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf|soixante|soixante-et-un|soixante-deux|soixante-trois|soixante-quatre|soixante-cinq|soixante-six|soixante-sept|soixante-huit|soixante-neuf|soixante-dix|soixante-et-onze|soixante-douze|soixante-treize|soixante-quatorze|soixante-quinze|soixante-seize|soixante-dix-sept|soixante-dix-huit|soixante-dix-neuf|quatre-vingt-un|quatre-vingt-deux|quatre-vingt-trois|quatre-vingt-quatre|quatre-vingt-cinq|quatre-vingt-six|quatre-vingt-sept|quatre-vingt-huit|quatre-vingt-neufquatre-vingt-dix|quatre-vingt-onze|quatre-vingt-douze|quatre-vingt-treize|quatre-vingt-quatorze|quatre-vingt-quinze|quatre-vingt-seize|quatre-vingt-dix-sept|quatre-vingt-dix-huit|quatre-vingt-dix-neuf]
-    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette] [de|d’] deux mètres [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf|soixante|soixante-et-un|soixante-deux|soixante-trois|soixante-quatre|soixante-cinq|soixante-six|soixante-sept|soixante-huit|soixante-neuf|soixante-dix|soixante-et-onze|soixante-douze|soixante-treize|soixante-quatorze|soixante-quinze|soixante-seize|soixante-dix-sept|soixante-dix-huit|soixante-dix-neuf|quatre-vingt-un|quatre-vingt-deux|quatre-vingt-trois|quatre-vingt-quatre|quatre-vingt-cinq|quatre-vingt-six|quatre-vingt-sept|quatre-vingt-huit|quatre-vingt-neufquatre-vingt-dix|quatre-vingt-onze|quatre-vingt-douze|quatre-vingt-treize|quatre-vingt-quatorze|quatre-vingt-quinze|quatre-vingt-seize|quatre-vingt-dix-sept|quatre-vingt-dix-huit|quatre-vingt-dix-neuf]
+    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette|>vieillard] d’ un mètre [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf|soixante|soixante-et-un|soixante-deux|soixante-trois|soixante-quatre|soixante-cinq|soixante-six|soixante-sept|soixante-huit|soixante-neuf|soixante-dix|soixante-et-onze|soixante-douze|soixante-treize|soixante-quatorze|soixante-quinze|soixante-seize|soixante-dix-sept|soixante-dix-huit|soixante-dix-neuf|quatre-vingt-un|quatre-vingt-deux|quatre-vingt-trois|quatre-vingt-quatre|quatre-vingt-cinq|quatre-vingt-six|quatre-vingt-sept|quatre-vingt-huit|quatre-vingt-neufquatre-vingt-dix|quatre-vingt-onze|quatre-vingt-douze|quatre-vingt-treize|quatre-vingt-quatorze|quatre-vingt-quinze|quatre-vingt-seize|quatre-vingt-dix-sept|quatre-vingt-dix-huit|quatre-vingt-dix-neuf]
+    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette|>vieillard] [de|d’] deux mètres [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf|soixante|soixante-et-un|soixante-deux|soixante-trois|soixante-quatre|soixante-cinq|soixante-six|soixante-sept|soixante-huit|soixante-neuf|soixante-dix|soixante-et-onze|soixante-douze|soixante-treize|soixante-quatorze|soixante-quinze|soixante-seize|soixante-dix-sept|soixante-dix-huit|soixante-dix-neuf|quatre-vingt-un|quatre-vingt-deux|quatre-vingt-trois|quatre-vingt-quatre|quatre-vingt-cinq|quatre-vingt-six|quatre-vingt-sept|quatre-vingt-huit|quatre-vingt-neufquatre-vingt-dix|quatre-vingt-onze|quatre-vingt-douze|quatre-vingt-treize|quatre-vingt-quatorze|quatre-vingt-quinze|quatre-vingt-seize|quatre-vingt-dix-sept|quatre-vingt-dix-huit|quatre-vingt-dix-neuf]
         <<- ~2:0>> *
 
     >calibre . *NUM ?[acp|auto|brenneke|browning|british|colt|court|H&K|magnum|mauser|otan|remington|parabellum|russian|S&W|sig|soviet|special|wcf|wsm|winchester]¿
@@ -17012,6 +17042,13 @@ __simplification_noms_propres__
 
     [Mr|Mʳ|Mlle|Mˡˡᵉ|Mme|Mᵐᵉ|Mgr|Mᵍʳ|miss]  /_Maj_
         <<- ~2>> *
+
+    *WORD  ,  *NUM  ans  ,
+        <<- \3 != "1" and morph(\1, ":M[12]") ~2:0>> *
+
+    *WORD  et  *WORD  ,  *NUM  et  *NUM  ans  ,
+    *WORD  et  *WORD  ,  [$:B:e:p|un]  et  [$:B:e:p|un]  ans  ,
+        <<- morph(\1, ":M[12]") and morph(\3, ":M[12]") ~4:0>> *
 
 
 __purge_pronom_aussi__
@@ -23233,6 +23270,9 @@ TEST: rendant leur vue peu claire
 
 # vu / vue
 __gn_vue_vu__
+    >problème de [vu|vus|vues]
+        <<- /gn/ -3>> vue                                           && Dans un “problème de vue”, la vue est au féminin singulier.
+
     >point de [vu|vus|vues]
         <<- /gn/ -3>> vue                                           && Dans un “point de vue”, “vue” est toujours au féminin singulier.
 
@@ -23243,6 +23283,7 @@ TEST: c’est son point de {{vu}} qui prime.
 TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
 TEST: de mon point de {{vues}}
 TEST: elle a perdu de {{vu}} ses anciens amis
+TEST: elle a des problèmes de {{vues}}
 TEST: à tout point de vue
 
 
@@ -26928,6 +26969,7 @@ TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être 
 TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
 TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
 TEST: la grande crainte du maire est de voir arriver d’autres immigrés
+TEST: Ce faisant, la chambre criminelle nous précise que relayer n’est pas forcément diffamer
 
 
 !!
@@ -27215,6 +27257,7 @@ TEST: elles nous ont dit : “c’est la fin”.
 TEST: Il nous avait dit que…
 TEST: c’est la plus belle lettre que le Comité nous a envoyée.
 TEST: tu nous as fait élever
+TEST: dans le genre que la biologie nous a assigné
 
 
 __ppas_l_avoir__
@@ -28665,9 +28708,9 @@ __purge_substantifs_comme_lui_elle__
 
 
 __tag_verbe_infinitif_sujet__
-    [<start>|,|(]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
-    [<start>|,|(]  [ne|n’]  $:Y
-    [<start>|,|(]  $:Y
+    [<start>|,|(|/_start_]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
+    [<start>|,|(|/_start_]  [ne|n’]  $:Y
+    [<start>|,|(|/_start_]  $:Y
         <<- /2>> _sujinfi_
 
 
@@ -29939,6 +29982,7 @@ __conj_nom_propre__
 TEST: Marc {{arrives}} demain.
 TEST: Paul ne {{viens}} pas demain.
 TEST: Marc Aurèle {{étaient}} l’empereur des Romains. (Pas de trait d’union sur Marc Aurèle.)
+TEST: Paul, 8 ans, {{viens}} demain.                                                        ->> vient
 TEST: Arthur D. parvient à…
 TEST: Maria, Paula, Louise arrivent
 TEST: Les fondateurs pionniers de l’Internet n’avaient pas prévu
@@ -29956,6 +30000,7 @@ __conj_nom_propre_et_nom_propre__
 
 TEST: Samantha et Eva {{viennes}} demain.
 TEST: Samantha et Eva leur {{décrive}} une leçon.
+TEST: Paul et Pauline, sept et huit ans, y {{arrivait}} toujours                            ->> arrivaient
 TEST: La relation spéciale qu’entretiennent Donald et Kim met paradoxalement en péril les discussions entre les deux pays.
 TEST: La menace d’une guerre nucléaire entre Delhi et Islamabad plane toujours
 
