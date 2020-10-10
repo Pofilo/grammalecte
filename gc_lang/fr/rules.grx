@@ -11218,6 +11218,20 @@ TEST: Il vient tel quel puis semble avoir des doutes.
 TEST: avec un puis plusieurs autres.
 
 
+# camp / quand / quant / qu’en
+__conf_camp_quand_quant__
+    >foutre le [quand|quant]
+    >foutre le qu’ en
+        <<- /conf/ -3:0>> camp                                              && Confusion probable. Locution “foutre le camp”.|https://fr.wiktionary.org/wiki/foutre_le_camp
+
+    >choisis [mon|ton|son|notre|votre|leur] [quand|quant]
+    >choisis [mon|ton|son|notre|votre|leur] qu’ [en|>ans]
+        <<- /conf/ -3:0>> camp                                              && Confusion probable. Locution “choisir son camp”.
+
+TEST: on va foutre le {{quand}} de là                       ->> camp
+TEST: choisis ton {{qu’ans}}                                ->> camp
+
+
 # quand / quant / qu’en
 __conf_quant_quand_qu_en__
     quand à
@@ -16500,6 +16514,8 @@ __substantifs_multi_mots__
     >jeu [de|d’] [cartes|dupes|>rôle|société]
     >journal [de|d’] bord
     >journal à >sensation
+    >journalisme d’ investigation
+    >journaliste d’ investigation
     >juge d’ instruction
     jus [de|d’] chaussettes ?sales¿
     >langue [de|d’] bois
@@ -20656,14 +20672,16 @@ __conf_sang_sans_sens__
     [sans|san] qui >avoir >couler
         <<- /conf/ morph(<1, ":D.*:[me]") -1>> sang                 && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
 
-    [couvert+ses|recouvert+ses] [de|d’] [sans|san|sens]
+    [couvert+ses|recouvert+ses|>ruisseler] [de|d’] [sans|san|sens]
     >avoir [ça|cela|ceci] dans le [sans|san|sens]
     >buveur [de|d’] [sans|san|sens]
+    >flaque [de|d’] [sans|san|sens]
     >flot [de|d’] [sans|san|sens]
     la voix du [sans|san|sens]
+    >mare [de|d’] [sans|san|sens]
     >pisser [le|du] [sans|sens]
     >soif [de|d’] [sans|san]
-    c >être [mon|ton|son|notre|votre|leur|leurs] [sans|san]
+    [c|c’] >être [mon|ton|son|notre|votre|leur|leurs] [sans|san]
         <<- /conf/ --1>> sang                                       && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
 
 TEST: Tout est {{sans dessus dessous}}.
@@ -25216,8 +25234,8 @@ __tag_locutions_verbales_d_état__
     ## locutions verbales d’état
 
     >avoir [été|semblé|paru]
-    >avoir [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir [envie|horreur|peur]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir [cru|imaginé|pensé|pu|su|voulu]                      [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir [besoin|crainte|envie|horreur|peur]                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     >avoir l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     >avoir le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
     >avoir la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
@@ -25238,11 +25256,11 @@ __tag_locutions_verbales_d_état__
         <<- /-1>> _LVEF_
 
     /_VCint_  [été|semblé|paru]
-    /_VCint_  [cru|imaginé|pensé|pu|su|voulu]  [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  [envie|horreur|peur]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  [cru|imaginé|pensé|pu|su|voulu]                       [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  [besoin|crainte|envie|horreur|peur]                   [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  l’ [envie|exigence|illusion|impression|intention]     [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  le [désir|sentiment]                                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  la ?ferme¿ [intention|volonté]                        [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
         <<- morphVC(\1, ">avoir/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
