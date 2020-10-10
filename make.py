@@ -156,7 +156,9 @@ def createPackageZip (dVars, spLangPack):
     for spf in ["grammalecte-cli.py", "grammalecte-server.py", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
-    hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
+    helpers.addFileToZipAndFileFile(hZip, "dockerfile.txt", "Dockerfile", dVars)
+    helpers.addFileToZipAndFileFile(hZip, "gc_lang/fr/setup.py", "setup.py", dVars)
+    #hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
 
 
 def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sAddPath=""):
