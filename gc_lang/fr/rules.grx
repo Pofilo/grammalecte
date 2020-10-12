@@ -1777,7 +1777,7 @@ TEST: Allons (re)voir ce film
 !!!
 !!!
 
-__da_le_la_les_leur__
+__da_le_la_les_leur_en__
     je [le|la|l’|les|leur]
         <<- not morph(<1, ":1s") =>> select(\2, ":Ov")
 
@@ -1802,20 +1802,32 @@ __da_le_la_les_leur__
     elles [le|la|l’|les|leur]
         <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Ov")
 
-    [ne|n’|me|m’|te|t’|se|s’] [le|la|l’|les|leur]
+    [ne|n’|me|m’|te|t’|se|s’]  [le|la|l’|les|leur]
         <<- =>> select(\2, ":Ov")
 
-    le   $:N¬*
-        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
+    le  *WORD
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
-    la   $:N¬*
-        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
+    la  *WORD
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and not value(<1, "|le|ce|du|") =>> exclude(\1, ":N")
 
-    les  $:N¬*
-        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
+    les *WORD
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
-    l’   $:N¬*
-        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
+    l’  *WORD
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+
+    en  [*NUM|*HOUR]
+        <<- =>> select(\2, ":R")
+
+    en  *WORD
+        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\2, ":Ov")
+        <<- __else__ and morph(\2, ":N", "*") =>> select(\2, ":R")
 
 
 __da_nous_vous__
@@ -1844,7 +1856,7 @@ __da_préverbes_verbes__
         <<- =>> select(\-1, ":V")
         <<- /-1>> neg
 
-    [m’|s’]  ?[en|y]¿  @:¬:[OX]
+    [c’|m’|s’]  ?[en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
 
     t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
@@ -1914,7 +1926,7 @@ __da_adverbes__
         <<- not value(<1, "|l’|un|cet|quel|") =>> exclude(\1, ":N")
 
     grave
-        <<- morph(<1, ":D") =>> (\1, ":W")
+        <<- morph(<1, ":D") =>> exclude(\1, ":W")
 
 
 __da_mots_grammaticaaux__
@@ -11224,8 +11236,8 @@ __conf_camp_quand_quant__
     >foutre le qu’ en
         <<- /conf/ -3:0>> camp                                              && Confusion probable. Locution “foutre le camp”.|https://fr.wiktionary.org/wiki/foutre_le_camp
 
-    >choisis [mon|ton|son|notre|votre|leur] [quand|quant]
-    >choisis [mon|ton|son|notre|votre|leur] qu’ [en|>ans]
+    >choisir [mon|ton|son|notre|votre|leur] [quand|quant]
+    >choisir [mon|ton|son|notre|votre|leur] qu’ [en|>an]
         <<- /conf/ -3:0>> camp                                              && Confusion probable. Locution “choisir son camp”.
 
 TEST: on va foutre le {{quand}} de là                       ->> camp
@@ -11235,7 +11247,7 @@ TEST: choisis ton {{qu’ans}}                                ->> camp
 # quand / quant / qu’en
 __conf_quant_quand_qu_en__
     quand à
-        <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/") and not after("^ +[mts]on tour[, ]")
+        <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/") and not after("^ +([mts]on|[nv]otre|leur) tour[, ]")
         -1>> quant                                                          && Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
 
     quand [au|aux]
@@ -13075,8 +13087,8 @@ TEST: Toutes étaient contentes d’être ici.
 
 
 __gn_tout_nom__
-    [<start>|,|(] tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
-    de          tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+    [<start>|,|(]   tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+    de              tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
         <<- /gn/ -3>> =suggMasSing(\3, True)                                                        && Accord avec “tout” : “\3” devrait être au masculin singulier.
 
     tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
@@ -13093,8 +13105,8 @@ TEST: comment les inégalités sociales impactent la santé des tout petits
 
 
 __gn_tous_nom__
-    [<start>|,|(] tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
-    de          tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
+    [<start>|,|(]   tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
+    de              tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        && Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
     tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|P|3[sp]|[me]:[ip])
@@ -13109,8 +13121,8 @@ TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
 
 
 __gn_toute_nom__
-    [<start>|,|(] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
-    de          toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
+    [<start>|,|(]   toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
+    de              toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
         <<- /gn/ -3>> =suggFemSing(\3, True)                                                        && Accord avec “toute” : “\3” devrait être au féminin singulie
         <<- /gn/ morph(\3, ":[NA].*:f:p") -2>> toutes                                               && Accord avec “\3”.
 
@@ -13126,8 +13138,8 @@ TEST: Il se souvient de toute mon histoire.
 
 
 __gn_toutes_nom__
-    [<start>|,|(] toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
-    de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+    [<start>|,|(]   toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
+    de              toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
         <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        && Accord avec “toutes” : “\3” devrait être au féminin pluriel.
         <<- /gn/ morph(\3, ":[NA].*:f:s") -2>> toute                                                && Accord avec “\3”.
 
@@ -16479,6 +16491,7 @@ __substantifs_multi_mots__
     >gilet [de|d’] sauvetage
     >gouvernement d’ union nationale
     >grain [de|d’] [blé|maïs|sable]
+    >grenade [de|d’]  désencerclement
     >grenouille [de|d’] bénitier
     >grève [de|d’] la faim
     >groupe [de|d’] [discussion|parole|prière|pression|travail]
@@ -19286,22 +19299,40 @@ TEST: Elles avançaient côte à côte.
 
 # cou / coup / coût
 __conf_coup_cout_cou2__
+    >prendre ces jambes à son >cou
+        <<- /conf/ -2>> ses                     && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
+
+    >prendre [ses|ces] jambes à son [>cout|>cout|>coup]
+        <<- /conf/ --1>> cou                    && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
+        <<- /conf/ value(\2, "|ces|") -2>> ses  && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
+
+    >prendre mes jambes à mon [>cout|>cout|>coup]
+    >prendre tes jambes à ton [>cout|>cout|>coup]
+    >prendre nos jambes à notre [>cout|>cout|>coup]
+    >prendre vos jambes à votre [>cout|>cout|>coup]
+    >prendre leurs jambes à leur [>cout|>cout|>coup]
+        <<- /conf/ --1>> cou                    && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
+
     >rouer de [>cou|>cout|>coût]
-        <<- /conf/ --1>> coups              && Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+        <<- /conf/ --1>> coups                  && Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
 
     >tordre le [coup|coût|cout]
-        <<- /conf/ -3>> cou                 && Confusion. Le coût indique ce que ça coûte. Un coup, c’est quelque chose qui frappe. La partie séparant la tête du corps s’écrit “cou”.
+        <<- /conf/ -3>> cou                     && Confusion. Le coût indique ce que ça coûte. Un coup, c’est quelque chose qui frappe. La partie séparant la tête du corps s’écrit “cou”.
 
     >rendre [>cou|>coût|>cout] pour [>cou|>coût|>cout]
-        <<- /conf/ -2:0>> coup pour coup    && Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+        <<- /conf/ -2:0>> coup pour coup        && Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
 
     >prévoir le cou
-        <<- /conf/ --1>> coup|coût|cout     && Confusion. Le cou est la partie séparant la tête du corps. Le coût indique ce que ça coûte. Pour ce qui frappe, écrivez “coup”.
+        <<- /conf/ --1>> coup|coût|cout         && Confusion. Le cou est la partie séparant la tête du corps. Le coût indique ce que ça coûte. Pour ce qui frappe, écrivez “coup”.
 
 TEST: il a été roué de {{cou}}
 TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
 TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
 TEST: j’avais prévu le {{cou}}
+TEST: il a pris ses jambes à son {{coup}}                                               ->> cou
+TEST: elles ont pris leurs jambes à leur {{cout}}                                       ->> cou
+TEST: il a pris {{ces}} jambes à son cou                                                ->> ses
+TEST: il a pris {{ces}} jambes à son {{cout}}                                           ->> ses|||cou
 
 
 # cuire / cuir
