@@ -655,21 +655,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         try {
             let xTokenDescr = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_descr"});
             xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
-            xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
+            let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
+            xTokenDescr.appendChild(xMorphList);
             if (oToken.aLabels) {
-                if (oToken.aLabels.length < 2) {
-                    // one morphology only
-                    xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: oToken.aLabels[0]}));
-                } else {
-                    // several morphology
-                    let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
-                    for (let sLabel of oToken.aLabels) {
-                        xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
-                    }
-                    xTokenDescr.appendChild(xMorphList);
+                for (let sLabel of oToken.aLabels) {
+                    xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel.trim()}));
                 }
             } else {
-                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: "étiquettes non décrites : [" + oToken.lMorph + "]" }));
+                xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + "étiquettes non décrites : [" + oToken.lMorph + "]"}));
             }
             return xTokenDescr;
         }
