@@ -1806,28 +1806,28 @@ __da_le_la_les_leur_en__
         <<- =>> select(\2, ":Ov")
 
     le  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     la  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
         <<- __else__ and not value(<1, "|le|ce|du|") =>> exclude(\1, ":N")
 
     les *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     l’  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":N", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     en  [*NUM|*HOUR]
         <<- =>> select(\2, ":R")
 
     en  *WORD
-        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\2, ":Ov")
-        <<- __else__ and morph(\2, ":N", "*") =>> select(\2, ":R")
+        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":[NDB]", "*") =>> select(\1, ":R")
 
 
 __da_nous_vous__
@@ -1842,10 +1842,10 @@ __da_nous_vous__
 
 
 __da_préverbes_verbes__
-    ne  ?[le|la|l’|les|nous|vous|lui|leur]¿  @:¬:[OX]
-    ne  [nous|vous]     [le|la|l’|les|en]    @:¬:[OX]
-    ne  [le|la|l’|les]  [lui|leur|en]        @:¬:[OX]
-    ne  [lui|leur]      en                   @:¬:[OX]
+    [ne|n’]  ?[le|la|l’|les|nous|vous|lui|leur]¿  @:¬:[OX]
+    [ne|n’]  [nous|vous]     [le|la|l’|les|en]    @:¬:[OX]
+    [ne|n’]  [le|la|l’|les]  [lui|leur|en]        @:¬:[OX]
+    [ne|n’]  [lui|leur]      en                   @:¬:[OX]
         <<- =>> select(\-1, ":V")
         <<- /-1>> neg
 
@@ -1933,6 +1933,12 @@ __da_mots_grammaticaaux__
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
 
+    ce  @:[NA].*:[me]
+        <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D")
+
+    ce  @:3[sp]¬:[NA].*:[me]:[si]
+        <<- =>> select(\1, ":O")
+
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
@@ -1952,17 +1958,29 @@ __da_mots_grammaticaaux__
     [le|l’|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
+    parmi *WORD
+        <<- =>> select(\1, ":R")
+
     puis
         <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
 
     SA
         <<- morph(<1, ":D") =>> exclude(\1, ":D")
 
+    pas
+        <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
+
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
+
+    un  @:[NA].*:m
+        <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
+
+    une @:[NA].*:f
+        <<- not value(<1, "|la|de|cette|quelle|") =>> select(\1, ":D")
 
     vu  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
@@ -1988,6 +2006,9 @@ __da_groupe_nominal__
 
     de  ?[la|l’]¿  @:¬:[YD]
         <<- not value(<1, "|semblant|") =>> exclude(\-1, ":V")
+
+    du   @:[NA].*:[me]:[si]¬:[GY]
+        <<- =>> select(\2, ":[NA]")
 
     aucun  @:[NA].*:[me]
         <<- =>> exclude(\2, ":V")
@@ -2019,6 +2040,9 @@ __da_groupe_nominal__
 
     de [tous|toutes] les *WORD
         <<- =>> select(\4, ":[NA]")
+
+    en [plein|pleine] *WORD
+        <<- =>> select(\3, ":[NA]")
 
     en tant que  *WORD
         <<- =>> exclude(\4, ":V")
