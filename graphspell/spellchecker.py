@@ -146,7 +146,7 @@ class SpellChecker ():
             return
         if "lMorph" not in dToken:
             dToken["lMorph"] = self.getMorph(dToken["sValue"])
-        if dToken["sType"] == "WORD":
+        if dToken["sType"].startswith("WORD"):
             dToken["bValidToken"] = self.isValidToken(dToken["sValue"])
             sPrefix, sStem, sSuffix = self.lexicographer.split(dToken["sValue"])
             if sStem != dToken["sValue"]:

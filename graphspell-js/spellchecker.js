@@ -180,7 +180,7 @@ class SpellChecker {
         if (!oToken.hasOwnProperty("lMorph")) {
             oToken["lMorph"] = this.getMorph(oToken["sValue"]);
         }
-        if (oToken["sType"] == "WORD") {
+        if (oToken["sType"].startsWith("WORD")) {
             oToken["bValidToken"] = this.isValidToken(oToken["sValue"]);
             let [sPrefix, sStem, sSuffix] = this.lexicographer.split(oToken["sValue"]);
             if (sStem != oToken["sValue"]) {

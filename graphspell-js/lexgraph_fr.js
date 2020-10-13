@@ -256,6 +256,7 @@ var lexgraph_fr = {
             [';S', [" : symbole (unité de mesure)", "Symbole (unité de mesure)"]],
             [';C', [" : couleur", "Couleur"]],
             [';G', [" : gentilé", "Gentilé"]],
+            [';L', ["", "Langue"]],
 
             ['/*', ["", "Sous-dictionnaire <Commun>"]],
             ['/C', [" <classique>", "Sous-dictionnaire <Classique>"]],
