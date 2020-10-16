@@ -1777,33 +1777,38 @@ TEST: Allons (re)voir ce film
 !!!
 !!!
 
-__da_le_la_les_leur_en__
-    je [le|la|l’|les|leur]
+__da_le_la_les_leur_en_y__
+    [je|j’] [le|la|l’|les|leur]
+    j’ y
         <<- not morph(<1, ":1s") =>> select(\2, ":Ov")
 
-    tu [le|la|l’|les|leur]
+    tu [le|la|l’|les|leur|y]
         <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Ov")
 
-    [il|on] [le|la|l’|les|leur]
+    [il|on] [le|la|l’|les|leur|y]
         <<- not morph(<1, ":3s") =>> select(\2, ":Ov")
 
-    elle [le|la|l’|les|leur]
+    [elle|iel] [le|la|l’|les|leur|y]
         <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Ov")
 
-    nous [le|la|l’|les|leur]
+    nous [le|la|l’|les|leur|y]
         <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Ov")
 
-    vous [le|la|l’|les|leur]
+    vous [le|la|l’|les|leur|y]
         <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Ov")
 
-    ils [le|la|l’|les|leur]
+    ils [le|la|l’|les|leur|y]
         <<- not morph(<1, ":3p") =>> select(\2, ":Ov")
 
-    elles [le|la|l’|les|leur]
+    [elles|iels] [le|la|l’|les|leur|y]
         <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Ov")
 
-    [ne|n’|me|m’|te|t’|se|s’]  [le|la|l’|les|leur]
+    [ne|n’|me|m’|te|t’|se|s’]  [le|la|l’|les|leur|en|y]
         <<- =>> select(\2, ":Ov")
+
+    l’  *WORD
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     le  *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
@@ -1818,16 +1823,23 @@ __da_le_la_les_leur_en__
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
-    l’  *WORD
+    leur    *WORD
+        <<- not value(<1, "|le|du|") =>> exclude(\1, ":N")
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
+    leurs   *WORD
+        <<- not value(<1, "|les|des|") =>> exclude(\1, ":N")
+
     en  [*NUM|*HOUR]
-        <<- =>> select(\2, ":R")
+        <<- =>> select(\1, ":R")
 
     en  *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
         <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":[NDB]", "*") =>> select(\1, ":R")
+
+    y   *WORD
+        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)") =>> select(\1, ":Ov")
 
 
 __da_nous_vous__
@@ -1939,14 +1951,35 @@ __da_mots_grammaticaaux__
     ce  @:3[sp]¬:[NA].*:[me]:[si]
         <<- =>> select(\1, ":O")
 
+    ce [que|qu’|qui|dont|pour|par]
+        <<- =>> exclude(\1, ":D")
+
+    [<start>|,|(]  cela  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  cela  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123]s|P)
+    [<start>|,|(]  cela  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123]s|P)
+    [<start>|,|(]  cela  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123]s|P)
+    [<start>|,|(]  cela  [lui|leur|y]    en                      @:(?:[123]s|P)
+    [<start>|,|(]  cela  @:(?:[123]s|P)
+        <<- =>> exclude(\2, ":V")
+
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
+
+    mais
+        <<- value(<1, "|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|") =>> exclude(\1, ":N")
+
+    n’ en >pouvoir mais
+        <<- =>> define(\-1, ">mais/:W")
 
     [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
-    [son|ton] @:G¬:[NA]
-        <<- =>> exclude(\1, ":D")
+    [son|ton] *WORD
+        <<- morph(\2, ":G", ":[NA]") or value(<1, "|du|le|ce|un|quel|mon|") =>> exclude(\1, ":D")
+        <<- __else__ and morph(\2, ":N", "*") =>> select(\1, ":D")
+
+    [son|ton] ,
+        <<- =>> select(\1, ":N")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
     [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
@@ -2004,7 +2037,7 @@ __da_groupe_nominal__
     [sans|pour|par]  [la|l’|le|les]  @:[NA]¬:Y
         <<- =>> exclude(\-1, ":V")
 
-    de  ?[la|l’]¿  @:¬:[YD]
+    [de|d’]  ?[la|l’]¿  @:¬:[YD]
         <<- not value(<1, "|semblant|") =>> exclude(\-1, ":V")
 
     du   @:[NA].*:[me]:[si]¬:[GY]
@@ -10725,10 +10758,14 @@ __conf_pas_par__
     pas rapport [à|aux]
         <<- /conf/ not morph(<1, ":V") -1>> par                             && Confusion possible. Voulez-vous écrire “par rapport \3” ?
 
+    en [commençant|finissant] pas
+        <<- /conf/ not value(<1, "|n’|") --1>> par                          && Erreur de frappe. Voulez-vous écrire “par”
+
 TEST: je ne sais {{pa}}                                                     ->> pas
 TEST: Il ne le deviendra {{par}}.                                           ->> pas
 TEST: ne viens {{par}}, c’est dangereux.
 TEST: {{pas}} rapport à notre situation                                     ->> par
+TEST: il y a de quoi dire, en commençant {{pas}} les mensonges devant la juge sur la date de signature des contrats.
 TEST: il ne tient par contre que grâce à nous
 TEST: elle ne savait par qui passer pour arriver à ses fins.
 
@@ -11817,7 +11854,7 @@ __conf_soi_soit_soie__
         <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
         -2>> soi                                                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
-    [ça|cela|ceci] >aller ?$:W¿ de soit
+    >aller ?$:W¿ de soit
         <<- /conf/ not after(" soit ") --1>> soi                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/aller_de_soi
 
     [soi|sois|soit|>soie]  >même
@@ -12294,10 +12331,11 @@ __conf_ver_vers_verre_vert__
         && Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
 
     [>verre|vert+s] de terre
-        <<- /conf/ -1>> verre|verres
+        <<- /conf/ -1>> ver|vers
         && Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
 
     [>ver|vert+s] [de|d’] [>bière|>cidre|>contact|>champagne|>chianti|>dégustation|jus|>lait|>limonade|>rosé|>rhum|>sécurité|>thé|>vin|>whisky|>alcool|>absinthe|>eau|>urine]
+    [>ver|vert+s] [dépoli+ses]
         <<- /conf/ -1>> verre|verres
         && Confusion probable. Verre = matière. Vert = couleur. Ver = animal invertébré rampant. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
@@ -12317,6 +12355,7 @@ TEST: faire route {{verre}} Marseille
 TEST: en route {{ver}} la Russie
 TEST: il vient {{ver}} moi
 TEST: on va lui tirer les vers du nez
+TEST: un ver de terre
 
 
 # voix / voie / vois / voit
@@ -12333,6 +12372,8 @@ __conf_voie_voix_vois_voit__
         <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     [>entendre|>écouter] ?@:[WX]¿ $:D >voie
+    >donner ?[WX]¿ [de|d’] la >voie
+    >faire entendre [ma|ta|sa|notre|votre|leur+s] >voie
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     >avoir ?@:[WX]¿ voie au chapitre
@@ -12355,9 +12396,8 @@ __conf_voie_voix_vois_voit__
     par voix [médicamenteuse+s]
         <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
-    voix [abdominale|anale|biliaire|bitumée|carrossable|communale|express|interdite|intramusculaire|intraveineuse|piétonne|principale|prioritaire|privée|publique|déserte|romaine|appienne|flaminienne|ferrée|ferroviaire|lactée|lacrymale|aérienne|maritime|fluviale|terrestre|navigable|détournée|déviée|buccale|digestive|urinaire|respiratoire|parallèle|administrative|diplomatique|gouvernementale|législative|hiérarchique|pavée|rectiligne|sinueuse|souterraine|urbaine]
-    voix [de|d’] garage
-    voix [de|d’] [recours|perdition]
+    voix [abdominale|administrative|anale|appienne|aérienne|biliaire|bitumée|buccale|carrossable|communale|digestive|diplomatique|déserte|détournée|déviée|express|ferroviaire|ferrée|flaminienne|fluviale|gouvernementale|hiérarchique|interdite|intramusculaire|intraveineuse|lacrymale|lactée|législative|maritime|navigable|parallèle|pavée|piétonne|principale|prioritaire|privée|publique|rectiligne|respiratoire|romaine|sinueuse|souterraine|terrestre|urbaine|urinaire]
+    voix [de|d’] [garage|recours|perdition]
         <<- /conf/ -1>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     voix [abdominales|anales|biliaires|bitumées|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|pavées|rectilignes|sinueuses|souterraines|urbaines]
@@ -14301,6 +14341,7 @@ __purge_locutions_temporelles_diverses__
     [de|d’] toute éternité
     en début [de|d’] [journée|matinée|soirée|après-midi]
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
+    en fin [de|d’] [journée|matinée|soirée|après-midi]
     en un claquement de doigts
     en un clin d’ œil
     été comme hiver
@@ -15063,6 +15104,7 @@ __purge_locutions__
     [de|d’] long en large
     [de|d’] main [de|d’] [maître|maitre]
     [de|d’] mal en pis
+    [de|d’] même nature
     [de|d’] mieux en mieux
     [de|d’] moindre [envergure|valeur]
     [de|d’] moins en moins
@@ -15182,7 +15224,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ excellent état ?général¿
     en ?[assez|si|très|trop]¿ fâcheuse posture
     en file indienne
-    en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
+    en fin [de|d’] compte
     en formation ?[assez|moins|peu|plus|si|très|trop]¿ serrée
     en ?[assez|si|très|trop]¿ forte [baisse|hausse]
     en gage [de|d’] bonne foi
@@ -15445,6 +15487,7 @@ __purge_locutions__
     pour la suite
     pour [le|l’] [mieux|moment|moins]
     pour [le|l’] meilleur et pour [le|l’] pire
+    pour l’ amour du ciel
     pour l’ [essentiel|instant|heure]
     pour quelque part
     pour >raison [de|d’] santé ?[défaillante|déficiente|fragile]¿
@@ -16663,6 +16706,7 @@ __substantifs_multi_mots__
     >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
     >pavillon [de|d’] chasse
+    >peinture à l’ huile
     >peloton d’ exécution
     >périphérique à bande ?[analogique|magnétique]¿
     >personnage [de|d’] roman
@@ -16675,7 +16719,7 @@ __substantifs_multi_mots__
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >pied [de|d’] biche
     >pile à [combustible|hydrogène]
-    >pince à linge
+    >pince à [linge|>ongle]
     [>piqûre|>piqure] [de|d’] rappel
     >pistolet à [eau|plomb]
     >pistolet à [un|1] coup
@@ -16706,7 +16750,6 @@ __substantifs_multi_mots__
     >poudre aux yeux
     >poudre d’ escampette
     >poule aux œufs d’ or
-    pour l’ amour du ciel
     >pouvoir d’ achat
     >prédication [de|d’] rue
     >président en exercice
@@ -16830,7 +16873,7 @@ __substantifs_multi_mots__
     >tiret d’ incise
     >tireur d’ élite
     >titre [de|d’] [noblesse|propriété|séjour]
-    >toile [de|d’] fond
+    >toile [de|d’] [fond|maître|maitre]
     >tondeuse à gazon
     >tour d’ horizon
     >tour [de|d’] [contrôle|guet|passe-passe]
@@ -16915,6 +16958,7 @@ __substantifs_multi_mots__
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
     >droit comme un i
+    >égal à [moi-même|toi-même|lui-même|elle-même|iel-même|soi-même|nous-même+s|vous-même+s|eux-mêmes|elles-mêmes|iels-mêmes]
     >étroit d’ esprit
     >fort en gueule
     >fou à lier
@@ -19736,11 +19780,15 @@ __conf_faites_faîte_fait__
     [>avoir|>être]  >faîte
         <<- /conf/ -2>> =\2.replace("î", "i")                               && Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
 
-TEST: Vous nous {{faîtes}} mal.
-TEST: Comment {{faîtes vous}} ça ?
-TEST: Elles sont {{faîtes}} comme ça.
-TEST: Elle est souvent {{faîte}} de cette manière-là.
-TEST: Vous {{faîtes}} mal !
+    [<start>|,|(]  >faîte [>allusion|>assaut|>attention|>barrage|>confiance|>connaissance|cours|copain-copain|>débat|>défaut|>demi-tour|>écho|>écran|>envie|>erreur|>état|>exception|>foi|>fortune|>froid|>front|>grève|>halte|>honte|>illusion|>mention|>mouche|>nation|>naufrage|>office|>part|>peur|>polémique|>plaisir|>preuve|>rage|>recette|>rempart|>route|>scandale|sens|>sensation|>signe|>surface|>usage|>volte-face]
+        <<- /conf/ -2>> faites                                              && Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
+
+TEST: Vous nous {{faîtes}} mal.                                             ->> faites
+TEST: Comment {{faîtes vous}} ça ?                                          ->> faites-vous
+TEST: Elles sont {{faîtes}} comme ça.                                       ->> faites
+TEST: Elle est souvent {{faîte}} de cette manière-là.                       ->> faite
+TEST: Vous {{faîtes}} mal !                                                 ->> faites
+TEST: {{Faîtes}} toujours preuves d’esprit critique                         ->> Faites
 
 
 # faire faux bond à
