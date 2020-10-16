@@ -233,16 +233,16 @@ var lexgraph_fr = {
             [':ÉR', [" élément de locution prépositive,", "Élément de locution prépositive"]],
             [':ÉJ', [" élément de locution interjective,", "Élément de locution interjective"]],
 
-            [':L', "locution"],
-            [':LN', "locution nominale"],
-            [':LA', "locution adjectivale"],
-            [':LV', "locution verbale"],
-            [':LW', "locution adverbiale"],
-            [':LR', "locution prépositive"],
-            [':LRv', "locution prépositive verbale"],
-            [':LO', "locution pronominale"],
-            [':LC', "locution conjonctive"],
-            [':LJ', "locution interjective"],
+            [':L', ["locution", "Locution"]],
+            [':LN', ["locution nominale", "Locution nominale"]],
+            [':LA', ["locution adjectivale", "Locution adjectivale"]],
+            [':LV', ["locution verbale", "Locution verbale"]],
+            [':LW', ["locution adverbiale", "Locution adverbiale"]],
+            [':LR', ["locution prépositive", "Locution prépositive"]],
+            [':LRv', ["locution prépositive verbale", "Locution prépositive verbale"]],
+            [':LO', ["locution pronominale", "Locution pronominale"]],
+            [':LC', ["locution conjonctive", "Locution conjonctive"]],
+            [':LJ', ["locution interjective", "Locution interjective"]],
 
             [':Zp', [" préfixe,", "Préfixe"]],
             [':Zs', [" suffixe,", "Suffixe"]],
@@ -453,9 +453,6 @@ var lexgraph_fr = {
                 case 'HOUR':
                     oToken["aLabels"] = ["heure"];
                     break;
-                case 'WORD_ELIDED':
-                    oToken["aLabels"] = [this.dValues.gl_get(oToken["sValue"].toLowerCase(), "préfixe élidé inconnu")];
-                    break;
                 case 'WORD_ORDINAL':
                     oToken["aLabels"] = ["nombre ordinal"];
                     break;
@@ -468,6 +465,7 @@ var lexgraph_fr = {
                 case 'WORD_ACRONYM':
                     oToken["aLabels"] = ["sigle ou acronyme"];
                     break;
+                case 'WORD_ELIDED':
                 case 'WORD':
                     if (oToken.hasOwnProperty("lMorph")  &&  oToken["lMorph"].length > 0) {
                         // with morphology

@@ -240,16 +240,16 @@ _dTAGS = {
     ':ÉR': (" élément de locution prépositive,", "Élément de locution prépositive"),
     ':ÉJ': (" élément de locution interjective,", "Élément de locution interjective"),
 
-    ':L': "locution",
-    ':LN': "locution nominale",
-    ':LA': "locution adjectivale",
-    ':LV': "locution verbale",
-    ':LW': "locution adverbiale",
-    ':LR': "locution prépositive",
-    ':LRv': "locution prépositive verbale",
-    ':LO': "locution pronominale",
-    ':LC': "locution conjonctive",
-    ':LJ': "locution interjective",
+    ':L': ("locution", "Locution"),
+    ':LN': ("locution nominale", "Locution nominale"),
+    ':LA': ("locution adjectivale", "Locution adjectivale"),
+    ':LV': ("locution verbale", "Locution verbale"),
+    ':LW': ("locution adverbiale", "Locution adverbiale"),
+    ':LR': ("locution prépositive", "Locution prépositive"),
+    ':LRv': ("locution prépositive verbale", "Locution prépositive verbale"),
+    ':LO': ("locution pronominale", "Locution pronominale"),
+    ':LC': ("locution conjonctive", "Locution conjonctive"),
+    ':LJ': ("locution interjective", "Locution interjective"),
 
     ':Zp': (" préfixe,", "Préfixe"),
     ':Zs': (" suffixe,", "Suffixe"),
@@ -441,8 +441,6 @@ def setLabelsOnToken (dToken):
             dToken["aLabels"] = ["entité caractère XML/HTML"]
         elif dToken["sType"] == 'HOUR':
             dToken["aLabels"] = ["heure"]
-        elif dToken["sType"] == 'WORD_ELIDED':
-            dToken["aLabels"] = [_dValues.get(dToken["sValue"].lower(), "préfixe élidé inconnu")]
         elif dToken["sType"] == 'WORD_ORDINAL':
             dToken["aLabels"] = ["nombre ordinal"]
         elif dToken["sType"] == 'FOLDERUNIX':
@@ -451,7 +449,7 @@ def setLabelsOnToken (dToken):
             dToken["aLabels"] = ["dossier Windows"]
         elif dToken["sType"] == 'WORD_ACRONYM':
             dToken["aLabels"] = ["sigle ou acronyme"]
-        elif dToken["sType"] == 'WORD':
+        elif dToken["sType"] == 'WORD' or dToken["sType"] == 'WORD_ELIDED':
             if "lMorph" in dToken and dToken["lMorph"]:
                 # with morphology
                 dToken["aLabels"] = []
