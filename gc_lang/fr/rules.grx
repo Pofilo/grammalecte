@@ -2033,11 +2033,12 @@ __da_autre_chose_quelque_chose__
 
 
 __da_groupe_nominal__
-    à                [la|l’]         @:[NA]¬:Y
-    [sans|pour|par]  [la|l’|le|les]  @:[NA]¬:Y
+    à                [la|l’|leur]         @:[NA]¬:Y
+    [sans|pour|par]  [la|l’|le|les|leur]  @:[NA]¬:Y
+    [à|par]                               @:[NA]¬:Y
         <<- =>> exclude(\-1, ":V")
 
-    [de|d’]  ?[la|l’]¿  @:¬:[YD]
+    [de|d’]  ?[la|l’|leur]¿  @:¬:[YD]
         <<- not value(<1, "|semblant|") =>> exclude(\-1, ":V")
 
     du   @:[NA].*:[me]:[si]¬:[GY]
@@ -23729,7 +23730,7 @@ __infi_loc_à_verbe__
     n’ >avoir qu’ à         ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
     de [façon|manière] à    ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
     enclin à                ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
+        <<- /infi/ analyse(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: de manière à {{obligé}} ces gens
@@ -23758,10 +23759,10 @@ __infi_par_pour_sans__
         <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                                    && Après la préposition “\1”, le verbe devrait probablement être à l’infinitif.
 
     [par|sans]  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ morph(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]") --1>> =suggVerbInfi(\-1)            && Après la préposition “\1”, le verbe devrait être à l’infinitif.
+        <<- /infi/ analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]") --1>> =suggVerbInfi(\-1)          && Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
     pour  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ not morph(<1, ">(?:passer|tenir)/") and morph(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]")
+        <<- /infi/ not morph(<1, ">(?:passer|tenir)/") and analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]")
         --1>> =suggVerbInfi(\-1)                                                                    && Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
     sans pour autant ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ée?s?|ez|ai[st]?)$
