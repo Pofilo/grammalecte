@@ -1062,11 +1062,13 @@ TEST: Ah !{{,.,}} et en quoi consistait le festin ?
 
 __<s>/typo(typo_ponctuation_superflue1)__    , ?([.,;:!?]) @@$ <<- ->> =",|" + \1       && Une de ces ponctuations est superflue.
 __<s>/typo(typo_ponctuation_superflue2)__    ; ?([.,;:…!?]) @@$ <<- ->> =";|" + \1      && Une de ces ponctuations est superflue.
-__<s>/typo(typo_ponctuation_superflue3)__    :[.,;:…!?] <<- ->> =":|" + \0[1]           && Une de ces ponctuations est superflue.
+__<s>/typo(typo_ponctuation_superflue3)__    :[.,;:…!?] <<- ->> =":|" + \0[1:2]         && Une de ces ponctuations est superflue.
+__<s>/typo(typo_ponctuation_superflue4)__    [?!][.](?![.]) <<- ->> =\0[0:1]            && Ne mettez pas un point après un point d’interrogation ou d’exclamation.
 
-TEST: Mouais{{, ;}}
-TEST: Vraiment, bof {{;;}} on ne sait guère qu’en penser.
-TEST: Raisons {{:.}} trop, c’est trop.
+TEST: Mouais{{, .}}                                                     ->> ,|.
+TEST: Vraiment, bof {{;;}} on ne sait guère qu’en penser.               ->> ;|;
+TEST: Raisons {{:.}} trop, c’est trop.                                  ->> :|.
+TEST: C’est ça {{?.}} tu crois ?                                        ->> ?
 
 
 
@@ -1098,6 +1100,7 @@ TEST: « Il manque deux espaces insécables{{.»}}                             
 TEST: « Il manque deux espaces insécables{{ »}}                             ->> " »"
 TEST: Et encore{{!}}?                                                       ->> " !"
 TEST: Quoi{{?}}                                                             ->> " ?"
+TEST: Qui{{ ?}}                                                             ->> " ?"
 TEST: Voici{{:}} les deux points.                                           ->> " :"
 TEST: Voyelles:{{a}}.                                                       ->> " a"
 TEST: Succession : a{{;}} b.                                                ->> " ;"
@@ -16832,6 +16835,7 @@ __substantifs_multi_mots__
     >site [de|d’] lancement
     >soldat d’ élite
     >solution [de|d’] [rechange|repli]
+    >sommier à lattes
     >sonnette d’ alarme
     >sortie [de|d’] secours
     >soue à >cochon
@@ -21161,6 +21165,21 @@ TEST: du chien et de l’étonnant {{colliers}} qu’il avait autour du cou.
 TEST: elle prendra l’{{avions}} dès que possible
 
 
+__gn_l_3m__
+    l’  *WORD  *WORD  *WORD
+        <<- /gn/ morph(\1, ":D") and morph(<1, "<start>|:V", "*") and \4.islower() >>>
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", "*") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:f", "*")
+        -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[si]", "*") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:m", "*")
+        -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]", "*") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:p", "*")
+        -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
+
+TEST: l’horreur obscure {{répandu}} dans les ténèbres                               ->> répandue
+TEST: l’honneur français {{bafouée}}                                                ->> bafoué
+TEST: l’ignoble ignorance si {{répandues}}                                          ->> répandue
+
+
 __gn_le_1m__
     ,  le  *WORD
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\3)           && Accord de genre erroné : « \3 » est féminin.
@@ -21221,6 +21240,19 @@ TEST: connaître et le grand {{perdante}}
 TEST: Le bruit {{perçus}} par les voisins.
 TEST: si le premier film est un triomphe, le deuxième est un demi-succès, et le troisième une déception.
 TEST: Cela aboutira sur une contractualisation coûteuse pour organiser cette divergence d’intérêts, et le gestionnaire aura le dernier mot.
+
+
+__gn_le_3m__
+    le  *WORD  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\1, ":D")
+            and morph(\2, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:[fp]", "*") and \4.islower()
+        -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
+
+TEST: le roi chrétien {{tyranniques}} tout pétri de son prétendu droit divin                    ->> tyrannique
+TEST: le petit chien {{bruns}}                                                                  ->> brun
+TEST: elles furent le jour venu prises par surprise, et elles durent s’enfuir.
+TEST: qu’ils fassent tourner le système économique, assez concrètement, mais sans faire chier avec leurs petits problèmes de gens de rien.
+TEST: avec le peuple, contre le capitalisme mortifère sous tous ses visages.
 
 
 __gn_la_1m__
@@ -21288,6 +21320,18 @@ TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
 
 
+__gn_la_3m__
+    la  *WORD  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\1, ":D")
+            and morph(\2, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P)|;C") and morph(\4, ":[NA].*:[mp]", "*") and \4.islower()
+        -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
+
+TEST: la seule solution {{trouvé}} consistait à déléguer                                        ->> trouvée
+TEST: La petite fille {{devenues}} infirmière.                                                  ->> devenue
+TEST: sous la forme d’un baromètre comparant différents moyens pour alléger ses émissions
+TEST: non seulement met en péril la logique industrielle mais contribue à détruire peu à peu le substrat sur lequel repose le marché lui-même, à savoir la société des hommes.
+
+
 __gn_leur_1m__
     ,  leur  *WORD
         <<- /gn/ morph(\3, ":[NA].*:p", "*") -2>> leurs                                     && Accord de nombre erroné avec « \3 ».
@@ -21340,18 +21384,19 @@ TEST: {{leur}} gros {{grains}}
 TEST: Que ferons-nous de {{leur}} gros {{grains}}
 
 
-__gn_le_la_leur_3m__
-    [le|la|leur|l’]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
+__gn_leur_3m__
+    leur  *WORD  *WORD  *WORD
+        <<- /gn/ morph(\1, ":D") and morph(<1, "<start>|:V", "*") and \4.islower() >>>
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", "*") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:f", "*")
+        -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:f:[si]", "*") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:m", "*")
+        -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
+        <<- /gn/ __else__ and morph(\2, ":[NA].*:[si]", "*") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: La petite fille {{devenues}} infirmière.
-TEST: leur grande passion {{délirantes}} pour le cosplay.
-TEST: le jour venu prises par surprise elles durent s’enfuir.
-TEST: sous la forme d’un baromètre comparant différents moyens pour alléger ses émissions
-TEST: non seulement met en péril la logique industrielle mais contribue à détruire peu à peu le substrat sur lequel repose le marché lui-même, à savoir la société des hommes.
-TEST: qu’ils fassent tourner le système économique, assez concrètement, mais sans faire chier avec leurs petits problèmes de gens de rien.
-TEST: avec le peuple, contre le capitalisme mortifère sous tous ses visages.
+TEST: leur grande passion {{délirants}} pour le cosplay.                            ->> délirante
+TEST: leur noir projet {{ignorées}} du peuple                                       ->> ignoré
+TEST: leur psychologue altruiste {{détestés}} par ses voisins                       ->> détesté
 
 
 __gn_ledit_1m__
@@ -29578,7 +29623,7 @@ TEST: y être sans ma femme ni les enfants fait monter en moi une certaine nervo
 
 
 __conj_le_la_leur_nom__
-    [le|la|l’|leur]  *WORD  @:V¬:(?:3s|P|Y|3p!|G|M)
+    [le|la|l’|leur]  *WORD  @:V¬:(?:3s|P|Q|Y|3p!|G|M)
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not checkAgreement(\2, \3)
@@ -31005,6 +31050,7 @@ TEST: tout ça pour prouver qu’il va bien
 TEST: c’étaient bien les Français qui avaient procédé ainsi
 TEST: les hommes haut placés
 TEST: Votre père est on ne peut plus aimable
+TEST: Qu’ont fait les sénateurs ?
 
 
 
