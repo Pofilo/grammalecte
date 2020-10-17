@@ -16,7 +16,7 @@ function onGrammalecteGCPanelClick (xEvent) {
             } else if (xElem.id === "grammalecte_tooltip_ignore") {
                 oGrammalecte.oGCPanel.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_analysis")) {
-                oGrammalecte.oGCPanel.sendParagraphToGrammaticalAnalysis(parseInt(xElem.dataset.para_num, 10));
+                oGrammalecte.oGCPanel.sendParagraphToLexicographer(parseInt(xElem.dataset.para_num, 10));
             } else if (xElem.id.startsWith("grammalecte_check")) {
                 oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.dataset.para_num, 10));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
@@ -549,9 +549,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
+    addMessageToLexicographer (sMessage) {
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_flow_message", textContent: sMessage});
+        this.xLxgResultZone.appendChild(xNode);
+    }
+
+
     //  Grammatical analysis
 
-    sendParagraphToGrammaticalAnalysis (iParaNum) {
+    sendParagraphToLexicographer (iParaNum) {
         let xParagraph = this.xParent.getElementById("grammalecte_paragraph" + iParaNum);
         this.xLxgInput.textContent = xParagraph.textContent;
         this.grammaticalAnalysis();
@@ -565,7 +571,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.startWaitIcon();
         this.clearLexicographer();
         let sText = this.xLxgInput.innerText.replace(/\n/g, " ");
-        console.log(sText);
+        //console.log(sText);
+        this.addMessageToLexicographer("Analyse grammaticale : les mots sont analysés autant que possible en fonction du contexte (cette fonctionnalité est expérimentale).");
         oGrammalecteBackgroundPort.parseFull(sText, "__GrammalectePanel__");
     }
 
@@ -610,7 +617,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.startWaitIcon();
         this.clearLexicographer();
         let sText = this.xLxgInput.innerText; // to get carriage return (\n)
-        console.log(sText);
+        //console.log(sText);
+        this.addMessageToLexicographer("Analyse lexicale : chaque mot est analysé indépendamment du contexte.");
         oGrammalecteBackgroundPort.getListOfTokens(sText, "__GrammalectePanel__");
     }
 
