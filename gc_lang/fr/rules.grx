@@ -15206,6 +15206,7 @@ __purge_locutions__
     en ?[parfaite|pleine]¿ connaissance [de|d’] cause
     en contrebas
     en contrepoint
+    en coup [de|d’] vent
     en coupe réglée
     en cours [de|d’] route
     en d’ autres termes
@@ -16311,6 +16312,7 @@ __substantifs_multi_mots__
     >bombe à rayonnement renforcé
     >bonnet [de|d’] nuit
     [bonne+s|>bonniche] à tout faire
+    >bordereau d’ expédition
     >boucle d’ >oreille
     >bouffée d’ air [frais|pur]
     >bout [de|d’] gras
@@ -16678,6 +16680,7 @@ __substantifs_multi_mots__
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nom à particule
+    >nom [de|d’] famille
     >nounou à domicile
     >nourrice à domicile
     >occasion en or ?massif¿
@@ -22605,12 +22608,16 @@ __gn_start_3m__
         <<- /gn/ morph(\2, ":i") and morph(\3, ":p")    and morph(\4, ":s") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
         <<- /gn/ morph(\2, ":s") and morph(\3, ":[si]") and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
         <<- /gn/ morph(\2, ":i") and morph(\3, ":s")    and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":m", ":[fe]") and morph(\3, ":[me]") and morph(\4, ":f") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au masculin.
+        <<- /gn/ morph(\2, ":f", ":[me]") and morph(\3, ":[fe]") and morph(\4, ":m") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au féminin.
 
-TEST: Grande manifestation {{réprimées}} dans le sang.
-TEST: Super manifestation {{ignorées}} par les médias.
-TEST: Précis brûlé {{oubliés}}
-TEST: Grandes démonstrations {{oubliée}} par l’Histoire.
-TEST: Prix incroyables {{valable}} uniquement jusqu’à demain.
+TEST: Grande manifestation {{réprimées}} dans le sang.                  ->> réprimée
+TEST: Petite manifestation {{ignorées}} par les médias.                 ->> ignorée
+TEST: Précis brûlé {{oubliés}}                                          ->> oublié
+TEST: Grandes démonstrations {{oubliée}} par l’Histoire.                ->> oubliées
+TEST: Prix incroyables {{valable}} uniquement jusqu’à demain.           ->> valables
+TEST: Petites filles {{oubliés}}                                        ->> oubliées
+TEST: Petits écarts {{pardonnées}}                                      ->> pardonnés
 
 
 ## Prépositions
