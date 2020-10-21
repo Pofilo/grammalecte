@@ -2121,7 +2121,7 @@ __da_mots_grammaticaaux__
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
     mais
-        <<- value(<1, "|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|") =>> exclude(\1, ":N")
+        <<- not value(<1, "|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|") =>> exclude(\1, ":N")
 
     n’ en >pouvoir mais
         <<- =>> define(\-1, ">mais/:W")
