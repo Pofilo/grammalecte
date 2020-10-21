@@ -2100,6 +2100,9 @@ __da_mots_grammaticaaux__
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
 
+    c’  [>avoir|>être]
+        <<- =>> select(\1, ":O")
+
     ce  @:[NA].*:[me]
         <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D")
 
