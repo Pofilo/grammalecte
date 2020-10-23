@@ -12847,8 +12847,8 @@ __maj_gentilés__
             ( value(<1, "|certains|certaines|maints|maintes|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|quel|quelle|quels|quelles|")
             or ( value(<1, "|le|") and morph(\1, ":N.*:[me]:[si]", ";L") )
             or ( value(<1, "|l’|") and morph(\1, ":N.*:[si]", ";L") )
-            or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
-            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|argotique|correct|courant|parfait|facile|haché|aisé|impeccable|incompréhensible|prononcé|baragouiné)") )
+            or ( value(<1, "|de|d’|") and morph(<2, ">(?:action|armée|assassinat|attente|bataillon|beaucoup|bus|car|centaine|combien|communauté|complot|couple|descendant|dizaine|douzaine|duel|désir|d[eé]sid[eé]rata|enlèvement|émigration|énormément|équipe|exigence|famille|groupe|génération|immigration|invasion|majorité|meurtre|millier|million|moins|multitude|parole|pas|photo|plus|poignée|portrait|pourcentage|proportion|quart|rassemblement|rencontre|reportage|souhait|tant|tellement|tiers|trio|trop|témoignage|vie|viol|volonté|vote)/") )
+            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:aisé|approximatif|argotique|baragouiné|correct|courant|facile|haché|impeccable|incompréhensible|parfait|prononcé)") )
             or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") ) )
         -1>> =\1.capitalize()                                                                       && S’il s’agit d’un gentilé, mettez une majuscule.|https://fr.wiktionary.org/wiki/gentil%C3%A9
 
@@ -15790,7 +15790,7 @@ __gestion_mots_grammaticaux__
     sous le nez                                                                                                         [de|du|d’|des]
     sous [couvert|forme]                                                                                                [de|d’]
         <<- ~1:-2>> ␣
-        <<- =>> define(\1, ":G:R:LR")
+        <<- =>> define(\1, ":G:R:ÉR")
 
     tout au [bout|long] [de|du|d’|des]
         <<- not morph(<1, ":R") ~1>> *
@@ -15798,7 +15798,7 @@ __gestion_mots_grammaticaux__
     à travers $:D
     à travers >différent
         <<- ~1:2>> ␣
-        <<- =>> define(\1, ":G:R:LR")
+        <<- =>> define(\1, ":G:R:ÉR")
 
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
@@ -18014,7 +18014,7 @@ __da_substantifs__
 
 
 __da_locutions_verbales__
-    >avoir [foule|lieu|vent]
+    >avoir [cours|foule|lieu|vent]
     >avoir ni queue ?,¿ ni tête
     >aller bon train
     >aller [de|d’] l’ avant
@@ -25308,18 +25308,18 @@ __purge_syntagmes_nominaux__
     de  [la|l’|leur]  @:[NA]¬:Y  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
-    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿  [/_VCint_|/_VCimp_]
+    $:ÉR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
+    $:ÉR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
+    $:ÉR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
+    $:ÉR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
+    $:ÉR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:4>> *
 
-    $:LR [des|du|de|d’] @:[NA] <end>
-    $:LR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
-    $:LR [des|du|de|d’] @:[NA] @:[VR]¬:[NAP]
-    $:LR [des|du|de|d’] @:[NA] , @¬:[NA]
-    $:LR [des|du|de|d’] @:[NA] ?,¿  [/_VCint_|/_VCimp_]
+    $:ÉR [des|du|de|d’] @:[NA] <end>
+    $:ÉR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
+    $:ÉR [des|du|de|d’] @:[NA] @:[VR]¬:[NAP]
+    $:ÉR [des|du|de|d’] @:[NA] , @¬:[NA]
+    $:ÉR [des|du|de|d’] @:[NA] ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     en [plein|pleine] @:[NA]  <end>
@@ -25332,12 +25332,25 @@ __purge_syntagmes_nominaux__
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux] [__URL__|__MAIL__]
         <<- ~>> *
 
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]       *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @[123]s¬:(?:3p|A.*:p)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]       *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @[123]s
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]       *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @[123]s
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]       *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [lui|leur|y]                    en                           @[123]s
+        <<- morph(\3, ":N.*:[si]") ~4:5>> *
+
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @[123]p¬:A.*:p
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @[123]p
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @[123]p
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [lui|leur|y]                    en                           @[123]p
+        <<- morph(\3, ":N.*:[pi]") ~4:5>> *
+
 #### isEndOfNG ####
 # <end>
 # @:[VR]¬:[NAP]
 # , @¬:[NA]
 # ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
 # ?,¿  [/_VCint_|/_VCimp_]
+
 
 __purge_syntagme_verbal__
     [de|d’]  @:V[123]_i.*:Y  ,
@@ -25365,6 +25378,24 @@ __purge_syntagme_verbal__
 
     que l’ on
         <<- ~2>> *
+
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s       [ne|n’]     ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:(?:[123][sp]|P)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:(?:[123][sp]|P)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:(?:[123][sp]|P)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s       ?[ne|n’]¿   [lui|leur|y]                    en                          @:(?:[123][sp]|P)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s       [me|m’|te|t’|se|s’|nous|vous|lui|y]                                     @:(?:[123][sp]|P)
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s¬:V0   [le|la|l’|les|en|leur]                                                  @:(?:[123][sp]|P)¬:[NA]
+    <start>  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD        qui  @:3s¬:V0   @:(?:[123][sp]|P|ÉV)
+        <<- ~4:5>> *
+
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p       [ne|n’]     ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:(?:[123][sp]|P)
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:(?:[123][sp]|P)
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:(?:[123][sp]|P)
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p       ?[ne|n’]¿   [lui|leur|y]                    en                          @:(?:[123][sp]|P)
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p       [me|m’|te|t’|se|s’|nous|vous|lui|y]                                     @:(?:[123][sp]|P)
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p¬:V0   [le|la|l’|les|en|leur]                                                  @:(?:[123][sp]|P)¬:[NA]
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD   qui  @:3p¬:V0   @:(?:[123][sp]|P|ÉV)
+        <<- ~4:5>> *
 
 
 __purge_autre__
@@ -26715,12 +26746,12 @@ TEST: J’ai été conseiller régional
 __ppas_être_accord_sing!3__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:p¬:[GMWYsi]
-        <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
+        <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p|[123]p)")
         --1>> =suggSing(\-1)                                                                        && Accord avec la forme verbale “\2” : “\-1” devrait être au singulier.
 
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:p¬:[GMWYsi]
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_    @:[NAQ].*:p¬:[GMWYsi]
-        <<- /ppas/ morph(\1, ":[123]s", ":(?:C|N.*:p)") --1>> =suggSing(\-1)                        && Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
+        <<- /ppas/ morph(\1, ":[123]s", ":(?:C|N.*:p|[123]p)") --1>> =suggSing(\-1)                 && Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
 
 TEST: cette petite chienne à poil roux avait été longtemps {{malades}}.
 TEST: Ce mâle malingre et rachitique qui est resté {{arrogants}} ?
@@ -26738,6 +26769,7 @@ TEST: qui ne semble pas susceptible de rester {{intacts}}
 TEST: les plus anciens restes trouvés à ce jour proviennent de ce site
 TEST: Restes crâniens.
 TEST: Demeures victoriennes.
+TEST: Non ! Nous, musulmans, ne sommes pas persécutés en France. Nous sommes dans notre pays des citoyens à part entière.
 
 
 __ppas_être_accord_plur!3__
@@ -26841,6 +26873,8 @@ TEST: mon chat se fait {{petite}}                                               
 TEST: notre hôtesse ne se fit pas {{beaux}} mais hors normes                            ->> belle
 TEST: l’agente ne s’efforça pas de paraître {{instruites}} du problème                  ->> instruite
 TEST: j’ai eu d’autres témoignages où l’affaire est {{allé}} jusqu’à la convocation     ->> allée
+TEST: le texte d’incrimination est {{claire}}.                                          ->> clair
+TEST: la séparation des privilèges est {{activé}} par défaut                            ->> activée
 TEST: La première était René, le parfumeur, qui s’approcha de Catherine
 TEST: où l’on sera par exemple capables de chiffrer le nombre d’incarcérations à éviter afin d’être rentable en termes d’investissement
 
@@ -27010,20 +27044,20 @@ TEST: {{libres}} aime avoir été notre fille                                   
 
 
 __ppas_part_présent_infinitif__
-    [me|m’|te|t’|l’]  ?[en|y]¿  [avouant|faisant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:p¬:(?:[GWYsi]|V0)
-    [me|m’|te|t’|l’]  ?[en|y]¿  [avouer|faire|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]             @:[NA].*:p¬:(?:[GWYsi]|V0)
+    [me|m’|te|t’|l’]  ?[en|y]¿  [avouant|faisant|montrant|pensant|révélant|sachant|sentant|supposant|tenant|voyant|voulant]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+    [me|m’|te|t’|l’]  ?[en|y]¿  [avouer|faire|montrer|penser|révéler|savoir|sentir|supposer|tenir|voir|vouloir]              @:[NA].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ --1>> =suggSing(\-1)                                 && Accord avec le pronom objet “\1” : “\-1” devrait être au singulier.
 
-    le                          [avouant|faisant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
-    le                          [avouer|faire|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]             @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
+    le                          [avouant|faisant|montrant|pensant|révélant|sachant|sentant|supposant|tenant|voyant|voulant]  @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
+    le                          [avouer|faire|montrer|penser|révéler|savoir|sentir|supposer|tenir|voir|vouloir]              @:[NA].*:[fp]¬:(?:[GWY]|V0|m:[si])
         <<- /ppas/ --1>> =suggMasSing(\-1)                              && Accord avec le pronom objet “\1” : “\-1” devrait être au masculin singulier.
 
-    la                          [avouant|faisant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
-    la                          [avouer|faire|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]             @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
+    la                          [avouant|faisant|montrant|pensant|révélant|sachant|sentant|supposant|tenant|voyant|voulant]  @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
+    la                          [avouer|faire|montrer|penser|révéler|savoir|sentir|supposer|tenir|voir|vouloir]              @:[NA].*:[mp]¬:(?:[GWY]|V0|f:[si])
         <<- /ppas/ --1>> =suggFemSing(\-1)                              && Accord avec le pronom objet “\1” : “\-1” devrait être au féminin singulier.
 
-    les                         [avouant|faisant|montrant|pensant|révélant|sachant|sentant|tenant|voyant|voulant]  @:[NA].*:s¬:(?:[GWY]|V0|[pi])
-    les                         [avouer|faire|montrer|penser|révéler|savoir|sentir|tenir|voir|vouloir]             @:[NA].*:s¬:(?:[GWY]|V0|[pi])
+    les                         [avouant|faisant|montrant|pensant|révélant|sachant|sentant|supposant|tenant|voyant|voulant]  @:[NA].*:s¬:(?:[GWY]|V0|[pi])
+    les                         [avouer|faire|montrer|penser|révéler|savoir|sentir|supposer|tenir|voir|vouloir]              @:[NA].*:s¬:(?:[GWY]|V0|[pi])
         <<- /ppas/ --1>> =suggPlur(\-1)                                 && Accord avec le pronom objet “\1” : “\-1” devrait être au pluriel.
 
 TEST: me sachant {{libres}}, elle renonça.                                          ->> libre
@@ -27111,12 +27145,35 @@ TEST: les voilà souriant aux vissicitudes de l’existence
 TEST: me trouve abusé par ma propre ignorance
 
 
+__ppas_subst_que_pronom_verbe_adjectif__
+    [le|ce|cet|mon|son|ton|notre|votre|leur]  *WORD
+        || [que|qu’]  [je|j’|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  [>considérer|>croire|>imaginer|>penser|>présumer|>supposer|>trouver]  @:A.*:[fp]¬:(?:G|[me]:[si])
+        <<- /ppas/ not value(<1, "|de|d’|") and morph(\2, ":[NA].*:m:[si]") --1>> =suggMasSing(\-1)                     && Accord avec “\1 \2”. Mettez au masculin singulier.
+
+    [la|cette|ma|ta|sa|mon|ton|son|notre|votre|leur]  *WORD
+        || [que|qu’]  [je|j’|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  [>considérer|>croire|>imaginer|>penser|>présumer|>supposer|>trouver]  @:A.*:[mp]¬:(?:G|[fe]:[si])
+        <<- /ppas/ not value(<1, "|de|d’|") and morph(\2, ":[NA].*:f:[si]") --1>> =suggFemSing(\-1)                     && Accord avec “\1 \2”. Mettez au féminin singulier.
+
+    [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs]  *WORD
+        || [que|qu’]  [je|j’|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  [>considérer|>croire|>imaginer|>penser|>présumer|>supposer|>trouver]  @:A¬:G
+        <<- /ppas/ not value(<1, "|de|d’|") and morph(\2, ":[NA].*:[pi]") >>>
+        <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":[NA].*:[fs]", ":[me]:[pi]") --1>> =suggMasPlur(\-1)                 && Accord avec “\1 \2”. Mettez au masculin pluriel.
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":[NA].*:[ms]", ":[fe]:[pi]") --1>> =suggFemPlur(\-1)    && Accord avec “\1 \2”. Mettez au féminin pluriel.
+        <<- /ppas/ __else__ and morph(\-1, ":[NA].*:s", ":[pi]") --1>> =suggPlur(\-1)                                                   && Accord avec “\1 \2”. Mettez au pluriel.
+
+TEST: voici le chien que tu trouves {{affreuse}}                                            ->> affreux
+TEST: je rappellerai cette maxime que je trouve très {{vrai}}                               ->> vraie
+TEST: ces psychologues qu’elle trouvait {{absurde}}                                         ->> absurdes
+TEST: les petits que tu trouvais {{froid}}                                                  ->> froids
+TEST: mes godasses qu’il trouvait {{affreux}}                                               ->> affreuses
+
+
 __ppas_falloir_être__
     il  [me|m’|te|t’|lui]   >falloir  [être|devenir|redevenir|demeurer|paraître|paraitre|rester]  @:[NA].*:p¬:(?:[GWY]|V0|[si])
-        <<- /ppas/ --1>> =suggSing(\-1)                                                 && Accord avec le pronom « \2 » : « \-1 » devrait être au singulier.
+        <<- /ppas/ --1>> =suggSing(\-1)                                                             && Accord avec le pronom « \2 » : « \-1 » devrait être au singulier.
 
     il  [nous|leur]         >falloir  [être|devenir|redevenir|demeurer|paraître|paraitre|rester]  @:[NA].*:s¬:(?:[GWY]|V0|[pi])
-        <<- /ppas/ --1>> =suggPlur(\-1)                                                 && Accord avec le pronom « \2 » : « \-1 » devrait être au pluriel.
+        <<- /ppas/ --1>> =suggPlur(\-1)                                                             && Accord avec le pronom « \2 » : « \-1 » devrait être au pluriel.
 
 TEST: il me faut être {{meilleurs}} que ces gars-là                             ->> meilleur
 TEST: il leur faut être {{prudent}}                                             ->> prudents
@@ -27657,7 +27714,7 @@ TEST: le flacon qu’ils ont réussi à acquérir
 
 __ppas_det_fem_sing_COD_que_avoir__
     [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|LV)|>qu[e’]/")
+        <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
