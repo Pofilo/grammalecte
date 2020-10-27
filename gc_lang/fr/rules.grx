@@ -4023,11 +4023,23 @@ __eleu_vieil_vieux_euphonie__
         <<- /eleu/ morph(\2, ":[NA].*:[me]:s", ":[123][sp]")
         -1>> vieil                                              && Euphonie. Utilisez “vieil” s’il précède un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-TEST: ce {{vieux}} homme
 TEST: c’est un {{vieux}} imbécile.
-TEST: Le {{vieux}} homme était parti.                         ->> vieil
+TEST: Le {{vieux}} homme était parti.                                               ->> vieil
 TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 
+
+__eleu_n_superflu__
+    on n’ [a|avait|eut|aura|aurait|eût] rarement
+        <<- /eleu/ -2:3>> \3                                    && Adverbe de négation erroné. Rarement signifie que ça arrive, pas que ça n’arrive pas.
+
+    on n’ [a|avait|eut|aura|aurait|eût] [>besoin|>chaud|>crainte|>faim|>froid|>peur|>soif]
+        <<- /eleu/ not tag_after(\-1, "_que_") and not value(<1, "|jamais|guère|")
+        -2:3>> \3|n’\3 pas|n’\3 jamais|n’\3 plus|n’\3 guère     && Adverbe de négation superflu ou manquant.
+
+TEST: on {{n’a}} rarement besoin d’avoir accès à plus de 10 logiciels.              ->> a
+TEST: on {{n’avait}} faim.                                                          ->> avait|n’avait pas|n’avait jamais|n’avait plus|n’avait guère
+TEST: on n’avait peur que lorsque la tempête soufflait
+TEST: jamais on n’eut besoin d’une telle chose.
 
 
 !!
@@ -5898,6 +5910,9 @@ __pleo_pléonasmes_divers__
     [>applaudir|>applaudissement] des deux mains
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
+    >archipel d’ [iles|îles]
+        <<- /pleo/ not morph(>1, ":(A.*:[fe]:[pi]|W)") ->> archipel                         && Pléonasme.
+
     au jour d’ aujourd’hui
     à l’ heure d’ aujourd’hui
         <<- /pleo/ ->> aujourd’hui                                                          && Pléonasme.
@@ -6087,6 +6102,7 @@ TEST: {{actuellement en cours}}                     ->> en cours
 TEST: ils sont {{actuellement en train}} de manger  ->> en train
 TEST: avoir un grand {{avenir devant soi}}          ->> avenir
 TEST: {{acculé au pied du mur}}                     ->> acculé
+TEST: cet {{archipel d’îles}} m’ennuyait            ->> archipel
 TEST: {{Avancer en avant}}, pas le choix            ->> Avancer
 TEST: prenons une {{légère collation}}              ->> collation
 TEST: {{dessiner un dessin}}                        ->> dessiner
@@ -6149,6 +6165,7 @@ TEST: {{tunnels souterrains}}                       ->> tunnels
 TEST: {{vieilles hardes}}                           ->> hardes
 TEST: délirant {{et voire}} ridicule                ->> voire|et|et voir
 TEST: {{voire même}}                                ->> voire|même
+TEST: un archipel d’îles déchiquetées
 
 
 # d’avance / à l’avance
@@ -18982,6 +18999,21 @@ TEST: ils vont {{belle}} et bien par monts et par vaux.
 TEST: Ils l’ont échappé {{bel}}
 
 
+# bien / bine
+__conf_bien_bine__
+    bine
+        <<- /conf/ not tag_before(\1, "_propsub_") and morph(<1, ":V")
+        ->> bien                                                        && Confusion probable. Erreur de frappe ?
+
+    [<start>|,|(] bine [que|qu’|entendu|sûr]
+        <<- /conf/ -2>> bien                                            && Confusion probable. Erreur de frappe ?
+
+TEST: il me semblait {{bine}} que j’avais raison                        ->> bien
+TEST: il avance {{bine}}                                                ->> bien
+TEST: {{bine}} qu’il sache conduire, il préfère marcher                 ->> bien
+TEST: l’homme bine régulièrement son terrain
+
+
 # bite / bitte
 __conf_bitte_bite__
     >bite du quai
@@ -23148,15 +23180,16 @@ TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 
 __gn_plein_de__
     pleins [de|d’]
-        <<- /gn/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
+        <<- /gn/ morph(<1, ":(?:V|R|[NAQ].*:s)|<start>|>,", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
         -1>> plein                                                  && S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
 
-    plein [de|d’] [client|conseil|croyance|croyant|demande|élève|enfant|erreur|étudiant+e|faute|femme|fidèle|fille|fillette|garçon|homme|individu|personne|patient|touriste]
+    plein [de|d’] [client|conseil|croyance|croyant|demande|élève|enfant|erreur|étudiant+e|faute|femme|fidèle|fille|fillette|garçon|homme|individu|personne|patient+e|touriste]
         <<- /gn/ --1>> \3s                                          && S’il y en a plein (c’est-à-dire plusieurs), il faut mettre au pluriel.
 
 TEST: Je connais {{pleins}} de gens
 TEST: un site avec {{pleins}} de pubs
 TEST: il y a plein de {{client}}
+TEST: {{pleins}} d’erreurs dans ton document
 TEST: Les avocats sont pleins de nutriments.
 TEST: ajoute plein de sel sur ses pâtes
 TEST: avoir plein d’argent ne suffit pas toujours à tout résoudre
@@ -25447,6 +25480,46 @@ __purge_subst_plur_comme_nom_sing__
         <<- morph(\2, ":[NA].*:[pi]") and morph(\5, ":[NA].*:[si]") ~3:5>> *
 
 
+__purge_proposition_subordonnée__
+    [que|qu’]   je                      ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:1s¬:V0    @:[123][sp]
+    [que|qu’]   je                      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:1s¬:V0    @:[123][sp]
+    [que|qu’]   je                      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:1s¬:V0    @:[123][sp]
+    [que|qu’]   je                      ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:1s¬:V0    @:[123][sp]
+    [que|qu’]   tu                      ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:2s¬:V0    @:[123][sp]
+    [que|qu’]   tu                      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:2s¬:V0    @:[123][sp]
+    [que|qu’]   tu                      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:2s¬:V0    @:[123][sp]
+    [que|qu’]   tu                      ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:2s¬:V0    @:[123][sp]
+    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3s¬:V0    @:[123][sp]
+    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3s¬:V0    @:[123][sp]
+    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3s¬:V0    @:[123][sp]
+    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3s¬:V0    @:[123][sp]
+    [que|qu’]   nous                    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:1p¬:V0    @:[123][sp]
+    [que|qu’]   nous                    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:1p¬:V0    @:[123][sp]
+    [que|qu’]   nous                    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:1p¬:V0    @:[123][sp]
+    [que|qu’]   nous                    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:1p¬:V0    @:[123][sp]
+    [que|qu’]   vous                    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:2p¬:V0    @:[123][sp]
+    [que|qu’]   vous                    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:2p¬:V0    @:[123][sp]
+    [que|qu’]   vous                    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:2p¬:V0    @:[123][sp]
+    [que|qu’]   vous                    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:2p¬:V0    @:[123][sp]
+    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   $:M et $:M              ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3p¬:V0    @:[123][sp]
+    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3p¬:V0    @:[123][sp]
+        <<- morph(<1, ":N", ":V") ~1:-2>> *
+        <<- /-1>> _ngn_
+
+
+__purge_substantifs_comme_lui_elle__
+    <start>  les  *WORD  comme  [moi|toi|nous|vous|lui|elle|eux|elles|celui-là|celui-ci|celle-là|celle-ci|ceux-là|ceux-ci|celles-là|celles-ci]
+    <start>  un   *WORD  comme  [moi|toi|nous|vous|lui|celui-là|celui-ci|ceux-là|ceux-ci]
+    <start>  une  *WORD  comme  [moi|toi|nous|vous|elle|elles|celle-là|celle-ci|celles-là|celles-ci]
+        <<- ~-2:0>> *
+
+
 __purge_ponctuations2__
     ,   ,
     (   )
@@ -25500,7 +25573,7 @@ __tag_locutions_verbales_d_état__
         || ?[en|y]¿ être [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || ?[en|y]¿ avoir [été|semblé|paru]
-    [>arriver|>commencer|>parvenir|>renoncer|>réussir|>travailler]                                  à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    [>arriver|>continuer|>commencer|>parvenir|>renoncer|>réussir|>travailler]                       à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
     [>cesser|>continuer|>craindre|>demander|>exiger|>redouter|>rêver|>refuser|>risquer|>venir]      [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
     [>être|>sembler|>paraître|>paraitre|>devenir|>redevenir|>rester|>demeurer]  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible]
         || [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
@@ -25545,7 +25618,7 @@ __tag_locutions_verbales_d_état__
         <<- /-1>> _LVEIF_
 
     /_VCint_  à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
-        <<- morphVC(\1, ">(?:arriver|commencer|parvenir|renoncer|réussir|travailler)/") >>>
+        <<- morphVC(\1, ">(?:arriver|commencer|continuer|parvenir|renoncer|réussir|travailler)/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
@@ -26875,6 +26948,7 @@ TEST: l’agente ne s’efforça pas de paraître {{instruites}} du problème   
 TEST: j’ai eu d’autres témoignages où l’affaire est {{allé}} jusqu’à la convocation     ->> allée
 TEST: le texte d’incrimination est {{claire}}.                                          ->> clair
 TEST: la séparation des privilèges est {{activé}} par défaut                            ->> activée
+TEST: La fille qui dansait est {{tombé}}.                                               ->> tombée
 TEST: La première était René, le parfumeur, qui s’approcha de Catherine
 TEST: où l’on sera par exemple capables de chiffrer le nombre d’incarcérations à éviter afin d’être rentable en termes d’investissement
 
@@ -26930,6 +27004,8 @@ TEST: certains hommes qui s’efforcent d’être {{habile}}                    
 TEST: certaines femmes se font {{petit}}                                                    ->> petites
 TEST: certaines femmes qui ne s’efforcent pas de paraître {{sensible}}                      ->> sensibles
 TEST: Surtout que les factures et opérations sont {{présent}}                               ->> présentes
+TEST: Pour que nos outils et méthodes continuent à être {{utilisé}}                         ->> utilisés
+TEST: Pour que nos méthodes et outils continuent à être {{utilisé}}                         ->> utilisés
 TEST: Les tortures que ce journaliste pense être “normales”.
 TEST: les abrutis sont légion
 
@@ -27685,46 +27761,76 @@ TEST: c’est le pouvoir en place qui les a envoyés exercer leur métier
 !!
 !!
 
-__ppas_det_plur_COD_que_avoir__
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
-        <<- /ppas/ morph(\2, ":[NA]") and not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
-        --1>> =suggPlur(\-1, \2)
-        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: Les documents qu’ils ont {{acheté}}.
-TEST: les flacons qu’ils ont réussi à acquérir
-TEST: ça faisait des années que j’avais délaissé ce lieu
-TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
-TEST: des choses que j’aurais oublié d’aborder.
-TEST: C’EST EN REGARDANT DES BALLETS QUE J’AI EU ENVIE DE CONCEVOIR DES SPECTACLES.
-
-
-__ppas_det_mas_sing_COD_que_avoir__
-    [un|le|l’|ce|cet|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|[me]:[si])
+__ppas_det_sing_COD_que_avoir__
+    [un|le|ce|cet]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:m") --1>> =suggVerbPpas(\-1, ":m:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-TEST: Le document qu’ils ont de temps en temps {{achetés}}.
-TEST: L’homme que j’ai {{aidée}}.
-TEST: L’homme qu’ils ont beaucoup {{aidée}}.
-TEST: L’homme que nous avons un peu {{aidée}}.
-TEST: le flacon qu’ils ont réussi à acquérir
-
-
-__ppas_det_fem_sing_COD_que_avoir__
-    [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
+    [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-TEST: La femme que j’ai {{aidé}}.
-TEST: La femme que j’ai beaucoup {{aidé}}.
-TEST: La femme que j’ai un peu {{aidé}}.
+    [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+        <<- morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fp]", ":[me]:[si]") --1>> =suggVerbPpas(\-1, ":m:s")
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[mp]", ":[fe]:[si]") --1>> =suggVerbPpas(\-1, ":f:s")
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- __else__ and morph(\2, ":[NA].*:[si]") and morph(\-1, ":Q.*:p", ":[si]") --1>> =suggSing(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: Le pain qu’ils ont de temps en temps {{achetés}}.                         ->> acheté
+TEST: L’homme que j’ai {{aidée}}.                                               ->> aidé
+TEST: L’homme qu’ils ont beaucoup {{aidée}}.                                    ->> aidé
+TEST: un homme que nous avons un peu {{aidée}}.                                 ->> aidé
+TEST: La femme que j’ai {{aidé}}.                                               ->> aidée
+TEST: La femme que j’ai beaucoup {{aidé}}.                                      ->> aidée
+TEST: La femme que j’ai un peu {{aidé}}.                                        ->> aidée
+TEST: son aide que tu as {{renvoyés}}                                           ->> renvoyé
+TEST: mon chien que j’ai {{nourris}}                                            ->> nourri
+TEST: notre maison que nous avons {{incendiés}}                                 ->> incendiée
+TEST: ma chatte que tu as {{dressé}}                                            ->> dressée
+TEST: le flacon qu’ils ont réussi à acquérir
 TEST: la danse qu’ils ont réussi à faire
 TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
 TEST: en ayant l’impression qu’il a beaucoup réussi
+
+
+__ppas_det_plur_COD_que_avoir__
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
+            and morph(\2, ":[NA]") >>>
+        <<- morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fs]", ":[me]:[pi]") --1>> =suggMasPlur(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[ms]", ":[fe]:[pi]") --1>> =suggFemPlur(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- __else__ and morph(\2, ":[NA].*:[pi]") and morph(\-1, ":Q.*:s", ":[pi]") --1>> =suggPlur(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+    [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
+            and morph(\2, ":[NA].*:[me]:[pi]") --1>> =suggMasPlur(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+    [certaines|maintes]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
+            and morph(\2, ":[NA].*:[fe]:[pi]") --1>> =suggFemPlur(\-1)
+        && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: Les documents qu’ils ont {{acheté}}.                          ->> achetés
+TEST: les fleurs que j’ai {{acheté}}                                ->> achetées
+TEST: les psychologues que tu as {{engagé}}                         ->> engagés
+TEST: certains fruits que tu as {{achetées}} sont pourris           ->> achetés
+TEST: maintes femmes que tu as {{côtoyée}}                          ->> côtoyées
+TEST: les flacons qu’ils ont réussi à acquérir
+TEST: ça faisait des années que j’avais délaissé ce lieu
+TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
+TEST: des choses que j’aurais oublié d’aborder.
+TEST: C’EST EN REGARDANT DES BALLETS QUE J’AI EU ENVIE DE CONCEVOIR DES SPECTACLES.
 
 
 __ppas_ceque_pronom_avoir__
@@ -28943,35 +29049,14 @@ __purge_préverbes_négation__
         <<- /-1>> _ngn_
 
 
-__purge_proposition_subordonnée__
-    [que|qu’]   je                      ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:1s    @:[123][sp]
-    [que|qu’]   je                      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:1s    @:[123][sp]
-    [que|qu’]   je                      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:1s    @:[123][sp]
-    [que|qu’]   je                      ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:1s    @:[123][sp]
-    [que|qu’]   tu                      ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:2s    @:[123][sp]
-    [que|qu’]   tu                      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:2s    @:[123][sp]
-    [que|qu’]   tu                      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:2s    @:[123][sp]
-    [que|qu’]   tu                      ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:2s    @:[123][sp]
-    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3s    @:[123][sp]
-    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3s    @:[123][sp]
-    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3s    @:[123][sp]
-    [que|qu’]   [il|elle|on|iel|$:M]    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3s    @:[123][sp]
-    [que|qu’]   nous                    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:1p    @:[123][sp]
-    [que|qu’]   nous                    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:1p    @:[123][sp]
-    [que|qu’]   nous                    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:1p    @:[123][sp]
-    [que|qu’]   nous                    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:1p    @:[123][sp]
-    [que|qu’]   vous                    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:2p    @:[123][sp]
-    [que|qu’]   vous                    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:2p    @:[123][sp]
-    [que|qu’]   vous                    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:2p    @:[123][sp]
-    [que|qu’]   vous                    ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:2p    @:[123][sp]
-    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3p    @:[123][sp]
-    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3p    @:[123][sp]
-    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3p    @:[123][sp]
-    [que|qu’]   [ils|elles|iels]        ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3p    @:[123][sp]
-    [que|qu’]   $:M et $:M              ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @V[123].*:3p    @:[123][sp]
-    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @V[123].*:3p    @:[123][sp]
-    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @V[123].*:3p    @:[123][sp]
-    [que|qu’]   $:M et $:M              ?[ne|n’]¿   [lui|leur|y]                    en                          @V[123].*:3p    @:[123][sp]
+__tag_verbe_infinitif_sujet__
+    [<start>|,|(|/_start_]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
+    [<start>|,|(|/_start_]  [ne|n’]  $:Y
+    [<start>|,|(|/_start_]  $:Y
+        <<- /2>> _sujinfi_
+
+
+__purge_proposition_subordonnée2__
     [que|qu’]   je                      ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:V0.*:1s    @:Q¬:G   @:[123][sp]
     [que|qu’]   je                      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:V0.*:1s    @:Q¬:G   @:[123][sp]
     [que|qu’]   je                      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:V0.*:1s    @:Q¬:G   @:[123][sp]
@@ -29002,20 +29087,6 @@ __purge_proposition_subordonnée__
     [que|qu’]   $:M et $:M              ?[ne|n’]¿   [lui|leur|y]                    en                          @:V0.*:3p    @:Q¬:G   @:[123][sp]
         <<- morph(<1, ":N", ":V") ~1:-2>> *
         <<- /-1>> _ngn_
-
-
-__purge_substantifs_comme_lui_elle__
-    <start>  les  *WORD  comme  [moi|toi|nous|vous|lui|elle|eux|elles|celui-là|celui-ci|celle-là|celle-ci|ceux-là|ceux-ci|celles-là|celles-ci]
-    <start>  un   *WORD  comme  [moi|toi|nous|vous|lui|celui-là|celui-ci|ceux-là|ceux-ci]
-    <start>  une  *WORD  comme  [moi|toi|nous|vous|elle|elles|celle-là|celle-ci|celles-là|celles-ci]
-        <<- ~-2:0>> *
-
-
-__tag_verbe_infinitif_sujet__
-    [<start>|,|(|/_start_]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
-    [<start>|,|(|/_start_]  [ne|n’]  $:Y
-    [<start>|,|(|/_start_]  $:Y
-        <<- /2>> _sujinfi_
 
 
 __énumérations_substantifs__
