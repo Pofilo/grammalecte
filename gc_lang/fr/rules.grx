@@ -5911,7 +5911,7 @@ __pleo_pléonasmes_divers__
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
     >archipel d’ [iles|îles]
-        <<- /pleo/ not morph(>1, ":(A.*:[fe]:[pi]|W)") ->> archipel                         && Pléonasme.
+        <<- /pleo/ not morph(>1, ":(?:A.*:[fe]:[pi]|W)") ->> archipel                       && Pléonasme.
 
     au jour d’ aujourd’hui
     à l’ heure d’ aujourd’hui
@@ -16880,6 +16880,7 @@ __substantifs_multi_mots__
     >soue à >cochon
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
     >souvenir d’ enfance
+    >star du x
     >sujet [de|d’] [prédilection|préoccupation]
     >suspension [de|d’] séance
     >syndicat du crime
@@ -17031,6 +17032,7 @@ __substantifs_multi_mots__
     >sain [de|d’] [corps|esprit]
     >sain [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     [secret+s] défense
+    >sobre comme un chameau
     >sourd comme un pot
     >sujet à [caution|débat|interprétation]
     >sujet à interprétations diverses
@@ -27762,17 +27764,20 @@ TEST: c’est le pouvoir en place qui les a envoyés exercer leur métier
 !!
 
 __ppas_det_sing_COD_que_avoir__
-    [un|le|ce|cet]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
+    [un|le|ce|cet]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
+    [un|le|ce|cet]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:m") --1>> =suggVerbPpas(\-1, ":m:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-    [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
+    [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
+    [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-    [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+    [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+    [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
         <<- morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fp]", ":[me]:[si]") --1>> =suggVerbPpas(\-1, ":m:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
         <<- __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[mp]", ":[fe]:[si]") --1>> =suggVerbPpas(\-1, ":f:s")
@@ -27781,16 +27786,21 @@ __ppas_det_sing_COD_que_avoir__
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Le pain qu’ils ont de temps en temps {{achetés}}.                         ->> acheté
+TEST: le pain que sa femme lui a {{achetés}}                                    ->> acheté
 TEST: L’homme que j’ai {{aidée}}.                                               ->> aidé
 TEST: L’homme qu’ils ont beaucoup {{aidée}}.                                    ->> aidé
 TEST: un homme que nous avons un peu {{aidée}}.                                 ->> aidé
 TEST: La femme que j’ai {{aidé}}.                                               ->> aidée
 TEST: La femme que j’ai beaucoup {{aidé}}.                                      ->> aidée
 TEST: La femme que j’ai un peu {{aidé}}.                                        ->> aidée
+TEST: la folie que son mari a {{combattu}}                                      ->> combattue
 TEST: son aide que tu as {{renvoyés}}                                           ->> renvoyé
 TEST: mon chien que j’ai {{nourris}}                                            ->> nourri
 TEST: notre maison que nous avons {{incendiés}}                                 ->> incendiée
 TEST: ma chatte que tu as {{dressé}}                                            ->> dressée
+TEST: l’Université que nos amis ont {{choisi}}                                  ->> choisie
+TEST: notre tour que ces sots ont {{ruinées}}                                   ->> ruinée
+TEST: votre ami que notre mère a {{appelés}}                                    ->> appelé
 TEST: le flacon qu’ils ont réussi à acquérir
 TEST: la danse qu’ils ont réussi à faire
 TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
@@ -27798,7 +27808,8 @@ TEST: en ayant l’impression qu’il a beaucoup réussi
 
 
 __ppas_det_plur_COD_que_avoir__
-    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
             and morph(\2, ":[NA]") >>>
@@ -27809,13 +27820,15 @@ __ppas_det_plur_COD_que_avoir__
         <<- __else__ and morph(\2, ":[NA].*:[pi]") and morph(\-1, ":Q.*:s", ":[pi]") --1>> =suggPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-    [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
+    [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
+    [certains|maints]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[me]:[pi]") --1>> =suggMasPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-    [certaines|maintes]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
+    [certaines|maintes]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
+    [certaines|maintes]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[fe]:[pi]") --1>> =suggFemPlur(\-1)
@@ -27824,8 +27837,11 @@ __ppas_det_plur_COD_que_avoir__
 TEST: Les documents qu’ils ont {{acheté}}.                          ->> achetés
 TEST: les fleurs que j’ai {{acheté}}                                ->> achetées
 TEST: les psychologues que tu as {{engagé}}                         ->> engagés
+TEST: mes appartements que ma mère a {{loué}}                       ->> loués
 TEST: certains fruits que tu as {{achetées}} sont pourris           ->> achetés
 TEST: maintes femmes que tu as {{côtoyée}}                          ->> côtoyées
+TEST: maints mots que ce sot a {{écrite}}                           ->> écrits
+TEST: certaines femmes que notre père a {{contacté}}                ->> contactées
 TEST: les flacons qu’ils ont réussi à acquérir
 TEST: ça faisait des années que j’avais délaissé ce lieu
 TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
@@ -27935,7 +27951,7 @@ TEST: les avaient-ils {{détectez}} ?
 !!
 !!
 
-__ppas_adj_accord_je_tu__
+__ppas_adj_accord_je_tu_iel__
     <start>  *WORD  ?,¿  [je|j’|tu|iel]
         <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]") and not tag(\2, "_exctx_")
         -2>> =suggSing(\2)                                                      && Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
@@ -27986,6 +28002,13 @@ __ppas_adj_accord_elles__
 TEST: Absolument {{heureux}}, elles exultèrent de joie.
 TEST: quoique heureuse, ils la crurent tourmentée.
 
+
+__ppas_adj_accord_iels__
+    <start>  *WORD  ?,¿  iels
+        <<- /ppas/ morph(\2, ":A.*:s", ":[GEMWPpi]") and not tag(\2, "_exctx_")
+        -2>> =suggPlur(\2)                                                      && Si cet adjectif se réfère au pronom « iels », l’adjectif devrait être au pluriel.
+
+TEST: {{Découragé}}, iels sont partis.
 
 
 !!
