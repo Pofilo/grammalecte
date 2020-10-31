@@ -945,9 +945,15 @@ class GrammalecteTooltip {
         // actions
         let xActions = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"});
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
+        this.xLexEditNode = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_open_lexed", textContent: "›› Éditeur lexical…"})
+        xActions.appendChild(this.xLexEditNode);
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_db_search", textContent: "››"}, {url: ""}));
         this.xTooltip.appendChild(xActions);
+        this.sUnknownWord = "";
+        this.xLexEditNode.onclick = () => {
+            oGrammalecteBackgroundPort.openLexiconEditor(this.sUnknownWord);
+        };
         // add tooltip to the page
         xGCPanelContent.appendChild(this.xTooltip);
         xGCPanelContent.appendChild(this.xTooltipArrow);
@@ -1002,11 +1008,13 @@ class GrammalecteTooltip {
             }
             if (xNodeErr.dataset.error_type === "spelling") {
                 // spelling mistake
+                this.sUnknownWord = xNodeErr.textContent;
                 this.xParent.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
                 this.xParent.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 this.xParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
                 this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
+                this.xParent.getElementById("grammalecte_tooltip_open_lexed").style.display = "inline";
                 this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline-block";
                 this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://grammalecte.net/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 this.clearSuggestionBlock();

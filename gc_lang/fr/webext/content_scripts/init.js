@@ -364,8 +364,8 @@ const oGrammalecteBackgroundPort = {
         this.send("openURL", { "sURL": sURL });
     },
 
-    openLexiconEditor: function () {
-        this.send("openLexiconEditor");
+    openLexiconEditor: function (sWord="") {
+        this.send("openLexiconEditor", { sWord: sWord });
     },
 
     restartWorker: function (nTimeDelay=10) {
