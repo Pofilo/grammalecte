@@ -27,59 +27,66 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
         sWord = self._getWord()
         try:
             lWordAndMorph = oSpellChecker.analyze(sWord)
-            if not lWordAndMorph:
-                return uno.Enum("com.sun.star.ui.ContextMenuInterceptorAction", "IGNORED") # don’t work on AOO, have to import the value
-                #return IGNORED
+            # if not lWordAndMorph:
+            #     return uno.Enum("com.sun.star.ui.ContextMenuInterceptorAction", "IGNORED") # don’t work on AOO, have to import the value
+            #     #return IGNORED
             xContextMenu = xEvent.ActionTriggerContainer
             if xContextMenu:
                 # entries index
                 i = xContextMenu.Count
                 nUnoConstantLine = uno.getConstantByName("com.sun.star.ui.ActionTriggerSeparatorType.LINE")
 
-                # word analysis
-                i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
-                for sWord, lMorph in lWordAndMorph:
-                    if len(lMorph) == 1:
-                        sMorph, sReadableMorph = lMorph[0]
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : " + sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
-                    elif len(lMorph) >= 1:
-                        # submenu
-                        xSubMenuContainer = xContextMenu.createInstance("com.sun.star.ui.ActionTriggerContainer")
-                        for j, (sMorph, sReadableMorph) in enumerate(lMorph):
-                            self._addItemToContextMenu(xSubMenuContainer, j, "ActionTrigger", Text=sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
-                        # create root menu entry
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord, SubContainer=xSubMenuContainer)
-                    else:
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : [erreur] aucun résultat trouvé.")
-
-                # Links to Conjugueur
-                aVerb = { sMorph[1:sMorph.find("/")]  for sMorph in oSpellChecker.getMorph(sWord) if ":V" in sMorph }
-                if aVerb:
+                if lWordAndMorph:
+                    # word analysis
                     i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
-                    for sVerb in aVerb:
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Conjuguer “{}”…".format(sVerb), \
-                                                        CommandURL="service:net.grammalecte.AppLauncher?CJ/"+sVerb)
+                    for sWord, lMorph in lWordAndMorph:
+                        if len(lMorph) == 1:
+                            sMorph, sReadableMorph = lMorph[0]
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : " + sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
+                        elif len(lMorph) >= 1:
+                            # submenu
+                            xSubMenuContainer = xContextMenu.createInstance("com.sun.star.ui.ActionTriggerContainer")
+                            for j, (sMorph, sReadableMorph) in enumerate(lMorph):
+                                self._addItemToContextMenu(xSubMenuContainer, j, "ActionTrigger", Text=sReadableMorph, CommandURL="service:net.grammalecte.AppLauncher?None")
+                            # create root menu entry
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord, SubContainer=xSubMenuContainer)
+                        else:
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sWord + " : [erreur] aucun résultat trouvé.")
 
-                # Search
-                xDoc = xDesktop.getCurrentComponent()
-                xViewCursor = xDoc.CurrentController.ViewCursor
-                if not xViewCursor.isCollapsed():
-                    sSelec = xViewCursor.getString()
-                    if sSelec.count(" ") <= 2:
+                    # Links to Conjugueur
+                    aVerb = { sMorph[1:sMorph.find("/")]  for sMorph in oSpellChecker.getMorph(sWord) if ":V" in sMorph }
+                    if aVerb:
                         i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
-                        # submenu
-                        xSubMenuContainer = xContextMenu.createInstance("com.sun.star.ui.ActionTriggerContainer")
-                        self._addItemToContextMenu(xSubMenuContainer, 0, "ActionTrigger", Text="insensible à la casse",
-                                                   CommandURL="service:net.grammalecte.AppLauncher?FA/nn/"+sSelec)
-                        self._addItemToContextMenu(xSubMenuContainer, 1, "ActionTrigger", Text="casse préservée",
-                                                   CommandURL="service:net.grammalecte.AppLauncher?FA/yn/"+sSelec)
-                        self._addItemToContextMenu(xSubMenuContainer, 2, "ActionTrigger", Text="mot(s) entier(s)",
-                                                   CommandURL="service:net.grammalecte.AppLauncher?FA/ny/"+sSelec)
-                        self._addItemToContextMenu(xSubMenuContainer, 3, "ActionTrigger", Text="casse préservée + mot(s) entier(s)",
-                                                   CommandURL="service:net.grammalecte.AppLauncher?FA/yy/"+sSelec)
-                        # create root menu entry
-                        i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Rechercher “{}”".format(sSelec),
-                                                       SubContainer=xSubMenuContainer)
+                        for sVerb in aVerb:
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Conjuguer “{}”…".format(sVerb), \
+                                                            CommandURL="service:net.grammalecte.AppLauncher?CJ/"+sVerb)
+
+                    # Search
+                    xDoc = xDesktop.getCurrentComponent()
+                    xViewCursor = xDoc.CurrentController.ViewCursor
+                    if not xViewCursor.isCollapsed():
+                        sSelec = xViewCursor.getString()
+                        if sSelec.count(" ") <= 2:
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
+                            # submenu
+                            xSubMenuContainer = xContextMenu.createInstance("com.sun.star.ui.ActionTriggerContainer")
+                            self._addItemToContextMenu(xSubMenuContainer, 0, "ActionTrigger", Text="insensible à la casse",
+                                                       CommandURL="service:net.grammalecte.AppLauncher?FA/nn/"+sSelec)
+                            self._addItemToContextMenu(xSubMenuContainer, 1, "ActionTrigger", Text="casse préservée",
+                                                       CommandURL="service:net.grammalecte.AppLauncher?FA/yn/"+sSelec)
+                            self._addItemToContextMenu(xSubMenuContainer, 2, "ActionTrigger", Text="mot(s) entier(s)",
+                                                       CommandURL="service:net.grammalecte.AppLauncher?FA/ny/"+sSelec)
+                            self._addItemToContextMenu(xSubMenuContainer, 3, "ActionTrigger", Text="casse préservée + mot(s) entier(s)",
+                                                       CommandURL="service:net.grammalecte.AppLauncher?FA/yy/"+sSelec)
+                            # create root menu entry
+                            i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Rechercher “{}”".format(sSelec),
+                                                           SubContainer=xSubMenuContainer)
+                else:
+                    # Link to Lexicon Editor
+                    i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
+                    i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="Éditeur lexical…", \
+                                                            CommandURL="service:net.grammalecte.AppLauncher?LE/"+sWord)
+
                 # The controller should execute the modified context menu and stop notifying other interceptors.
                 return uno.Enum("com.sun.star.ui.ContextMenuInterceptorAction", "EXECUTE_MODIFIED") # don’t work on AOO, have to import the value
                 #return EXECUTE_MODIFIED # Doesn’t work since LO 5.3
@@ -113,6 +120,7 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
 
 
 class JobExecutor (XJob, unohelper.Base):
+
     def __init__ (self, ctx):
         self.ctx = ctx
         global xDesktop

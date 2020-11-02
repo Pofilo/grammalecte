@@ -72,6 +72,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         self.xDocument = self.xDesktop.getCurrentComponent()
         self.xContainer = None
         self.xDialog = None
+        self.bClosed = False
         self.oPersonalDicJSON = None
         # data
         self.sLemma = ""
@@ -110,7 +111,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         self.xDialog.insertByName(name, xGridModel)
         return xGridModel
 
-    def run (self, sLang):
+    def run (self, sLang, sWord=""):
         # ui lang
         self.sLang = sLang
         self.dUI = lxe_strings.getUI(sLang)
@@ -163,7 +164,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 170, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
-        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 100, 14, FontDescriptor = xFDTitle)
+        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 100, 14, Text = sWord, FontDescriptor = xFDTitle)
         self._addWidget('search_button', 'Button', nX1+105, nY1+11, 45, 12, Label = self.dUI.get('search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
         self._addWidget('information_button', 'Button', nX1+155, nY1+11, 15, 12, Label = self.dUI.get('information_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
 
@@ -301,6 +302,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
             self.xContainer.getControl(sName).addActionListener(self)
             self.xContainer.getControl(sName).setActionCommand(sAction)
 
+    def newEntry (self, sWord):
+        self.xLemma.Text = sWord
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
@@ -323,6 +327,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
             elif xActionEvent.ActionCommand == 'Info':
                 pass
             elif xActionEvent.ActionCommand == "Close":
+                self.bClosed = True
                 self.xContainer.dispose()           # Non modal dialog
                 #self.xContainer.endExecute()       # Modal dialog
         except:

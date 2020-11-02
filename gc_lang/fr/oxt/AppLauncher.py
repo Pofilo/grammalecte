@@ -15,6 +15,7 @@ import helpers
 
 
 xDesktop = None
+xLEDialog = None       # dialog for Lexicon Editor
 
 
 class AppLauncher (unohelper.Base, XJobExecutor):
@@ -28,46 +29,53 @@ class AppLauncher (unohelper.Base, XJobExecutor):
 
     # XJobExecutor
     def trigger (self, sCmd):
+        global xLEDialog
         try:
             if sCmd == "About":
                 import About
-                xDialog = About.AboutGrammalecte(self.ctx)
-                xDialog.run(self.sLang)
+                xAboutDialog = About.AboutGrammalecte(self.ctx)
+                xAboutDialog.run(self.sLang)
             elif sCmd.startswith("CJ"):
                 import Conjugueur
-                xDialog = Conjugueur.Conjugueur(self.ctx)
+                xConjDialog = Conjugueur.Conjugueur(self.ctx)
                 if sCmd[2:3] == "/":
-                    xDialog.run(sCmd[3:])
+                    xConjDialog.run(sCmd[3:])
                 else:
-                    xDialog.run()
+                    xConjDialog.run()
             elif sCmd == "TF":
                 import TextFormatter
-                xDialog = TextFormatter.TextFormatter(self.ctx)
-                xDialog.run(self.sLang)
+                xTFDialog = TextFormatter.TextFormatter(self.ctx)
+                xTFDialog.run(self.sLang)
             elif sCmd == "DI":
                 import DictOptions
-                xDialog = DictOptions.DictOptions(self.ctx)
-                xDialog.run(self.sLang)
-            elif sCmd == "LE":
+                xDODialog = DictOptions.DictOptions(self.ctx)
+                xDODialog.run(self.sLang)
+            elif sCmd.startswith("LE"):
                 import LexiconEditor
-                xDialog = LexiconEditor.LexiconEditor(self.ctx)
-                xDialog.run(self.sLang)
+                if not xLEDialog or xLEDialog.bClosed:
+                    xLEDialog = LexiconEditor.LexiconEditor(self.ctx)
+                    if sCmd[2:3] == "/":
+                        xLEDialog.run(self.sLang, sCmd[3:])
+                    else:
+                        xLEDialog.run(self.sLang)
+                elif sCmd[2:3] == "/":
+                    xLEDialog.newEntry(sCmd[3:])
             elif sCmd == "MA":
                 import Author
-                xDialog = Author.Author(self.ctx)
-                xDialog.run(self.sLang)
+                xAuthorDialog = Author.Author(self.ctx)
+                xAuthorDialog.run(self.sLang)
             elif sCmd == "OP":
                 import Options
-                xDialog = Options.GC_Options(self.ctx)
-                xDialog.run(self.sLang)
+                xGCDialog = Options.GC_Options(self.ctx)
+                xGCDialog.run(self.sLang)
             elif sCmd == "EN":
                 import Enumerator
-                xDialog = Enumerator.Enumerator(self.ctx)
-                xDialog.run(self.sLang)
+                xEnumDialog = Enumerator.Enumerator(self.ctx)
+                xEnumDialog.run(self.sLang)
             elif sCmd == "GO":
                 import GraphicOptions
-                xDialog = GraphicOptions.GraphicOptions(self.ctx)
-                xDialog.run(self.sLang)
+                xGODialog = GraphicOptions.GraphicOptions(self.ctx)
+                xGODialog.run(self.sLang)
             elif sCmd.startswith("FA/"):
                 findAll(sCmd[6:], (sCmd[3:4] == "y"), (sCmd[4:5] == "y"))
             # elif sCmd.startswith("URL/"):
