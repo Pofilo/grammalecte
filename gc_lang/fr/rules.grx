@@ -2181,13 +2181,16 @@ __da_mots_grammaticaaux__
         <<- __also__ =>> define(\1, ":G:R")
 
 
-__da_autre_chose_quelque_chose__
+__da_chose__
     quelque chose
         <<- =>> define(\2, ":N:m:s")
 
     autre chose
         <<- not morph(<1, ">entre/|:D") ~>> ␣
         <<- =>> define(\1, ":G")
+
+    >même >chose
+        <<- =>> select(\-1, ":N")
 
 
 __da_groupe_nominal__
@@ -2238,6 +2241,9 @@ __da_groupe_nominal__
 
     en tant que  *WORD
         <<- =>> exclude(\4, ":V")
+
+    ni *WORD
+        <<- =>> select(\-1, ":N")
 
     nombre  [de|d’|des]  [@:[NA]|<end>|,]
         <<- not morph(<1, ":D") >>>
@@ -10030,7 +10036,7 @@ __conf_hors_or__
     hors [je|j’|tu|il|ils|on|parce|quel|quels|quelle|quelles|pourquoi|qui|que]
         <<- /conf/ -1>> or,                             && Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
-    >or d’ [ici|atteinte]
+    >or d’ [haleine|ici|atteinte]
     >or [de|d’] [là|doute|page]
     >or [de|d’] chez [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     >or du commun
@@ -15056,6 +15062,7 @@ __purge_locutions__
     d’ autant [plus|moins]
     d’ autre part
     d’ avant en arrière
+    d’ avant-guerre
     d’ à côté
     d’ âge mûr
     d’ emblée
@@ -15546,12 +15553,12 @@ __purge_locutions__
     quand bien même
     quand bon [me|te|lui|nous|vous|leur] [semble|semblera|semblait]
     quant à [ça|cela|ceci]
-    que [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
-    que je [le|l’] veuille ou non
-    que tu [le|l’] veuilles ou non
+    [que|qu’] [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
+    [que|qu’] je [le|l’] veuille ou non
+    [que|qu’] tu [le|l’] veuilles ou non
     qu’ [il|elle|on|iel] [le|l’] veuille ou non
-    que vous [le|l’] vouliez ou non
-    que nous [le|l’] voulions ou non
+    [que|qu’] vous [le|l’] vouliez ou non
+    [que|qu’] nous [le|l’] voulions ou non
     qu’ [ils|elles|iels] [le|l’] veuillent ou non
     qu’ à cela ne tienne
     quel qu’ en soit [le|l’] [moyen|prix|danger]
@@ -16392,6 +16399,7 @@ __substantifs_multi_mots__
     >certificat [de|d’] scolarité ?[maternelle|primaire|secondaire]¿
     >chair à [pâté|>canon]
     >chair [de|d’] poule
+    >chalet d’ alpage
     >chambre à [coucher|gaz]
     >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
     >champion du monde
@@ -17083,6 +17091,10 @@ __substantifs_multi_mots__
 
     [le|la|l’|les]  $:N  d’ alors
         <<- ~-2:0>> *
+
+    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette|>vieillard|>acteur|>architecte|>auteur|>artiste|>chef|>cinéaste|>cuisinier|>dessinateur|>écrivain|>graphiste|>ingénieur|>joueur|>musicien|>peintre|>photographe|>réalisateur]
+        || [de|d’] grand talent
+        <<- ~2:0>> *
 
 
 __purge_syntagmes_nominaux_matière__
