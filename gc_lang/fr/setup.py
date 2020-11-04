@@ -93,7 +93,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'grammalecte': ['graphspell/_dictionaries/*.bdic', '*.txt']
+        'grammalecte': ['graphspell/_dictionaries/*.json', '*.txt']
     },
 
     # Although 'package_data' is the preferred approach, in some case you may

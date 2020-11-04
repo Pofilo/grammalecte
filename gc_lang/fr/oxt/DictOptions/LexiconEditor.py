@@ -408,7 +408,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         try:
             xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
             xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE")]) # seems useless
-            xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+            xFilePicker.appendFilter("Supported files", "*.json")
             xFilePicker.setDefaultName("fr.__personal__.json") # useless, doesn’t work
             xFilePicker.setDisplayDirectory("")
             xFilePicker.setMultiSelectionMode(False)
@@ -463,7 +463,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         try:
             xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
             xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_SIMPLE")]) # seems useless
-            xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+            xFilePicker.appendFilter("Supported files", "*.json")
             xFilePicker.setDefaultName("fr.__personal__.json") # useless, doesn’t work
             xFilePicker.setDisplayDirectory("")
             xFilePicker.setMultiSelectionMode(False)

@@ -317,18 +317,18 @@ def copyGraphspellDictionaries (dVars, bJavaScript=False, bCommunityDict=False, 
     if bPersonalDict:
         lDict.append(("personal", dVars['dic_personal_filename']))
     for sType, sFileName in lDict:
-        spfPyDic = f"graphspell/_dictionaries/{sFileName}.bdic"
+        spfPyDic = f"graphspell/_dictionaries/{sFileName}.json"
         spfJSDic = f"graphspell-js/_dictionaries/{sFileName}.json"
         if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
             buildDictionary(dVars, sType, bJavaScript)
         print("  +", spfPyDic)
         file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
-        dVars['dic_'+sType+'_filename_py'] = sFileName + '.bdic'
+        dVars['dic_'+sType+'_filename_py'] = sFileName + '.json'
         if bJavaScript:
             print("  +", spfJSDic)
             file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
             dVars['dic_'+sType+'_filename_js'] = sFileName + '.json'
-    dVars['dic_main_filename_py'] = dVars['dic_default_filename_py'] + ".bdic"
+    dVars['dic_main_filename_py'] = dVars['dic_default_filename_py'] + ".json"
     dVars['dic_main_filename_js'] = dVars['dic_default_filename_js'] + ".json"
 
 

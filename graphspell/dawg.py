@@ -478,7 +478,7 @@ class DAWG:
             "l2grams": list(self.a2grams)
         }
 
-    def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+    def writeAsJSObject (self, spfDst, nCompressionMethod=1, bInJSModule=False, bBinaryDictAsHexString=True):
         "write a file (JSON or JS module) with all the necessary data"
         if not spfDst.endswith(".json"):
             spfDst += "."+str(nCompressionMethod)+".json"

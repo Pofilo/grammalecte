@@ -7,7 +7,7 @@ import re
 
 import graphspell.ibdawg as ibdawg
 
-oDict = ibdawg.IBDAWG("French.bdic")
+oDict = ibdawg.IBDAWG("fr-allvars.json")
 
 
 def readFile (spf):
@@ -26,7 +26,7 @@ def listUnknownWords (spf):
             sLine = sLine.strip()
             if sLine:
                 for sWord in sLine.split():
-                    if not oDict.isValid(sWord): 
+                    if not oDict.isValid(sWord):
                         hDst.write(sWord+"\n")
 
 # --------------------------------------------------------------------------------------------------
