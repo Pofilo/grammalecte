@@ -344,16 +344,19 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinaryJSON (nCompressionMethod=1) {
+    _calculateBinary (nCompressionMethod=1) {
         console.log("Write DAWG as an indexable binary dictionary");
         this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes()
         this.nBytesOffset = 0;
         this._calcNumBytesNodeAddress();
         this._calcNodesAddress();
+        let this.sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+        for (let oNode of this.dMinimizedNodes.values()) {
+            this.sByDic += oNode.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+        }
         console.log("Arc values (chars, affixes and tags): " + this.nArcVal);
         console.log("Arc size: "+this.nBytesArc+" bytes, Address size: "+this.nBytesNodeAddress+" bytes");
         console.log("-> " + this.nBytesArc+this.nBytesNodeAddress + " * " + this.nArc + " = " + (this.nBytesArc+this.nBytesNodeAddress)*this.nArc + " bytes");
-        return this._createJSON(nCompressionMethod);
     }
 
     _calcNumBytesNodeAddress () {
@@ -373,11 +376,40 @@ class DAWG {
         }
     }
 
-    _createJSON (nCompressionMethod=1) {
-        let sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
-        for (let oNode of this.dMinimizedNodes.values()) {
-            sByDic += oNode.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+    _binaryToList () {
+        this.lByDic = [];
+        let nAcc = 0;
+        let lBytesBuffer = [];
+        let nDivisor = (this.nBytesArc + this.nBytesNodeAddress) / 2;
+        for (let i = 0;  i < this.sByDic.length;  i+=2) {
+            lBytesBuffer.push(parseInt(this.sByDic.slice(i, i+2), 16));
+            if (nAcc == (this.nBytesArc - 1)) {
+                this.lByDic.push(this._convBytesToInteger(lBytesBuffer));
+                lBytesBuffer = [];
+            }
+            else if (nAcc == (this.nBytesArc + this.nBytesNodeAddress - 1)) {
+                this.lByDic.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
+                lBytesBuffer = [];
+                nAcc = -1;
+            }
+            nAcc = nAcc + 1;
         }
+    }
+
+    _convBytesToInteger (aBytes) {
+        // Byte order = Big Endian (bigger first)
+        let nVal = 0;
+        let nWeight = (aBytes.length - 1) * 8;
+        for (let n of aBytes) {
+            nVal += n << nWeight;
+            nWeight = nWeight - 8;
+        }
+        return nVal;
+    }
+
+    createBinaryJSON (nCompressionMethod=1) {
+        this._calculateBinary(nCompressionMethod);
+        this._binaryToList();
         let oJSON = {
             "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
@@ -400,7 +432,8 @@ class DAWG {
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
-            "sByDic": sByDic,    // binary word graph
+            //"sByDic": this.sByDic,    // binary word graph
+            "lByDic": this.lByDic,
             "l2grams": Array.from(this.a2grams)
         };
         return oJSON;

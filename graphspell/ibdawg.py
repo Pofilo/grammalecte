@@ -123,29 +123,30 @@ class IBDAWG:
             self.sFileName = "[None]"
             oData = source
 
-        self.sByDic = ""  # init to prevent pylint whining
         self.__dict__.update(oData)
-        self.byDic = binascii.unhexlify(self.sByDic)
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
         self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
 
-        # Performance trick:
-        #     Instead of converting bytes to integers each times we parse the binary dictionary,
-        #     we do it once, then parse the array
-        nAcc = 0
-        byBuffer = b""
-        self.lByDic = []
-        nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
-        for i in range(0, len(self.byDic)):
-            byBuffer += self.byDic[i:i+1]
-            if nAcc == (self.nBytesArc - 1):
-                self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
-                byBuffer = b""
-            elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
-                self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
-                byBuffer = b""
-                nAcc = -1
-            nAcc = nAcc + 1
+        if "lByDic" not in oData:
+            print(">>>> lByDic not in oData")
+            if "sByDic" not in oData:
+                raise TypeError("# Error. No usable data in the dictionary.")
+            # old dictionary version
+            self.lByDic = []
+            self.byDic = binascii.unhexlify(oData["sByDic"])
+            nAcc = 0
+            byBuffer = b""
+            nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
+            for i in range(0, len(self.byDic)):
+                byBuffer += self.byDic[i:i+1]
+                if nAcc == (self.nBytesArc - 1):
+                    self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
+                    byBuffer = b""
+                elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
+                    self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
+                    byBuffer = b""
+                    nAcc = -1
+                nAcc = nAcc + 1
 
         # masks
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1

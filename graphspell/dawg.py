@@ -364,6 +364,10 @@ class DAWG:
         self.nBytesOffset = 0
         self._calcNumBytesNodeAddress()
         self._calcNodesAddress()
+        self.byDic = b""
+        self.byDic = self.oRoot.convToBytes(self.nBytesArc, self.nBytesNodeAddress)
+        for oNode in self.lMinimizedNodes:
+            self.byDic += oNode.convToBytes(self.nBytesArc, self.nBytesNodeAddress)
         print("   Arc values (chars, affixes and tags): {}  ->  {} bytes".format( self.nArcVal, len("\t".join(self.lArcVal).encode("utf-8")) ))
         print("   Arc size: {} bytes, Address size: {} bytes   ->   {} * {} = {} bytes".format( self.nBytesArc, self.nBytesNodeAddress, \
                                                                                                 self.nBytesArc+self.nBytesNodeAddress, self.nArc, \
@@ -382,13 +386,26 @@ class DAWG:
             oNode.addr = iAddr
             iAddr += max(len(oNode.arcs), 1) * nBytesNode
 
-    def getBinaryAsJSON (self, nCompressionMethod=1, bBinaryDictAsHexString=True):
+    def _binaryToList (self):
+        self.lByDic = []
+        nAcc = 0
+        byBuffer = b""
+        nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
+        for i in range(0, len(self.byDic)):
+            byBuffer += self.byDic[i:i+1]
+            if nAcc == (self.nBytesArc - 1):
+                self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
+                byBuffer = b""
+            elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
+                self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
+                byBuffer = b""
+                nAcc = -1
+            nAcc = nAcc + 1
+
+    def getBinaryAsJSON (self, nCompressionMethod=1):
         "return a JSON string containing all necessary data of the dictionary (compressed as a binary string)"
         self._calculateBinary(nCompressionMethod)
-        byDic = b""
-        byDic = self.oRoot.convToBytes(self.nBytesArc, self.nBytesNodeAddress)
-        for oNode in self.lMinimizedNodes:
-            byDic += oNode.convToBytes(self.nBytesArc, self.nBytesNodeAddress)
+        self._binaryToList()
         return {
             "sHeader": "/grammalecte-fsa/",
             "sLangCode": self.sLangCode,
@@ -414,18 +431,19 @@ class DAWG:
             # Mozilla’s JS parser don’t like file bigger than 4 Mb!
             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
             # https://github.com/mozilla/addons-linter/issues/1361
-            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
+            #"sByDic": self.byDic.hex(),
+            "lByDic": self.lByDic,
             "l2grams": list(self.a2grams)
         }
 
-    def writeAsJSObject (self, spfDst, nCompressionMethod=1, bInJSModule=False, bBinaryDictAsHexString=True):
+    def writeAsJSObject (self, spfDst, nCompressionMethod=1, bInJSModule=False):
         "write a file (JSON or JS module) with all the necessary data"
         if not spfDst.endswith(".json"):
             spfDst += "."+str(nCompressionMethod)+".json"
         with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write( json.dumps(self.getBinaryAsJSON(nCompressionMethod, bBinaryDictAsHexString), ensure_ascii=False) )
+            hDst.write( json.dumps(self.getBinaryAsJSON(nCompressionMethod), ensure_ascii=False) )
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
@@ -456,7 +474,6 @@ class DawgNode:
         self.arcs = {}          # key: arc value; value: a node
         self.addr = 0           # address in the binary dictionary
         self.pos = 0            # position in the binary dictionary (version 2)
-        self.size = 0           # size of node in bytes (version 3)
 
     @classmethod
     def resetNextId (cls):
