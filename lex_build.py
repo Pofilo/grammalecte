@@ -15,14 +15,10 @@ def build (spfSrc, sLangCode, sLangName, sfDict, bJavaScript=False, sDicName="",
     "transform a text lexicon as a binary indexable dictionary"
     oDAWG = fsa.DAWG(spfSrc, cStemmingMethod, sLangCode, sLangName, sDicName, sDescription, sFilter)
     dir_util.mkpath("graphspell/_dictionaries")
-    #oDAWG.writeInfo("graphspell/_dictionaries/" + sfDict + ".info.txt")
-    #oDAWG.writeBinary("graphspell/_dictionaries/" + sfDict + ".bdic", int(nCompressMethod))
     oDAWG.writeAsJSObject("graphspell/_dictionaries/" + sfDict + ".json")
     if bJavaScript:
         dir_util.mkpath("graphspell-js/_dictionaries")
         oDAWG.writeAsJSObject("graphspell-js/_dictionaries/" + sfDict + ".json")
-        #oDic = IBDAWG(sfDict + ".bdic")
-        #oDic.writeAsJSObject("graphspell-js/_dictionaries/" + sfDict + ".json", bBinaryDictAsHexString=True)
 
 
 def main ():

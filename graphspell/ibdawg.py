@@ -178,41 +178,6 @@ class IBDAWG:
                 "  Dictionary: {0.nEntry:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
 
-    def writeAsJSObject (self, spfDest, bInJSModule=False, bBinaryDictAsHexString=False):
-        "write IBDAWG as a JavaScript object in a JavaScript module"
-        with open(spfDest, "w", encoding="utf-8", newline="\n") as hDst:
-            if bInJSModule:
-                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write(json.dumps({
-                "sHeader": "/grammalecte-fsa/",
-                "sLangCode": self.sLangCode,
-                "sLangName": self.sLangName,
-                "sDicName": self.sDicName,
-                "sDescription": self.sDescription,
-                "sFileName": self.sFileName,
-                "sDate": self.sDate,
-                "nEntry": self.nEntry,
-                "nChar": self.nChar,
-                "nAff": self.nAff,
-                "nTag": self.nTag,
-                "cStemming": self.cStemming,
-                "dChar": self.dChar,
-                "nNode": self.nNode,
-                "nArc": self.nArc,
-                "nArcVal": self.nArcVal,
-                "lArcVal": self.lArcVal,
-                "nCompressionMethod": self.nCompressionMethod,
-                "nBytesArc": self.nBytesArc,
-                "nBytesNodeAddress": self.nBytesNodeAddress,
-                # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
-                # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
-                # https://github.com/mozilla/addons-linter/issues/1361
-                "sByDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ],
-                "l2grams": list(self.a2grams)
-            }, ensure_ascii=False))
-            if bInJSModule:
-                hDst.write(";\n\nexports.dictionary = dictionary;\n")
-
     def isValidToken (self, sToken):
         "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"
         sToken = st.spellingNormalization(sToken)
