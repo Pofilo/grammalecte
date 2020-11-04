@@ -344,16 +344,12 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinaryJSON (nCompressionMethod) {
-        console.log("Write DAWG as an indexable binary dictionary [method: "+nCompressionMethod+"]");
-        if (nCompressionMethod == 1) {
-            this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
-            this.nBytesOffset = 0;
-            this._calcNumBytesNodeAddress();
-            this._calcNodesAddress1();
-        } else {
-            console.log("Error: unknown compression method");
-        }
+    createBinaryJSON (nCompressionMethod=1) {
+        console.log("Write DAWG as an indexable binary dictionary");
+        this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes()
+        this.nBytesOffset = 0;
+        this._calcNumBytesNodeAddress();
+        this._calcNodesAddress();
         console.log("Arc values (chars, affixes and tags): " + this.nArcVal);
         console.log("Arc size: "+this.nBytesArc+" bytes, Address size: "+this.nBytesNodeAddress+" bytes");
         console.log("-> " + this.nBytesArc+this.nBytesNodeAddress + " * " + this.nArc + " = " + (this.nBytesArc+this.nBytesNodeAddress)*this.nArc + " bytes");
@@ -368,7 +364,7 @@ class DAWG {
         }
     }
 
-    _calcNodesAddress1 () {
+    _calcNodesAddress () {
         let nBytesNode = this.nBytesArc + this.nBytesNodeAddress;
         let iAddr = this.oRoot.arcs.size * nBytesNode;
         for (let oNode of this.dMinimizedNodes.values()) {
@@ -377,13 +373,10 @@ class DAWG {
         }
     }
 
-    _createJSON (nCompressionMethod) {
-        let sByDic = "";
-        if (nCompressionMethod == 1) {
-            sByDic = this.oRoot.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
-            for (let oNode of this.dMinimizedNodes.values()) {
-                sByDic += oNode.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
-            }
+    _createJSON (nCompressionMethod=1) {
+        let sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+        for (let oNode of this.dMinimizedNodes.values()) {
+            sByDic += oNode.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
         }
         let oJSON = {
             "sHeader": "/grammalecte-fsa/",
@@ -496,7 +489,7 @@ class DawgNode {
     }
 
     // VERSION 1 =====================================================================================================
-    convToBytes1 (nBytesArc, nBytesNodeAddress) {
+    convToBytes (nBytesArc, nBytesNodeAddress) {
         /*
             Node scheme:
             - Arc length is defined by nBytesArc
