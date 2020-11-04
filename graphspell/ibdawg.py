@@ -114,20 +114,20 @@ class IBDAWG:
 
     def __init__ (self, source):
         if isinstance(source, str):
-            self.by = pkgutil.get_data(__package__, "_dictionaries/" + source)
-            if not self.by:
+            by = pkgutil.get_data(__package__, "_dictionaries/" + source)
+            if not by:
                 raise OSError("# Error. File not found or not loadable: "+source)
-
-            if source.endswith(".bdic"):
-                self._initBinary()
-            elif source.endswith(".json"):
-                self._initJSON(json.loads(self.by.decode("utf-8")))     #json.loads(self.by)    # In Python 3.6, can read directly binary strings
-            else:
-                raise OSError("# Error. Unknown file type: "+source)
+            self.sFileName = source
+            oData = json.loads(by.decode("utf-8"))     #json.loads(by)    # In Python 3.6, can read directly binary strings
         else:
-            self._initJSON(source)
+            self.sFileName = "[None]"
+            oData = source
 
-        self.sFileName = source  if isinstance(source, str)  else "[None]"
+        self.sByDic = ""  # init to prevent pylint whining
+        self.__dict__.update(oData)
+        self.byDic = binascii.unhexlify(self.sByDic)
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
+        self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
 
         # Performance trick:
         #     Instead of converting bytes to integers each times we parse the binary dictionary,
@@ -169,54 +169,6 @@ class IBDAWG:
             self.lexicographer = importlib.import_module(".lexgraph_"+self.sLangCode, "grammalecte.graphspell")
         except ImportError:
             print("# No module <graphspell.lexgraph_"+self.sLangCode+".py>")
-
-
-    def _initBinary (self):
-        "initialize with binary structure file"
-        if self.by[0:17] != b"/grammalecte-fsa/":
-            raise TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: {}".format(self.by[0:9]))
-        if not(self.by[17:18] == b"1" or self.by[17:18] == b"2" or self.by[17:18] == b"3"):
-            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[17:18]))
-        try:
-            byHeader, byInfo, byValues, by2grams, byDic = self.by.split(b"\0\0\0\0", 4)
-        except Exception:
-            raise Exception
-
-        self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
-        self.sHeader = byHeader.decode("utf-8")
-        self.lArcVal = byValues.decode("utf-8").split("\t")
-        self.nArcVal = len(self.lArcVal)
-        self.byDic = byDic
-        self.a2grams = set(by2grams.decode("utf-8").split("\t"))
-
-        l = byInfo.decode("utf-8").split("//")
-        self.sLangCode = l.pop(0)
-        self.sLangName = l.pop(0)
-        self.sDicName = l.pop(0)
-        self.sDescription = l.pop(0)
-        self.sDate = l.pop(0)
-        self.nChar = int(l.pop(0))
-        self.nBytesArc = int(l.pop(0))
-        self.nBytesNodeAddress = int(l.pop(0))
-        self.nEntry = int(l.pop(0))
-        self.nNode = int(l.pop(0))
-        self.nArc = int(l.pop(0))
-        self.nAff = int(l.pop(0))
-        self.cStemming = l.pop(0)
-        self.nTag = self.nArcVal - self.nChar - self.nAff
-        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
-        self.dChar = {}
-        for i in range(1, self.nChar+1):
-            self.dChar[self.lArcVal[i]] = i
-        self.dCharVal = { v: k  for k, v in self.dChar.items() }
-
-    def _initJSON (self, oJSON):
-        "initialize with a JSON text file"
-        self.sByDic = ""  # init to prevent pylint whining
-        self.__dict__.update(oJSON)
-        self.byDic = binascii.unhexlify(self.sByDic)
-        self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
 
     def getInfo (self):
         "return string about the IBDAWG"
