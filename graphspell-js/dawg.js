@@ -350,7 +350,7 @@ class DAWG {
         this.nBytesOffset = 0;
         this._calcNumBytesNodeAddress();
         this._calcNodesAddress();
-        let this.sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+        this.sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
         for (let oNode of this.dMinimizedNodes.values()) {
             this.sByDic += oNode.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
         }
