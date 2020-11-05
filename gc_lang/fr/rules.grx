@@ -9630,6 +9630,16 @@ __conf_dessus_dessous__
 TEST: Il est {{en dessus}} de tout.
 
 
+# en coup de vent
+__conf_en_coup_de_vent__
+    !! en coup de vent ¡¡
+    [an|en] [>cou|>coût|>cout] [de|d’] [>van|>vent]
+        <<- /conf/ ->> en coup de vent                          && Confusion. Locution “en coup de vent”.|https://fr.wiktionary.org/wiki/en_coup_de_vent
+
+TEST: partir {{en cou de van}}                                  ->> en coup de vent
+TEST: agir en coup de vent
+
+
 # en général
 __conf_en_général__
     en générale
@@ -21203,6 +21213,24 @@ TEST: est-ce qu’il n’aurait pas mieux {{fallu}} que nous                    
 TEST: il aurait mieux {{fallu}} que nous trouvions nous-mêmes une solution.         ->> valu
 
 
+# van / vent
+__conf_van_vent__
+    >aller dans le sens du van
+        <<- /conf/ --1>> vent                                                   && Confusion. Un mouvement d’air s’écrit “vent”.|https://fr.wiktionary.org/wiki/vent
+
+    >avoir le van en poupe
+        <<- /conf/ -3>> vent                                                    && Confusion. Un mouvement d’air s’écrit “vent”.|https://fr.wiktionary.org/wiki/vent
+
+    le van >souffler
+        <<- /conf/ not morph(<1, ":R") and morph(\-1, ":[123]s") -2>> vent      && Confusion. Un mouvement d’air s’écrit “vent”.|https://fr.wiktionary.org/wiki/vent
+
+TEST: il va dans le sens du {{van}}                     ->> vent
+TEST: elle a le {{van}} en poupe                        ->> vent
+TEST: quand le {{van}} souffle
+TEST: avoir le vent en poupe
+TEST: aller dans le sens du vent
+
+
 # venimeux / vénéneux
 __conf_venimeux_vénéreux__
     [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneux
@@ -21215,6 +21243,7 @@ TEST: ces araignées {{vénéneuses}}.
 TEST: ce champignon {{venimeux}}.
 
 
+# ver / vers / verre
 __conf_ver_vers_verre_vert2__
     [ver|>verre] [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
         <<- /conf/ morph(<1, ">,|<start>|:V", ":D") -1>> vers
@@ -24135,10 +24164,10 @@ __infi_qqch_de__
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     point [ne|n’] >être besoin                  [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
 
     point [ne|n’] >être besoin                  [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
 
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
@@ -30745,34 +30774,63 @@ TEST: Si j’{{irais}} le faire
 __vmode_si_sujet_conditionnel__
     <start>  si  [je|j’]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  [je|j’]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [je|j’]  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  [je|j’]  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  [je|j’]  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":1s")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si j’avais perdu, j’aurais recommencé. »
 
     <start>  si  [tu|t’]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  [tu|t’]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [tu|t’]  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  [tu|t’]  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  [tu|t’]  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":2s")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si tu avais perdu, tu aurais recommencé. »
 
-    <start>  [si|s’]  [il|on|elle]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
-    <start>  [si|s’]  [il|on|elle]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [il|on|elle|iel|$:M]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [il|on|elle|iel|$:M]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [il|on|elle|iel|$:M]  >avoir  $:Q  ,  $:M  $:K
+    <start>  [si|s’]  [il|on|elle|iel|$:M]  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  [si|s’]  [il|on|elle|iel|$:M]  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":3s")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « S’il avait perdu, il aurait recommencé. »
 
     <start>  si  nous  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  nous  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  nous  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  nous  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  nous  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":1p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si nous avions perdu, nous aurions recommencé. »
 
     <start>  si  vous  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  vous  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  vous  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  vous  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  vous  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":2p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si vous aviez perdu, vous auriez recommencé. »
 
-    <start>  [si|s’]  [ils|elles|iels]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
-    <start>  [si|s’]  [ils|elles|iels]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
-        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":3p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
+    <start>  [si|s’]  [ils|elles|iels]  (>avoir)  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [ils|elles|iels]  (>avoir)  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [ils|elles|iels]  (>avoir)  $:Q  ,  $:M  $:K
+    <start>  [si|s’]  [ils|elles|iels]  (>avoir)  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  [si|s’]  [ils|elles|iels]  (>avoir)  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
+    <start>  si       $:M et $:M        (>avoir)  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si       $:M et $:M        (>avoir)  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si       $:M et $:M        (>avoir)  $:Q  ,  $:M  $:K
+    <start>  si       $:M et $:M        (>avoir)  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si       $:M et $:M        (>avoir)  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
+        <<- /vmode/ morph(\1, ":K") -1>> =suggVerbTense(\1, ":Iq", ":3p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
 
     <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3s")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « S’il avait perdu, il aurait recommencé. »
 
     <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
     <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  ,  $:M  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  ,  $:D¬:R  $:N  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|maints|maintes]  @:[NA].*:[pi]  >avoir  $:Q  $:D  $:N  ,  $:D¬:R  $:N  $:K
         <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3p")                           && N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
 
 TEST: si j’{{aurais}} perdu, j’aurais recommencé.                                   ->> avais
@@ -30877,7 +30935,7 @@ __vmode_verbe_que_subjonctif__
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
         <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
-        --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “\1 que”, ce verbe devrait être au subjonctif.
+        --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “douter que”, ce verbe devrait être au subjonctif.
 
     [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
