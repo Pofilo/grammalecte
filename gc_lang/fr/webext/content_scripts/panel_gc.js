@@ -992,6 +992,7 @@ class GrammalecteTooltip {
                     this.xParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
                     this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
                 }
+                this.xParent.getElementById("grammalecte_tooltip_open_lexed").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 let iSugg = 0;
@@ -1014,7 +1015,7 @@ class GrammalecteTooltip {
                 this.xParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 this.xParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
                 this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
-                this.xParent.getElementById("grammalecte_tooltip_open_lexed").style.display = "inline";
+                this.xParent.getElementById("grammalecte_tooltip_open_lexed").style.display = "inline-block";
                 this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline-block";
                 this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://grammalecte.net/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 this.clearSuggestionBlock();
