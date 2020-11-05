@@ -174,7 +174,7 @@ class IBDAWG:
     def getInfo (self):
         "return string about the IBDAWG"
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
-                "  Compression method: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
+                "  Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
                 "  Arcs values:  {0.nArcVal:>10,} = {0.nChar:>5,} characters,  {0.nAff:>6,} affixes,  {0.nTag:>6,} tags\n" \
                 "  Dictionary: {0.nEntry:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)

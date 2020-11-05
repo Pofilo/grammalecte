@@ -344,7 +344,7 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    _calculateBinary (nCompressionMethod=1) {
+    _calculateBinary () {
         console.log("Write DAWG as an indexable binary dictionary");
         this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes()
         this.nBytesOffset = 0;
@@ -407,8 +407,8 @@ class DAWG {
         return nVal;
     }
 
-    createBinaryJSON (nCompressionMethod=1) {
-        this._calculateBinary(nCompressionMethod);
+    createBinaryJSON () {
+        this._calculateBinary();
         this._binaryToList();
         let oJSON = {
             "sHeader": "/grammalecte-fsa/",
@@ -428,7 +428,6 @@ class DAWG {
             "nArc": this.nArc,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "nCompressionMethod": nCompressionMethod,
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,

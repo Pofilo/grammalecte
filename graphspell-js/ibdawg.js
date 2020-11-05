@@ -147,7 +147,7 @@ class IBDAWG {
         }
         /*
             Properties:
-            sName, nCompressionMethod, sHeader, lArcVal, nArcVal, sByDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
+            sName, sHeader, lArcVal, nArcVal, sByDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
             nEntry, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
@@ -211,7 +211,7 @@ class IBDAWG {
 
     getInfo () {
         return  `  Language: ${this.sLangName}   Lang code: ${this.sLangCode}   Dictionary name: ${this.sDicName}\n` +
-                `  Compression method: ${this.nCompressionMethod}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
+                `  Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
                 `  Arcs values:  ${this.nArcVal} = ${this.nChar} characters,  ${this.nAff} affixes,  ${this.nTag} tags\n` +
                 `  Dictionary: ${this.nEntry} entries,    ${this.nNode} nodes,   ${this.nArc} arcs\n` +
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;
@@ -236,7 +236,6 @@ class IBDAWG {
             "nArc": this.nArc,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "nCompressionMethod": this.nCompressionMethod,
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,

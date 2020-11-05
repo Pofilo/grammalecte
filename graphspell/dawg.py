@@ -358,7 +358,7 @@ class DAWG:
 
 
     # BINARY CONVERSION
-    def _calculateBinary (self, nCompressionMethod=1):
+    def _calculateBinary (self):
         print(" > Write DAWG as an indexable binary dictionary")
         self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes()
         self.nBytesOffset = 0
@@ -387,6 +387,13 @@ class DAWG:
             iAddr += max(len(oNode.arcs), 1) * nBytesNode
 
     def _binaryToList (self):
+        """
+        Convert binary string to binary list
+        BEFORE: Arc                 Address                                 Arc                 Address
+                ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ||||||||| ...
+
+        AFTER:  list of integers: [ arc, address, arc, address, arc, address, ... arc, address ]
+        """
         self.lByDic = []
         nAcc = 0
         byBuffer = b""
@@ -402,9 +409,9 @@ class DAWG:
                 nAcc = -1
             nAcc = nAcc + 1
 
-    def getBinaryAsJSON (self, nCompressionMethod=1):
+    def getBinaryAsJSON (self):
         "return a JSON string containing all necessary data of the dictionary (compressed as a binary string)"
-        self._calculateBinary(nCompressionMethod)
+        self._calculateBinary()
         self._binaryToList()
         return {
             "sHeader": "/grammalecte-fsa/",
@@ -424,7 +431,6 @@ class DAWG:
             "nArc": self.nArc,
             "nArcVal": self.nArcVal,
             "lArcVal": self.lArcVal,
-            "nCompressionMethod": nCompressionMethod,
             "nBytesArc": self.nBytesArc,
             "nBytesNodeAddress": self.nBytesNodeAddress,
             "nBytesOffset": self.nBytesOffset,
@@ -436,24 +442,20 @@ class DAWG:
             "l2grams": list(self.a2grams)
         }
 
-    def writeAsJSObject (self, spfDst, nCompressionMethod=1, bInJSModule=False):
+    def writeAsJSObject (self, spfDst):
         "write a file (JSON or JS module) with all the necessary data"
         if not spfDst.endswith(".json"):
-            spfDst += "."+str(nCompressionMethod)+".json"
+            spfDst += ".json"
         with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
-            if bInJSModule:
-                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write( json.dumps(self.getBinaryAsJSON(nCompressionMethod), ensure_ascii=False) )
-            if bInJSModule:
-                hDst.write(";\n\nexports.dictionary = dictionary;\n")
+            hDst.write( json.dumps(self.getBinaryAsJSON(), ensure_ascii=False) )
 
     def _getDate (self):
         return time.strftime("%Y-%m-%d %H:%M:%S")
 
-    def _writeNodes (self, sPathFile, nCompressionMethod=1):
+    def _writeNodes (self, sPathFile):
         "for debugging only"
         print(" > Write nodes")
-        with open(sPathFile+".nodes."+str(nCompressionMethod)+".txt", 'w', encoding='utf-8', newline="\n") as hDst:
+        with open(sPathFile+".nodes.txt", 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(self.oRoot.getTxtRepr(self.nBytesArc, self.lArcVal)+"\n")
             #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes(self.nBytesArc, self.nBytesNodeAddress) ] ).strip() )
             for oNode in self.lMinimizedNodes:
