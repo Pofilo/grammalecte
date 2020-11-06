@@ -2310,7 +2310,7 @@ TEST: Votre question fait référence à un fait divers déroutant
 
 __da_couleurs_invariables__
     *WORD [abricot|acajou|amarante|anthracite|aubergine|brique|caca|café|cannelle|caramel|carmin|carotte|cerise|châtaigne|chocolat|citron|corail|crème|fuchsia|groseille|havane|jonquille|marron|mastic|nacarat|ocre|olive|paille|parme|pastel|pervenche|pie|prune|sable|tabac|vermillon]
-        <<- morph(\1, ":(D.*:p|B)") =>> exclude(\2, ":A:e:i")
+        <<- morph(\1, ":(?:D.*:p|B)") =>> exclude(\2, ":A:e:i")
 
 
 __da_noms_propres__
@@ -8901,6 +8901,28 @@ TEST: ce fut chose faite quand elle s’en alla.
 TEST: ce serait chose faite depuis longtemps sans leur incapacité à s’entendre
 
 
+# chère / chair / chaire
+__conf_chair_chaire_cher__
+    la      [chaire|>cher] [de|d’] poule
+    la      [chaire|>cher] [nu+ses|cru+ses|cuite|dure|tendre|fine|courte|longue|salée|fraîche|fraiche]
+    [de|d’] [>cher|>chaire] et [de|d’] sang
+        <<- /conf/ -2>> chair                                   && Confusion probable. La matière vivante et molle s’écrit “chair”.|https://fr.wiktionary.org/wiki/chair
+
+    dans [ma|ta|sa|notre|votre|leur] [>cher|>chaire]
+        <<- /conf/ not morph(>1, ":[NA]") --1>> chair           && Confusion probable. La matière vivante et molle s’écrit “chair”.|https://fr.wiktionary.org/wiki/chair
+
+    >péché de la [>cher|>chaire]
+    >excroissance [de|d’] [>cher|>chaire]
+        <<- /conf/ --1>> chair                                  && Confusion probable. La matière vivante et molle s’écrit “chair”.|https://fr.wiktionary.org/wiki/chair
+
+TEST: Elle en avait la {{chaire}} de poule                      ->> chair
+TEST: de {{chère}} et de sang                                   ->> chair
+TEST: le péché de la {{chaire}}                                 ->> chair
+TEST: je le sentis dans ma {{chaire}}                           ->> chair
+TEST: dans notre chère maison, tout va bien
+TEST: dans leur cher château, tout allait bien
+
+
 # chœur / cœur
 __conf_choeur_coeur__
     [>enfant|>chef] de >cœur
@@ -14319,8 +14341,8 @@ __purge_locutions_instant_moment__
     en cet instant ?[particulier|précis]¿
     le moment venu
     par [instants|moments]
-    un instant plus [tôt|tard]
-    un moment plus [tôt|tard]
+    un court [instant|moment]
+    un [instant|moment] plus [tôt|tard]
         <<- ~>> *
 
 __purge_locutions_temporelles_diverses__
@@ -16369,6 +16391,7 @@ __substantifs_multi_mots__
     [bonne+s|>bonniche] à tout faire
     >bordereau d’ expédition
     >boucle d’ >oreille
+    >bouée [de|d’] sauvetage
     >bouffée d’ air [frais|pur]
     >bout [de|d’] gras
     bras d’ honneur
@@ -16661,6 +16684,7 @@ __substantifs_multi_mots__
     >issue [de|d’] secours
     >jeu d’ [échecs|enfant]
     >jeu [de|d’] [cartes|dupes|>rôle|société]
+    >joie [de|d’] vivre
     >journal [de|d’] bord
     >journal à >sensation
     >journalisme d’ investigation
@@ -16706,6 +16730,7 @@ __substantifs_multi_mots__
     >mandat [de|d’] [arrêt|dépôt]
     >marchand [de|d’] tapis
     >marchand [de|d’] fruits et légumes
+    >marche à suivre
     >marché aux puces
     >maréchal des [logis|logis-chef]
     >mariage [de|d’] raison
@@ -16932,6 +16957,7 @@ __substantifs_multi_mots__
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|change|cholestérol|cholesterol|endettement|fécondité|glycémie|inflation|intérêt|imposition|natalité|occupation|ouverture|œstrogène|participation|testostérone|TVA|urbanisation|urée|usure]
     taux [de|d’] mortalité ?[infantile|néonatale]¿
     >témoin à charge
+    >tempête [de|d’] neige
     tenants et aboutissants
     >ténor du barreau
     >tenue [de|d’] rechange
@@ -19268,23 +19294,27 @@ TEST: il y a un {{courent}} d’air dans cette salle.
 
 
 # coûter cher
-__conf_coûter_cher__
+__conf_chair_chaire_cher2__
     [>coûter|>couter|>louer|>payer|>prendre|>valoir|>vendre] [chers|chère|chères]
-        <<- /conf/ -2>> cher                                        && Ici, « cher » est un adverbe, invariable.
+        <<- /conf/ -2>> cher                                        && Ici, “cher” est un adverbe, invariable.|https://fr.wiktionary.org/wiki/cher
 
     [>coûter|>couter|>louer|>payer|>prendre|>valoir|>vendre] [>chair|>chaire]
-        <<- /conf/ -2>> cher                                        && Confusion. Pour parler de la cherté, écrivez “cher”.
+        <<- /conf/ -2>> cher                                        && Confusion. Pour parler de la cherté, écrivez “cher”.|https://fr.wiktionary.org/wiki/cher
 
-TEST: ces saloperies coûtent vraiment {{chères}} !
-TEST: elles payent {{chairs}} !
-
-
-# chair / chère
-__conf_faire_bonne_chère__
     >faire  >bon  [cher+s|chères|>chair|>chaire]
-        <<- /conf/ -2:3>> bonne chère                   && Confusion. « Faire bonne chère » signifie bien manger, ripailler.
+        <<- /conf/ -2:3>> bonne chère                               && Confusion. « Faire bonne chère » signifie bien manger, ripailler.|https://fr.wiktionary.org/wiki/faire_bonne_ch%C3%A8re
 
-TEST: ils ont fait {{bonne chaire}}.
+    [>couper|>déchiqueter|>taillader|>trancher] [la|cette|ma|ta|sa|notre|votre|leur] [chère|chaire]
+        <<- /conf/ --1>> chair                                      && Confusion. La matière vivante et molle s’écrit “chair”.|https://fr.wiktionary.org/wiki/chair
+
+    [>couper|>déchiqueter|>taillader|>trancher] [les|ces|mes|tes|ses|nos|vos|leurs] [chers|chères|chaires]
+        <<- /conf/ --1>> chairs                                     && Confusion. La matière vivante et molle s’écrit “chair”.|https://fr.wiktionary.org/wiki/chair
+
+TEST: ils ont fait {{bonne chaire}}.                        ->> bonne chère
+TEST: ces saloperies coûtent vraiment {{chères}} !          ->> cher
+TEST: elles payent {{chairs}} !                             ->> cher
+TEST: taillader les {{chaires}}                             ->> chairs
+TEST: couper cette {{chère}}                                ->> chair
 
 
 # chant / champ
@@ -21011,10 +21041,10 @@ __conf_tache_tâche__
         && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tache
 
     >tâcher  $:D  [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
-        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        <<- /conf/ -1>> =\1.replace("âc", "ac").replace("ÂC", "AC")
         && Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.|https://fr.wiktionary.org/wiki/tacher
 
-    [>nom|>honneur|>réputation|>vêtement] sans >tâche
+    [>nom|>honneur|>intégrité|>réputation|>vêtement] sans >tâche
     >faire tâche
     >maculer [de|d’] >tâche
     [>nettoyer|>laver|>essuyer|>gratter]  $:D  >tâche
@@ -21069,13 +21099,13 @@ __conf_tâche_tache__
     >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           $:Y
     >tacher  [de|d’]  [lui|leur]      en                        $:Y
     >tacher  [de|d’]  $:Y
-        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
+        <<- /conf/ -1>> =\1.replace("ac", "âc").replace("AC", "ÂC")
         && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.|https://fr.wiktionary.org/wiki/t%C3%A2cher
 
     [>avoir|>donner|>recevoir] pour [tache+s] [de|d’]
     [>avoir|>donner|>faciliter|>recevoir] [la|les] [tache+s] [de|d’]
     [>distribuer|>répartir] les taches
-        <<- /conf/ -3>> =\1.replace("a", "â").replace("A", "Â")
+        <<- /conf/ -3>> =\3.replace("a", "â").replace("A", "Â")
         && Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
     [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
@@ -21096,7 +21126,7 @@ __conf_tâche_tache__
     [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
     [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
     [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    @:(?:Y|V1.*:Q)
-        <<- /conf/ morph(\2, ":D", ":R") -3>> =\3.replace("ach", "âch").replace("ACH", "ÂCH")
+        <<- /conf/ morph(\2, ":D", ":R") -3>> =\3.replace("a", "â").replace("A", "Â")
         && Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.|https://fr.wiktionary.org/wiki/t%C3%A2che
 
 TEST: Quelle {{tache}} ingrate.
@@ -21105,6 +21135,7 @@ TEST: Elle se tue à la {{tache}}.
 TEST: Il a accompli la {{tache}} facilement.
 TEST: {{Tache}} de partir tôt.
 TEST: {{Tachez}} d’arriver à l’heure.
+TEST: son ardeur à la {{tache}} ne faiblissait pas
 TEST: {{Tache}} de ne pas faire trop de bruit.
 TEST: se tuer à la {{tache}}
 TEST: elle eut pour {{tache}} de trier les dossiers
