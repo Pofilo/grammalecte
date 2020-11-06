@@ -1145,7 +1145,7 @@ TEST: je veux 200 euros.
 
 
 __[s]/typo(typo_math)__
-    (?:cos|sin|tan|cotan|log|ln)²? [2-9]?[a-zA-Zα-ωΑ-Ω]
+    (?:cos|sin|tan|cotan|log|ln)²? [2-9]?[a-zA-Zα-ωΑ-Ω](?![’'])
         <<- ->> =\0.replace(" ", "(")+")|"+\0.replace(" ", " ")             && Mettez des parenthèses (ou éventuellement un espace insécable).
 
 TEST: {{cos ω}}                                         ->> cos(ω)|cos ω
@@ -12159,22 +12159,26 @@ TEST: ta gueule, connard.
 __conf_tant_temps_tan_1__
     combien [de|d’] [>tant|tan]
     un bon bout [de|d’] [>tant|tan]
-        <<- /conf/ --1>> temps                              && Confusion. Pour ce qui est temporel, écrivez “temps”.
+    une question [de|d’] [>tant|tan]
+        <<- /conf/ --1>> temps                              && Confusion. Pour ce qui est temporel, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
+
+    un [>tan|tant] [de|d’]
+        <<- /conf/ -2>> temps                               && Confusion. Pour ce qui est temporel, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
     en [tant|>tan] [de|d’] [guerre|paix|crise|doute|pluie]
-        <<- /conf/ -2>> temps                               && Confusion. Écrivez « en temps de » si vous évoquez une période de temps.
+        <<- /conf/ -2>> temps                               && Confusion. Écrivez « en temps de » si vous évoquez une période de temps.|https://fr.wiktionary.org/wiki/temps
 
     de [tant|>tan] en [tant|>tan]
-        <<- /conf/ ->> de temps en temps                    && Confusion. Écrivez « de temps en temps ».
+        <<- /conf/ ->> de temps en temps                    && Confusion. Écrivez “de temps en temps”.|https://fr.wiktionary.org/wiki/de_temps_en_temps
 
     depuis la [nui|nuit] des [>tan|tant]
         <<- /conf/ --1>> temps                              && Confusion. Locution “depuis la nuit des temps”.|https://fr.wiktionary.org/wiki/temps
 
     [à|a] [>tan|tant] [partiel|partiels|plein|pleins]
-        <<- /conf/ -2>> temps                               && Confusion. Pour ce qui est temporel, écrivez “temps”.
+        <<- /conf/ -2>> temps                               && Confusion. Pour ce qui est temporel, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
-    en [même|mêmes] [tant|>tan]
-        <<- /conf/ ->> en même temps                        && Confusion. Pour ce qui est temporel, écrivez “temps”.
+    en >même [tant|>tan]
+        <<- /conf/ ->> en même temps                        && Confusion. Locution “en même temps”.|https://fr.wiktionary.org/wiki/en_m%C3%AAme_temps
 
     en [>tan|tant] et en >heure
         <<- /conf/ -2>> temps                               && Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
@@ -12190,17 +12194,18 @@ __conf_tant_temps_tan_1__
     >tan [pis|pi]
         <<- /conf/ ->> tant pis                             && Confusion. Locution “tant pis”.|https://fr.wiktionary.org/wiki/tant_pis
 
-TEST: Combien de {{tan}} ça va durer ?
-TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à l’adversité.
-TEST: ils vont {{de tan en tan}} au restaurant
-TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.
-TEST: il travaille à {{tant}} partiel
-TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.
-TEST: en {{tan}} que telle, cette méthode n’est pas parfaite, mais avec de l’intuition
-TEST: depuis la nuit des {{tans}}
-TEST: ce sera fait en {{tant}} et en heure
-TEST: {{tan pi}} pour lui
-TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
+TEST: Combien de {{tan}} ça va durer ?                                                              ->> temps
+TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à l’adversité.        ->> temps
+TEST: ils vont {{de tan en tan}} au restaurant                                                      ->> de temps en temps
+TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.                                   ->> tant
+TEST: il travaille à {{tant}} partiel                                                               ->> temps
+TEST: il faut un {{tant}} d’adaptation                                                              ->> temps
+TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.                          ->> en même temps
+TEST: en {{tan}} que telle, cette méthode n’est pas parfaite, mais avec de l’intuition              ->> tant
+TEST: depuis la nuit des {{tans}}                                                                   ->> temps
+TEST: ce sera fait en {{tant}} et en heure                                                          ->> temps
+TEST: {{tan pi}} pour lui                                                                           ->> tant pis
+TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.       ->> tant
 TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranéen
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
@@ -21176,11 +21181,12 @@ __conf_tant_temps_tan__
 
     >faire la pluie et le beau [tant|>tan]
     [>avoir|>prendre|<start>|,|(] du bon [tant|>tan]
+    [>avoir|>prendre|<start>|,|(] la notion du [tant|>tan]
     c’ >être [le|l’] bon ?vieux¿ [tant|>tan]
     >prendre du [tant|>tan]
     au bon vieux [tant|>tan]
     combien [de|d’] [>tan|tant]
-        <<- /conf/ --1>> temps                                      && Confusion. Pour parler d’un période heureuse, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
+        <<- /conf/ --1>> temps                                      && Confusion probable. Pour parler d’une période, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
     les [tant|>tan] >changer
     les [tant|>tan] >avoir [changé+ses]
@@ -23922,7 +23928,8 @@ TEST: elle restait {{désoler}} pour la pauvre Claire
 __infi_à_verbe__
     à  le            ~..(?:ée?s?|ez|ai[st]?)$
     à  les           ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ \-1.islower() and morph(\-1, ":V", ":[YM]" ) --1>> =suggVerbInfi(\-1)            && Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
+        <<- /infi/ \-1.islower() and space_after(\1, 1, 1) and morph(\-1, ":V", ":[YM]" )
+        --1>> =suggVerbInfi(\-1)                                                                    && Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
 
     à  [la|l’|leur]  ~..(?:ée?s?|ez|ai[st]?)$
         <<- /infi/ \-1.islower() and morph(\-1, ":V", ":[NYM]" ) --1>> =suggVerbInfi(\-1)           && Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
@@ -23955,6 +23962,7 @@ TEST: Macron saisit la discorde avec le Brésil pour s’opposer à l’embarras
 TEST: Je vous renvoie pour cela à l’excellent documentaire
 TEST: cuisiner à l’étouffée
 TEST: il s’adresse à lui en expliquant son point de vue le plus simplement possible.
+TEST: L’utilisateur a un accès en lecture seule à toutes les données.
 
 
 __infi_loc_à_verbe__
