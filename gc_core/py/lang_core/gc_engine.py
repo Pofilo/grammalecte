@@ -596,7 +596,7 @@ class TextParser:
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
-                    # Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
+                    # Immunity      [ option, condition, "!", option,                        iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
                         bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(self.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
@@ -605,7 +605,7 @@ class TextParser:
                                 # grammar error
                                 iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL = eAct
                                 nTokenErrorStart = nTokenOffset + iTokenStart  if iTokenStart > 0  else nLastToken + iTokenStart
-                                if "bImmune" not in self.lTokens[nTokenErrorStart]:
+                                if "sImmunity" not in self.lTokens[nTokenErrorStart] or (self.lTokens[nTokenErrorStart]["sImmunity"] != "*" and sOption not in self.lTokens[nTokenErrorStart]["sImmunity"]):
                                     nTokenErrorEnd = nTokenOffset + iTokenEnd  if iTokenEnd > 0  else nLastToken + iTokenEnd
                                     nErrorStart = self.nOffsetWithinParagraph + (self.lTokens[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lTokens[nTokenErrorStart]["nEnd"])
                                     nErrorEnd = self.nOffsetWithinParagraph + (self.lTokens[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lTokens[nTokenErrorEnd]["nStart"])
@@ -656,14 +656,15 @@ class TextParser:
                                     echo("    IMMUNITY: " + sLineId + " / " + sRuleId)
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                sImmunity = sWhat or "*"
                                 if nTokenEnd - nTokenStart == 0:
-                                    self.lTokens[nTokenStart]["bImmune"] = True
+                                    self.lTokens[nTokenStart]["sImmunity"] = sImmunity
                                     nErrorStart = self.nOffsetWithinParagraph + self.lTokens[nTokenStart]["nStart"]
                                     if nErrorStart in self.dError:
                                         del self.dError[nErrorStart]
                                 else:
                                     for i in range(nTokenStart, nTokenEnd+1):
-                                        self.lTokens[i]["bImmune"] = True
+                                        self.lTokens[i]["sImmunity"] = sImmunity
                                         nErrorStart = self.nOffsetWithinParagraph + self.lTokens[i]["nStart"]
                                         if nErrorStart in self.dError:
                                             del self.dError[nErrorStart]

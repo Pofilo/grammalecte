@@ -681,7 +681,7 @@ class TextParser {
                                 // grammar error
                                 let [iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL] = eAct;
                                 let nTokenErrorStart = (iTokenStart > 0) ? nTokenOffset + iTokenStart : nLastToken + iTokenStart;
-                                if (!this.lTokens[nTokenErrorStart].hasOwnProperty("bImmune")) {
+                                if (!this.lTokens[nTokenErrorStart].hasOwnProperty("sImmunity") || (this.lTokens[nTokenErrorStart]["sImmunity"] != "*" && !this.lTokens[nTokenErrorStart]["sImmunity"].includes(sOption))) {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lTokens[nTokenErrorStart]["nStart"] : this.lTokens[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lTokens[nTokenErrorEnd]["nEnd"] : this.lTokens[nTokenErrorEnd]["nStart"]);
@@ -749,15 +749,16 @@ class TextParser {
                                 }
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
+                                let sImmunity = sWhat || "*";
                                 if (nTokenEnd - nTokenStart == 0) {
-                                    this.lTokens[nTokenStart]["bImmune"] = true;
+                                    this.lTokens[nTokenStart]["sImmunity"] = sImmunity;
                                     let nErrorStart = this.nOffsetWithinParagraph + this.lTokens[nTokenStart]["nStart"];
                                     if (this.dError.has(nErrorStart)) {
                                         this.dError.delete(nErrorStart);
                                     }
                                 } else {
                                     for (let i = nTokenStart;  i <= nTokenEnd;  i++) {
-                                        this.lTokens[i]["bImmune"] = true;
+                                        this.lTokens[i]["sImmunity"] = sImmunity;
                                         let nErrorStart = this.nOffsetWithinParagraph + this.lTokens[i]["nStart"];
                                         if (this.dError.has(nErrorStart)) {
                                             this.dError.delete(nErrorStart);
