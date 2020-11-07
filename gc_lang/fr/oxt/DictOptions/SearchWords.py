@@ -186,7 +186,7 @@ class SearchWords (unohelper.Base, XActionListener):
 
     def initSpellChecker (self):
         if not self.oSpellChecker:
-            self.oSpellChecker = sc.SpellChecker("fr", "fr-allvars.bdic", "", self.oPersonalDicJSON)
+            self.oSpellChecker = sc.SpellChecker("fr", "fr-allvars.json", "", self.oPersonalDicJSON)
 
     @_waitPointer
     def searchSimilar (self):

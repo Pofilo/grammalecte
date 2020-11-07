@@ -344,20 +344,19 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinaryJSON (nCompressionMethod) {
-        console.log("Write DAWG as an indexable binary dictionary [method: "+nCompressionMethod+"]");
-        if (nCompressionMethod == 1) {
-            this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
-            this.nBytesOffset = 0;
-            this._calcNumBytesNodeAddress();
-            this._calcNodesAddress1();
-        } else {
-            console.log("Error: unknown compression method");
+    _calculateBinary () {
+        console.log("Write DAWG as an indexable binary dictionary");
+        this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes()
+        this.nBytesOffset = 0;
+        this._calcNumBytesNodeAddress();
+        this._calcNodesAddress();
+        this.sByDic = this.oRoot.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
+        for (let oNode of this.dMinimizedNodes.values()) {
+            this.sByDic += oNode.convToBytes(this.nBytesArc, this.nBytesNodeAddress);
         }
         console.log("Arc values (chars, affixes and tags): " + this.nArcVal);
         console.log("Arc size: "+this.nBytesArc+" bytes, Address size: "+this.nBytesNodeAddress+" bytes");
         console.log("-> " + this.nBytesArc+this.nBytesNodeAddress + " * " + this.nArc + " = " + (this.nBytesArc+this.nBytesNodeAddress)*this.nArc + " bytes");
-        return this._createJSON(nCompressionMethod);
     }
 
     _calcNumBytesNodeAddress () {
@@ -368,7 +367,7 @@ class DAWG {
         }
     }
 
-    _calcNodesAddress1 () {
+    _calcNodesAddress () {
         let nBytesNode = this.nBytesArc + this.nBytesNodeAddress;
         let iAddr = this.oRoot.arcs.size * nBytesNode;
         for (let oNode of this.dMinimizedNodes.values()) {
@@ -377,14 +376,40 @@ class DAWG {
         }
     }
 
-    _createJSON (nCompressionMethod) {
-        let sByDic = "";
-        if (nCompressionMethod == 1) {
-            sByDic = this.oRoot.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
-            for (let oNode of this.dMinimizedNodes.values()) {
-                sByDic += oNode.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
+    _binaryToList () {
+        this.lByDic = [];
+        let nAcc = 0;
+        let lBytesBuffer = [];
+        let nDivisor = (this.nBytesArc + this.nBytesNodeAddress) / 2;
+        for (let i = 0;  i < this.sByDic.length;  i+=2) {
+            lBytesBuffer.push(parseInt(this.sByDic.slice(i, i+2), 16));
+            if (nAcc == (this.nBytesArc - 1)) {
+                this.lByDic.push(this._convBytesToInteger(lBytesBuffer));
+                lBytesBuffer = [];
             }
+            else if (nAcc == (this.nBytesArc + this.nBytesNodeAddress - 1)) {
+                this.lByDic.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
+                lBytesBuffer = [];
+                nAcc = -1;
+            }
+            nAcc = nAcc + 1;
         }
+    }
+
+    _convBytesToInteger (aBytes) {
+        // Byte order = Big Endian (bigger first)
+        let nVal = 0;
+        let nWeight = (aBytes.length - 1) * 8;
+        for (let n of aBytes) {
+            nVal += n << nWeight;
+            nWeight = nWeight - 8;
+        }
+        return nVal;
+    }
+
+    createBinaryJSON () {
+        this._calculateBinary();
+        this._binaryToList();
         let oJSON = {
             "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
@@ -403,11 +428,11 @@ class DAWG {
             "nArc": this.nArc,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "nCompressionMethod": nCompressionMethod,
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
-            "sByDic": sByDic,    // binary word graph
+            //"sByDic": this.sByDic,    // binary word graph
+            "lByDic": this.lByDic,
             "l2grams": Array.from(this.a2grams)
         };
         return oJSON;
@@ -496,7 +521,7 @@ class DawgNode {
     }
 
     // VERSION 1 =====================================================================================================
-    convToBytes1 (nBytesArc, nBytesNodeAddress) {
+    convToBytes (nBytesArc, nBytesNodeAddress) {
         /*
             Node scheme:
             - Arc length is defined by nBytesArc

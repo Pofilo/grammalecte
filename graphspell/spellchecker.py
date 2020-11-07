@@ -16,8 +16,8 @@ from . import tokenizer
 
 
 dDefaultDictionaries = {
-    "fr": "fr-allvars.bdic",
-    "en": "en.bdic"
+    "fr": "fr-allvars.json",
+    "en": "en.json"
 }
 
 

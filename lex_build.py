@@ -11,16 +11,14 @@ import graphspell.dawg as fsa
 from graphspell.ibdawg import IBDAWG
 
 
-def build (spfSrc, sLangCode, sLangName, sfDict, bJSON=False, sDicName="", sDescription="", sFilter="", cStemmingMethod="S", nCompressMethod=1):
+def build (spfSrc, sLangCode, sLangName, sfDict, bJavaScript=False, sDicName="", sDescription="", sFilter="", cStemmingMethod="S", nCompressMethod=1):
     "transform a text lexicon as a binary indexable dictionary"
     oDAWG = fsa.DAWG(spfSrc, cStemmingMethod, sLangCode, sLangName, sDicName, sDescription, sFilter)
     dir_util.mkpath("graphspell/_dictionaries")
-    oDAWG.writeInfo("graphspell/_dictionaries/" + sfDict + ".info.txt")
-    oDAWG.writeBinary("graphspell/_dictionaries/" + sfDict + ".bdic", int(nCompressMethod))
-    if bJSON:
+    oDAWG.writeAsJSObject("graphspell/_dictionaries/" + sfDict + ".json")
+    if bJavaScript:
         dir_util.mkpath("graphspell-js/_dictionaries")
-        oDic = IBDAWG(sfDict + ".bdic")
-        oDic.writeAsJSObject("graphspell-js/_dictionaries/" + sfDict + ".json", bBinaryDictAsHexString=True)
+        oDAWG.writeAsJSObject("graphspell-js/_dictionaries/" + sfDict + ".json")
 
 
 def main ():

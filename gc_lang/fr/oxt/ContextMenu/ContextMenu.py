@@ -135,7 +135,7 @@ class JobExecutor (XJob, unohelper.Base):
                     # https://bugs.documentfoundation.org/show_bug.cgi?id=97790
                     oSpellChecker = oGC.getSpellChecker()
                 else:
-                    oSpellChecker = SpellChecker("${lang}", "fr-allvars.bdic")
+                    oSpellChecker = SpellChecker("${lang}", "fr-allvars.json")
         except:
             traceback.print_exc()
 

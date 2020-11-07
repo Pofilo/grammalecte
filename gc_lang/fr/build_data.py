@@ -52,7 +52,7 @@ def loadDictionary ():
     global oDict
     if not oDict:
         try:
-            oDict = ibdawg.IBDAWG("fr-allvars.bdic")
+            oDict = ibdawg.IBDAWG("fr-allvars.json")
         except:
             traceback.print_exc()
 

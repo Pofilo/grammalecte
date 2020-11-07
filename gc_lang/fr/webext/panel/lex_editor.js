@@ -761,7 +761,7 @@ const oBinaryDict = {
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
             let oDAWG = new DAWG(lEntry, "S", "fr", "Français", this.sName, this.sDescription, xProgressNode);
-            let oJSON = oDAWG.createBinaryJSON(1);
+            let oJSON = oDAWG.createBinaryJSON();
             oDictHandler.saveDictionary(this.sName, oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);

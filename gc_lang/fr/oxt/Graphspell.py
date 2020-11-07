@@ -69,7 +69,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
                     except:
                         print("Graphspell: wrong personal_dic")
                         traceback.print_exc()
-            self.oGraphspell = SpellChecker("fr", "fr-"+sMainDicName+".bdic", "", personal_dic)
+            self.oGraphspell = SpellChecker("fr", "fr-"+sMainDicName+".json", "", personal_dic)
             self.loadHunspell()
             # print("Graphspell: init done")
         except:

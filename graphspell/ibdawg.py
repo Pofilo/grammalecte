@@ -114,38 +114,39 @@ class IBDAWG:
 
     def __init__ (self, source):
         if isinstance(source, str):
-            self.by = pkgutil.get_data(__package__, "_dictionaries/" + source)
-            if not self.by:
+            by = pkgutil.get_data(__package__, "_dictionaries/" + source)
+            if not by:
                 raise OSError("# Error. File not found or not loadable: "+source)
-
-            if source.endswith(".bdic"):
-                self._initBinary()
-            elif source.endswith(".json"):
-                self._initJSON(json.loads(self.by.decode("utf-8")))     #json.loads(self.by)    # In Python 3.6, can read directly binary strings
-            else:
-                raise OSError("# Error. Unknown file type: "+source)
+            self.sFileName = source
+            oData = json.loads(by.decode("utf-8"))     #json.loads(by)    # In Python 3.6, can read directly binary strings
         else:
-            self._initJSON(source)
+            self.sFileName = "[None]"
+            oData = source
 
-        self.sFileName = source  if isinstance(source, str)  else "[None]"
+        self.__dict__.update(oData)
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
+        self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
 
-        # Performance trick:
-        #     Instead of converting bytes to integers each times we parse the binary dictionary,
-        #     we do it once, then parse the array
-        nAcc = 0
-        byBuffer = b""
-        self.lByDic = []
-        nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
-        for i in range(0, len(self.byDic)):
-            byBuffer += self.byDic[i:i+1]
-            if nAcc == (self.nBytesArc - 1):
-                self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
-                byBuffer = b""
-            elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
-                self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
-                byBuffer = b""
-                nAcc = -1
-            nAcc = nAcc + 1
+        if "lByDic" not in oData:
+            print(">>>> lByDic not in oData")
+            if "sByDic" not in oData:
+                raise TypeError("# Error. No usable data in the dictionary.")
+            # old dictionary version
+            self.lByDic = []
+            self.byDic = binascii.unhexlify(oData["sByDic"])
+            nAcc = 0
+            byBuffer = b""
+            nDivisor = (self.nBytesArc + self.nBytesNodeAddress) / 2
+            for i in range(0, len(self.byDic)):
+                byBuffer += self.byDic[i:i+1]
+                if nAcc == (self.nBytesArc - 1):
+                    self.lByDic.append(int.from_bytes(byBuffer, byteorder="big"))
+                    byBuffer = b""
+                elif nAcc == (self.nBytesArc + self.nBytesNodeAddress - 1):
+                    self.lByDic.append(round(int.from_bytes(byBuffer, byteorder="big") / nDivisor))
+                    byBuffer = b""
+                    nAcc = -1
+                nAcc = nAcc + 1
 
         # masks
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
@@ -170,96 +171,13 @@ class IBDAWG:
         except ImportError:
             print("# No module <graphspell.lexgraph_"+self.sLangCode+".py>")
 
-
-    def _initBinary (self):
-        "initialize with binary structure file"
-        if self.by[0:17] != b"/grammalecte-fsa/":
-            raise TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: {}".format(self.by[0:9]))
-        if not(self.by[17:18] == b"1" or self.by[17:18] == b"2" or self.by[17:18] == b"3"):
-            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[17:18]))
-        try:
-            byHeader, byInfo, byValues, by2grams, byDic = self.by.split(b"\0\0\0\0", 4)
-        except Exception:
-            raise Exception
-
-        self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
-        self.sHeader = byHeader.decode("utf-8")
-        self.lArcVal = byValues.decode("utf-8").split("\t")
-        self.nArcVal = len(self.lArcVal)
-        self.byDic = byDic
-        self.a2grams = set(by2grams.decode("utf-8").split("\t"))
-
-        l = byInfo.decode("utf-8").split("//")
-        self.sLangCode = l.pop(0)
-        self.sLangName = l.pop(0)
-        self.sDicName = l.pop(0)
-        self.sDescription = l.pop(0)
-        self.sDate = l.pop(0)
-        self.nChar = int(l.pop(0))
-        self.nBytesArc = int(l.pop(0))
-        self.nBytesNodeAddress = int(l.pop(0))
-        self.nEntry = int(l.pop(0))
-        self.nNode = int(l.pop(0))
-        self.nArc = int(l.pop(0))
-        self.nAff = int(l.pop(0))
-        self.cStemming = l.pop(0)
-        self.nTag = self.nArcVal - self.nChar - self.nAff
-        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
-        self.dChar = {}
-        for i in range(1, self.nChar+1):
-            self.dChar[self.lArcVal[i]] = i
-        self.dCharVal = { v: k  for k, v in self.dChar.items() }
-
-    def _initJSON (self, oJSON):
-        "initialize with a JSON text file"
-        self.sByDic = ""  # init to prevent pylint whining
-        self.__dict__.update(oJSON)
-        self.byDic = binascii.unhexlify(self.sByDic)
-        self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
-
     def getInfo (self):
         "return string about the IBDAWG"
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
-                "  Compression method: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
+                "  Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
                 "  Arcs values:  {0.nArcVal:>10,} = {0.nChar:>5,} characters,  {0.nAff:>6,} affixes,  {0.nTag:>6,} tags\n" \
                 "  Dictionary: {0.nEntry:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
-
-    def writeAsJSObject (self, spfDest, bInJSModule=False, bBinaryDictAsHexString=False):
-        "write IBDAWG as a JavaScript object in a JavaScript module"
-        with open(spfDest, "w", encoding="utf-8", newline="\n") as hDst:
-            if bInJSModule:
-                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write(json.dumps({
-                "sHeader": "/grammalecte-fsa/",
-                "sLangCode": self.sLangCode,
-                "sLangName": self.sLangName,
-                "sDicName": self.sDicName,
-                "sDescription": self.sDescription,
-                "sFileName": self.sFileName,
-                "sDate": self.sDate,
-                "nEntry": self.nEntry,
-                "nChar": self.nChar,
-                "nAff": self.nAff,
-                "nTag": self.nTag,
-                "cStemming": self.cStemming,
-                "dChar": self.dChar,
-                "nNode": self.nNode,
-                "nArc": self.nArc,
-                "nArcVal": self.nArcVal,
-                "lArcVal": self.lArcVal,
-                "nCompressionMethod": self.nCompressionMethod,
-                "nBytesArc": self.nBytesArc,
-                "nBytesNodeAddress": self.nBytesNodeAddress,
-                # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
-                # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
-                # https://github.com/mozilla/addons-linter/issues/1361
-                "sByDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ],
-                "l2grams": list(self.a2grams)
-            }, ensure_ascii=False))
-            if bInJSModule:
-                hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
     def isValidToken (self, sToken):
         "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"

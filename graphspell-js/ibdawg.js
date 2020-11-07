@@ -147,21 +147,48 @@ class IBDAWG {
         }
         /*
             Properties:
-            sName, nCompressionMethod, sHeader, lArcVal, nArcVal, sByDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
+            sName, sHeader, lArcVal, nArcVal, sByDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
             nEntry, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
         if (!(this.sHeader.startsWith("/grammalecte-fsa/") || this.sHeader.startsWith("/pyfsa/"))) {
             throw TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: " + this.sHeader);
         }
-        if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
-            throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
-        }
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
         this.a2grams = (this.l2grams) ? new Set(this.l2grams) : null;
 
+        if (!this.hasOwnProperty("lByDic")) {
+            // old dictionary version
+            if (!this.hasOwnProperty("sByDic")) {
+                throw TypeError("# Error. No usable data in the dictionary.");
+            }
+            this.lByDic = [];
+            let nAcc = 0;
+            let lBytesBuffer = [];
+            let nDivisor = (this.nBytesArc + this.nBytesNodeAddress) / 2;
+            for (let i = 0;  i < this.sByDic.length;  i+=2) {
+                lBytesBuffer.push(parseInt(this.sByDic.slice(i, i+2), 16));
+                if (nAcc == (this.nBytesArc - 1)) {
+                    this.lByDic.push(this._convBytesToInteger(lBytesBuffer));
+                    lBytesBuffer = [];
+                }
+                else if (nAcc == (this.nBytesArc + this.nBytesNodeAddress - 1)) {
+                    this.lByDic.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
+                    lBytesBuffer = [];
+                    nAcc = -1;
+                }
+                nAcc = nAcc + 1;
+            }
+        }
+
+        // masks
+        this._arcMask = (2 ** ((this.nBytesArc * 8) - 3)) - 1;
+        this._finalNodeMask = 1 << ((this.nBytesArc * 8) - 1);
+        this._lastArcMask = 1 << ((this.nBytesArc * 8) - 2);
+
+        // function to decode the affix/suffix code
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
         } else if (this.cStemming == "A") {
@@ -169,40 +196,6 @@ class IBDAWG {
         } else {
             this.funcStemming = str_transform.noStemming;
         }
-
-        /*
-            Bug workaround.
-            Mozilla’s JS parser sucks. Can’t read file bigger than 4 Mb!
-            So we convert huge hexadecimal string to list of numbers…
-            https://github.com/mozilla/addons-linter/issues/1361
-        */
-        /*
-            Performance trick:
-            Instead of converting bytes to integers each times we parse the binary dictionary,
-            we do it once, then parse the array
-        */
-        this.lByDic = [];
-        let nAcc = 0;
-        let lBytesBuffer = [];
-        let nDivisor = (this.nBytesArc + this.nBytesNodeAddress) / 2;
-        for (let i = 0;  i < this.sByDic.length;  i+=2) {
-            lBytesBuffer.push(parseInt(this.sByDic.slice(i, i+2), 16));
-            if (nAcc == (this.nBytesArc - 1)) {
-                this.lByDic.push(this._convBytesToInteger(lBytesBuffer));
-                lBytesBuffer = [];
-            }
-            else if (nAcc == (this.nBytesArc + this.nBytesNodeAddress - 1)) {
-                this.lByDic.push(Math.round(this._convBytesToInteger(lBytesBuffer) / nDivisor));  // Math.round should be useless, BUT with JS who knowns what can happen…
-                lBytesBuffer = [];
-                nAcc = -1;
-            }
-            nAcc = nAcc + 1;
-        }
-        /* end of bug workaround */
-
-        this._arcMask = (2 ** ((this.nBytesArc * 8) - 3)) - 1;
-        this._finalNodeMask = 1 << ((this.nBytesArc * 8) - 1);
-        this._lastArcMask = 1 << ((this.nBytesArc * 8) - 2);
 
         //console.log(this.getInfo());
         this.bAcronymValid = true;
@@ -218,7 +211,7 @@ class IBDAWG {
 
     getInfo () {
         return  `  Language: ${this.sLangName}   Lang code: ${this.sLangCode}   Dictionary name: ${this.sDicName}\n` +
-                `  Compression method: ${this.nCompressionMethod}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
+                `  Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
                 `  Arcs values:  ${this.nArcVal} = ${this.nChar} characters,  ${this.nAff} affixes,  ${this.nTag} tags\n` +
                 `  Dictionary: ${this.nEntry} entries,    ${this.nNode} nodes,   ${this.nArc} arcs\n` +
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;
@@ -243,7 +236,6 @@ class IBDAWG {
             "nArc": this.nArc,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "nCompressionMethod": this.nCompressionMethod,
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
