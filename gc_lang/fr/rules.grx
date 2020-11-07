@@ -21322,6 +21322,33 @@ TEST: il est revenu vert de rage
 !!
 !!
 
+## immunités
+
+__immunités_gn__
+    ## adjectif masculin au pluriel après nom au singulier
+    [au|aux] (*WORD) et au (*WORD)  @:[AQ].*:[me]:p
+    [au|aux] (*WORD) et à [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
+    à [la|l’|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et au (*WORD)  @:[AQ].*:[me]:p
+    à [la|l’|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et à [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
+        <<- morph(\1, ":N") and morph(\2, ":N.*:[me]:[si]") !-1>>
+
+    ## adjectif masculin au pluriel après nom au féminin
+    [au|aux] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
+    à [un|des|ce|cet|ces|mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
+        <<- morph(\1, ":N.*:m") and morph(\2, ":N.*:[fe]") !-1>>
+
+    ## adjectif féminin au pluriel
+    à [la|l’|une|des|cette|ces|ma|ta|sa|mon|ton|son|notre|votre|leur||mes|tes|ses|nos|vos|leurs] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[fe]:[pi]
+        <<- morph(\1, ":N.*:[fe]") and morph(\2, ":N.*:[fe]") !-1>>
+
+TEST: à mon chat et à mon chien malades
+TEST: à ma mère et à mon père malades
+TEST: à la politesse et à la considération indispensables
+TEST: à une rapidité et à une profondeur déconcertantes…
+TEST: L’affichage s’adapte aux filtres et à la période spécifiés.
+TEST: à mes armes et à mon armure oubliées au château
+
+
 ## l’
 
 __gn_l_1m__
