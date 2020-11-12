@@ -2082,6 +2082,11 @@ __da_préverbes_verbes__
     s’ ras
         <<- ~>> seras
 
+    nous ?[ne|n’]¿ ?[le|l’|en|nous|vous|lui|leur|y]¿  sommes
+    nous ?[ne|n’]¿ [nous|vous]   [le|l’|en|y]         sommes
+    nous ?[ne|n’]¿ [lui|leur]      en                 sommes
+        <<- not morph(<1, ":R") =>> select(\-1, ":V0")
+
 
 __da_été__
     >avoir ?@:[WX]¿ été
@@ -2170,11 +2175,11 @@ __da_mots_grammaticaaux__
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
 
-    un  @:[NA].*:m
+    un  @:[NA].*:[me]
         <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
 
-    une @:[NA].*:f
-        <<- not value(<1, "|la|de|cette|quelle|") =>> select(\1, ":D")
+    une @:[NA].*:[fe]
+        <<- not value(<1, "|la|de|cette|quelle|une|ma|ta|sa|notre|votre|leur|") =>> select(\1, ":D")
 
     vu  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
@@ -8787,7 +8792,7 @@ TEST: ceux autour de vous ne sont pas ce que vous croyez.
 
 __conf_se_ceux_ce!6__
     ce  @:V[123].*:(?:Y|[123][sp])¬:[NAGM]|>(?:devoir|pouvoir|sembler|vouloir)/
-        <<- /conf/ not \1.isupper() and \2.islower() and not value(\2, "|faire|")
+        <<- /conf/ not \1.isupper() and \2.islower() and not (value(<1, "|pour|") and value(\2, "|faire|"))
         -1>> se                                         && Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
     ce  [/-il|/-ils|/-elle|/-elles|/-iel|/-iels|/-on]
@@ -8821,6 +8826,7 @@ TEST: ça finira par {{ce}} savoir
 TEST: cela finit toujours tôt ou tard par {{ce}} savoir
 TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, éteindre par la moindre goutte de sang qui sorte de leurs plaies.
 TEST: à qui ce texte doit tant, à qui ce texte est dédié
+TEST: il y aurait, ce faisant, des complications interminables.
 
 
 # ce à quoi
@@ -12494,7 +12500,7 @@ __conf_voie_voix_vois_voit__
 
     en voix [de|d’] [achèvement|acquisition|décrépitude|développement|dissolution|disparition|extinction|guérison|obtention|rémission|résorption|rétablissement|spécialisation]
     par voix de >conséquence
-    par voix [médicamenteuse+s]
+    par voix [orale+s|médicamenteuse+s]
         <<- /conf/ -2>> voie        && Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|https://fr.wiktionary.org/wiki/voie
 
     voix [abdominale|administrative|anale|appienne|aérienne|biliaire|bitumée|buccale|carrossable|communale|digestive|diplomatique|déserte|détournée|déviée|express|ferroviaire|ferrée|flaminienne|fluviale|gouvernementale|hiérarchique|interdite|intramusculaire|intraveineuse|lacrymale|lactée|législative|maritime|navigable|parallèle|pavée|piétonne|principale|prioritaire|privée|publique|rectiligne|respiratoire|romaine|sinueuse|souterraine|terrestre|urbaine|urinaire]
@@ -15796,28 +15802,46 @@ __purge_x_par_après_x__
         <<- not morph(<1, ":D") ~>> *
 
     appartement [après|par] appartement
+    arbre [après|par] arbre
     article [après|par] article
+    bit [après|par] bit
     bout [après|par] bout
+    brique [après|par] brique
     camion [après|par] camion
+    chiffre [après|par] chiffre
+    département [après|par] département
     élément [après|par] élément
     étage [après|par] étage
+    étape [après|par] étape
     enfant [après|par] enfant
     femme [après|par] femme
     feuille [après|par] feuille
     fragment [après|par] fragment
     grain [après|par] grain
+    graine [après|par] graine
     homme [après|par] homme
+    ligne [après|par] ligne
     livre [après|par] livre
     maison [après|par] maison
+    machine [après|par] machine
     morceau [après|par] morceau
+    mot [après|par] mot
     niveau [après|par] niveau
+    nombre [après|par] nombre
+    nuage [après|par] nuage
+    octet [après|par] octet
+    ordinateur [après|par] ordinateur
     palier [après|par] palier
     page [après|par] page
     pays [après|par] pays
     pièce [après|par] pièce
     quartier [après|par] quartier
+    région [après|par] région
+    touche [après|par] touche
     train [après|par] train
+    vague [après|par] vague
     ville [après|par] ville
+    village [après|par] village
     voiture [après|par] voiture
     wagon [après|par] wagon
         <<- not morph(<1, ":D") ~>> *
@@ -16357,7 +16381,7 @@ __substantifs_multi_mots__
     abus [de|d’] position dominante
     abus [de|d’] pouvoir
     >accident [de|d’] la route
-    >accident [de|d’] voiture
+    >accident [de|d’] [parcours|voiture]
     >accusé [de|d’] reception
     >acte [*NUM|$:B]
     >acte [*NUM|$:B] ?,¿ scène [*NUM|$:B]
@@ -16456,7 +16480,7 @@ __substantifs_multi_mots__
     >carabine à plomb
     >carburant [de|d’] synthèse
     >carte à jouer
-    >carte [de|d’] [crédit|presse]
+    >carte [de|d’] [crédit|identité|presse]
     >carton d’ emballage
     cas [de|d’] figure
     cas [de|d’] force majeure
@@ -16488,7 +16512,7 @@ __substantifs_multi_mots__
     >château [de|d’] cartes
     >château d’ eau
     >chauffeur [de|d’] bus
-    >chef [de|d’] [cabinet|file]
+    >chef [de|d’] [cabinet|file|gare|secteur]
     >chef d’ [état-major|entreprise]
     >chef d’ orchestre ?[moderne|symphonique]¿
     >chemin [de|d’] [croix|fer|traverse]
@@ -16555,7 +16579,8 @@ __substantifs_multi_mots__
     >crêpage de >chignon
     >crime [de|d’] guerre
     >criminel [de|d’] guerre
-    >crise de >nerf
+    >crise [de|d’] >nerf
+    >critère [de|d’] référence
     >crotte [de|d’] nez
     >cuillère à [café|soupe]
     >cure [de|d’] [désintoxication|désintox]
@@ -16586,6 +16611,7 @@ __substantifs_multi_mots__
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
     >écart [de|d’] [conduite|langage]
+    >échelle [de|d’] secours
     >économie [de|d’] >bout [de|d’] >chandelle
     >économie [de|d’] [échelle|guerre]
     >écran [de|d’] fumée
@@ -16611,6 +16637,7 @@ __substantifs_multi_mots__
     >épreuve [de|d’] force
     >erreur [de|d’] [calcul|jeunesse|jugement|positionnement]
     >erreur d’ [appréciation|orthographe]
+    >escalier [de|d’] secours
     >escroquerie à l’ assurance
     >espérance [de|d’] vie
     >espérance [de|d’] vie en bonne santé
@@ -16724,6 +16751,7 @@ __substantifs_multi_mots__
     >instrument à [cordes|percussion|vent]
     >instrument [de|d’] mesure
     >interface [utilisateur+s]
+    >inteféron [de|d’] type [I|II|III|1|2|3]
     >intermittent du spectacle
     >invité d’ honneur
     >invité surprise
@@ -16747,6 +16775,7 @@ __substantifs_multi_mots__
     >leçon à en tirer
     >lettre [de|d’] [change|démission|licenciement|motivation|recommandation|référence|résiliation]
     >lettre [de|d’] procuration ?bancaire¿
+    >levier [de|d’] commande
     >liaison sans lendemain
     >ligne [de|d’] [conduite|fracture|mire]
     >ligne [de|d’] chemin [de|d’] fer
@@ -16760,6 +16789,7 @@ __substantifs_multi_mots__
     >livret A
     >livret d’ épargne ?[bancaire|populaire|salariale]¿
     >local à louer
+    >locomotive à vapeur
     >loi d’ airain
     >longueur d’ avance
     >lune [de|d’] miel
@@ -16804,6 +16834,7 @@ __substantifs_multi_mots__
     >montée en puissance
     >montre à gousset
     >mot [de|d’] passe
+    >mot d’ ordre
     >moteur [>essence|>diésel|>diesel]
     >moteur à réaction
     >motion [de|d’] blâme
@@ -16817,6 +16848,7 @@ __substantifs_multi_mots__
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nom à particule
     >nom [de|d’] famille
+    >notice [de|d’] [montage|utilisation]
     >nounou à domicile
     >nourrice à domicile
     >occasion en or ?massif¿
@@ -16872,13 +16904,16 @@ __substantifs_multi_mots__
     >plafond de verre
     >plainte avec constitution de partie civile
     >plainte contre x
-    >plan [A|B|C|cul]
-    >plan [de|d’] relance
+    >plan [A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|cul]
+    >plan [de|d’] bataille
+    >plan [de|d’] relance ?économique¿
     >planche [de|d’] salut
     >planche à repasser
     [plat+s] du jour
     >plein aux as
+    >pneumocyte [de|d’] type [I|II|1|2]
     >poche [de|d’] résistance
+    >poêle à bois
     >poignée [de|d’] porte
     >poil à gratter
     >point [de|d’] non-retour
@@ -16968,6 +17003,7 @@ __substantifs_multi_mots__
     >scène [de|d’] crime
     >sclérose en plaques
     >seconde d’ arc
+    >secret [de|d’] polichinelle
     >sel [de|d’] [aluminium|ammonium|mer]
     >serpent à sonnette
     >service clientèle
@@ -17074,8 +17110,9 @@ __substantifs_multi_mots__
     >vidéo X
     >vie [de|d’] bohème
     >virage à [*NUM|$:B:e:p] degrés
+    virus d’ origine animale
     >vitamine [A|B|C|D|E|F]
-    >voie [de|d’] [recours|perdition]
+    >voie [de|d’] [garage|recours|perdition]
     >vol à l’ étalage
     >vol à la [sauvette|tire]
     >vol à main armée
@@ -21649,7 +21686,7 @@ __gn_leur_2m__
             and not apposition(\2, \3)
         -3>> =switchGender(\3, False)                                                       && Accord de genre erroné entre « \2 » et « \3 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, False)                  && Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":(?:G|V0)") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggSing(\3)                                                                  && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
         <<- /gn/ __also__ and morph(\2, ":[NA].*:i") -1>> leurs                             && Accord de nombre erroné avec « \2 \3 ».
 
@@ -21659,7 +21696,7 @@ __gn_leur_2m__
             and not apposition(\3, \4)
         -4>> =switchGender(\4, False)                                                       && Accord de genre erroné entre « \3 » et « \4 ».
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =switchGender(\3, False)                  && Accord de genre erroné avec « \4 ».
-        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":(?:G|V0)") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
         <<- /gn/ __also__ and morph(\3, ":[NA].*:i") -2>> leurs                             && Accord de nombre erroné avec « \3 \4 ».
 
@@ -21671,6 +21708,7 @@ TEST: je me souviens de leur verve {{décalé}}
 TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.
 TEST: {{leur}} gros {{grains}}
 TEST: Que ferons-nous de {{leur}} gros {{grains}}
+TEST: 3 milliards d’euros que depuis 2012 l’État leur a volés
 
 
 __gn_leur_3m__
@@ -22166,6 +22204,7 @@ TEST: cette attention de tous les instants portée à la boussole.
 TEST: les agrandissements photo
 TEST: Il faut donc examiner ensemble les panneaux et les parois latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et les parois latérales.
+TEST: l’homme les a volés
 
 
 __gn_leurs_1m__
@@ -23887,6 +23926,54 @@ TEST: elles sont vites.
 !!
 !!
 !!
+
+__ppas_immunités__
+    ##
+    [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        <<- morph(\2, ":[NA].*:[fe]") and morph(\5, ":[NA].*:[fe]") !-1>> ppas
+
+    [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        <<- morph(\2, ":[NA].*:[fe]") and morph(\3, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]") !-1>> ppas
+
+    [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        <<- morph(\2, ":[NA].*:[fe]") and morph(\5, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]")  !-1>> ppas
+
+    [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        <<- morph(\2, ":[NA].*:[fe]") and morph(\3, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]") and morph(\7, ":[NA].*:[fe]") !-1>> ppas
+
+    ##
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD
+        || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA]") and morph(\5, ":[NA].*:[me]") !-1>> ppas
+
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD *WORD
+        || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA]") and morph(\3, ":[NA]") and morph(\6, ":[NA].*:[me]") !-1>> ppas
+
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD
+        || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA]") and morph(\5, ":[NA].*:[me]") and morph(\6, ":[NA].*:[me]")  !-1>> ppas
+
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD *WORD
+        || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA]") and morph(\3, ":[NA]") and morph(\6, ":[NA].*:[me]") and morph(\7, ":[NA].*:[me]") !-1>> ppas
+
+TEST: La vision et la philosophie que j’ai élaborées.
+TEST: Ces grandes femmes et la superbe fille que j’ai vues.
+TEST: plusieurs femmes et le garçon que j’ai aperçus.
+TEST: quelques petites annonces et le génial spot que j’ai diffusés.
 
 
 !!
