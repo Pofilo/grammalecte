@@ -28076,11 +28076,11 @@ __ppas_det_sing_COD_que_avoir__
 
     [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
     [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
-        <<- morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fp]", ":[me]:[si]") --1>> =suggVerbPpas(\-1, ":m:s")
+        <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fp]", ":[me]:[si]") --1>> =suggVerbPpas(\-1, ":m:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-        <<- __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[mp]", ":[fe]:[si]") --1>> =suggVerbPpas(\-1, ":f:s")
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[mp]", ":[fe]:[si]") --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-        <<- __else__ and morph(\2, ":[NA].*:[si]") and morph(\-1, ":Q.*:p", ":[si]") --1>> =suggSing(\-1)
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:[si]") and morph(\-1, ":Q.*:p", ":[si]") --1>> =suggSing(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Le pain qu’ils ont de temps en temps {{achetés}}.                         ->> acheté
@@ -28111,11 +28111,11 @@ __ppas_det_plur_COD_que_avoir__
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
             and morph(\2, ":[NA]") >>>
-        <<- morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fs]", ":[me]:[pi]") --1>> =suggMasPlur(\-1)
+        <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fs]", ":[me]:[pi]") --1>> =suggMasPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-        <<- __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[ms]", ":[fe]:[pi]") --1>> =suggFemPlur(\-1)
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[ms]", ":[fe]:[pi]") --1>> =suggFemPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-        <<- __else__ and morph(\2, ":[NA].*:[pi]") and morph(\-1, ":Q.*:s", ":[pi]") --1>> =suggPlur(\-1)
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:[pi]") and morph(\-1, ":Q.*:s", ":[pi]") --1>> =suggPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
     [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
