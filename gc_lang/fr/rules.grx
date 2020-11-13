@@ -6995,35 +6995,35 @@ TEST: Une était plus courte que l’autre.
 __conf_déterminant_plur_verbe__
     [des|ces|mes|tes|ses|aux]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
-        -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:.*:[pi]", True)                                                  && Incohérence avec « \1 » : « \2 » est un verbe.
 
     nos  @:V.*:(?:Y|[123][sp])¬:[NA]
-        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.*:[pi]", True)                          && Incohérence avec « \1 » : « \2 » est un verbe.
         <<- /conf/ __also__ and morph(\2, ":1p") -1>> nous                                          && Vouliez-vous écrire « nous » ? Le terme « \2 » est un verbe conjugué à la 1ʳᵉ personne du pluriel.
 
     vos  @:V.*:(?:Y|[123][sp])¬:[NA]
-        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                           && Incohérence avec « \1 » : « \2 » est un verbe.
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:.*:[pi]", True)                          && Incohérence avec « \1 » : « \2 » est un verbe.
         <<- /conf/ __also__ and morph(\2, ":2p") -1>> vous                                          && Vouliez-vous écrire « vous » ? Le terme « \2 » est un verbe conjugué à la 2ᵉ personne du pluriel.
 
     quels  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
-        -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA].*:[me]:[pi]", True)                                              && Incohérence avec « \1 » : « \2 » est un verbe.
 
     quelles  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|") and hasSimil(\2, ":[NA]:[fe]:[pi]")
-        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA].*:[fe]:[pi]", True)                                              && Incohérence avec « \1 » : « \2 » est un verbe.
 
     quelques  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|puisse|puisses|puissent|")
-        -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:.*:[pi]", True)                                                  && Incohérence avec « \1 » : « \2 » est un verbe.
 
     [auxdits|lesdits|desdits]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
-        -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA].*:[me]:[pi]", True)                                              && Incohérence avec « \1 » : « \2 » est un verbe.
 
     [auxdites|lesdites|desdites]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
-        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                && Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA].*:[fe]:[pi]", True)                                              && Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: la crainte des {{attentas}} fait feu de tout bois.
 TEST: {{nos}} {{agissons}}
@@ -11935,9 +11935,10 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 
 
 __conf_soi_soit_soie__
-    [chez|sur|avec|pour|devant|derrière] [soit|sois]
+    sur [soit|sois]
+    [chez|avec|pour|devant|derrière] [soit|sois|>soie]
     don de [soit|sois]
-    [dépassement|dépréciation|estime|respect] de [soit|sois|>soie]
+    [contrôle|dépassement|dépréciation|estime|maîtrise|maitrise|respect] de [soit|sois|>soie]
     >repli sur [soit|sois|>soie]
         <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
@@ -11973,6 +11974,7 @@ TEST: Je doute qu’il s’en soit sorti si aisément.
 TEST: Je refuse, quoi qu’il en soit.
 TEST: on ne s’étonne plus que le parquet de Paris en soit à agir sous l’effet de quelque urgence médiatique
 TEST: Vous êtes soit pour soit contre, mais pas les deux en même temps
+TEST: elle faisait de la peinture sur soie
 
 
 __conf_soie_soi_soit__
@@ -15867,7 +15869,7 @@ __gestion_mots_grammaticaux__
     à grands coups                                                                                                      [de|d’]
     au [bénéfice|bord|bout|chevet|contraire|courant|côté|cours|début|détour|détriment|fil|fond|gré|hasard|large|lieu]   [de|du|d’|des]
     au [long|mépris|moyen|nord|préjudice|profit|ras|rebours|regard|sein|secours|sommet|sud|sujet|travers|voisinage|vu]  [de|du|d’|des]
-    au ?beau¿ milieu                                                                                                    [de|du|d’|des]
+    ?d’¿ au ?beau¿ milieu                                                                                               [de|du|d’|des]
     au fin fond                                                                                                         [de|du|d’|des]
     au grand [dam|désespoir]                                                                                            [de|du|d’|des]
     au plus [près|profond]                                                                                              [de|du|d’|des]
@@ -16404,6 +16406,7 @@ __substantifs_multi_mots__
     >appartement à louer
     >appât du gain ?[facile|rapide]¿
     >appel au secours
+    >appel à >témoin
     >appel à l’ aide ?humanitaire¿
     [>arbre|>arbuste|>plante] à feuillage [caduc|persistant]
     [>arbre|>arbuste|>plante] à feuilles [caduques|persistantes]
@@ -16444,6 +16447,7 @@ __substantifs_multi_mots__
     >bateau à roues à aubes
     >benne à >ordure
     [>beauté|>beau] à couper le souffle
+    >bête [de|d’] somme
     >billet [de|d’] [*NUM|$:B:e:p] [euros|dollars|centimes|cents|livres|shillings]
     [>bisphénol|>bisphenol] A
     [>boîte|>boite] [aux|à] lettres
@@ -16545,6 +16549,7 @@ __substantifs_multi_mots__
     >comité d’ accueil
     >commandant en chef
     >commis d’ office
+    >commissaire [de|d’] police
     >compagne [de|d’] route
     >compagnon [de|d’] route
     >complémentaire santé
@@ -16576,7 +16581,8 @@ __substantifs_multi_mots__
     [>coût|>cout] [de|d’] revient
     >couteau à cran d’ arrêt
     >crayon à [lèvres|sourcils]
-    >crêpage de >chignon
+    >crêpage [de|d’] >chignon
+    >cri [de|d’] ralliement
     >crime [de|d’] guerre
     >criminel [de|d’] guerre
     >crise [de|d’] >nerf
@@ -16669,7 +16675,7 @@ __substantifs_multi_mots__
     >fermeture éclair
     >fermoir à [cliquet|levier|ressort]
     >feu d’ artifice
-    >feu [de|d’] [camp|paille]
+    >feu [de|d’] [camp|paille|position]
     >feux [de|d’] la rampe
     >feuille [de|d’] route
     >fibre [de|d’] verre
@@ -16707,7 +16713,7 @@ __substantifs_multi_mots__
     >frousse [de|d’] tous les diables
     >fuite en avant
     >fusée [de|d’] détresse
-    >fusil à [lunette|plomb|pompe]
+    >fusil à [chasse|lunette|plomb|pompe]
     >gala [de|d’] charité
     >galette des rois
     >garde à vue
@@ -16792,6 +16798,7 @@ __substantifs_multi_mots__
     >locomotive à vapeur
     >loi d’ airain
     >longueur d’ avance
+    >lopin [de|d’] terre ?[desséchée|glaiseuse|grise|jaune|noire|ocre|rouge|sableuse|sèche]¿
     >lune [de|d’] miel
     >lutte à outrance
     >machine à [café|coudre|écrire|laver|sous|vapeur|voter]
@@ -17030,7 +17037,7 @@ __substantifs_multi_mots__
     >système [de|d’] santé
     >système D
     >tabac à [chicha|chiquer|mâcher|priser|rouler|rouler]
-    >tableau [de|d’] chasse
+    >tableau [de|d’] [bord|chasse]
     >table à repasser
     >table [de|d’] [calcul|chevet|nuit]
     >tache [de|d’] rousseur
@@ -17040,14 +17047,14 @@ __substantifs_multi_mots__
     >talon >aiguille
     tapis [de|d’] prière
     >tarte à la crème ?[catalane|fraiche|fraîche|patissière]¿
-    taux [de|d’] [abstention|absorption|alcool|alphabétisation|change|cholestérol|cholesterol|endettement|fécondité|glycémie|inflation|intérêt|imposition|natalité|occupation|ouverture|œstrogène|participation|testostérone|TVA|urbanisation|urée|usure]
+    taux [de|d’] [abstention|absorption|alcool|alphabétisation|change|cholestérol|cholesterol|conversion|endettement|fécondité|glycémie|inflation|intérêt|imposition|natalité|occupation|ouverture|œstrogène|participation|testostérone|TVA|urbanisation|urée|usure]
     taux [de|d’] mortalité ?[infantile|néonatale]¿
     >témoin à charge
     >tempête [de|d’] neige
     tenants et aboutissants
     >ténor du barreau
     >tenue [de|d’] rechange
-    >terrain [de|d’] [chasse|entente|golf]
+    >terrain [de|d’] [atterrissage|chasse|entente|golf]
     >tête à claques
     >tête d’ enterrement
     >tête [de|d’] [linotte|déterré+ses|mule|pont]
