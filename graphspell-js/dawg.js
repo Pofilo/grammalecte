@@ -61,7 +61,7 @@ class DAWG {
             addWordToCharDict(sFlex);
             // chars
             for (let c of sFlex) {
-                if (!dChar.get(c)) {
+                if (!dChar.has(c)) {
                     dChar.set(c, nChar);
                     lChar.push(c);
                     nChar += 1;
@@ -70,14 +70,14 @@ class DAWG {
             }
             // affixes to find stem from flexion
             let sAff = funcStemmingGen(sFlex, sStem);
-            if (!dAff.get(sAff)) {
+            if (!dAff.has(sAff)) {
                 dAff.set(sAff, nAff);
                 lAff.push(sAff);
                 nAff += 1;
             }
             dAffOccur.set(sAff, dAffOccur.gl_get(sAff, 0) + 1);
             // tags
-            if (!dTag.get(sTag)) {
+            if (!dTag.has(sTag)) {
                 dTag.set(sTag, nTag);
                 lTag.push(sTag);
                 nTag += 1;
