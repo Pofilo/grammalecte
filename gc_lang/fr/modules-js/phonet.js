@@ -84,27 +84,32 @@ var phonet = {
         return aSelect;
     },
 
-    isSimilAs: function (sWord, sSimil) {
-        // return True if <sWord> phonetically similar to <sSimil> (<sWord> tested with several casing)
-        if (!sWord) {
-            return false;
-        }
-        let lSimils = this.getSimil(sSimil);
-        if (lSimils.length == 0) {
-            return false;
-        }
-        if (lSimils.includes(sWord)) {
-            return true;
+    _getSetNumber (sWord) {
+        // return the set number where <sWord> belongs, else -1
+        if (this._dWord.has(sWord)) {
+            return this._dWord.get(sWord);
         }
         if (sWord.slice(0,1).gl_isUpperCase()) {
-            if (lSimils.includes(sWord.toLowerCase())) {
-                return true;
+            if (this._dWord.has(sWord.toLowerCase())) {
+                return this._dWord.get(sWord.toLowerCase());
             }
-            if (sWord.gl_isUpperCase() && lSimils.includes(sWord.gl_toCapitalize())) {
-                return true;
+            if (sWord.gl_isUpperCase() && this._dWord.has(sWord.gl_toCapitalize())) {
+                return this._dWord.get(sWord.gl_toCapitalize());
             }
         }
-        return false;
+        return -1;
+    },
+
+    isSimilAs: function (sWord, sSimil) {
+        // return True if <sWord> phonetically similar to <sSimil> (<sWord> tested with several casing)
+        if (!sWord || !sSimil) {
+            return false;
+        }
+        let n = this._getSetNumber(sWord);
+        if (n == -1) {
+            return false;
+        }
+        return n == this._getSetNumber(sSimil);
     }
 };
 

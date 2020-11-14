@@ -53,18 +53,23 @@ def selectSimil (sWord, sPattern):
     return aSelect
 
 
+def _getSetNumber (sWord):
+    "return the set number where <sWord> belongs, else -1"
+    if sWord in _dWord:
+        return _dWord[sWord]
+    if sWord[0:1].isupper():
+        if sWord.lower() in _dWord:
+            return _dWord[sWord.lower()]
+        if sWord.isupper() and sWord.capitalize() in _dWord:
+            return _dWord[sWord.capitalize()]
+    return -1
+
+
 def isSimilAs (sWord, sSimil):
     "return True if <sWord> phonetically similar to <sSimil> (<sWord> tested with several casing)"
-    if not sWord:
+    if not sWord or not sSimil:
         return False
-    lSimils = getSimil(sSimil)
-    if not lSimils:
+    n = _getSetNumber(sWord)
+    if n == -1:
         return False
-    if sWord in lSimils:
-        return True
-    if sWord[0:1].isupper():
-        if sWord.lower() in lSimils:
-            return True
-        if sWord.isupper() and sWord.capitalize() in lSimils:
-            return True
-    return False
+    return n == _getSetNumber(sSimil)
