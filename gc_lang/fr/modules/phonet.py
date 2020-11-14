@@ -12,7 +12,7 @@ from .phonet_data import dMorph as _dMorph
 
 
 def hasSimil (sWord, sPattern=None):
-    "return True if there is list of words phonetically similar to sWord"
+    "return True if there is list of words phonetically similar to <sWord>"
     if not sWord:
         return False
     if sWord in _dWord:
@@ -29,7 +29,7 @@ def hasSimil (sWord, sPattern=None):
 
 
 def getSimil (sWord):
-    "return list of words phonetically similar to sWord"
+    "return list of words phonetically similar to <sWord>"
     if not sWord:
         return []
     if sWord in _dWord:
@@ -42,7 +42,7 @@ def getSimil (sWord):
 
 
 def selectSimil (sWord, sPattern):
-    "return a set of words phonetically similar to sWord and whom POS is matching sPattern"
+    "return a set of words phonetically similar to <sWord> and whom POS is matching <sPattern>"
     if not sPattern:
         return set(getSimil(sWord))
     aSelect = set()
@@ -51,3 +51,20 @@ def selectSimil (sWord, sPattern):
             if re.search(sPattern, sMorph):
                 aSelect.add(sSimil)
     return aSelect
+
+
+def isSimilAs (sWord, sSimil):
+    "return True if <sWord> phonetically similar to <sSimil> (<sWord> tested with several casing)"
+    if not sWord:
+        return False
+    lSimils = getSimil(sSimil)
+    if not lSimils:
+        return False
+    if sWord in lSimils:
+        return True
+    if sWord[0:1].isupper():
+        if sWord.lower() in lSimils:
+            return True
+        if sWord.isupper() and sWord.capitalize() in lSimils:
+            return True
+    return False

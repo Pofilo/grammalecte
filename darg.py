@@ -220,6 +220,7 @@ class Node:
         dReMorph = {}   # regex for morph
         dMorph = {}     # simple search in morph
         dLemma = {}
+        dPhonet = {}
         dMeta = {}
         dTag = {}
         dRule = {}
@@ -232,6 +233,8 @@ class Node:
                 dReValue[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith(">") and len(sArc) > 1:
                 dLemma[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("%") and len(sArc) > 1:
+                dPhonet[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("*") and len(sArc) > 1:
                 dMeta[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("/") and len(sArc) > 1:
@@ -248,6 +251,8 @@ class Node:
             dNode["<morph>"] = dMorph
         if dLemma:
             dNode["<lemmas>"] = dLemma
+        if dPhonet:
+            dNode["<phonet>"] = dPhonet
         if dTag:
             dNode["<tags>"] = dTag
         if dMeta:

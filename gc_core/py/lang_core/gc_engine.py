@@ -15,6 +15,7 @@ from .. import text
 
 from . import gc_functions
 from . import gc_options
+from . import phonet
 
 try:
     # LibreOffice / OpenOffice
@@ -460,6 +461,23 @@ class TextParser:
                         if bDebug:
                             echo("  MATCH: >" + sLemma)
                         yield { "iToken1": iToken1, "iNode": dNode["<lemmas>"][sLemma] }
+                        bTokenFound = True
+            # phonetic similarity
+            if "<phonet>" in dNode:
+                for sPhonet in dNode["<phonet>"]:
+                    if sPhonet.endswith("!"):
+                        sPhon = sPhonet[0:-1]
+                        if dToken["sValue"] == sPhon:
+                            continue
+                        if dToken["sValue"][0:1].isupper():
+                            if dToken["sValue"].lower() == sPhon:
+                                continue
+                            if dToken["sValue"].isupper() and dToken["sValue"].capitalize() == sPhon:
+                                continue
+                    if phonet.isSimilAs(dToken["sValue"], sPhonet.rstrip("!")):
+                        if bDebug:
+                            echo("  MATCH: %" + sPhonet)
+                        yield { "iToken1": iToken1, "iNode": dNode["<phonet>"][sPhonet] }
                         bTokenFound = True
             # morph arcs
             if "<morph>" in dNode:

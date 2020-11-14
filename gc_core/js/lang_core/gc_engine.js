@@ -479,6 +479,32 @@ class TextParser {
                         }
                     }
                 }
+                // phonetic similarity
+                if (oNode.hasOwnProperty("<phonet>")) {
+                    for (let sPhonet in oNode["<phonet>"]) {
+                        if (sPhonet.endsWith("!")) {
+                            let sPhon = sPhonet.slice(0,-1);
+                            if (oToken["sValue"] == sPhon) {
+                                continue;
+                            }
+                            if (oToken["sValue"].slice(0,1).gl_isUpperCase()) {
+                                if (oToken["sValue"].toLowerCase() == sPhon) {
+                                    continue;
+                                }
+                                if (oToken["sValue"].gl_isUpperCase() && oToken["sValue"].gl_toCapitalize() == sPhon) {
+                                    continue;
+                                }
+                            }
+                        }
+                        if (phonet.isSimilAs(oToken["sValue"], sPhonet.gl_trimRight("!"))) {
+                            if (bDebug) {
+                                console.log("  MATCH: %" + sPhonet);
+                            }
+                            yield { "iToken1": iToken1, "iNode": oNode["<phonet>"][sPhonet] };
+                            bTokenFound = true;
+                        }
+                    }
+                }
                 // morph arcs
                 if (oNode.hasOwnProperty("<morph>")) {
                     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
