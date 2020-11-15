@@ -475,7 +475,7 @@ class DawgNode {
 
     __str__ () {
         // Caution! this function is used for hashing and comparison!
-        let sFinalChar = (self.final) ? "1" : "0";
+        let sFinalChar = (this.final) ? "1" : "0";
         let l = [sFinalChar];
         for (let [key, node] of this.arcs.entries()) {
             l.push(key.toString());
