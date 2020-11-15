@@ -16457,6 +16457,7 @@ __substantifs_multi_mots__
     >bandit [de|d’] grand chemin
     >bandit [de|d’] grands chemins
     >baptême du feu
+    >baroud d’ honneur
     >barrage [de|d’] police
     bas résille
     >bateau à aubes
@@ -16791,6 +16792,7 @@ __substantifs_multi_mots__
     >lame [de|d’] fond
     >lampe à [huile|incandescence|pétrole]
     >lampe [de|d’] chevet
+    >langage [de|d’] programmation
     >langue [de|d’] bois
     laps [de|d’] temps
     >lavage [de|d’] cerveau
@@ -23951,7 +23953,28 @@ TEST: elles sont vites.
 !!
 
 __ppas_immunités__
-    ##
+    ## Det nom_mas et det nom_fem que…
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA].*:[me]") and morph(\5, ":[NA].*:[fe]") !-1>> ppas
+
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA].*:[me]") and morph(\3, ":[NA].*:[me]") and morph(\6, ":[NA].*:[fe]") !-1>> ppas
+
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA].*:[me]") and morph(\5, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]")  !-1>> ppas
+
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD *WORD
+        || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        <<- morph(\2, ":[NA].*:[me]") and morph(\3, ":[NA].*:[me]") and morph(\6, ":[NA].*:[fe]") and morph(\7, ":[NA].*:[fe]") !-1>> ppas
+
+    ## Det nom_fem et det nom_fem que…
     [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
         || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
@@ -23972,7 +23995,7 @@ __ppas_immunités__
         || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
         <<- morph(\2, ":[NA].*:[fe]") and morph(\3, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]") and morph(\7, ":[NA].*:[fe]") !-1>> ppas
 
-    ##
+    ## Det nom et det nom_mas que…
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD
         || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD
         || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
@@ -23997,6 +24020,7 @@ TEST: La vision et la philosophie que j’ai élaborées.
 TEST: Ces grandes femmes et la superbe fille que j’ai vues.
 TEST: plusieurs femmes et le garçon que j’ai aperçus.
 TEST: quelques petites annonces et le génial spot que j’ai diffusés.
+TEST: j’ai vu les femmes poussées par l’orgueil abandonner le rôle et la place que Dieu leur avait assignés
 
 
 !!
