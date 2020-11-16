@@ -8,7 +8,6 @@ import argparse
 from distutils import dir_util
 
 import graphspell.dawg as fsa
-from graphspell.ibdawg import IBDAWG
 
 
 def build (spfSrc, sLangCode, sLangName, sfDict, bJavaScript=False, sDicName="", sDescription="", sFilter="", cStemmingMethod="S", nCompressMethod=1):

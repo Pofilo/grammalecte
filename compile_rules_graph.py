@@ -11,6 +11,7 @@ import concurrent.futures
 import darg
 import compile_rules_js_convert as jsconv
 import helpers
+import graphspell
 
 
 #### PROCESS POOL EXECUTOR ####
@@ -104,6 +105,7 @@ class GraphBuilder:
         self.dActions = {}
         self.dFuncName = {}
         self.dFunctions = {}
+        self.dLemmas = {}
 
     def _genTokenLines (self, sTokenLine):
         "tokenize a string and return a list of lines of tokens"
@@ -207,7 +209,7 @@ class GraphBuilder:
                 print(k, "\t", v)
         print("\tin {:>8.2f} s".format(time.time()-fStartTimer))
         sPyCallables, sJSCallables = self.createCallables()
-        return dGraph, self.dActions, sPyCallables, sJSCallables
+        return dGraph, self.dActions, sPyCallables, sJSCallables, self.dLemmas
 
     def createRule (self, iLine, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
         "generator: create rule as list"
@@ -235,7 +237,9 @@ class GraphBuilder:
                         lToken[i] = sToken[1:-1]
                         iGroup += 1
                         dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
-
+                    # check lemmas
+                    if sToken.startswith(">") and sToken != ">" and sToken[1:] not in self.dLemmas:
+                        self.dLemmas[sToken[1:]] = iLine
                 # Parse actions
                 for iAction, (iActionLine, sAction) in enumerate(lActions, 1):
                     sAction = sAction.strip()
@@ -454,8 +458,8 @@ class GraphBuilder:
 def processing (sGraphName, sGraphCode, sLang, lRuleLine, dDef, dDecl, dOptPriority):
     "to be run in a separate process"
     oGraphBuilder = GraphBuilder(sGraphName, sGraphCode, sLang, dDef, dDecl, dOptPriority)
-    dGraph, dActions, sPy, sJS = oGraphBuilder.createGraphAndActions(lRuleLine)
-    return (sGraphName, dGraph, dActions, sPy, sJS)
+    dGraph, dActions, sPy, sJS, dLemmas = oGraphBuilder.createGraphAndActions(lRuleLine)
+    return (sGraphName, dGraph, dActions, sPy, sJS, dLemmas)
 
 
 def make (lRule, sLang, dDef, dDecl, dOptPriority):
@@ -473,6 +477,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     sGraphName = ""
     iActionBlock = 0
     aRuleName = set()
+    oDictionary = graphspell.SpellChecker("fr")
 
     for iLine, sLine in lRule:
         sLine = sLine.rstrip()
@@ -573,11 +578,15 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     sPyCallables = ""
     sJSCallables = ""
     for xFuture in lResult:
-        sGraphName, dGraph, dActions, sPy, sJS = xFuture.result()
+        sGraphName, dGraph, dActions, sPy, sJS, dLemmas = xFuture.result()
         dAllGraph[sGraphName] = dGraph
         dAllActions.update(dActions)
         sPyCallables += sPy
         sJSCallables += sJS
+        # check lemmas
+        for sLemma, iLine in dLemmas.items():
+            if sLemma not in oDictionary.getLemma(sLemma):
+                print(f"  # Error at line {iLine}: <{sLemma}> is not a known lemma")
     # create a dictionary of URL
     dTempURL = { "": 0 }
     i = 1
