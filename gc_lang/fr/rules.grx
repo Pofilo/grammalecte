@@ -13914,8 +13914,8 @@ __purge_dates_mois__
     par rapport à la        fin du mois [de|d’]   {mois} ?[dernier|passé|précédent|prochain|~^\d{2,5}$]¿
         <<- ~>> *
 
-    en ce début {mois} ?~^\d{2,5}$¿
-    en la fin   {mois} ?~^\d{2,5}$¿
+    en ce début     {mois} ?~^\d{2,5}$¿
+    [à|en] la fin   {mois} ?~^\d{2,5}$¿
         <<- ~>> *
 
     [début|fin] {mois} ~^\d{2,5}$
@@ -16219,6 +16219,9 @@ __purge_conditionnelle__
     d’ autant [plus|moins]  @:[AW]
         <<- ~1:3>> *
 
+    d’ une tête plus [>grand|>petit] [que|qu’]
+        <<- ~1:4>> *
+
     [de|d’] concert
         <<- morph(<1, ":V[123]") ~>> *
 
@@ -16469,6 +16472,7 @@ __substantifs_multi_mots__
     [>bisphénol|>bisphenol] A
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à [bijoux|gants|outils|sardines]
+    [>boîte|>boite] [de|d’] nuit
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement|sous-munitions]
     >bombe à rayonnement renforcé
     >bonnet [de|d’] nuit
@@ -17775,10 +17779,10 @@ __purge_locutions_potentielles__
     à [cet|chaque|l’] instant [<end>|,|)]
         <<- ~1:-2>> *
 
-    à cet endroit        @¬:A.*:[me]:[si]
-    à cet endroit        [<end>|,|)]
-    à certains endroits  @¬:A.*:[me]:[pi]
-    à certains endroits  [<end>|,|)]
+    à cet endroit                        @¬:A.*:[me]:[si]
+    à cet endroit                        [<end>|,|)]
+    à [ces|certains|plusieurs] endroits  @¬:A.*:[me]:[pi]
+    à [ces|certains|plusieurs] endroits  [<end>|,|)]
         <<- ~1:-2>> *
 
     à ?[si|très|trop]¿ grands pas @¬:A.*:[me]:[pi]
@@ -18622,6 +18626,7 @@ TEST: je mesure tout ce qu’a d’ardu la condition de nos délégués dans les
 TEST: C’est à la fois la plus intéressante du livre et la plus délicate.
 TEST: Pour un peu, on les eût pris pour des détenus exemplaires.
 TEST: Ce ne sera pas tous les jours facile
+TEST: d’une tête plus petit que moi, il mesurait à peine um mètre cinquante
 
 
 @@@@
@@ -22841,6 +22846,40 @@ TEST: Une correction de +0.5 dioptrie.
 TEST: zéro compassion
 
 
+##  det nom et det nom adj
+__gn_det_nom_et_det_nom__
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]") and morph(\5, ":[NA].*:[me]:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
+
+    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|G)
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]") and morph(\5, ":[NA].*:f:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|G)
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:m:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
+
+    [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|G)
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:f:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+TEST: avec ce fils et notre neveu {{arrogante}}                                     ->> arrogant|arrogants
+TEST: le panneau et la paroi {{latéral}}.                                           ->> latérale|latéraux
+TEST: Il faut donc examiner ensemble le panneau et la paroi {{latérales}}.          ->> latérale|latéraux
+TEST: la force et le talent {{reconnues}}                                           ->> reconnu|reconnus
+TEST: la nation et la patrie {{menacés}}                                            ->> menacée|menacées
+TEST: un frère, une sœur et une tante perdus dans le désert
+TEST: un frère et un frère décédés
+TEST: l’intelligence et la force unies
+TEST: un frère et une sœur réunis
+TEST: un frère et une sœur divisés
+TEST: un frère et une sœur décédée
+TEST: une sœur et un frère décédés
+TEST: une sœur et une sœur réunies
+TEST: une nation avec une armée et une volonté a toutes les chances d’y parvenir
+
+
 ##  trouver ça/ceci/cela + adj
 __gn_trouver_ça_adj__
     >trouver  [ça|cela|ceci]  @:A.*:(?:f|m:p)¬:(?:G|3[sp]|M)
@@ -23956,64 +23995,64 @@ __ppas_immunités__
     ## Det nom_mas et det nom_fem que…
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA].*:[me]") and morph(\5, ":[NA].*:[fe]") !-1>> ppas
 
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA].*:[me]") and morph(\3, ":[NA].*:[me]") and morph(\6, ":[NA].*:[fe]") !-1>> ppas
 
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA].*:[me]") and morph(\5, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]")  !-1>> ppas
 
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|certains] *WORD *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA].*:[me]") and morph(\3, ":[NA].*:[me]") and morph(\6, ":[NA].*:[fe]") and morph(\7, ":[NA].*:[fe]") !-1>> ppas
 
     ## Det nom_fem et det nom_fem que…
     [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[fe]:p
         <<- morph(\2, ":[NA].*:[fe]") and morph(\5, ":[NA].*:[fe]") !-1>> ppas
 
     [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[fe]:p
         <<- morph(\2, ":[NA].*:[fe]") and morph(\3, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]") !-1>> ppas
 
     [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[fe]:p
         <<- morph(\2, ":[NA].*:[fe]") and morph(\5, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]")  !-1>> ppas
 
     [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maintes|certaines] *WORD *WORD
         || et [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[fe]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[fe]:p
         <<- morph(\2, ":[NA].*:[fe]") and morph(\3, ":[NA].*:[fe]") and morph(\6, ":[NA].*:[fe]") and morph(\7, ":[NA].*:[fe]") !-1>> ppas
 
     ## Det nom et det nom_mas que…
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD
         || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA]") and morph(\5, ":[NA].*:[me]") !-1>> ppas
 
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD *WORD
         || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA]") and morph(\3, ":[NA]") and morph(\6, ":[NA].*:[me]") !-1>> ppas
 
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD
         || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA]") and morph(\5, ":[NA].*:[me]") and morph(\6, ":[NA].*:[me]")  !-1>> ppas
 
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|maints|maintes|certains|certaines] *WORD *WORD
         || et [le|l’|un|ce|cet|mon|mon|son|notre|votre|leur] *WORD *WORD
-        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] >avoir @:Q.*:[me]:p
+        || [que|qu’] [je|j’|tu|il|elle|iel|on|nous|vous|ils|elles|iels|$:M] ?[m’|t’|lui|nous|vous|leur]¿ >avoir @:Q.*:[me]:p
         <<- morph(\2, ":[NA]") and morph(\3, ":[NA]") and morph(\6, ":[NA].*:[me]") and morph(\7, ":[NA].*:[me]") !-1>> ppas
 
 TEST: La vision et la philosophie que j’ai élaborées.
@@ -24281,6 +24320,9 @@ __infi_de_verbe__
     [un|une] [de|d’] [perdu+ses] ?,¿ dix [de|d’] [retrouvé+ses]
         <<- !-1>>
 
+    [>euro|>dollar|>livre|>yen|>centime|>mark|franc+s|$|€] de [gagné+s]
+        <<- !-1>>
+
     [de|d’]  [le|l’|leur|les]               @:V¬:[YNAM]|>(?:lui|plus)/
     [<start>|,|(]  [de|d’] [nous|vous|lui]  @:V¬:[YEP]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               && Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
@@ -24345,6 +24387,7 @@ TEST: Elle s’était de plus appliquée de bonne heure à l’ornementation des
 TEST: nombre d’entre nous le faisons déjà
 TEST: un de perdu, dix de retrouvés
 TEST: une de perdue, dix de retrouvées
+TEST: 25 € de gagnés
 
 
 __infi_verbe_de_verbe__
@@ -31668,6 +31711,8 @@ TEST: les hommes haut placés
 TEST: Votre père est on ne peut plus aimable
 TEST: Qu’ont fait les sénateurs ?
 TEST: Cela permet de détecter de manière bien plus sûre les gens qui sont porteurs
+TEST: La vallée était à cet endroit plus jolie.
+TEST: ce qui rend la marche à ces endroits très agréable.
 
 
 
