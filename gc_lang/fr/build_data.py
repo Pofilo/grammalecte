@@ -382,4 +382,4 @@ def after (spLaunch, dVars, bJS=False):
     makeMfsp(spLaunch, bJS)
     makePhonetTable(spLaunch, bJS)
     makeConj(spLaunch, bJS)
-    makeLocutions(spLaunch, bJS)
+    #makeLocutions(spLaunch, bJS)
