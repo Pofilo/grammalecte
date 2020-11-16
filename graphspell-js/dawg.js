@@ -498,9 +498,9 @@ class DawgNode {
     sortArcs (dValOccur) {
         let lTemp = Array.from(this.arcs.entries());
         lTemp.sort(function (a, b) {
-            if (dValOccur.get(a[0], 0) > dValOccur.get(b[0], 0))
+            if (dValOccur.get(a[0]) > dValOccur.get(b[0]))
                 return -1;
-            if (dValOccur.get(a[0], 0) < dValOccur.get(b[0], 0))
+            if (dValOccur.get(a[0]) < dValOccur.get(b[0]))
                 return 1;
             return 0;
         });
