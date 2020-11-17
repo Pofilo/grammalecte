@@ -2263,15 +2263,10 @@ __da_groupe_nominal__
         <<- =>> select(\3, ":[NA]")
 
     en tant que  *WORD
-        <<- =>> exclude(\4, ":V")
+        <<- =>> select(\4, ":[NA]")
 
     ni *WORD
         <<- =>> select(\-1, ":N")
-
-    nombre  [de|d’|des]  [@:[NA]|<end>|,]
-        <<- not morph(<1, ":D") >>>
-        <<- morph(<1, ":A.*:[me]:[si]") =>> add_morph(\1, ">nombre/:G:D")
-        <<- __else__ =>> define(\1, ">nombre/:G:D")
 
     par  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
@@ -25636,32 +25631,32 @@ __purge_syntagmes_nominaux__
 
     [un|ce|cet|au|ledit] *WORD *WORD
         <<- morph(\2, ":[NA].*[me]:[si]", ":(?:P|X|G|Y|V0)") and morph(\3, ":[NA].*[me]:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     mon *WORD *WORD
         <<- morph(\2, ":[NA].*:[si]", ":(?:P|X|G|Y|V0)") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     [ton|son] *WORD *WORD
         <<- morph(\2, ":[NA].*:[si]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     [cette|ma|ta|sa|ladite] *WORD *WORD
         <<- morph(\2, ":[NA].*:[fe]:[si]", ":G") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     [notre|votre] *WORD *WORD
         <<- not value(<1, "|la|le|du|") and morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     chaque *WORD *WORD
         <<- morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     le *WORD *WORD
@@ -25681,7 +25676,7 @@ __purge_syntagmes_nominaux__
 
     l’ *WORD *WORD
         <<- morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|P|X|G|Y|V0)|>air/") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     leur *WORD *WORD
@@ -25691,22 +25686,22 @@ __purge_syntagmes_nominaux__
 
     leurs *WORD *WORD
         <<- not value(<1, "|des|les|aux|") and morph(\2, ":[NA].*:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     [des|ces|mes|tes|ses|nos|vos|aux|quelques] *WORD *WORD
         <<- morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     lesdits *WORD *WORD
         <<- morph(\2, ":[NA].*:[me]:[pi]", ":G") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     lesdites *WORD *WORD
         <<- morph(\2, ":[NA].*:[fe]:[pi]", ":G") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     [certains|maints] *WORD *WORD
@@ -30351,7 +30346,7 @@ TEST: un grand nombre avaient été humiliés par ces pratiques délétères
 __conj_det_sing_nom__
     [un|ce|cet|mon|ton|son|notre|votre]  *WORD  @:[123][sp]¬:(?:3s|P|Y|3p!|G|M)
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[me]:[si]", ":G")
-            and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
+            and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|nombre|")
                         or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not checkAgreement(\2, \3) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A"))
         -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
