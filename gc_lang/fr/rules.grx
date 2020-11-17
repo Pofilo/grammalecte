@@ -2013,17 +2013,17 @@ __da_préverbes_verbes__
     [ne|n’]  [nous|vous]     [le|la|l’|les|en]    @:¬:[OX]
     [ne|n’]  [le|la|l’|les]  [lui|leur|en]        @:¬:[OX]
     [ne|n’]  [lui|leur]      en                   @:¬:[OX]
+    n’       ?[en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
         <<- /-1>> neg
 
-    [me|m’|te|se|s’]  ?[le|la|l’|les]¿  @:¬:[OX]
+    [me|m’|te]  ?[le|la|l’|les|en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
 
-    n’  ?[en|y]¿  @:¬:[OX]
-        <<- =>> select(\-1, ":V")
-        <<- /-1>> neg
+    [se|s’]  ?[le|la|l’|les|en|y]¿  @:¬:[OX]
+        <<- =>> select(\-1, ":[ISKQYP]")
 
-    [c’|m’|s’]  ?[en|y]¿  @:¬:[OX]
+    c’  ?[en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
 
     t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
@@ -2035,17 +2035,23 @@ __da_préverbes_verbes__
     y  @:¬:[OX]
         <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
-    [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:¬:[OX]
-    [je|j’|il|ils|on]  [nous|vous]     [le|la|l’|les|en|y]       @:¬:[OX]
-    [je|j’|il|ils|on]  [le|la|l’|les]  [lui|leur|en|y]           @:¬:[OX]
-    [je|j’|il|ils|on]  [lui|leur]      en                        @:¬:[OX]
-        <<- =>> select(\-1, ":[123][sp]")
+    [je|j’|il|ils|on]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:¬:[OX]
+    [je|j’|il|ils|on]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:¬:[OX]
+    [je|j’|il|ils|on]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:¬:[OX]
+    [je|j’|il|ils|on]  ?[ne|n’]¿   [lui|leur|y]                    en                           @:¬:[OX]
+        <<- =>> select(\-1, ":[ISKP]")
 
-    tu  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:¬:[OX]
-    tu  [nous|vous]   [le|la|l’|les|en|y]         @:¬:[OX]
-    tu  [le|la|l’|les]  [lui|leur|en|y]           @:¬:[OX]
-    tu  [lui|leur]      en                        @:¬:[OX]
-        <<- not morph(<1, ":V0") =>> select(\-1, ":[123][sp]")
+    [elle|elles|iel|iels]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:¬:[OX]
+    [elle|elles|iel|iels]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:¬:[OX]
+    [elle|elles|iel|iels]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:¬:[OX]
+    [elle|elles|iel|iels]  ?[ne|n’]¿   [lui|leur|y]                    en                           @:¬:[OX]
+        <<- not morph(<1, ":R") =>> select(\-1, ":[ISKP]")
+
+    tu  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:¬:[OX]
+    tu  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:¬:[OX]
+    tu  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:¬:[OX]
+    tu  ?[ne|n’]¿   [lui|leur|y]                    en                          @:¬:[OX]
+        <<- not morph(<1, ":V0") =>> select(\-1, ":[ISKP]")
 
     lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)¬:W
         <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
@@ -2127,6 +2133,11 @@ __da_mots_grammaticaaux__
 
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
+
+    [de|d’] [me|m’|te|t’|se|s’|nous|vous|leur|moi|toi|soi|lui|elle|iel|eux|elles|iels]
+    [de|d’] @:[MY]
+    [de|d’] [un|une|le|la|l’|ce|cet|cette|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines]
+        <<- =>> select(\1, ":R")
 
     face à
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
@@ -2213,8 +2224,12 @@ __da_groupe_nominal__
     du   @:[NA].*:[me]:[si]¬:[GY]
         <<- =>> select(\2, ":[NA]")
 
-    aucun  @:[NA].*:[me]
-        <<- =>> exclude(\2, ":V")
+    aucun  @:[NA].*:[me]:s¬:G
+        <<- =>> select(\1, ":D") and select(\2, ":N")
+
+    certains   @:[NA].*:[me]:p¬:(?:G|3p|V0)
+    certaines  @:[NA].*:[fe]:p¬:(?:G|3p|V0)
+        <<- =>> select(\1, ":D") and select(\2, ":[NA]")
 
     d’ [un|une]  *WORD
         <<- =>> exclude(\3, ":V")
@@ -2263,6 +2278,9 @@ __da_groupe_nominal__
 
     plein  [de|d’]  @:[AN]
         <<- not morph(<1, ":(?:D.*:m|V[0-3]e)") =>> =define(\1, ":G")
+
+    plusieurs  @:[NA].*:p¬:(?:G|3p|V0)
+        <<- =>> select(\1, ":D") and select(\2, ":[NA]")
 
     source [de|d’]
         <<- morph(<1, ":V[0-3]e") =>> define(\1, ":ÉV")
@@ -2624,7 +2642,7 @@ __fusions_noms_propres__
         <<- ~2:0>> ␣
         <<- =>> define(\2, ":MP:f:s")
 
-    [le|au|du|ce|the]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Challenge|Championship|Chronicle|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
+    [le|au|du|ce|the]  ~^[A-ZÀÂÉÈÊÎÔ].  ?~^[A-ZÀÂÉÈÊÎÔ].¿  ?~^[A-ZÀÂÉÈÊÎÔ].¿  [Act|Building|Bureau|Casino|Castle|Center|Challenge|Championship|Chronicle|Club|College|Comity|Consortium|Cottage|Covent|Day|Desert|Forum|Hall|Garden|Hospital|Hostel|Institute|Magazine|Manor|Memorial|Monastery|Mount|Museum|News|Newspaper|Ocean|Office|Opera|Park|Party|Palace|Post|Restaurant|State|Theatre|Tournament]
         <<- ~2:0>> ␣
         <<- =>> define(\2, ":MP:m:s")
 
@@ -2672,7 +2690,7 @@ __immunités__
     soit pour soit contre
         <<- !3>>
 
-    y a ?@:[WX]¿ faute
+    y [a|avait|eut|aura|aurait|eût] ?@:[WX]¿ faute
         <<- !-1>>
 
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
@@ -10892,7 +10910,7 @@ TEST: {{pare mont est par veau}}
 
 # pause /pose
 __conf_pause_pose__
-    >pose [gourmande|café|carrière|crédit|déjeuner|détente|dîner|pipi|repas|thé]
+    >pose [café|carrière|>cigarette|>clope|crédit|déjeuner|détente|dîner|gourmande|pipi|repas|thé]
     >pose du [matin|soir]
     >pose de midi
     >pose de l’ après-midi
@@ -10900,7 +10918,7 @@ __conf_pause_pose__
 
     >pause [de|du|des] [>câble|>carrelage|>dallage|>lino|>linoléum|>marbre|>panneau|>papier|>parquet|>prélart|>revêtement|>stérilet|tapis|>tapisserie|>vernis|>vitrage]
     >pause des [ardoises|agrafes|bollards|briques|câbles|carreaux|carrelages|dalles|fenêtres|panneaux|parquets|pavés|plaques|plinthes|tapis|tapisseries|tuiles|vitres|vitrages]
-    >pause de la [charpente|couronne|dalle|fenêtre|moquette|prothèse|tapisserie|toiture|vitre]
+    >pause de la [charpente|couronne|dalle|fenêtre|fibre|moquette|prothèse|tapisserie|toiture|vitre]
     >pause de la [première|1ʳᵉ|1re|1ère] [brique|couche|pierre]
         <<- /conf/ -1>> =\1.replace("au", "o").replace("AU", "O")           && Confusion probable. Une pose consiste à poser quelque chose, tandis qu’une pause est un laps de temps de repos.
 
@@ -15311,7 +15329,7 @@ __purge_locutions__
     du tac au tac
     du tout au tout
     eh bien
-    en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
+    en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|distanciel|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|présentiel|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
     en réalité ?[augmentée|virtuelle]¿
     en âge [de|d’] procréer
     en aucun cas
@@ -15660,7 +15678,7 @@ __purge_locutions__
     rien [que|qu’] d’ y penser
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     sans ?grand¿ succès
-    sans [déconner|tarder]
+    sans [broncher|déconner|réagir|tarder]
     sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|équivalent|fin|relâche|répit|trêve|vergogne]
     sans [grande|grosse] difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans aucun doute
@@ -16325,9 +16343,9 @@ __purge_conditionnelle__
     plus que tout autre @¬:[AQ].*:m:[si]
         <<- ~1:4>> *
 
-    [plus|moins|aussi]  @:[AW]¬:G   que [les|nous|vous] autres
-    [plus|moins|aussi]  @:[AW]¬:G   que l’ autre
-    [plus|aussi]        @:[AW]      les [uns|unes] que les autres
+    [plus|moins|aussi]  @:[AQW]¬:G   que [les|nous|vous] autres
+    [plus|moins|aussi]  @:[AQW]¬:G   que l’ autre
+    [plus|aussi]        @:[AQW]      les [uns|unes] que les autres
         <<- ~3:0>> *
 
     pour  autant  [que|qu’]  [je|il|elle|on]  le  sache
@@ -16540,6 +16558,7 @@ __substantifs_multi_mots__
     >chef d’ [état-major|entreprise]
     >chef d’ orchestre ?[moderne|symphonique]¿
     >chemin [de|d’] [croix|fer|traverse]
+    >chemin à parcourir
     >chemise à jabot
     >chemise [de|d’] nuit
     >chemise sans >manche
@@ -16662,7 +16681,7 @@ __substantifs_multi_mots__
     >épingle à cravate
     >épreuve [de|d’] force
     >erreur [de|d’] [calcul|jeunesse|jugement|positionnement]
-    >erreur d’ [appréciation|orthographe]
+    >erreur d’ [appréciation|interprétation|orthographe]
     >escalier [de|d’] secours
     >escroquerie à l’ assurance
     >espérance [de|d’] vie
@@ -16709,6 +16728,7 @@ __substantifs_multi_mots__
     fils à [papa|maman]
     fils [de|d’] pute
     >figure de proue
+    >fin [de] non-recevoir
     >fleuve à sec
     >flocon [de|d’] neige ?électronique¿
     >foire d’ >empoigne
@@ -22803,7 +22823,7 @@ TEST: Cent quarante-neuvième épisode
 
 __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
-        <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|")
+        <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|") and not (value(<1, "|à|") and meta(<2, "NUM"))
         -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
@@ -22844,6 +22864,7 @@ TEST: elle vit dans un 24 m² triste de la banlieue de Paris.
 TEST: dans son 240 m2 lumineux, c’est la belle vie.
 TEST: Une correction de +0.5 dioptrie.
 TEST: zéro compassion
+TEST: puis il y a entre 4 à 1 millions d’années sous une forme proche de la nôtre
 
 
 ##  det nom et det nom adj
@@ -28542,7 +28563,7 @@ __imp_verbe_groupe2_groupe3_t__
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
             and not value(\-1, "|provient|")
-            and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
+            and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MDR]|Oo)|>[A-Z]/"))
             and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         && S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
@@ -29319,23 +29340,23 @@ __purge_préverbes1__
         <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":[NA]") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]  le   @:(?:[123][sp]|P|Y)
+    [ça|ceci|cela|lui|celui-là|celui-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]  la   @:(?:[123][sp]|P|Y)
+    [ça|ceci|cela|lui|celui-là|celui-ci]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
+    [ça|ceci|cela|lui|celui-là|celui-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[si]") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]  les  @:(?:[123][sp]|P|Y)
+    [ça|ceci|cela|lui|celui-là|celui-ci]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]  en  @:(?:[123][sp]|P|Y)
+    [ça|ceci|cela|lui|celui-là|celui-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":[NA]") ~2>> *
         <<- /-1>> _ngn_
 
@@ -29467,11 +29488,11 @@ __purge_préverbes1__
         <<- not morph(<1, ":V0") ~2>> *
         <<- /-1>> _ngn_
 
-    [lui|celui-là|celui-ci]          [nous|vous|lui]  @:(?:[123][sp]|P|Y)
-    [elle|celle-là|celle-ci|iel]     [nous|vous|lui]  @:(?:[123][sp]|P|Y)
-    [nous|vous]                      [nous|vous|lui]  @:(?:[123][sp]|P|Y)
-    [eux|ceux-là|ceux-ci]            [nous|vous|lui]  @:(?:[123][sp]|P|Y)
-    [elles|celles-là|celles-ci|iels] [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [cela|ceci|ça|lui|celui-là|celui-ci]    [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [elle|celle-là|celle-ci|iel]            [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [nous|vous]                             [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [eux|ceux-là|ceux-ci]                   [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [elles|celles-là|celles-ci|iels]        [nous|vous|lui]  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":R") ~2>> *
         <<- /-1>> _ngn_
 
@@ -30718,7 +30739,7 @@ TEST: les marchandes {{marchande}}
 TEST: les chattes {{finis}}
 TEST: les chattes {{manges}}
 TEST: les religieux qui n’en {{finisse}} pas de mentir.
-TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.I
+TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
 TEST: les malades que tu as servis {{outrepasse}} leur droit
 TEST: l’écart entre les riches et les pauvres n’était pas si grand.
 TEST: Les grands hommes politiques
@@ -30730,6 +30751,8 @@ TEST: Les écrivaines Marie Darrieussecq et Annie Ernaux
 TEST: Les femmes candidates à ce poste doivent se présenter cet après-midi.
 TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
 TEST: il les a sélectionnés, les a améliorées pour accroître leur rendement
+TEST: les femmes enceintes
+TEST: les souris enceintes
 
 
 __conj_certains_certaines_plusieurs_nom__
