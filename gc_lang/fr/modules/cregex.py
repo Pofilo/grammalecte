@@ -96,9 +96,9 @@ def checkAgreement (l1, l2):
     # check gender agreement
     if mbEpi(l1) or mbEpi(l2):
         return True
-    if mbMas(l1) and not mbMas(l2):
+    if isMas(l1) and not mbMas(l2):
         return False
-    if mbFem(l1) and not mbFem(l2):
+    if isFem(l1) and not mbFem(l2):
         return False
     return True
 

@@ -100,10 +100,10 @@ var cregex = {
         if (this.mbEpi(l1) || this.mbEpi(l2)) {
             return true;
         }
-        if (this.mbMas(l1) && !this.mbMas(l2)) {
+        if (this.isMas(l1) && !this.mbMas(l2)) {
             return false;
         }
-        if (this.mbFem(l1) && !this.mbFem(l2)) {
+        if (this.isFem(l1) && !this.mbFem(l2)) {
             return false;
         }
         return true;
