@@ -662,7 +662,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     _createTokenDescr (oToken) {
         try {
             let xTokenDescr = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_descr"});
-            xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
+            let sValue = (oToken.hasOwnProperty("sRealValue")) ? oToken["sRealValue"] : oToken["sValue"];
+            xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: sValue}));
             let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
             xTokenDescr.appendChild(xMorphList);
             if (oToken.aLabels) {
