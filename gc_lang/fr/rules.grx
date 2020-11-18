@@ -1991,7 +1991,7 @@ __da_le_la_les_leur_en_y__
 
     en  *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
-        <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":[NDB]", "*") =>> select(\1, ":R")
+        <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":[NADB]", "*") =>> select(\1, ":R")
 
     y   *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)") =>> select(\1, ":Ov")
@@ -2016,6 +2016,16 @@ __da_préverbes_verbes__
     n’       ?[en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
         <<- /-1>> neg
+
+    [ne|n’]                 [lui|en|leur|le|la|l’|les|nous|vous|y]
+    [me|m’|te|t’|se|s’]     [en|le|la|l’|les|y]
+        <<- =>> select(\2, ":Ov")
+
+    lui @:[ISKQYP]¬:3s
+        <<- =>> select(\1, ":Ov")
+
+    lui
+        <<- morph(<1, ":R") =>> exclude(\1, ":(?:Q|Os)")
 
     [me|m’|te]  ?[le|la|l’|les|en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
@@ -2108,8 +2118,17 @@ __da_adverbes__
 
 
 __da_mots_grammaticaaux__
+    a ?@:[WX]¿ été
+        <<- =>> select(\1, ":V0")
+
+    après avoir $:Q
+        <<- =>> exclude(\2, ":N")
+
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
+
+    [<start>|,|(] avant [que|qu’|$:D]
+        <<- =>> select(\2, ":R")
 
     c’  [>avoir|>être]
         <<- =>> select(\1, ":O")
@@ -2134,12 +2153,12 @@ __da_mots_grammaticaaux__
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
-    [de|d’] [me|m’|te|t’|se|s’|nous|vous|leur|moi|toi|soi|lui|elle|iel|eux|elles|iels]
+    [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
     [de|d’] @:[MY]
-    [de|d’] [un|une|le|la|l’|ce|cet|cette|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines]
+    [de|d’] [un|une|le|la|l’|les|ce|cet|cette|ces|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- =>> select(\1, ":R")
 
-    face à
+    face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
 
     mais
@@ -2162,10 +2181,13 @@ __da_mots_grammaticaaux__
     [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
         <<- =>> select(\-1, ":N")
 
+    même $:D
+        <<- morph(<1, "<start>|>,|:[ISKYP]", "*") =>> select(\1, ":W")
+
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
-    [le|l’|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
+    [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
     parmi *WORD
@@ -2177,14 +2199,30 @@ __da_mots_grammaticaaux__
     SA
         <<- morph(<1, ":D") =>> exclude(\1, ":D")
 
+    selon $:D
+        <<- =>> select(\1, ":R")
+
+    selon [,|<end>]
+        <<- =>> select(\1, ":W")
+
+    si @:[OD]
+    s’ [il|ils]
+        <<- =>> select(\1, ":C")
+
     pas
         <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
 
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
+    [un|une|des|le|la|l’|les|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [plus|moins] @:[AW]¬:G
+        <<- =>> select(\2, ":W")
+
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
+
+    sur @:[BD]
+        <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[123]e") =>> select(\1, ":R")
 
     un  @:[NA].*:[me]
         <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
@@ -2197,7 +2235,7 @@ __da_mots_grammaticaaux__
 
     y compris
         <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
-        <<- __also__ =>> define(\1, ":G:R")
+        <<- __also__ =>> define(\1, ":G:R:LR")
 
 
 __da_chose__
@@ -2225,6 +2263,7 @@ __da_groupe_nominal__
         <<- =>> select(\2, ":[NA]")
 
     aucun  @:[NA].*:[me]:s¬:G
+    aucune @:[NA].*:[fe]:s¬:G
         <<- =>> select(\1, ":D") and select(\2, ":N")
 
     certains   @:[NA].*:[me]:p¬:(?:G|3p|V0)
@@ -2240,8 +2279,11 @@ __da_groupe_nominal__
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- not morph(\-1, ":V0") =>> exclude(\-1, ":V")
 
-    sa  *WORD
-        <<- not morph(\-1, ":V0") and not morph(\-1, ":3s") =>> exclude(\2, ":V")
+    ce @:[NA].*:[me]:[si]¬:(?:3[sp]|V0)
+        <<- not value(<1, "|il|elle|on|iel|ils|elles|iels|ne|n’|") =>> select(\-1, ":[NA]")
+
+    sa  @¬:(?:V0|3s)
+        <<- =>> exclude(\2, ":V")
 
     les  ~.es$
         <<- not value(<1, "|tu|ne|n’|me|m’|te|t’|se|s’|nous|vous|") and morph(\2, ":V1.*Ip.*:2s") and not tag_before(\1, "_2s_") and not value(>1, "|tu|pas|jamais|")
@@ -2268,6 +2310,9 @@ __da_groupe_nominal__
     ni *WORD
         <<- =>> select(\-1, ":N")
 
+    nombre [de|d’|des]
+        <<- morph(<1, ":V|<start>|>,") =>> select(\1, ":N")
+
     par  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
 
@@ -2276,6 +2321,9 @@ __da_groupe_nominal__
 
     plusieurs  @:[NA].*:p¬:(?:G|3p|V0)
         <<- =>> select(\1, ":D") and select(\2, ":[NA]")
+
+    sans  @:[ISKP]
+        <<- =>> select(\2, ":[NA]")
 
     source [de|d’]
         <<- morph(<1, ":V[0-3]e") =>> define(\1, ":ÉV")
@@ -2538,7 +2586,7 @@ __fusions_noms_communs__
         <<- ~>> ␣
         <<- =>> define(\1, ":N:f:p")
 
-    black [>bloc|>block]
+    black [>bloc|block+s]
     drag >queen
     drama >queen
     jet set
@@ -14783,7 +14831,7 @@ __purge_locutions_distance__
 
 __purge_locutions__
     à *NUM  %
-    à [autrui|bâbord|brûle-pourpoint|califourchon|chacun|cheval|cloche-pied|confesse|contrecœur|contre-cœur|contre-pied|contre-sens|contretemps|contre-temps|>demi-mot|demi-voix|dessein|foison|grand-peine|genoux|gogo|jamais|jeun|loisir|merveille|moitié|nouveau|outrance|peine|perpète|perpette|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|revers|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
+    à [autrui|bâbord|brûle-pourpoint|califourchon|chacun|cheval|cloche-pied|confesse|contre-courant|contrecœur|contre-cœur|contre-pied|contre-sens|contretemps|contre-temps|>demi-mot|demi-voix|dessein|foison|grand-peine|genoux|gogo|jamais|jeun|loisir|merveille|moitié|nouveau|outrance|peine|perpète|perpette|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|revers|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
     à [mi-chemin|mi-côte|mi-jambe+s|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     à air comprimé
     à angle droit
@@ -16793,7 +16841,7 @@ __substantifs_multi_mots__
     >instrument à [cordes|percussion|vent]
     >instrument [de|d’] mesure
     >interface [utilisateur+s]
-    >inteféron [de|d’] type [I|II|III|1|2|3]
+    >interféron [de|d’] type [I|II|III|1|2|3]
     >intermittent du spectacle
     >invité d’ honneur
     >invité surprise
@@ -17297,7 +17345,7 @@ __purge_locutions_adjectivales__
     grande taille
     grandeur nature
     haut de gamme
-    haute [résolution|fidélité|tension]
+    haute [résolution|fidélité|sécurité|tension]
     hors service
     longue [conservation|distance|portée|durée]
     meilleur marché
@@ -19279,11 +19327,11 @@ __conf_canne_cane__
     becs-de-canne
         <<- /conf/ ->> bec-de-cane|becs-de-cane         && Confusion. Le bec-de-cane se somme ainsi à cause de la ressemblance avec le bec de l’animal.|https://fr.wiktionary.org/wiki/bec-de-cane
 
-    [>aéroport|>baie|>port|>festival|>gare|>mairie|>maire|>tourisme|>ville|vieux-port] de [>cane|>canne]
+    [>aéroport|baie+s|>port|>festival|>gare|>mairie|>maire|>tourisme|>ville|vieux-port] de [>cane|>canne]
         <<- /conf/ not value(\3, "|Cannes|CANNES|") -3>> Cannes                         && Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
 
     [>aller|>dormir|>habiter|>partir|>situer|>vivre] [à|a] [>cane|>canne]
-    [>bienvenue|>restaurant|>activité|>hôtel|>séjour|>camping] [à|a] [>cane|>canne]
+    [>bienvenu|>restaurant|>activité|>hôtel|>séjour|>camping] [à|a] [>cane|>canne]
         <<- /conf/ not value(\3, "|Cannes|CANNES|") -3>> Cannes                         && Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
 
 TEST: {{canes}} à pêche
@@ -19681,7 +19729,7 @@ TEST: encaisser les {{cous}}                                                    
 
 # cuire / cuir
 __conf_cuire_cuir__
-    >faire >cuir $:D [>blanquette|>boulette|>brochette|>bœuf|>carotte|>champignon|>confit|>cèpe|>côte|>côtelette|>escalope|>fruit|>fève|>girolle|>haricot|>herbe|>jarret|>joue|>lardon|>lentille|>longe|>légume|>marron|>mijoté|>morille|>nem|>nouille|>ognon|>oignon|>omelette|>patate|>paupiette|>pied|>poire|>poitrine|>pomme|>porc|>potée|>poêlée|>pruneau|>pâte|>pâte|>pâté|>ragout|>ragoût|rillettes|>rognon|>rouelle|>rôti|>sauté|>steak|>terrine|>veau|>émincé|>épice|>œuf]
+    >faire >cuir $:D [>blanquette|boulette+s|>brochette|>bœuf|>carotte|>champignon|>confit|>cèpe|>côte|>côtelette|>escalope|>fruit|>fève|>girolle|>haricot|>herbe|>jarret|>joue|>lardon|>lentille|>longe|>légume|>marron|>mijoté|>morille|>nem|>nouille|>ognon|>oignon|>omelette|>patate|>paupiette|>pied|>poire|>poitrine|>pomme|>porc|>potée|>poêlée|>pruneau|>pâte|>pâte|>pâté|>ragout|>ragoût|rillettes|>rognon|>rouelle|>rôti|>sauté|>steak|>terrine|>veau|>émincé|>épice|>œuf]
         <<- /conf/ -2>> cuire                                       && Confusion. Le cuir est la peau d’un animal. Pour parler de la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
 
     >aller [m’|t’|s’|nous|vous|leur] en >cuir
@@ -20350,7 +20398,7 @@ TEST: les {{jeûnes}} travailleurs du nouveau centre commercial
 
 # lait / laid / lé
 __conf_lait_laid_laie_lé__
-    [>avaler|>boire|>chauffer|>ingurgiter|>réchauffer] [du|le|ce] [>laid|>laie|>lai|>lé]
+    [>avaler|>boire|>chauffer|>ingurgiter|>réchauffer] [du|le|ce] [>laid|>lai|>lé]
     >boire [du|le|ce] petit [>laid|>laie|>lai|>lé]
     >verre [de|d’] [>laid|>laie|>lai|>lé]
         <<- /conf/ --1>> lait                                           && Confusion probable. Le produit laitier s’écrit “lait”.
@@ -21427,7 +21475,7 @@ __conf_venimeux_vénéreux__
     [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneux
         <<- /conf/ -2>> =\1.replace("énén", "enim").replace("ÉNÉN", "ENIM")                         && Confusion : “vénéneux” se dit des plantes. Employez “venimeux”.|https://fr.wiktionary.org/wiki/venimeux
 
-    [>plant|>champignon|>lépiote|>baie|>fruit|>herbe|>fleur|>chair|>moule|humus|>substance|>végétal]  >venimeux
+    [>plant|>champignon|>lépiote|baie+s|>fruit|>herbe|>fleur|>chair|>moule|humus|>substance|>végétal]  >venimeux
         <<- /conf/ -2>> =\1.replace("enim", "énén").replace("ENIM", "ÉNÉN")                         && Confusion : pas de venin ici, écrivez “vénéneux”.|https://fr.wiktionary.org/wiki/v%C3%A9n%C3%A9neux
 
 TEST: ces araignées {{vénéneuses}}.
@@ -21472,15 +21520,22 @@ __immunités_gn__
     [au|aux] (*WORD) et à [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
     à [la|l’|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et au (*WORD)  @:[AQ].*:[me]:p
     à [la|l’|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et à [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
+    [du|des] (*WORD) et du (*WORD)  @:[AQ].*:[me]:p
+    [du|des] (*WORD) et [de|d’] [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
+    [de|d’] [la|l’|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et du (*WORD)  @:[AQ].*:[me]:p
+    [de|d’] [la|l’|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et [de|d’] [un|ce|cet|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:p
         <<- morph(\1, ":N") and morph(\2, ":N.*:[me]:[si]") !-1>> gn
 
     ## adjectif masculin au pluriel après nom au féminin
     [au|aux] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
     à [un|des|ce|cet|ces|mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
+    [du|des] (*WORD) et [de|d’] [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
+    [de|d’] [un|ce|cet|ces|mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et [de|d’] [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[me]:[pi]
         <<- morph(\1, ":N.*:m") and morph(\2, ":N.*:[fe]") !-1>> gn
 
     ## adjectif féminin au pluriel
     à [la|l’|une|des|cette|ces|ma|ta|sa|mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et à [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[fe]:[pi]
+    [de|d’] [la|l’|une|cette|ces|ma|ta|sa|mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs] (*WORD) et [de|d’] [la|l’|une|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] (*WORD)  @:[AQ].*:[fe]:[pi]
         <<- morph(\1, ":N.*:[fe]") and morph(\2, ":N.*:[fe]") !-1>> gn
 
 TEST: à mon chat et à mon chien malades
@@ -21489,6 +21544,14 @@ TEST: à la politesse et à la considération indispensables
 TEST: à une rapidité et à une profondeur déconcertantes…
 TEST: L’affichage s’adapte aux filtres et à la période spécifiés.
 TEST: à mes armes et à mon armure oubliées au château
+TEST: du chien et du chat perdus
+TEST: du petit et de la grande partie à l’école
+TEST: du petit et de la grande partis à l’école
+TEST: des amis et de notre mère malades
+TEST: des amis et de notre mère partis dans l’autre monde
+TEST: des amis et de notre mère partie dans l’autre monde
+TEST: du petit et de notre mère partis dans l’autre monde
+TEST: de l’insécurité et de l’instabilité provoquées
 
 
 ## l’
@@ -28665,13 +28728,12 @@ __imp_union_nous_vous_lui__
 TEST: {{Donne nous}} du café.
 TEST: si ça se peut, {{apprend nous}} à réussir.
 TEST: Ce que Jeanne, femme de Patrick, veut vous dire de sa vie.
-TEST: Daignez le lui permettre
 
 
 __imp_union_y__
     *WORD  y
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>en/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne y}} du tien.
@@ -28700,13 +28762,13 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 __imp_union_le_la_leur__
     *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?)/")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?|leur|lui)/")
             and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  [le|la|leur]
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|T|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|une)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|T|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?|leur|lui)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
@@ -28726,8 +28788,11 @@ TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 TEST: Faites le plein de culture en vous abonnant dès 1 € !
 TEST: Fais le plein de vêtements avant de partir en vacances
 TEST: on l’attend pour la fin de semaine, prévoit le Dr Bayart.
-TEST: fais le bien
+TEST: fais le bien et ne juge pas
 TEST: fais-le bien
+TEST: Daignez le lui permettre
+TEST: Daignez la leur donner
+
 
 
 __imp_union_en__
@@ -31648,7 +31713,6 @@ TEST: le général n’en aura cure
 TEST: n’en avoir cure et faire comme si de rien n’était.
 TEST: Comme d’habitude, ils ont tout fait à l’arrache.
 TEST: tout un système pour justifier que “nous” avons toujours raison et que nous ne pouvons jamais avoir tort.
-TEST: Daignez le lui permettre.
 TEST: Renvoyer quelqu’un sans l’avoir examiné peut être un grand danger.
 TEST: En 1944, au sortir des deux guerres ayant ravagé l’Europe, le CNR (conseil national de la résistance) avait bien mesuré les tenants et les aboutissants, c’est-à-dire les causes et les conséquences du ravage des inégalités et du jusqu’au boutisme de l’auto-défense d’une caste pour préserver ses acquis.
 TEST: Ceux de l’Université sont plus perfectionnés
