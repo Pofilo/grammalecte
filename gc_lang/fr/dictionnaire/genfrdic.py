@@ -1131,7 +1131,7 @@ class Flexion:
         "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
         "spre": ":Sp", "simp": ":Sq", "cond": ":K", "impe": ":E",
         "1sg": ":1s", "1isg": ":1ś", "1jsg": ":1ŝ", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "3pl!": ":3p!",
-        "prepv": ":Rv", "prep": ":R", "loc.prep": ":ÉR", "loc.prepv": "ÉRv",
+        "prepv": ":Rv", "prep": ":R", "loc.prep": ":ÉR", "loc.prepv": ":ÉRv",
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
