@@ -2121,20 +2121,23 @@ __da_mots_grammaticaaux__
     a ?@:[WX]¿ été
         <<- =>> select(\1, ":V0")
 
+    ça a
+        <<- =>> select(\2, ":V")
+
     après avoir $:Q
         <<- =>> exclude(\2, ":N")
 
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
 
-    [<start>|,|(] avant [que|qu’|$:D]
-        <<- =>> select(\2, ":R")
+    avant [que|qu’|$:D]
+        <<- not value(<1, "|l’|quel|cet|un|mon|ton|son|notre|votre|leur|") =>> select(\2, ":R")
 
     c’  [>avoir|>être]
         <<- =>> select(\1, ":O")
 
-    ce  @:[NA].*:[me]
-        <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D")
+    ce  @:[NA].*:[me]:[si]¬:V0e
+        <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D") and select(\2, ":[NA]")
 
     ce  @:3[sp]¬:[NA].*:[me]:[si]
         <<- =>> select(\1, ":O")
@@ -2151,12 +2154,18 @@ __da_mots_grammaticaaux__
         <<- =>> exclude(\2, ":V")
 
     dans
-        <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
+        <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
     [de|d’] @:[MY]
     [de|d’] [un|une|le|la|l’|les|ce|cet|cette|ces|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- =>> select(\1, ":R")
+
+    entre  *WORD  et  *WORD
+        <<- morph(\2, ":[NA]") and morph(\4, ":[NA]") =>> define(\1, ":R")
+
+    entre  $:D¬:R  *WORD  et  $:D¬:R  *WORD
+        <<- morph(\3, ":[NA]") and morph(\6, ":[NA]") =>> define(\1, ":R")
 
     face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
@@ -2181,6 +2190,12 @@ __da_mots_grammaticaaux__
     [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
         <<- =>> select(\-1, ":N")
 
+    pas mal
+        <<- =>> select(\2, ":W")
+
+    mal @:[AQ]
+        <<- morph(<1, ":[NV]", ":D.*:[me]:[si]") =>> select(\1, ":W")
+
     même $:D
         <<- morph(<1, "<start>|>,|:[ISKYP]", "*") =>> select(\1, ":W")
 
@@ -2189,6 +2204,9 @@ __da_mots_grammaticaaux__
 
     [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
+
+    nos @¬:B
+        <<- =>> select(\1, ":D")
 
     parmi *WORD
         <<- =>> select(\1, ":R")
@@ -2229,6 +2247,9 @@ __da_mots_grammaticaaux__
 
     une @:[NA].*:[fe]
         <<- not value(<1, "|la|de|cette|quelle|une|ma|ta|sa|notre|votre|leur|") =>> select(\1, ":D")
+
+    vers $:D
+        <<- morph(<1, ":V") =>> select(\1, ":R")
 
     vu  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
@@ -2271,7 +2292,10 @@ __da_groupe_nominal__
         <<- =>> select(\1, ":D") and select(\2, ":[NA]")
 
     d’ [un|une]  *WORD
-        <<- =>> exclude(\3, ":V")
+        <<- =>> select(\2, ":D") and exclude(\3, ":V")
+
+    [un|quel|cet|l’|notre|votre] été
+        <<- =>> select(\2, ":N")
 
     l’ [un|une]  *WORD
         <<- not value(\3, "|plus|") =>> select(\3, ":[123][sp]")
@@ -2306,6 +2330,9 @@ __da_groupe_nominal__
 
     en tant que  *WORD
         <<- =>> select(\4, ":[NA]")
+
+    la nuit
+        <<- =>> select(\2, ":N")
 
     ni *WORD
         <<- =>> select(\-1, ":N")
@@ -4976,6 +5003,9 @@ __tu_substantifs!7__
     [grand+s] [>père|>mère]
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
+    [gratte+s] >ciel
+        <<- not value(<1, "|il|elle|on|iel|je|tu|ne|n’|") ->> gratte-ciel       && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/gratte-ciel
+
     lèse majesté
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
@@ -5128,6 +5158,7 @@ TEST: ces {{fiers à bras}} vont encore se prendre une raclée mémorable
 TEST: {{gagne pain}} de merde
 TEST: perfusé par des {{goutte à goutte}}
 TEST: mes deux {{grands pères}} sont décédés
+TEST: ces {{gratte ciel}}                                                       ->> gratte-ciel
 TEST: un crime de {{lèse majesté}}
 TEST: pour {{la}} {{n ième}} fois
 TEST: les {{n uplets}}
@@ -9180,10 +9211,10 @@ __conf_coup_cout_cou1__
         <<- /conf/ --1>> cou            && Confusion probable. Le coût est le prix d’une chose. Le coup est ce qui frappe. Le cou est la partie joignant le tronc à la tête.|https://fr.wiktionary.org/wiki/cou
 
     [>cou|>coût|>cout] [au-dessous|en-dessous] [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hachette|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>arrêt|>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
-    [>cou|>coût|>cout] [dur|durs]
+    [>cou|>coût|>cout] [dur+s]
     >cou d’ envoi
         <<- /conf/ -1>> coup|coups      && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
 
@@ -12556,9 +12587,9 @@ __conf_voie_voix_vois_voit__
     à [>voie|vois|voit] [basse|haute|basses|hautes]
         <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
-    [>entendre|>écouter] ?@:[WX]¿ $:D >voie
+    [>entendre|>écouter|>déblayer] ?@:[WX]¿ $:D >voie
     >donner ?[WX]¿ [de|d’] la >voie
-    >faire entendre [ma|ta|sa|notre|votre|leur+s] >voie
+    >faire entendre [ma|ta|sa|notre|nos|votre|vos|leur+s] >voie
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     >avoir ?@:[WX]¿ voie au chapitre
@@ -15216,8 +15247,8 @@ __purge_locutions__
     d’ entre [eux|elles|iels]
     d’ entrée [de|d’] jeu
     d’ est en ouest
-    d’ extrême [droite|gauche]
-    d’ [extrême-droite|extrême-gauche]
+    d’ extrême [droite|gauche] ?radicale¿
+    d’ [extrême-droite|extrême-gauche] ?radicale¿
     d’ [égal|égale] à [égal|égale]
     d’ intérêt général
     d’ ordinaire
@@ -15442,7 +15473,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ mauvais état
     en ?[assez|si|très|trop]¿ mauvais état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ mauvaise [posture|santé]
-    en nombre ?[assez|si|très]¿ [insuffisant|suffisant]
+    en nombre ?[assez|si|très|trop|relativement]¿ [insuffisant|limité|suffisant]
     en nombre plus [que|qu’] suffisant
     en odeur [de|d’] sainteté
     en ordre [dispersé|serré]
@@ -15487,7 +15518,7 @@ __purge_locutions__
     en si peu [de|d’] temps
     en terrain [découvert|miné]
     en termes choisis
-    en terrain conquis
+    en terrain [accidenté|conquis]
     en terre battue ?[claire|ocre|jaune|rouge|noire|sombre|humide|sèche|maculée|sale|dégueulasse]¿
     en terre étrangère
     en toile [de|d’] fond
@@ -16617,6 +16648,7 @@ __substantifs_multi_mots__
     [clair+s] [de|d’] lune
     >classement sans suite
     [>clé|>clef] à molette
+    [>clé|>clef] [de|d’] voûte
     >clin d’ œil
     >clause [de|d’] [confidentialité|non-concurrence]
     >clause [de|d’] non concurrence
@@ -16656,6 +16688,7 @@ __substantifs_multi_mots__
     >coup d’ épée dans l’ eau
     >coup d’ un soir
     >coup du sort
+    >coupage [de|d’] cheveux en quatre
     >coureur [de|d’] >jupon
     >courroie [de|d’] transmission
     >course contre la montre
@@ -16694,6 +16727,7 @@ __substantifs_multi_mots__
     >donneur [de|d’] >leçon
     >dossier d’ inscription ?[administrative|scolaire]¿
     >dossier [de|d’] presse
+    >drapeau en berne
     >drone [de|d’] [combat|surveillance]
     >drogue [de|d’] synthèse
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
@@ -16868,6 +16902,7 @@ __substantifs_multi_mots__
     >lettre [de|d’] procuration ?bancaire¿
     >levier [de|d’] commande
     >liaison sans lendemain
+    >ligne ?à¿ haute tension
     >ligne [de|d’] [conduite|fracture|mire]
     >ligne [de|d’] chemin [de|d’] fer
     >lime à >ongle
@@ -16933,6 +16968,7 @@ __substantifs_multi_mots__
     >motion [de|d’] [censure|défiance] ?constructive¿
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >moulin à [café|eau|paroles|poivre|prières|vent]
+    [moyen+s] [de|d’] transport
     >nerf à vif
     >nettoyeur haute pression
     >nid [de|d’] résistance
@@ -16963,7 +16999,7 @@ __substantifs_multi_mots__
     >palais d’ [été|hiver]
     >panier à linge
     >papier à [>lettre|musique]
-    >parc à thème
+    >parc à [bestiaux|thème]
     >parc d’ attractions
     >parc [de|d’] stationnement
     >parole en l’ air
@@ -17001,6 +17037,7 @@ __substantifs_multi_mots__
     >plan [de|d’] relance ?économique¿
     >planche [de|d’] salut
     >planche à repasser
+    [plat+s] [de|d’] résistance
     [plat+s] du jour
     >pneumocyte [de|d’] type [I|II|1|2]
     >poche [de|d’] résistance
@@ -17114,6 +17151,7 @@ __substantifs_multi_mots__
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
     >souvenir d’ enfance
     >star du x
+    >station [de|d’] radio
     >sujet [de|d’] [prédilection|préoccupation]
     >suspension [de|d’] séance
     >syndicat du crime
@@ -17836,10 +17874,10 @@ __purge_quoique__
 
 
 __purge_locutions_potentielles__
-    à ce [jour|moment|stade] @¬:A.*:[me]:[si]
-    à ce [jour|moment|stade] [<end>|,|)]
-    à [cet|chaque|l’] instant @¬:A.*:[me]:[si]
-    à [cet|chaque|l’] instant [<end>|,|)]
+    à ce [jour|moment|point|stade]  @¬:A.*:[me]:[si]
+    à ce [jour|moment|point|stade]  [<end>|,|)]
+    à [cet|chaque|l’] instant       @¬:A.*:[me]:[si]
+    à [cet|chaque|l’] instant       [<end>|,|)]
         <<- ~1:-2>> *
 
     à cet endroit                        @¬:A.*:[me]:[si]
@@ -18309,7 +18347,7 @@ __da_locutions_verbales__
     >entendre raison
     >étouffer dans l’ œuf
     >faire acte [de|d’] [contrition|présence]
-    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écho|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|route|scandale|sens|sensation|signe|surface|usage|volte-face]
+    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|cours|compliqué|copain-copain|date|débat|défaut|demi-tour|écho|écran|envie|erreur|état|exception|face|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|nation|naufrage|office|part|peur|polémique|plaisir|preuve|rage|recette|rempart|route|scandale|sens|sensation|signe|surface|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -18690,6 +18728,8 @@ TEST: C’est à la fois la plus intéressante du livre et la plus délicate.
 TEST: Pour un peu, on les eût pris pour des détenus exemplaires.
 TEST: Ce ne sera pas tous les jours facile
 TEST: d’une tête plus petit que moi, il mesurait à peine um mètre cinquante
+TEST: triompher par la force, l’intelligence la violence ou la ruse
+TEST: une table en bois brut
 
 
 @@@@
@@ -19314,7 +19354,7 @@ __conf_canne_cane__
     [>alcool|>coup|>sucre|>sirop] de >cane
         <<- /conf/ -3>> canne                                           && Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
 
-    [>œuf|>filet] de >canne
+    [>œuf|>filet] [de|d’] >canne
         <<- /conf/ -3>> cane                                            && Confusion. La canne est un bâton ou un roseau. Pour la femelle du canard, écrivez “cane”.|https://fr.wiktionary.org/wiki/canne
 
     [>appuyer|>battre|>frapper|>lever|>marcher] [avec|sur] [les|des|ma|ta|sa|mes|tes|ses|cette|une] >cane
@@ -21123,18 +21163,20 @@ __conf_sang_sans_sens__
     [le|du|quel|un] ?[certain|faible|grand]¿ [sans|san] [de|d’] la mesure
         <<- /conf/ --4>> sens                                       && Confusion. Le sens de la mesure.
 
-    [sans|san] [bleu|royal|mêlé]
+    [sans|san|sens] [bleu|royal|mêlé]
     [sans|san] humain
     [sans|san] de la victime
     [sans|san] des victimes
-    [sans|san] >avoir >couler
-    [sans|san] >couler
+    [sans|san] ?n’¿ >avoir ?@:[WX]¿ >couler
+    [sans|san] ?[ne|n’]¿ >couler
+    [sans|san] ?[ne|n’]¿ >aller ?@:[WX]¿ >couler
     [sans|san] qui >couler
     [sans|san] qui >avoir >couler
         <<- /conf/ morph(<1, ":D.*:[me]") -1>> sang                 && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
 
     [couvert+ses|recouvert+ses|>ruisseler] [de|d’] [sans|san|sens]
     >avoir [ça|cela|ceci] dans le [sans|san|sens]
+    >faire ?@:[WX]¿ couler ?$:W¿ le [sans|san|sens]
     >buveur [de|d’] [sans|san|sens]
     >flaque [de|d’] [sans|san|sens]
     >flot [de|d’] [sans|san|sens]
@@ -21152,6 +21194,7 @@ TEST: elle a ça dans le {{sans}}
 TEST: elle pissait le {{sans}}
 TEST: elle a su malgré garder un certain {{sans}} de la mesure
 TEST: avoir le {{sans}} de la mesure, c’est primordial
+TEST: ne fais pas couler le {{sens}}
 TEST: ce témoignage va dans le sens de la victime.
 
 
