@@ -369,7 +369,7 @@ var lexgraph_fr = {
     _aPartDemExceptList: new Set(["celui", "celle", "ceux", "celles", "de", "jusque", "par", "marie-couche-toi"]),
     _zInterroVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$", "i"),
     _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$", "i"),
-    _zTag: new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g"),
+    _zTag: new RegExp("[:;/][a-zA-Z0-9É@*!][^:;/]*", "g"),
 
     split: function (sWord) {
         // returns an arry of strings (prefix, trimed_word, suffix)
@@ -405,22 +405,37 @@ var lexgraph_fr = {
             return " mot inconnu";
         }
         let sRes = "";
-        sMorph = sMorph.replace(/:V([0-3][ea_])[itpqnmr_eaxz]+/, ":V$1");
+        let sVType = "";
+        if (sMorph.includes(":V")) {
+            sMorph = sMorph.replace(/:V([0-3][ea_])[itpqnmr_eaxz]+/, ":V$1");
+        }
+        if (sMorph.includes(":Q")) {
+            let nVerbTag = sMorph.indexOf(":V")
+            sVType = sMorph.slice(nVerbTag, nVerbTag+4);
+            sMorph = sMorph.replace(/:V[0123]./, "").replace(/:1[ŝś]/, "");
+        }
         let m;
         while ((m = this._zTag.exec(sMorph)) !== null) {
-            if (this.dTag.has(m[0])) {
-                sRes += this.dTag.get(m[0])[0];
-            } else {
-                sRes += " [" + m[0] + "]?";
-            }
+            sRes += this._readableTag(m[0]);
         }
-        if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
-            sRes += " [" + sMorph.slice(1, sMorph.indexOf("/")) + "]";
+        if ((sRes.startsWith(" verbe") && !sRes.includes("infinitif")) || sRes.startsWith(" participe")) {
+            if (sVType) {
+                sRes += " [" + sMorph.slice(1, sMorph.indexOf("/")) + " : " + this._readableTag(sVType).gl_trimRight(",") + "]";
+            } else {
+                sRes += " [" + sMorph.slice(1, sMorph.indexOf("/")) + "]";
+            }
         }
         if (!sRes) {
             return " [" + sMorph + "]: étiquettes inconnues";
         }
         return sRes.gl_trimRight(",");
+    },
+
+    _readableTag: function (sTag) {
+        if (this.dTag.has(sTag)) {
+            return this.dTag.get(sTag)[0];
+        }
+        return " [" + sTag + "]?";
     },
 
     setLabelsOnToken (oToken) {

@@ -373,7 +373,7 @@ _dValues = {
 
 _zElidedPrefix = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([\\w-]+)")
 _zCompoundWord = re.compile("(?i)(\\w+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$")
-_zTag = re.compile("[:;/][\\w*][^:;/]*")
+_zTag = re.compile("[:;/][\\w@*!][^:;/]*")
 
 def split (sWord):
     "split word in 3 parts: prefix, root, suffix"
@@ -405,17 +405,29 @@ def readableMorph (sMorph):
     if not sMorph:
         return "mot inconnu"
     sRes = ""
-    sMorph = re.sub("(?<=V[0123][ea_])[itpqnmr_eaxz]+", "", sMorph)
+    sVType = ""
+    if ":V" in sMorph:
+        sMorph = re.sub("(?<=V[0123][ea_])[itpqnmr_eaxz]+", "", sMorph)
+    if ":Q" in sMorph:
+        nVerbTag = sMorph.find(":V")
+        sVType = sMorph[nVerbTag:nVerbTag+4]
+        sMorph = sMorph[4:].replace(":1ŝ", "").replace(":1ś", "")
     for m in _zTag.finditer(sMorph):
-        if m.group(0) in _dTAGS:
-            sRes += _dTAGS[m.group(0)][0]
+        sRes += _readableTag(m.group(0))
+    if sRes.startswith((" verbe", " participe")) and not sRes.endswith("infinitif"):
+        if sVType:
+            sRes += " [" + sMorph[1:sMorph.find("/")] + " : " + _readableTag(sVType).rstrip(",") + "]"
         else:
-            sRes += " [" + m.group(0) + "]?"
-    if sRes.startswith(" verbe") and not sRes.endswith("infinitif"):
-        sRes += " [" + sMorph[1:sMorph.find("/")] +"]"
+            sRes += " [" + sMorph[1:sMorph.find("/")] + "]"
     if not sRes:
         return " [" + sMorph + "]: étiquettes inconnues"
     return sRes.rstrip(",")
+
+def _readableTag (sTag):
+    "returns string: readable tag"
+    if sTag in _dTAGS:
+        return _dTAGS[sTag][0]
+    return " [" + sTag + "]?"
 
 
 _zPartDemForm = re.compile("([\\w]+)-(là|ci)$")
