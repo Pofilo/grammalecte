@@ -257,6 +257,8 @@ var lexgraph_fr = {
             [';C', [" : couleur", "Couleur"]],
             [';G', [" : gentilé", "Gentilé"]],
             [';L', ["", "Langue"]],
+            [';É', ["", "Élision requise"]],
+            [';é', ["", "Pas d’élision"]],
 
             ['/*', ["", "Sous-dictionnaire <Commun>"]],
             ['/C', [" <classique>", "Sous-dictionnaire <Classique>"]],
