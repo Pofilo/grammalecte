@@ -2162,7 +2162,9 @@ __da_mots_grammaticaaux__
         <<- =>> select(\1, ":R")
 
     entre  *WORD  et  *WORD
-        <<- morph(\2, ":[NA]") and morph(\4, ":[NA]") =>> define(\1, ":R")
+        <<- (morph(\2, ":[NA]") and morph(\4, ":[NA]"))
+            or (morph(\2, ":Y") and morph(\4, ":Y"))
+            or (morph(\2, ":M") and morph(\4, ":M")) =>> define(\1, ":R")
 
     entre  $:D¬:R  *WORD  et  $:D¬:R  *WORD
         <<- morph(\3, ":[NA]") and morph(\6, ":[NA]") =>> define(\1, ":R")
@@ -2211,6 +2213,9 @@ __da_mots_grammaticaaux__
     parmi *WORD
         <<- =>> select(\1, ":R")
 
+    plus
+        <<- morph(<1, ":V") =>> select(\1, ":W")
+
     puis
         <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
 
@@ -2240,7 +2245,44 @@ __da_mots_grammaticaaux__
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
 
     sur @:[BD]
-        <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[123]e") =>> select(\1, ":R")
+        <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[0123]e") =>> select(\1, ":R")
+
+    tous @:N.*:[me]:[pi]¬:(?:[AGW]|3p)
+        <<- =>> select(\1, ":D")
+
+    tous  @:3p¬:(?:G|W|A|M|N.*:[me]:[pi])
+    tous  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3p¬:G
+    tous  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G
+    tous  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G
+    tous  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3p¬:G
+        <<- not morph(<1, ":R") =>> select(\1, ":O")
+
+    tout
+        <<- morph(<1, "<start>|>,") =>> exclude(\1, ":N")
+
+    tout @:N.*:[me]:[si]¬:(?:[AGW]|3s)
+        <<- =>> select(\1, ":D")
+
+    tout  est
+    tout  @:3s¬:(?:G|W|A|M|N.*:[me]:[si])
+    tout  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3s¬:G
+    tout  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G
+    tout  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G
+    tout  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3s¬:G
+        <<- not morph(<1, ":(?:R|D.*:[me]:[si])") =>> select(\1, ":O")
+
+    toute @:N.*:[fe]:[si]¬:[AGW]
+        <<- =>> select(\1, ":D")
+
+    toutes @:N.*:[fe]:[pi]¬:(?:[AGW]|3p)
+        <<- =>> select(\1, ":D")
+
+    toutes  @:3p¬:(?:G|W|A|M|N.*:[fe]:[pi])
+    toutes  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3p¬:G
+    toutes  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G
+    toutes  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G
+    toutes  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3p¬:G
+        <<- not morph(<1, ":R") =>> select(\1, ":O")
 
     un  @:[NA].*:[me]
         <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
@@ -7460,7 +7502,7 @@ __conf_start_nom_ppas__
 
     [<start>|,|(]  *WORD  [assez|aussi|presque|très|trop|peu]  @:V1.*:Y
     [<start>|,|(]  *WORD  ?[assez|aussi|presque|très|trop]¿  [bien|mal|peu]  @:V1.*:Y
-        <<- /conf/ morph(\2, ":N", ":(?:G|V0)") --1>> =suggVerbPpas(\-1)
+        <<- /conf/ morph(\2, ":N", ":(?:G|V0|Y)") --1>> =suggVerbPpas(\-1)
         && Confusion probable. Si “\-1” est un qualificatif se rapportant au nom “\2”, n’utilisez pas un verbe à l’infinitif, mais le participe passé.
 
 TEST: écrivain {{ignorer}} par ses contemporains
@@ -7468,6 +7510,8 @@ TEST: téléphone bien {{charger}}
 TEST: époque très bien {{documenter}} grâce à la méticulosité de l’administration
 TEST: bien manger, c’est essentiel
 TEST: C’est le bien mal servir qu’agir à son insu.
+TEST: savoir bien tirer à l’arc
+TEST: savoir tirer au pistolet est indispensable
 
 
 !!
@@ -13447,7 +13491,8 @@ __neg_ne_manquant__
     [<start>|,|(|/_start_]  nous                 [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  vous                 [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  [ils|elles|iels]     [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> ne \3                       && Ne … \5 : il manque l’adverbe de négation.
+        <<- /neg/ not (value(\1, "|que|qu’|") and value(\-1, "|jamais|")) and not (value(\-1, "|pas|") and value(>1, "|mal|"))
+        -3>> ne \3                                                                                  && Ne … \5 : il manque l’adverbe de négation.
 
     [<start>|,|(|/_start_]  [je|j’]              [en|y]                                                  @:1s¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  tu                   [en|y]                                                  @:2s¬:Ov  [pas|rien|jamais|guère|point]
@@ -13456,7 +13501,8 @@ __neg_ne_manquant__
     [<start>|,|(|/_start_]  nous                 [en|y]                                                  @:1p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  vous                 [en|y]                                                  @:2p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  [ils|elles|iels]     [en|y]                                                  @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> n’\3                                                                         && Ne … \5 : il manque l’adverbe de négation.
+        <<- /neg/ not (value(\1, "|que|qu’|") and value(\-1, "|jamais|")) and not (value(\-1, "|pas|") and value(>1, "|mal|"))
+        -3>> n’\3                                                                                   && Ne … \5 : il manque l’adverbe de négation.
 
     [<start>|,|(|/_start_]  je                   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  tu                   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
@@ -13479,7 +13525,8 @@ __neg_ne_manquant__
     [<start>|,|(|/_start_]  nous                 [lui|leur]                      en                      @:1p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  vous                 [lui|leur]                      en                      @:2p¬:Ov  [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  [ils|elles|iels]     [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) -3>> ne \3                                                                        && Ne … \6 : il manque l’adverbe de négation.
+        <<- /neg/ not (value(\1, "|que|qu’|") and value(\-1, "|jamais|")) and not (value(\-1, "|pas|") and value(>1, "|mal|"))
+        -3>> ne \3                                                                                  && Ne … \6 : il manque l’adverbe de négation.
 
     [<start>|,|(|/_start_]  [je|j’]              @:1s¬:Ov    [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  tu                   @:2s¬:Ov    [pas|rien|jamais|guère|point]
@@ -13488,12 +13535,12 @@ __neg_ne_manquant__
     [<start>|,|(|/_start_]  nous                 @:1p¬:Ov    [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  vous                 @:2p¬:Ov    [pas|rien|jamais|guère|point]
     [<start>|,|(|/_start_]  [ils|elles|iels]     @:3p¬:Ov    [pas|rien|jamais|guère|point]
-        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) >>>
+        <<- /neg/ not (value(\1, "|que|qu’|") and value(\-1, "|jamais|")) and not (value(\-1, "|pas|") and value(>1, "|mal|")) >>>
         <<- /neg/ morph(\3, ">[aâeéêiîoôuœæ]") -3>> n’\3                                            && Ne … \4 : il manque l’adverbe de négation.
         <<- /neg/ __else__ -3>> ne \3                                                               && Ne … \4 : il manque l’adverbe de négation.
 
     [<start>|,|(|/_start_]  c’                   @:3s¬:Ov    [pas|rien|jamais|guère|point]
-        <<- /neg/ not (value(\-1, "|pas|") and value(>1, "|mal|")) and morph(\3, ">[aâeéêiîoôuœæ]")
+        <<- /neg/ not (value(\1, "|que|qu’|") and value(\-1, "|jamais|")) and not (value(\-1, "|pas|") and value(>1, "|mal|")) and morph(\3, ">[aâeéêiîoôuœæ]")
         -2>> ce n’                                                                                  && Ne … \4 : il manque l’adverbe de négation.
 
     [<start>|,|(|/_start_]  [je|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  >avoir  qu’  à
@@ -13515,6 +13562,7 @@ TEST: __neg__ {{c’}}est pas si mal                      ->> ce n’
 TEST: __neg__ c’est pas mal
 TEST: __neg__ ça devient pas mal
 TEST: __neg__ nous avançons pas mal
+TEST: __neg__ Je suis de beaucoup l’homme le plus terrible qu’il y eut jamais
 
 
 !!
@@ -17025,6 +17073,7 @@ __substantifs_multi_mots__
     >pile à [combustible|hydrogène]
     >pince à [linge|>ongle]
     [>piqûre|>piqure] [de|d’] rappel
+    >piscine à débordement
     >pistolet à [eau|plomb]
     >pistolet à [un|1] coup
     >pistolet à [$:B|*NUM] coups
