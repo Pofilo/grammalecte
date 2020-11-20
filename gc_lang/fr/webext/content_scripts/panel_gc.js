@@ -572,7 +572,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.clearLexicographer();
         let sText = this.xLxgInput.innerText.replace(/\n/g, " ");
         //console.log(sText);
-        this.addMessageToLexicographer("Analyse grammaticale : les mots sont analysés autant que possible en fonction du contexte (cette fonctionnalité est expérimentale).");
+        this.addMessageToLexicographer("Analyse grammaticale : les mots sont analysés autant que possible en fonction du contexte. (Cette fonctionnalité n’est pas terminée et demeure EXPÉRIMENTALE).");
         oGrammalecteBackgroundPort.parseFull(sText, "__GrammalectePanel__");
     }
 
@@ -590,7 +590,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     let xTokenList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
                     for (let oToken of oSentence.lTokens) {
                         if (oToken["sType"] != "INFO" && !oToken.hasOwnProperty("bMerged")) {
-                            if (oToken["sType"] == "WORD" && !oToken["bValidToken"]) {
+                            //console.log(">", oToken["sValue"], oToken["sType"], oToken["bValidToken"]);
+                            if (oToken["sType"].startsWith("WORD") && !oToken["bValidToken"]) {
                                 oToken["sType"] = "UNKNOWN_WORD";
                             }
                             xTokenList.appendChild(this._createTokenBlock(oToken));
