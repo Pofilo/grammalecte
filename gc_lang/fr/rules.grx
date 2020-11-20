@@ -2140,6 +2140,7 @@ __da_mots_grammaticaaux__
         <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D") and select(\2, ":[NA]")
 
     ce  @:3[sp]¬:[NA].*:[me]:[si]
+    ce  [ne|n’]
         <<- =>> select(\1, ":O")
 
     ce [que|qu’|qui|dont|pour|par]
@@ -2157,9 +2158,12 @@ __da_mots_grammaticaaux__
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
-    [de|d’] @:[MY]
+    [de|d’] @:[MYB]
     [de|d’] [un|une|le|la|l’|les|ce|cet|cette|ces|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- =>> select(\1, ":R")
+
+    [de|d’] @:[NA]¬:[YMGB]
+        <<- not \2[0:1].isupper() =>> select(\1, ":D")
 
     entre  *WORD  et  *WORD
         <<- (morph(\2, ":[NA]") and morph(\4, ":[NA]"))
@@ -2168,6 +2172,9 @@ __da_mots_grammaticaaux__
 
     entre  $:D¬:R  *WORD  et  $:D¬:R  *WORD
         <<- morph(\3, ":[NA]") and morph(\6, ":[NA]") =>> define(\1, ":R")
+
+    entre autres
+        <<- =>> define(\1, ":R")
 
     face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
@@ -2213,24 +2220,20 @@ __da_mots_grammaticaaux__
     parmi *WORD
         <<- =>> select(\1, ":R")
 
-    plus
+    [plus|moins]
         <<- morph(<1, ":V") =>> select(\1, ":W")
 
+    plus ou moins
+        <<- =>> select(\1, ":W") and select(\-1, ":W")
+
+    [plus|moins] @:[WA]
+        <<- morph(<1, ":N", ":Ov") =>> select(\1, ":W")
+
+    [plus|moins]  @:[WA] [que|qu’]
+        <<- not value(<1, "|je|ne|n’|") =>> select(\1, ":W")
+
     puis
-        <<- not value(<1, "|je|ne|n’|le|la|l’|les|lui|nous|vous|leur|") =>> =exclude(\1, ":V")
-
-    SA
-        <<- morph(<1, ":D") =>> exclude(\1, ":D")
-
-    selon $:D
-        <<- =>> select(\1, ":R")
-
-    selon [,|<end>]
-        <<- =>> select(\1, ":W")
-
-    si @:[OD]
-    s’ [il|ils]
-        <<- =>> select(\1, ":C")
+        <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
 
     pas
         <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
@@ -2243,6 +2246,20 @@ __da_mots_grammaticaaux__
 
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
+
+    SA
+        <<- morph(<1, ":D") =>> exclude(\1, ":D")
+
+    selon @:(?:[DBM]|Oo)
+        <<- =>> select(\1, ":R")
+
+    selon [,|<end>]
+        <<- =>> select(\1, ":W")
+
+    si @:[OD]
+    s’ [il|ils]
+        <<- =>> select(\1, ":C")
+
 
     sur @:[BD]
         <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[0123]e") =>> select(\1, ":R")
@@ -9111,7 +9128,7 @@ TEST: Elles sont tellement {{collets montées}} !
 
 # compte / comte / conte
 __conf_compte__
-    à bon [>conte|comte|comtes]
+    à bon [>conte|comte+s]
         <<- /conf/ -3>> compte                                  && Confusion. Locution “à bon compte”.|https://fr.wiktionary.org/wiki/%C3%A0_bon_compte
 
     à ce [conte-là|comte-là]
@@ -11337,8 +11354,8 @@ __conf_porc_port_pore__
         <<- /conf/ -2>> port                                                && Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
 
     [>arriver|>parvenir] ?@:[WX]¿ [à|a] bon [>pore|>porc]
-    >accoster ?@:[WX]¿ au [>pore|>porc]
-    >accoster ?@:[WX]¿ à ce ?petit¿ [>pore|>porc]
+    [>accoster|>amarrer] ?@:[WX]¿ au [>pore|>porc]
+    [>accoster|>amarrer] ?@:[WX]¿ à ce ?petit¿ [>pore|>porc]
         <<- /conf/ --1>> port                                               && Confusion. Pour évoquer un havre côtier où les bâteaux accostent, écrivez “port”.|https://fr.wiktionary.org/wiki/port
 
     [>pore|>porc] [usb|RJ45|DVI|HDMI|Ethernet|DisplayPort]
@@ -11348,17 +11365,18 @@ __conf_porc_port_pore__
     [pore|porc] du masque
         <<- /conf/ -1>> port                                                && Confusion. Pour évoquer les objects que l’on porte, écrivez “port”.|https://fr.wiktionary.org/wiki/port
 
-TEST: les {{ports}} de la peau
-TEST: du {{port}} au caramel
-TEST: elle prépare un rôti de {{port}}
-TEST: j’en ai marre de bouffer du {{port}}
-TEST: le {{pore}} de l’étoile jaune
-TEST: un petit {{porc}} de plaisance
-TEST: nous parvenons enfin à bon {{pore}}
-TEST: Accoste au {{porc}}
-TEST: le {{pore}} de La Rochelle
-TEST: Connecte le {{pore}} USB
-TEST: transpirer par tous les {{porcs}}
+TEST: les {{ports}} de la peau                                              ->> pore|pores
+TEST: du {{port}} au caramel                                                ->> porc|porcs
+TEST: elle prépare une blanquette de {{port}}                               ->> porc
+TEST: un filet mignon de {{pore}}                                           ->> porc
+TEST: j’en ai marre de bouffer du {{port}}                                  ->> porc|porcs
+TEST: le {{pore}} de l’étoile jaune                                         ->> port
+TEST: un petit {{porc}} de plaisance                                        ->> port|ports
+TEST: nous parvenons enfin à bon {{pore}}                                   ->> port
+TEST: Accoste au {{porc}}                                                   ->> port
+TEST: le {{pore}} de La Rochelle                                            ->> port
+TEST: Connecte le {{pore}} USB                                              ->> port|ports
+TEST: transpirer par tous les {{porcs}}                                     ->> pores
 TEST: je transporte des porcs de Calais à Londres.
 
 
@@ -18779,6 +18797,7 @@ TEST: Ce ne sera pas tous les jours facile
 TEST: d’une tête plus petit que moi, il mesurait à peine um mètre cinquante
 TEST: triompher par la force, l’intelligence la violence ou la ruse
 TEST: une table en bois brut
+TEST: c’est à devenir fou, à se taper la tête contre les murs
 
 
 @@@@
@@ -20488,11 +20507,11 @@ TEST: les {{jeûnes}} travailleurs du nouveau centre commercial
 # lait / laid / lé
 __conf_lait_laid_laie_lé__
     [>avaler|>boire|>chauffer|>ingurgiter|>réchauffer] [du|le|ce] [>laid|>lai|>lé]
-    >boire [du|le|ce] petit [>laid|>laie|>lai|>lé]
-    >verre [de|d’] [>laid|>laie|>lai|>lé]
+    >boire [du|le|ce] petit [>laid|>lai|>lé]
+    >verre [de|d’] [>laid|>lai|>lé]
         <<- /conf/ --1>> lait                                           && Confusion probable. Le produit laitier s’écrit “lait”.
 
-    [laid+s|>laie|>lai|>lé] [de|d’] [brebis|coco|chèvre|poule|soja|vache]
+    [laid+s|>lai|>lé] [de|d’] [brebis|coco|chèvre|poule|soja|vache]
         <<- /conf/ -1>> lait                                            && Confusion probable. Le produit laitier s’écrit “lait”.
 
 TEST: fait chauffer le {{laid}}                                 ->> lait
