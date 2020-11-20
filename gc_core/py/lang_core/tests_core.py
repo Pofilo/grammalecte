@@ -142,10 +142,13 @@ class TestGrammarChecking (unittest.TestCase):
             lAllSugg.append("|".join(dErr["aSuggestions"]))
             self._aTestedRules.add(dErr["sRuleId"].rstrip("0123456789"))
             # test messages
-            if "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
-                print("\n# Line num : " + dErr["sLineId"] + \
-                      "\n  rule name: " + dErr["sRuleId"] + \
-                      "\n  message  : " + dErr["sMessage"])
+            if False:
+                aMsgErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
+                if aMsgErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
+                    print("\n# Incorrect message: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
+                    if aMsgErrs:
+                        for dMsgErr in sorted(aMsgErrs, key=lambda d: d["nStart"]):
+                            print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
         return sRes, sListErr, "|||".join(lAllSugg)
 
     def _getExpectedErrors (self, sLine):
@@ -155,6 +158,12 @@ class TestGrammarChecking (unittest.TestCase):
             nEnd = m.end() - (4 * (i+1))
             sRes = sRes[:nStart] + "~" * (nEnd - nStart) + sRes[nEnd:-4]
         return sRes
+
+
+def purgeMessage (sMessage):
+    sMessage = sMessage.replace("l’ ", "l’").replace("d’ ", "d’").replace("m’ ", "m’").replace("t’ ", "t’").replace("s’ ", "s’").replace("qu’ ", "qu’")
+    sMessage = sMessage.replace("L’ ", "L’").replace("D’ ", "D’").replace("M’ ", "M’").replace("T’ ", "T’").replace("S’ ", "S’").replace("QU’ ", "QU’")
+    return sMessage
 
 
 def main():
