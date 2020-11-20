@@ -164,6 +164,7 @@ _dTAGS = {
     ':W': (" adverbe,", "Adverbe"),
     ':J': (" interjection,", "Interjection"),
     ':B': (" nombre,", "Nombre"),
+    ':Br': (" nombre romain,", "Nombre romain"),
     ':T': (" titre,", "Titre de civilité"),
 
     ':e': (" épicène", "épicène"),
