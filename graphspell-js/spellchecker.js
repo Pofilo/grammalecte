@@ -177,11 +177,13 @@ class SpellChecker {
         if (!this.lexicographer) {
             return;
         }
+        if (oToken["sType"].startsWith("WORD")) {
+            oToken["bValidToken"] = (oToken.hasOwnProperty("lMorph")) ? true : this.isValidToken(oToken["sValue"]);
+        }
         if (!oToken.hasOwnProperty("lMorph")) {
             oToken["lMorph"] = this.getMorph(oToken["sValue"]);
         }
         if (oToken["sType"].startsWith("WORD")) {
-            oToken["bValidToken"] = (oToken.hasOwnProperty("lMorph")) ? true : this.isValidToken(oToken["sValue"]);
             let [sPrefix, sStem, sSuffix] = this.lexicographer.split(oToken["sValue"]);
             if (sStem != oToken["sValue"]) {
                 oToken["lSubTokens"] = [
