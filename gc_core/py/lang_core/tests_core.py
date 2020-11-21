@@ -62,6 +62,7 @@ class TestGrammarChecking (unittest.TestCase):
     def setUpClass (cls):
         gc_engine.load()
         cls._zError = re.compile(r"\{\{.*?\}\}")
+        cls._zRuleEnd = re.compile(r"_a\d+_\d+$")
         cls._aTestedRules = set()
 
     def test_parse (self):
@@ -145,9 +146,10 @@ class TestGrammarChecking (unittest.TestCase):
             if False:
                 aMsgErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
                 if aMsgErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
-                    print("\n# Incorrect message: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
-                    if aMsgErrs:
-                        for dMsgErr in sorted(aMsgErrs, key=lambda d: d["nStart"]):
+                    aSelectedErrs = [ dMsgErr  for dMsgErr in sorted(aMsgErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
+                    if aSelectedErrs:
+                        print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
+                        for dMsgErr in aSelectedErrs:
                             print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
         return sRes, sListErr, "|||".join(lAllSugg)
 

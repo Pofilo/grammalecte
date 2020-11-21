@@ -8,7 +8,7 @@ import unittest
 import time
 from contextlib import contextmanager
 
-from ..graphspell.ibdawg import IBDAWG
+from ..graphspell.spellchecker import SpellChecker
 from . import conj
 from . import phonet
 from . import mfsp
@@ -32,27 +32,27 @@ class TestDictionary (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        cls.oDic = IBDAWG("${dic_main_filename_py}")
+        cls.oSpellChecker = SpellChecker("fr")
 
     def test_lookup (self):
         for sWord in ["branche", "Émilie"]:
-            self.assertTrue(self.oDic.lookup(sWord), sWord)
+            self.assertTrue(self.oSpellChecker.lookup(sWord), sWord)
 
     def test_lookup_failed (self):
         for sWord in ["Branche", "BRANCHE", "BranchE", "BRanche", "BRAnCHE", "émilie"]:
-            self.assertFalse(self.oDic.lookup(sWord), sWord)
+            self.assertFalse(self.oSpellChecker.lookup(sWord), sWord)
 
     def test_isvalidtoken (self):
         for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd'hui", "aujourd’hui", "Aujourd'hui", "Aujourd’hui", "je-suis-vraiment-fatigué", ""]:
-            self.assertTrue(self.oDic.isValidToken(sWord), sWord)
+            self.assertTrue(self.oSpellChecker.isValidToken(sWord), sWord)
 
     def test_isvalid (self):
         for sWord in ["Branche", "branche", "BRANCHE", "Émilie", "ÉMILIE", "aujourd’hui", "Aujourd’hui"]:
-            self.assertTrue(self.oDic.isValid(sWord), sWord)
+            self.assertTrue(self.oSpellChecker.isValid(sWord), sWord)
 
     def test_isvalid_failed (self):
         for sWord in ["BranchE", "BRanche", "BRAnCHE", "émilie", "éMILIE", "émiLie", "aujourd'hui", "Aujourd'hui", ]:
-            self.assertFalse(self.oDic.isValid(sWord), sWord)
+            self.assertFalse(self.oSpellChecker.isValid(sWord), sWord)
 
     def test_suggest (self):
         for sWord in [
@@ -60,10 +60,22 @@ class TestDictionary (unittest.TestCase):
             "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "email", "Co2",
             "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
         ]:
-            aSugg = self.oDic.suggest(sWord)
+            aSugg = self.oSpellChecker.suggest(sWord)
             #with timeblock(sWord):
-            #    aSugg = self.oDic.suggest(sWord)
+            #    aSugg = self.oSpellChecker.suggest(sWord)
             #    print(sWord, "->", " ".join(aSugg))
+
+    def test_lemmas (self):
+        for sWord, sInfi in [
+            ("jetez",       "jeter"),
+            ("finit",       "finir"),
+            ("mangé",       "manger"),
+            ("oubliait",    "oublier"),
+            ("arrivais",    "arriver"),
+            ("venait",      "venir"),
+            ("prendre",     "prendre")
+        ]:
+            self.assertIn(sInfi, self.oSpellChecker.getLemma(sWord))
 
 
 class TestConjugation (unittest.TestCase):
