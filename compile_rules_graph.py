@@ -107,10 +107,39 @@ class GraphBuilder:
         self.dFunctions = {}
         self.dLemmas = {}
 
+    def createGraphAndActions (self, lRuleLine):
+        "create a graph as a dictionary with <lRuleLine>"
+        fStartTimer = time.time()
+        print("{:>8,} rules in {:<30} ".format(len(lRuleLine), f"<{self.sGraphName}|{self.sGraphCode}>"), end="")
+        lPreparedRule = []
+        for i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority in lRuleLine:
+            for aRule in self.createRule(i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
+                lPreparedRule.append(aRule)
+        # Debugging
+        if False:
+            print("\nRULES:")
+            for e in lPreparedRule:
+                if e[-2] == "##2211":
+                    print(e)
+        # Graph creation
+        oDARG = darg.DARG(lPreparedRule, self.sLang)
+        dGraph = oDARG.createGraph()
+        print(oDARG, end="")
+        # debugging
+        if False:
+            print("\nGRAPH:", self.sGraphName)
+            for k, v in dGraph.items():
+                print(k, "\t", v)
+        print("\tin {:>8.2f} s".format(time.time()-fStartTimer))
+        sPyCallables, sJSCallables = self.createCallables()
+        return dGraph, self.dActions, sPyCallables, sJSCallables, self.dLemmas
+
     def _genTokenLines (self, sTokenLine):
         "tokenize a string and return a list of lines of tokens"
         lTokenLines = []
-        for sTokBlock in sTokenLine.split():
+        nFirstNullable = 0
+        nLastNullable = 0
+        for n, sTokBlock in enumerate(sTokenLine.split(), 1):
             # replace merger characters by spaces
             if "␣" in sTokBlock:
                 sTokBlock = sTokBlock.replace("␣", " ")
@@ -118,7 +147,12 @@ class GraphBuilder:
             bNullPossible = sTokBlock.startswith("?") and sTokBlock.endswith("¿")
             if bNullPossible:
                 sTokBlock = sTokBlock[1:-1]
+                if nFirstNullable == 0:
+                    nFirstNullable = n
+                nLastNullable = n
             # token with definition?
+            if sTokBlock.startswith("(") and sTokBlock.endswith(")"):
+                nFirstNullable = -1
             if sTokBlock.startswith("({") and sTokBlock.endswith("})") and sTokBlock[1:-1] in self.dDef:
                 sTokBlock = "(" + self.dDef[sTokBlock[1:-1]] + ")"
             elif sTokBlock.startswith("{") and sTokBlock.endswith("}") and sTokBlock in self.dDef:
@@ -165,8 +199,9 @@ class GraphBuilder:
                     else:
                         for aRule in lTokenLines:
                             aRule.append(sTokBlock)
+        nLastNullable = nLastNullable - n - 1
         for aRule in lTokenLines:
-            yield aRule
+            yield aRule, nFirstNullable, nLastNullable
 
     def _createTokenList (self, sTokBlock):
         "return a list of tokens from a block of tokens"
@@ -184,33 +219,6 @@ class GraphBuilder:
                 lToken.append(sToken)
         return lToken
 
-    def createGraphAndActions (self, lRuleLine):
-        "create a graph as a dictionary with <lRuleLine>"
-        fStartTimer = time.time()
-        print("{:>8,} rules in {:<30} ".format(len(lRuleLine), f"<{self.sGraphName}|{self.sGraphCode}>"), end="")
-        lPreparedRule = []
-        for i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority in lRuleLine:
-            for aRule in self.createRule(i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
-                lPreparedRule.append(aRule)
-        # Debugging
-        if False:
-            print("\nRULES:")
-            for e in lPreparedRule:
-                if e[-2] == "##2211":
-                    print(e)
-        # Graph creation
-        oDARG = darg.DARG(lPreparedRule, self.sLang)
-        dGraph = oDARG.createGraph()
-        print(oDARG, end="")
-        # debugging
-        if False:
-            print("\nGRAPH:", self.sGraphName)
-            for k, v in dGraph.items():
-                print(k, "\t", v)
-        print("\tin {:>8.2f} s".format(time.time()-fStartTimer))
-        sPyCallables, sJSCallables = self.createCallables()
-        return dGraph, self.dActions, sPyCallables, sJSCallables, self.dLemmas
-
     def createRule (self, iLine, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
         "generator: create rule as list"
         # print(iLine, "//", sRuleName, "//", sTokenLine, "//", lActions, "//", nPriority)
@@ -219,11 +227,11 @@ class GraphBuilder:
             sTokenLine = sTokenLine[2:-2].strip()
             if sRuleName not in self.dAntiPatterns:
                 self.dAntiPatterns[sRuleName]= []
-            for lToken in self._genTokenLines(sTokenLine):
+            for lToken, _, _ in self._genTokenLines(sTokenLine):
                 self.dAntiPatterns[sRuleName].append(lToken)
         else:
             # pattern
-            for lToken in self._genTokenLines(sTokenLine):
+            for lToken, nFirstNullable, nLastNullable in self._genTokenLines(sTokenLine):
                 if sRuleName in self.dAntiPatterns and lToken in self.dAntiPatterns[sRuleName]:
                     # <lToken> matches an antipattern -> discard
                     continue
@@ -245,7 +253,7 @@ class GraphBuilder:
                     sAction = sAction.strip()
                     if sAction:
                         sActionId = f"{self.sGraphCode}__{sRuleName}__b{iActionBlock}_a{iAction}"
-                        aAction = self.createAction(sActionId, sAction, nPriority, len(lToken), dPos, iActionLine)
+                        aAction = self.createAction(sActionId, sAction, nPriority, len(lToken), dPos, iActionLine, nFirstNullable, nLastNullable)
                         if aAction:
                             sActionName = self.storeAction(sActionId, aAction)
                             lResult = list(lToken)
@@ -262,7 +270,7 @@ class GraphBuilder:
                         print("No action found for ", iActionLine)
                         exit()
 
-    def createAction (self, sActionId, sAction, nPriority, nToken, dPos, iActionLine):
+    def createAction (self, sActionId, sAction, nPriority, nToken, dPos, iActionLine, nFirstNullable, nLastNullable):
         "create action rule as a list"
         sLineId = "#" + str(iActionLine)
 
@@ -296,6 +304,7 @@ class GraphBuilder:
         cAction = m.group("action")
         sAction = sAction[m.end():].strip()
         sAction = changeReferenceToken(sAction, dPos)
+
         # target
         cStartLimit = "<"
         cEndLimit = ">"
@@ -324,12 +333,21 @@ class GraphBuilder:
         if iEndAction < 0:
             iEndAction += 1
 
+        # check target
+        if nFirstNullable > -1:
+            if nFirstNullable > 0 and iStartAction > 0 and iEndAction != 0 and iStartAction > nFirstNullable:
+                print(f"# Error. At {sLineId}, {sActionId}, target start is bigger than first nullable token.")
+            if nFirstNullable > 0 and iEndAction > 0 and iStartAction != 1 and iEndAction > nFirstNullable:
+                print(f"# Error. At {sLineId}, {sActionId}, target end is bigger than first nullable token.")
+            if nLastNullable < 0 and iStartAction < 0 and iEndAction != 0 and (iStartAction-1) < nLastNullable:
+                print(f"# Error. At {sLineId}, {sActionId}, target start is lower than last nullable token.")
+            if nLastNullable < 0 and iEndAction < 0 and iStartAction != 1 and (iEndAction-1) < nLastNullable:
+                print(f"# Error. At {sLineId}, {sActionId}, target end is lower than last nullable token.")
+
         if cAction == "-":
             ## error
             iMsg = sAction.find(" && ")
             if iMsg == -1:
-                sMsg = "# Error. Error message not found."
-                sURL = ""
                 print("\n# Error. No message at: ", sLineId, sActionId)
                 exit()
             else:
@@ -340,14 +358,15 @@ class GraphBuilder:
                 if mURL:
                     sURL = mURL.group(1).strip()
                     sMsg = sMsg[:mURL.start(0)].strip()
-                checkTokenNumbers(sMsg, sActionId, nToken)
+                checkTokenNumbers(sMsg, sActionId, nToken)      # check tokens in message
                 if sMsg[0:1] == "=":
                     sMsg = self.createFunction("msg", sMsg, True)
                 else:
                     checkIfThereIsCode(sMsg, sActionId)
 
-        # checking consistancy
-        checkTokenNumbers(sAction, sActionId, nToken)
+        # checking token consistancy
+        checkTokenNumbers(sCondition, sActionId, nToken)    # check tokens in condition
+        checkTokenNumbers(sAction, sActionId, nToken)       # check tokens in action
 
         if cAction == ">":
             ## no action, break loop if condition is False
