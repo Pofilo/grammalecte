@@ -64,6 +64,7 @@ class TestGrammarChecking (unittest.TestCase):
         cls._zError = re.compile(r"\{\{.*?\}\}")
         cls._zRuleEnd = re.compile(r"_a\d+_\d+$")
         cls._aTestedRules = set()
+        cls._oSpellChecker = gc_engine.getSpellChecker()
 
     def test_parse (self):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
@@ -144,13 +145,15 @@ class TestGrammarChecking (unittest.TestCase):
             self._aTestedRules.add(dErr["sRuleId"].rstrip("0123456789"))
             # test messages
             if False:
-                aMsgErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
-                if aMsgErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
-                    aSelectedErrs = [ dMsgErr  for dMsgErr in sorted(aMsgErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
-                    if aSelectedErrs:
-                        print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
-                        for dMsgErr in aSelectedErrs:
-                            print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
+                aGramErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
+                aGramErrs = [ dMsgErr  for dMsgErr in sorted(aGramErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
+                aSpellErrs = self._oSpellChecker.parseParagraph(re.sub("‹\\w+›", lambda m: " " * len(m.group(0)), dErr["sMessage"]))
+                if aGramErrs or aSpellErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
+                    print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
+                    for dMsgErr in aGramErrs:
+                        print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
+                    for dMsgErr in aSpellErrs:
+                        print("        spelling mistake: <{sValue}>  at {nStart}:{nEnd}".format(**dMsgErr))
         return sRes, sListErr, "|||".join(lAllSugg)
 
     def _getExpectedErrors (self, sLine):
