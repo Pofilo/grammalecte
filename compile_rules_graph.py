@@ -335,13 +335,13 @@ class GraphBuilder:
 
         # check target
         if nFirstNullable > -1:
-            if nFirstNullable > 0 and iStartAction > 0 and iEndAction != 0 and iStartAction > nFirstNullable:
+            if nFirstNullable > 0 and iStartAction > 0 and iEndAction != 0 and (iStartAction > nFirstNullable or iStartAction == nFirstNullable == iEndAction):
                 print(f"# Error. At {sLineId}, {sActionId}, target start is bigger than first nullable token.")
-            if nFirstNullable > 0 and iEndAction > 0 and iStartAction != 1 and iEndAction > nFirstNullable:
+            if nFirstNullable > 0 and iEndAction > 0 and iStartAction != 1 and (iEndAction > nFirstNullable or iStartAction == nFirstNullable == iEndAction):
                 print(f"# Error. At {sLineId}, {sActionId}, target end is bigger than first nullable token.")
-            if nLastNullable < 0 and iStartAction < 0 and iEndAction != 0 and (iStartAction-1) < nLastNullable:
+            if nLastNullable < 0 and iStartAction < 0 and iEndAction != 0 and ((iStartAction-1) < nLastNullable or (iStartAction-1) == nFirstNullable == (iEndAction-1)):
                 print(f"# Error. At {sLineId}, {sActionId}, target start is lower than last nullable token.")
-            if nLastNullable < 0 and iEndAction < 0 and iStartAction != 1 and (iEndAction-1) < nLastNullable:
+            if nLastNullable < 0 and iEndAction < 0 and iStartAction != 1 and ((iEndAction-1) < nLastNullable or (iStartAction-1) == nFirstNullable == (iEndAction-1)):
                 print(f"# Error. At {sLineId}, {sActionId}, target end is lower than last nullable token.")
 
         if cAction == "-":
