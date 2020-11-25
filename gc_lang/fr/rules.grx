@@ -1704,23 +1704,23 @@ TEST: y aura-t-il du poulet au dîner ?
 !!!
 
 __tag_mots_entre_guillemets__
-    «  *WORD  »
+    «  [*WORD|*WORD_ELIDED]  »
         <<- space_after(\1, 0, 1) and space_after(\2, 0, 1) /2>> eg1mot
 
-    «  *WORD  *WORD
+    «  [*WORD|*WORD_ELIDED]  [*WORD|*WORD_ELIDED]
         <<- space_after(\1, 0, 1) /2:0>> egxmot
 
-    *WORD  *WORD  »
+    [*WORD|*WORD_ELIDED]  [*WORD|*WORD_ELIDED]  »
         <<- space_after(\2, 0, 1) /1:2>> egxmot
 
-    [“|”|"]     *WORD   [“|”|"]
-    [‘|'|’|`]   *WORD   [‘|'|’|`]
+    [“|”|"]     [*WORD|*WORD_ELIDED]   [“|”|"]
+    [‘|'|’|`]   [*WORD|*WORD_ELIDED]   [‘|'|’|`]
         <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) /2>> eg1mot
 
-    ["|“|”]  *WORD  *WORD
+    ["|“|”]  [*WORD|*WORD_ELIDED]  *[*WORD|*WORD_ELIDED]
         <<- space_after(\1, 0, 0) /2:0>> egxmot
 
-    *WORD  *WORD  ["|“|”]
+    [*WORD|*WORD_ELIDED]  [*WORD|*WORD_ELIDED]  ["|“|”]
         <<- space_after(\2, 0, 0) /1:2>> egxmot
 
 
@@ -3159,6 +3159,10 @@ __immunités__
     [<start>|,]  «          $:V         »          est [une|la]    forme verbale
     [<start>|,]  [‘|'|’|`]  $:V         [‘|'|’|`]  est [une|la]    forme verbale
     [<start>|,]  ‹          $:V         ›          est [une|la]    forme verbale
+    [<start>|,]  [“|”|"]    *WORD       [“|”|"]    est [une|la]    forme verbale interrogative
+    [<start>|,]  «          *WORD       »          est [une|la]    forme verbale interrogative
+    [<start>|,]  [‘|'|’|`]  *WORD       [‘|'|’|`]  est [une|la]    forme verbale interrogative
+    [<start>|,]  ‹          *WORD       ›          est [une|la]    forme verbale interrogative
     [<start>|,]  [“|”|"]    [$:B|*NUM]  [“|”|"]    est [un|le]     nombre
     [<start>|,]  «          [$:B|*NUM]  »          est [un|le]     nombre
     [<start>|,]  [‘|'|’|`]  [$:B|*NUM]  [‘|'|’|`]  est [un|le]     nombre
@@ -5345,7 +5349,7 @@ __tu_substantifs!7__
     [au-jour-d’hui+s]
     au-jour d’ [hui+s|oui|huit]
         <<- /tu/ ->> aujourd’hui
-        && Soudez. “Aujourd’hui” : agglutination de l’ancienne locution “au jour d’hui”, dont le terme ‹hui› signifiait autrefois “en ce jour”.|https://fr.wiktionary.org/wiki/aujourd%E2%80%99hui
+        && Soudez. “Aujourd’hui” : agglutination de l’ancienne locution ‹au jour d’hui›, dont le terme ‹hui› signifiait autrefois “en ce jour”.|https://fr.wiktionary.org/wiki/aujourd%E2%80%99hui
 
     [basket|volley] ball
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
@@ -6929,8 +6933,8 @@ __conj_ce__
     [ce|c’]  [ne|n’]  ?[le|l’|en]¿  @>être/:V¬:(?:3[sp]|P|Q|Ov)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    [c’|ç’]                         @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
-        <<- /conf/ -2>> =suggSimil(\2, ":3s", False)                                                && Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    [c’|ç’]                         @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:que|[bcdfgjklmnpqrstvwxz].*:N.*:m:[si])/
+        <<- /conf/ not tag(\1, "eg1mot") -2>> =suggSimil(\2, ":3s", False)                          && Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: pour toi qui sais tout, ce ne le {{fus}} pas
 TEST: ce secret tu, ce {{devais}} être un cauchemar.
@@ -6944,6 +6948,7 @@ TEST: ce serait une honte d’échouer une fois de plus à un test aussi éléme
 TEST: ce ne saurait être cet homme…
 TEST: C’en est trop !
 TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut supporter.
+TEST: c’con est trop con
 
 
 __conj_c_en!6__
@@ -9332,7 +9337,7 @@ __conf_se_ceux_ce!6__
 
     ce  [/-il|/-ils|/-elle|/-elles|/-iel|/-iels|/-on]
         <<- /conf/ not \1.isupper() and \2.islower()
-        -1>> se                                         && Confusion : « \2 » est une forme verbale. Exemples : ce bâtiment, se perdre.
+        -1>> se                                         && Confusion : « \2 » est une forme verbale interrogative. Exemples : ce bâtiment, se perdre.
 
     [ce|c’] qui ce passe
         <<- /conf/ -3>> se                              && Confusion : « \4 » est une forme verbale. Exemples : ce bâtiment, se perdre.
@@ -19533,6 +19538,15 @@ TEST: Nous avons déconné, nous avons été mis à l’{{amande}}.
 TEST: Ces gens-là ne feront jamais {{amande honorable}}.
 TEST: achète de la pâte d’{{amende}}
 TEST: feront-ils {{amande honorable}}
+
+
+# ancre / encre
+__conf_ancre_encre__
+    >faire couler beaucoup d’ >ancre
+    >faire couler l’ >ancre
+        <<- /conf/ --1>> encre                          && Confusion probable. Locution “faire couler beaucoup d’encre”.|https://fr.wiktionary.org/wiki/faire_couler_l%E2%80%99encre
+
+TEST: cette idylle a fait couler beaucoup d’{{ancre}}               ->> encre
 
 
 # annales / anal-e-s

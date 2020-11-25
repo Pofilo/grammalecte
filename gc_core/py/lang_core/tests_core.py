@@ -144,16 +144,15 @@ class TestGrammarChecking (unittest.TestCase):
             lAllSugg.append("|".join(dErr["aSuggestions"]))
             self._aTestedRules.add(dErr["sRuleId"].rstrip("0123456789"))
             # test messages
-            if False:
-                aGramErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
-                aGramErrs = [ dMsgErr  for dMsgErr in sorted(aGramErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
-                aSpellErrs = self._oSpellChecker.parseParagraph(re.sub("‹\\w+›", lambda m: " " * len(m.group(0)), dErr["sMessage"]))
-                if aGramErrs or aSpellErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
-                    print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
-                    for dMsgErr in aGramErrs:
-                        print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
-                    for dMsgErr in aSpellErrs:
-                        print("        spelling mistake: <{sValue}>  at {nStart}:{nEnd}".format(**dMsgErr))
+            aGramErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
+            aGramErrs = [ dMsgErr  for dMsgErr in sorted(aGramErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
+            aSpellErrs = self._oSpellChecker.parseParagraph(re.sub("‹[\\w ’-]+›", lambda m: " " * len(m.group(0)), dErr["sMessage"]))
+            if aGramErrs or aSpellErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
+                print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
+                for dMsgErr in aGramErrs:
+                    print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
+                for dMsgErr in aSpellErrs:
+                    print("        spelling mistake: <{sValue}>  at {nStart}:{nEnd}".format(**dMsgErr))
         return sRes, sListErr, "|||".join(lAllSugg)
 
     def _getExpectedErrors (self, sLine):
@@ -166,8 +165,11 @@ class TestGrammarChecking (unittest.TestCase):
 
 
 def purgeMessage (sMessage):
-    sMessage = sMessage.replace("l’ ", "l’").replace("d’ ", "d’").replace("m’ ", "m’").replace("t’ ", "t’").replace("s’ ", "s’").replace("qu’ ", "qu’")
-    sMessage = sMessage.replace("L’ ", "L’").replace("D’ ", "D’").replace("M’ ", "M’").replace("T’ ", "T’").replace("S’ ", "S’").replace("QU’ ", "QU’")
+    for sToReplace, sReplacement in [
+        ("l’ ", "l’"), ("d’ ", "d’"), ("n’ ", "n’"), ("j’ ", "j’"), ("m’ ", "m’"), ("t’ ", "t’"), ("s’ ", "s’"), ("qu’ ", "qu’"),
+        ("L’ ", "L’"), ("D’ ", "D’"), ("N’ ", "N’"), ("J’ ", "J’"), ("M’ ", "M’"), ("T’ ", "T’"), ("S’ ", "S’"), ("QU’ ", "QU’")
+    ]:
+        sMessage = sMessage.replace(sToReplace, sReplacement)
     return sMessage
 
 
