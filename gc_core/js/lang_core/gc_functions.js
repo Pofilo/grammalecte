@@ -299,7 +299,7 @@ function g_merged_analyse (oToken1, oToken2, cMerger, sPattern, sNegPattern="", 
     return bResult;
 }
 
-function g_tag_before (oToken, dTags, sTag) {
+function g_tagbefore (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
@@ -309,7 +309,7 @@ function g_tag_before (oToken, dTags, sTag) {
     return false;
 }
 
-function g_tag_after (oToken, dTags, sTag) {
+function g_tagafter (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
@@ -423,7 +423,7 @@ function g_exclude (oToken, sPattern) {
     return true;
 }
 
-function g_add_morph (oToken, sNewMorph) {
+function g_addmorph (oToken, sNewMorph) {
     // Disambiguation: add a morphology to a token
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     lMorph.push(...sNewMorph.split("|"));
@@ -444,7 +444,7 @@ function g_define (oToken, sMorphs) {
     return true;
 }
 
-function g_define_from (oToken, nLeft=null, nRight=null) {
+function g_definefrom (oToken, nLeft=null, nRight=null) {
     let sValue = oToken["sValue"];
     if (nLeft !== null) {
         sValue = (nRight !== null) ? sValue.slice(nLeft, nRight) : sValue.slice(nLeft);
@@ -453,7 +453,7 @@ function g_define_from (oToken, nLeft=null, nRight=null) {
     return true;
 }
 
-function g_change_meta (oToken, sType) {
+function g_setmeta (oToken, sType) {
     // Disambiguation: change type of token
     oToken["sType"] = sType;
     return true;

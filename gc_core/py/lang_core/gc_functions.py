@@ -248,7 +248,7 @@ def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetM
     return bResult
 
 
-def g_tag_before (dToken, dTags, sTag):
+def g_tagbefore (dToken, dTags, sTag):
     "returns True if <sTag> is present on tokens before <dToken>"
     if sTag not in dTags:
         return False
@@ -257,7 +257,7 @@ def g_tag_before (dToken, dTags, sTag):
     return False
 
 
-def g_tag_after (dToken, dTags, sTag):
+def g_tagafter (dToken, dTags, sTag):
     "returns True if <sTag> is present on tokens after <dToken>"
     if sTag not in dTags:
         return False
@@ -365,7 +365,7 @@ def g_exclude (dToken, sPattern):
     return True
 
 
-def g_add_morph (dToken, sNewMorph):
+def g_addmorph (dToken, sNewMorph):
     "Disambiguation: add a morphology to a token"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     lMorph.extend(sNewMorph.split("|"))
@@ -387,7 +387,7 @@ def g_define (dToken, sMorphs):
     return True
 
 
-def g_define_from (dToken, nLeft=None, nRight=None):
+def g_definefrom (dToken, nLeft=None, nRight=None):
     "Disambiguation: set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
     if nLeft is not None:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
@@ -396,7 +396,7 @@ def g_define_from (dToken, nLeft=None, nRight=None):
     return True
 
 
-def g_change_meta (dToken, sType):
+def g_setmeta (dToken, sType):
     "Disambiguation: change type of token"
     dToken["sType"] = sType
     return True
