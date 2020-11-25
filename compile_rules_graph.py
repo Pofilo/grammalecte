@@ -44,8 +44,8 @@ def rewriteCode (sCode):
     sCode = re.sub(r"\b(select|exclude|define|definefrom|rewrite|addmorph|setmeta)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
     sCode = re.sub(r"\b(tagbefore|tagafter)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', sCode)
     sCode = re.sub(r"\b(tagbefore|tagafter)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', sCode)
-    sCode = re.sub(r"\bspace_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
-    sCode = re.sub(r"\bspace_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
+    sCode = re.sub(r"\bspace[(][\\](\d+)", 'g_space(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
+    sCode = re.sub(r"\bspace[(][\\]-(\d+)", 'g_space(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
     sCode = re.sub(r"\banalyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
     sCode = re.sub(r"\banalyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
     sCode = re.sub(r"\b(morph|analyse|tag|meta|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token

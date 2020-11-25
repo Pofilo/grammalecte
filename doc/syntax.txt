@@ -347,7 +347,7 @@ Example:
 >   Same action with `morph()` and `morph0()` for regex rules.
 >   Parameters <trim_left> and <trim_right> removed n characters at left or the right of the token before performing an analyse.
 
-`space_after(n, min_space[, max_space])`
+`space(n, min_space[, max_space])`
 
 >   Returns True if the next token after token n is separated with at least <min_space> blank spaces and at most with <max_space> blank spaces.
 
@@ -355,11 +355,11 @@ Example:
 
 >   Returns True if <tag> exists on taken the nth token.
 
-`tag_before(n, tag)`
+`tagbefore(n, tag)`
 
 >   Returns True if <tag> is found any token before the nth tag.
 
-`tag_after(n, tag)`
+`tagafter(n, tag)`
 
 >   Returns True if <tag> is found any token after the nth tag.
 
@@ -603,19 +603,19 @@ There are 4 commands for disambiguation.
 
 >   At reference n, exclude morphologies that match the pattern.
 
-`define(n, [morph_list])`
+`define(n, morph_list as string)`
 
->   At reference n, set the listed morphologies (a list of strings).
+>   At reference n, set the listed morphologies.
 
-`add_morph(n, [morph_list])`
+`addmorph(n, morph_list as string)`
 
->   At reference n, add the listed morphologies (a list of strings).
+>   At reference n, add the listed morphologies.
 
 Examples:
 
     =>> select(\1, "po:noun is:pl")
     =>> exclude(\1, "po:verb")
-    =>> exclude(\1, "po:verb") and define(\2, ["po:adv"]) and select(\3, "po:adv")
+    =>> exclude(\1, "po:verb") and define(\2, "po:adv") and select(\3, "po:adv")
 
 Note: All these functions ALWAYS return True.
 
@@ -623,8 +623,8 @@ If `select()` and `exclude()` generate an empty list, nothing change.
 
 With `define()` and `addmorph()`, you must set a list of POS tags. Example:
 
-    =>> define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
-    =>> addmorph(\1, ["po:adv"])
+    =>> define(\1, "po:nom is:plur|po:adj is:sing|po:adv")
+    =>> addmorph(\1, "po:adv")
 
 ### Tagging
 
@@ -634,7 +634,7 @@ Example: `/>> a_tag` to set the same tag on all takens of the rule.
 Example: `/3>> a_tag` to set the tag on the third token.
 Example: `/>> a_tag|another_tag` to set two tags.
 
-You can know if a token is tagged with eh function `tag()` and you can know if tags have been set on previous or following tokens with `tag_before()` and `tag_after()`.
+You can know if a token is tagged with eh function `tag()` and you can know if tags have been set on previous or following tokens with `tagbefore()` and `tagafter()`.
 
 ### Immunity
 

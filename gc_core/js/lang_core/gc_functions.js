@@ -327,7 +327,7 @@ function g_meta (oToken, sType) {
     return oToken["sType"] == sType;
 }
 
-function g_space_between_tokens (oToken1, oToken2, nMin, nMax=null) {
+function g_space (oToken1, oToken2, nMin, nMax=null) {
     let nSpace = oToken2["nStart"] - oToken1["nEnd"]
     if (nSpace < nMin) {
         return false;

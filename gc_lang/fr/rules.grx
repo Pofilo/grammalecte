@@ -1705,23 +1705,23 @@ TEST: y aura-t-il du poulet au dîner ?
 
 __tag_mots_entre_guillemets__
     «  [*WORD|*WORDELD]  »
-        <<- space_after(\1, 0, 1) and space_after(\2, 0, 1) /2>> eg1mot
+        <<- space(\1, 0, 1) and space(\2, 0, 1) /2>> eg1mot
 
     «  [*WORD|*WORDELD]  [*WORD|*WORDELD]
-        <<- space_after(\1, 0, 1) /2:0>> egxmot
+        <<- space(\1, 0, 1) /2:0>> egxmot
 
     [*WORD|*WORDELD]  [*WORD|*WORDELD]  »
-        <<- space_after(\2, 0, 1) /1:2>> egxmot
+        <<- space(\2, 0, 1) /1:2>> egxmot
 
     [“|”|"]     [*WORD|*WORDELD]   [“|”|"]
     [‘|'|’|`]   [*WORD|*WORDELD]   [‘|'|’|`]
-        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) /2>> eg1mot
+        <<- space(\1, 0, 0) and space(\2, 0, 0) /2>> eg1mot
 
     ["|“|”]  [*WORD|*WORDELD]  *[*WORD|*WORDELD]
-        <<- space_after(\1, 0, 0) /2:0>> egxmot
+        <<- space(\1, 0, 0) /2:0>> egxmot
 
     [*WORD|*WORDELD]  [*WORD|*WORDELD]  ["|“|”]
-        <<- space_after(\2, 0, 0) /1:2>> egxmot
+        <<- space(\2, 0, 0) /1:2>> egxmot
 
 
 __purge_guillemets__
@@ -1758,14 +1758,14 @@ __purge_mot_nombre_parenthèses_crochets_accolades__
 
     (  [re|ré]  )  *WORD
     [  [re|ré]  ]  *WORD
-        <<- space_after(\3, 0, 0) ~1:3>>  *
+        <<- space(\3, 0, 0) ~1:3>>  *
 
     [  *NUM  ]
     [  …  ]
         <<- ~>> *
 
     **  [  *WORD  ]  **
-        <<- space_after(\1, 1, 3) and space_after(\-2, 1, 3) >>>
+        <<- space(\1, 1, 3) and space(\-2, 1, 3) >>>
         <<- morph(\3, ":G") ~2:4>> |\2|
         <<- __else__ ~2:4>> *
 
@@ -1837,7 +1837,7 @@ TEST: ceci, cela{{, …}}                                                     ->
 
 __virg_virgule_après_point__
     *WORD  .  ,
-        <<- /virg/ space_after(\1, 0, 0) and space_after(\2, 0, 0)
+        <<- /virg/ space(\1, 0, 0) and space(\2, 0, 0)
             and not value(\1, "|etc|fig|hab|litt|fig|hab|litt|circ|coll|ref|réf|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp|")
             and \1.__len__() > 1
         -2:3>> ,|.                                                          && Pas de virgule après un point (sauf éventuellement après une abréviation).
@@ -2659,7 +2659,7 @@ __fusions_mots_grammaticaux__
 
     [  [m|t|s]  ]  [a|on|es]
     [  [n|v]    ]  [otre|ôtre]
-        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) and space_after(\3, 0, 0) ~>> ␣\2\4
+        <<- space(\1, 0, 0) and space(\2, 0, 0) and space(\3, 0, 0) ~>> ␣\2\4
         <<- =>> setmeta(\1, "WORD")
 
 TEST: [s]es {{homme}}                                           ->> hommes
@@ -2706,10 +2706,10 @@ __fusions_noms_communs__
         <<- ~>> ␣
 
     *NUM : *NUM
-        <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
+        <<- space(\1, 0, 0) and space(\1, 0, 0) ~>> ␣
 
     *NUM  ~^h[0-9][0-9]$
-        <<- space_after(\1, 0, 0) ~>> ␣
+        <<- space(\1, 0, 0) ~>> ␣
 
     cul et chemise
     mari et femme
@@ -2728,7 +2728,7 @@ TEST: iels étaient mari et femme
 
 __fusions_noms_communs_séparés_slash__
     *WORD  /  *WORD
-        <<- space_after(\1, 0, 1) and space_after(\2, 0, 1) and morph(\1, ":N") and morph(\-1, ":N") and not (morph(\1, "[123][sp]") and morph(<1, ":O[vs]")) ~>> ␣
+        <<- space(\1, 0, 1) and space(\2, 0, 1) and morph(\1, ":N") and morph(\-1, ":N") and not (morph(\1, "[123][sp]") and morph(<1, ":O[vs]")) ~>> ␣
         <<- __also__ =>> define(\1, ":N:e:i")
 
 TEST: Elle peut se cacher / rendre visible par le petit “+” au-dessus.
@@ -3555,7 +3555,7 @@ TEST: __ocr__ V.
 # virgules
 __ocr_virgules__
     [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
-        <<- /ocr/ space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             && Erreur de numérisation ? Virgule superflue ?
+        <<- /ocr/ space(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             && Erreur de numérisation ? Virgule superflue ?
 
 TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
@@ -4007,7 +4007,7 @@ TEST: __ocr__ contre {{los}} impies
 # M. / Mr / M
 __ocr_mr__
     M ,  /_Tit_
-        <<- /ocr/ space_after(\1, 0, 1) -1:2>> "Mr |M. "                                                                  && Erreur de numérisation ?
+        <<- /ocr/ space(\1, 0, 1) -1:2>> "Mr |M. "                                                                  && Erreur de numérisation ?
 
     M  /_Tit_
         <<- /ocr/ -1>> "Mr |M. "                                                                    && Erreur de numérisation ?
@@ -4441,17 +4441,17 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 # élisions
 __eleu_élisions_manquantes__
     [le|la|de]  ~^[aâeéèêiîoôuûyœæh].
-        <<- /eleu/ space_after(\1, 1, 1) and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and morph(\2, ":", ":G|;é")
+        <<- /eleu/ space(\1, 1, 1) and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and morph(\2, ":", ":G|;é")
         -1:.2>> =\1[0:1]+"’"                                                && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
-        <<- /eleu/ space_after(\1, 1, 1) -1:.2>> s’                         && Il faut élider “si” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+        <<- /eleu/ space(\1, 1, 1) -1:.2>> s’                         && Il faut élider “si” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
     que [il|ils|elle|elles|on|iel|iels]
-        <<- /eleu/ space_after(\1, 1, 1) -1:.2>> qu’                        && Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+        <<- /eleu/ space(\1, 1, 1) -1:.2>> qu’                        && Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
     [je|ne|me|te|se]  ~^[aâeéèêiîoôuûyœæh].
-        <<- /eleu/ not \1.isupper() and space_after(\1, 1, 1) and morph(\2, ":V", ":Q|;é")
+        <<- /eleu/ not \1.isupper() and space(\1, 1, 1) and morph(\2, ":V", ":Q|;é")
         -1:.2>> =\1[0:1]+"’"                                                && Il faut élider le pronom “\1” et l’accoler au verbe.|http://fr.wikipedia.org/wiki/Élision
 
 TEST: {{le }}amour                                                          ->> l’
@@ -4911,10 +4911,10 @@ __fusion_date__
 
 __date_jour_mois_année__
     31 [avril|juin|septembre|novembre]
-        <<- /date/ space_after(\1, 1, 1) ->> 30 \2                                                  && Cette date est invalide. Il n’y a que 30 jours en \2.
+        <<- /date/ space(\1, 1, 1) ->> 30 \2                                                  && Cette date est invalide. Il n’y a que 30 jours en \2.
 
     [30|31] février
-        <<- /date/ space_after(\1, 1, 1) ->> 28 février|29 février                                  && Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
+        <<- /date/ space(\1, 1, 1) ->> 28 février|29 février                                  && Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
 
     ~^\d\d?$  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~^\d{2,5}$
         <<- /date/ not checkDate(\1, \2, \3) ->> _                                                  && Cette date est invalide.
@@ -5089,7 +5089,7 @@ __tu_préfixe_xxxo__
         ->> \1-\2                                                                                   && S’il s’agit d’un seul mot, il manque un trait d’union.
 
     [électro|ferro|hydro|labio|médico|nano|néo|neuro|physico|politico|sino|socio]  *WORD
-        <<- /tu/ space_after(\1, 1, 1) and (morph(\2, ":N") or analyse_with_next(\1, "-", ":"))
+        <<- /tu/ space(\1, 1, 1) and (morph(\2, ":N") or analyse_with_next(\1, "-", ":"))
         ->> \1-\2                                                                                   && S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: {{ferro électrique}}                              ->> ferro-électrique
@@ -5678,7 +5678,7 @@ TEST: Elle va t’en donner, des devoirs.
 # est-ce … ?
 __tu_est_ce__
     est ce  @:¬:N.*:[me]:[si]|>qui/
-        <<- /tu/ morph(<1, ":Cs|<start>") and space_after(\1, 1, 1) -1:2>> est-ce                   && S’il s’agit d’une interrogation, il manque un trait d’union.
+        <<- /tu/ morph(<1, ":Cs|<start>") and space(\1, 1, 1) -1:2>> est-ce                   && S’il s’agit d’une interrogation, il manque un trait d’union.
 
 TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
 TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
@@ -5987,20 +5987,20 @@ __inte_union_nous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ons$  nous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ons$  nous
     [ne|n’]  [lui|leur|y]                    en                          ~ons$  nous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tagbefore(\1, "_1p_")
+        <<- /inte/ space(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tagbefore(\1, "_1p_")
         --2:-1>> \-2-\-1                                                                            && Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ons$  nous  [<end>|,|)]
     ,  ~ons$  nous  @:¬:(?:1p|Y)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     <start>  ~ons  nous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons  nous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: n’y {{retrouverons nous}} jamais la tranquilité ?
@@ -6021,20 +6021,20 @@ __inte_union_vous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ez$  vous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ez$  vous
     [ne|n’]  [lui|leur|y]                    en                          ~ez$  vous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tagbefore(\1, "_2p_")
+        <<- /inte/ space(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tagbefore(\1, "_2p_")
         --2:-1>> \-2-\-1       && Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ez$  vous  [<end>|,|)]
     ,  ~ez$  vous  @:¬:(?:2p|Y)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     <start>  ~ez$  vous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: ne {{soutiendrez vous}} pas cette proposition ?
@@ -6086,7 +6086,7 @@ TEST: Tape-toi Patrick.
 
 __typo_apostrophe_manquante_audace__
     <start>  [L|D|S|N|C|J|M|T|Ç]  ~^[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]
-        <<- /mapos/ space_after(\2, 1, 1) -2:.3>> =\2+"’"                                           && Il manque peut-être une apostrophe.
+        <<- /mapos/ space(\2, 1, 1) -2:.3>> =\2+"’"                                           && Il manque peut-être une apostrophe.
 
 TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
@@ -7592,7 +7592,7 @@ TEST: de l’{{arrivait}}
 
 
     [de|d’]  le  *WORD
-        <<- /conf/ space_after(\1, 0, 1) and morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle()
+        <<- /conf/ space(\1, 0, 1) and morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle()
             and not (value(\3, "|mal|") and morph(>1, ":Y")) -1:2>> du                              && Incohérence avec « \1 \2 » : “\3” est un nom ou un adjectif.
         <<- /conf/ morph(\3, ":[123][sp]") -3>> =suggVerbInfi(\3)                                   && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
 
@@ -9192,7 +9192,7 @@ __conf_ça_çà_sa!7__
         <<- /conf/ \1 != "SA" -1>> ça                   && Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
 
     [c’|ç’] [à|a]
-        <<- /conf/ space_after(\1, 0, 0) and not (value(\2, "|a|") and value(>1, "|été|")) >>>
+        <<- /conf/ space(\1, 0, 0) and not (value(\2, "|a|") and value(>1, "|été|")) >>>
         <<- /conf/ value(>1, "|été|") -2>> a            && Confusion. Pour le verbe avoir à la 3ᵉ personne du singulier, écrivez “a”.
         <<- /conf/ __else__ ->> ça|sa                   && Confusion. Si vous voulez dire “cela”, écrivez “ça”. Pour le déterminant possessif, écrivez “sa”.
 
@@ -11186,7 +11186,7 @@ __conf_on_ont__
         <<- /conf/ ->> =\1[:-1]                                     && Incohérence : le mot “ont” est une forme conjuguée du verbe “avoir” (par exemple : “ils ont”). Pour le pronom, écrivez “on”.
 
     [<start>|,|(]  *WORD  ont
-        <<- /conf/ space_after(\2, 1, 1) and not value(\2, "|soit|") and morph(\2, ":3s") and not (tag(\-1, "eg1mot") and morph(\2, ">écrire/"))
+        <<- /conf/ space(\2, 1, 1) and not value(\2, "|soit|") and morph(\2, ":3s") and not (tag(\-1, "eg1mot") and morph(\2, ">écrire/"))
         -2:3>> \2-on            && Confusion probable : le mot “ont” est une forme conjuguée du verbe “avoir”. Pour le pronom, écrivez “on” et mettez un trait d’union puisqu’il s’agit d’une question.
 
 TEST: il m’assure qu’{{ont}} ne sait pas s’y prendre
@@ -17899,7 +17899,7 @@ __simplification_noms_propres__
         <<- ~2:0>> *
 
     @:M[12]  *WORD
-        <<- \2.istitle() and space_after(\1, 1, 1) or re.search("^[MDCLXVI]+$", \2) ~2:0>> *
+        <<- \2.istitle() and space(\1, 1, 1) or re.search("^[MDCLXVI]+$", \2) ~2:0>> *
 
     @:M[12]  [Ier|Iᵉʳ]
         <<- \2.istitle() ~2:0>> *
@@ -20993,7 +20993,7 @@ __conf_lieux_lieues_lieus__
         <<- /conf/ --1>> lieues                                 && Confusion probable. Pour désigner une distance, écrivez “lieues”.|https://fr.wiktionary.org/wiki/lieue
 
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
-        <<- /conf/ space_after(\2, 1, 4) --1>> lieues           && Confusion probable. Pour désigner une distance, écrivez “lieues”.|https://fr.wiktionary.org/wiki/lieue
+        <<- /conf/ space(\2, 1, 4) --1>> lieues           && Confusion probable. Pour désigner une distance, écrivez “lieues”.|https://fr.wiktionary.org/wiki/lieue
 
     *NUM >lieu sous [la|les] >mer
     $:B:e:p  >lieu sous [la|les] >mer
@@ -21357,7 +21357,7 @@ TEST: il {{péchait}} à la ligne                                             ->
 # peu / peux / peut
 __conf_peut_peux_peu2__
     [peux|peut]  [de|d’]  @:[NA]¬*
-        <<- /conf/ not value(<1, "|je|tu|il|elle|on|ne|n’|") and space_after(\1, 1, 3) -1>> peu     && Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
+        <<- /conf/ not value(<1, "|je|tu|il|elle|on|ne|n’|") and space(\1, 1, 3) -1>> peu     && Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
 
 TEST: {{peut}} d’hommes savent comment s’y prendre
 TEST: peu d’argent
@@ -21448,10 +21448,10 @@ TEST: c’est tout le système qui {{peu}} vaciller            ->> peut
 # peut-être / peut être
 __conf_peut_être2__
     *WORD peut être
-        <<- /conf/ space_after(\2, 1, 1) and morph(\1, ":V", ":[NAQGM]") -2:3>> peut-être           && Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
+        <<- /conf/ space(\2, 1, 1) and morph(\1, ":V", ":[NAQGM]") -2:3>> peut-être           && Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
 
     <start> peut être
-        <<- /conf/ space_after(\2, 1, 1) -2:3>> peut-être                                           && Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
+        <<- /conf/ space(\2, 1, 1) -2:3>> peut-être                                           && Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
 
 TEST: {{Peut être}} qu’on en saura plus demain.
 TEST: Ils vont {{peut être}} enfin faire quelque chose de leur misérable existence.
@@ -21554,7 +21554,7 @@ TEST: tu n’as {{cas}} prendre le train
 __conf_quand_même__
     comme même [<end>|,|)]
     comme même @:(?:Os|C)
-        <<- /conf/ space_after(\1, 1, 1) -1:2>> quand même      && Confusion probable.|https://fr.wiktionary.org/wiki/quand_m%C3%AAme
+        <<- /conf/ space(\1, 1, 1) -1:2>> quand même      && Confusion probable.|https://fr.wiktionary.org/wiki/quand_m%C3%AAme
 
 TEST: {{comme même}} il y va fort, le saligaud !
 TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}…
@@ -23400,11 +23400,11 @@ TEST: Cent quarante-neuvième épisode
 
 __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
-        <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|") and not (value(<1, "|à|") and meta(<2, "NUM"))
+        <<- /gn/ space(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|") and not (value(<1, "|à|") and meta(<2, "NUM"))
         -2>> =suggSing(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
 
     *NUM  *WORD
-        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:[,.][0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
+        <<- /gn/ space(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:[,.][0-9]+|)$", \1) and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":(?:N|D.*:s)")
             and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
@@ -24804,7 +24804,7 @@ TEST: elle restait {{désoler}} pour la pauvre Claire
 __infi_à_verbe__
     à  le            ~..(?:ée?s?|ez|ai[st]?)$
     à  les           ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ \-1.islower() and space_after(\1, 1, 1) and morph(\-1, ":V", ":[YM]" )
+        <<- /infi/ \-1.islower() and space(\1, 1, 1) and morph(\-1, ":V", ":[YM]" )
         --1>> =suggVerbInfi(\-1)                                                                    && Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
 
     à  [la|l’|leur]  ~..(?:ée?s?|ez|ai[st]?)$
@@ -25292,7 +25292,7 @@ TEST: rien d’autre à faire que lui {{donnait}} à manger             ->> donn
 
 __infi_nous_vous_verbe__
     [nous|vous]  ~ée?s?$
-        <<- /infi/ space_after(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _  && Après “\1”, le verbe ne devrait pas être un participe passé.
+        <<- /infi/ space(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _  && Après “\1”, le verbe ne devrait pas être un participe passé.
 
 TEST: oui, pourquoi pas, puisque nous {{intéressé}} à la question ne suffit pas à faire de nous des experts.
 TEST: il faut croire que vous {{mangé}} ne nous nourrirait guère
@@ -25768,7 +25768,7 @@ __conf_conjonction_sujet_à_vinfi__
         ||  $:M  à  @:V1.*:Y  [<end>|)]
     [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
         ||  $:M  à  @:V1.*:Y  , [je|tu|il|elle|iel|on|c’|nous|vous|ils|elles|iels]
-        <<- /conf/ space_after(\3, 1, 1) -3:4>> ="a "+suggVerbPpas(\4, ":m:s")
+        <<- /conf/ space(\3, 1, 1) -3:4>> ="a "+suggVerbPpas(\4, ":m:s")
         && Confusion probable. Si « \2 » est bien le sujet de l’action « \4 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
         <<- /conf/ __else__ -3>> a
         && Confusion probable. Si « \2 » est bien le sujet de l’action « \4 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
@@ -25777,7 +25777,7 @@ __conf_conjonction_sujet_à_vinfi__
 
     [<start>|,|dont|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
         ||  $:M  [lui|nous|vous]  à  @:V1.*:Y
-        <<- /conf/ space_after(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
+        <<- /conf/ space(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
         && Confusion probable. Si « \2 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
         <<- /conf/ __else__ -4>> a
         && Confusion probable. Si « \2 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
@@ -25788,7 +25788,7 @@ __conf_conjonction_sujet_à_vinfi__
         ||  @:D.*:s  @:[NA].*:[si]  à  @:V1.*:Y  [<end>|)]
     [lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
         ||  @:D.*:s  @:[NA].*:[si]  à  @:V1.*:Y  , [je|tu|il|elle|iel|on|c’|nous|vous|ils|elles|iels]
-        <<- /conf/ space_after(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
+        <<- /conf/ space(\4, 1, 1) -4:5>> ="a "+suggVerbPpas(\5, ":m:s")
         && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
         <<- /conf/ __else__ -4>> a
         && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \5 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
@@ -25797,7 +25797,7 @@ __conf_conjonction_sujet_à_vinfi__
 
     [<start>|,|dont|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’|quand|auquel|auxquels|auxquelles|lequel|laquelle|lesquels|lesquelles|duquel|desquels|desquelles]
         ||  @:D.*:s  @:[NA].*:[si]  [lui|nous|vous]  à  @:V1.*:Y
-        <<- /conf/ space_after(\5, 1, 1) -5:6>> ="a "+suggVerbPpas(\6, ":m:s")
+        <<- /conf/ space(\5, 1, 1) -5:6>> ="a "+suggVerbPpas(\6, ":m:s")
         && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \6 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
         <<- /conf/ __else__ -5>> a
         && Confusion probable. Si « \2 \3 » est bien le sujet de l’action « \6 », vous confondez la préposition « à » avec « a » (forme conjuguée de « avoir ») et l’infinitif avec le participe passé (avec lesquels écrire un passé composé). Exemple : « il a réparé l’une des machines à réparer ».
@@ -29014,23 +29014,23 @@ TEST: {{Découragé}}, iels sont partis.
 # Confusions
 __imp_confusion_2e_pers_pluriel__
     [<start>|,|(]  *WORD  moi
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,|(]  *WORD  la  *WORD
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]|>plupart/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]|>plupart/")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,|(]  *WORD  [le|les|leur]  *WORD
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,|(]  *WORD  [lui|nous|vous]  *WORD
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORCD]", ":Y")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORCD]", ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,|(|et|ou]  *WORD  [les|le|la|lui|nous|vous|leur]  [<end>|,|)]
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           && Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
@@ -29211,12 +29211,12 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 
 __imp_union_moi__
     *WORD  moi
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|je|j’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  moi
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-moi"   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apporte moi}} ce dictionnaire.                                      ->> Apporte-moi
@@ -29229,12 +29229,12 @@ TEST: je suis moi et tu es toi.
 
 __imp_union_toi__
     *WORD  toi
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  toi
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-toi"   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne toi}} du temps.
@@ -29243,12 +29243,12 @@ TEST: j’en ai marre, {{instruit toi}} avant de parler.
 
 __imp_union_nous_vous_lui__
     *WORD  [nous|vous|lui]
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  [nous|vous|lui]
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/") and not morph(>1, ":Y")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/") and not morph(>1, ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne nous}} du café.
@@ -29258,7 +29258,7 @@ TEST: Ce que Jeanne, femme de Patrick, veut vous dire de sa vie.
 
 __imp_union_y__
     *WORD  y
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>en/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -29267,12 +29267,12 @@ TEST: {{Donne y}} du tien.
 
 __imp_union_les__
     *WORD  les
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  les
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-les"   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -29287,13 +29287,13 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 
 __imp_union_le_la_leur__
     *WORD  [le|la|leur]
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?|leur|lui)/")
             and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  [le|la|leur]
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|T|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?|leur|lui)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -29323,12 +29323,12 @@ TEST: Daignez la leur donner
 
 __imp_union_en__
     *WORD  en
-        <<- /imp/ space_after(\1, 1, 1)
+        <<- /imp/ space(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|B|H|T|D|Ov)|>(?:plus|moins|mieux|peu|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  en
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:aller|partir)/")
+        <<- /imp/ space(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:aller|partir)/")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|Ov)|>(?:plus|moins|mieux|peu|trop|très|une?)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -29348,7 +29348,7 @@ TEST: Finis en ne comptant que sur toi-même
 
 __imp_laisser_le_la_les_infi__
     [laisse|laissons|laissez]  [le|la|les]  *WORD
-        <<- /imp/ space_after(\1, 1, 1) and morph(\3, ":(?:Y|Ov)", ":[NAB]") and not morph(<1, ":O[sv]")
+        <<- /imp/ space(\1, 1, 1) and morph(\3, ":(?:Y|Ov)", ":[NAB]") and not morph(<1, ":O[sv]")
         -1:2>> \1-\2                                    && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Laisse les}} entrer…
@@ -29387,7 +29387,7 @@ TEST: {{t-en}} lasser, impossible
 
 __imp_union_m_t_en_y__
     *WORD  [m’|t’]  [en|y]
-        <<- /imp/ space_after(\1, 1, 1) and morph(\1, ":E", ":[MG]") and morph(>1, ":|<end>|>,", ":(?:Y|[123][sp])")
+        <<- /imp/ space(\1, 1, 1) and morph(\1, ":E", ":[MG]") and morph(>1, ":|<end>|>,", ":(?:Y|[123][sp])")
         ->> \1-\2\3                                     && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{donne m’en}}, s’il te plaît.
@@ -29396,7 +29396,7 @@ TEST: Mélanie t’en donne souvent.
 
 __imp_union_verbe_pronom_moi_toi_lui__
     [/-le|/-la|/-les]  [moi|toi]
-        <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E")
+        <<- /imp/ space(\1, 1, 1) and morphVC(\1, ":E")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: les analyses, {{donne-les moi}}
@@ -29405,7 +29405,7 @@ TEST: {{Donne-les lui}}.
 
 __imp_union_verbe_pronom_nous_vous__
     [/-le|/-la|/-les]  [nous|vous|lui|leur]
-        <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":Y")
+        <<- /imp/ space(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":Y")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{apporte-les nous}}
@@ -29413,11 +29413,11 @@ TEST: {{apporte-les nous}}
 
 __imp_union_verbe_pronom_en_y_leur__
     [/-moi|/toi] en
-        <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
+        <<- /imp/ space(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [/-lui|/-nous|/-vous|/-leur]  [en|y]
-        <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
+        <<- /imp/ space(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
         ->> \1-\2                                       && S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{donnez-moi en}}
@@ -29428,10 +29428,10 @@ TEST: Alors, {{parais y}} grande et lumineuse.
 
 __imp_union_aller_y!5__
     [viens|venez|venons|allons|allez] y
-        <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> \1-\2           && Il manque un trait d’union.
+        <<- /imp/ space(\1, 1, 1) and not morph(>1, ":Y") ->> \1-\2           && Il manque un trait d’union.
 
     [va|vas] [y|z-y|z’y]
-        <<- /imp/ space_after(\1, 1, 1) and not value(<1, "|tu|il|elle|on|ne|n’|") and not morph(>1, ":Y")
+        <<- /imp/ space(\1, 1, 1) and not value(<1, "|tu|il|elle|on|ne|n’|") and not morph(>1, ":Y")
         ->> vas-y                                                                   && Il manque un trait d’union.
 
 TEST: {{allons y}}
@@ -29444,7 +29444,7 @@ TEST: Viens y faire un test.
 
 __imp_union_convenir_en__
     [conviens|convenez|convenons] en
-        <<- /imp/ space_after(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     && Il manque un trait d’union.
+        <<- /imp/ space(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     && Il manque un trait d’union.
 
 
 TEST: c’est une belle affaire malgré son prix élevé, {{convenez en}}…
@@ -30350,26 +30350,26 @@ TEST: Veillez votre mari qui est malade.
 __inte_union_je!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..[éèe]$  je  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..[éèe]$  je  @:¬:1s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GW]")
         -2:3>> =\2[:-1]+"é-je"                                                                      && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~..[éèe]$  je  [<end>|,|)]
     *WORD  ~..[éèe]$  je  @:¬:1s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GNW]") and not value(\1, "|je|j’|il|elle|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GNW]") and not value(\1, "|je|j’|il|elle|")
         -2:3>> =\2[:-1]+"é-je"                                                                      && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[is]$  je  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[is]$  je  @:¬:1s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GW]")
         -2:3>> \2-je                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ai|avais|eus|eussé|eusse|aurai|aurais|suis|étais|fus|fussé|fusse|serai|serais]  je
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-je                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.[is]$  je  [<end>|,|)]
     *WORD  ~.[is]$  je  @:¬:1s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|")
         -2:3>> \2-je                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: quel animal {{dessine je}}
@@ -30382,16 +30382,16 @@ TEST: quel amour {{connaîtrai je}} si je juge sans cesse ?
 __inte_union_tu!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  @:¬:2s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]")
         -2:3>> \2-tu                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [as|avais|eus|eusses|es|auras|aurais|étais|fus|fusses|seras|serais]  tu
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-tu                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.s$  tu  [<end>|,|)]
     *WORD  ~.s$  tu  @:¬:2s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GNW]") and not value(\1, "|je|j’|tu|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GNW]") and not value(\1, "|je|j’|tu|")
         -2:3>> \2-tu                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{Viendras tu}} là ?
@@ -30403,16 +30403,16 @@ TEST: Comment {{peux tu}} ?
 __inte_union_il_on!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [il|on]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [il|on]  @:¬:3s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|eut|eût|est|aurait|était|fut|fût|serait]   [il|on]
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.[td]$  [il|on]  [<end>|,|)]
     *WORD  ~.[td]$  [il|on]  @:¬:3s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|il|elle|on|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|il|elle|on|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{prend on}} le temps d’y réfléchir ?
@@ -30426,7 +30426,7 @@ __inte_union_ce!7__
     [<start>|,|(] [est|était|étaient] ce ?pas¿ [le|la|les|l’|un|une|de|des|d’|ce|cet|cette|ces|quelques|plusieurs|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs]
     [<start>|,|(] [est|était|étaient] ce ?pas¿ @:G¬:[NA].*:[me]:[si]|>(?:qu[ei’]|pourquoi|dont)/
     [<start>|,|(] [est|était|étaient] ce [ton|son] @:N¬:A.*:[me]:[si]
-        <<- /inte/ space_after(\2, 1, 1) -2:3>> \2-\3                                               && Forme interrogative ? Mettez un trait d’union.
+        <<- /inte/ space(\2, 1, 1) -2:3>> \2-\3                                               && Forme interrogative ? Mettez un trait d’union.
 
 TEST: N’{{était ce}} pas le bon moment pour y songer.                   ->> était-ce
 TEST: Qu’était ce raffut ?
@@ -30436,16 +30436,16 @@ TEST: Cette liberté, formalisée par le libéralisme économique, dès les Phys
 __inte_union_elle_iel!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [elle|iel]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[td]$  [elle|iel]  @:¬:3s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|eut|eût|aurait|est|était|fut|fût|serait]   [elle|iel]
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.[td]$  [elle|iel]  [<end>|,|)]
     *WORD  ~.[td]$  [elle|iel]  @:¬:3s
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|c’|ça|ç’|il|elle|on|iel|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|c’|ça|ç’|il|elle|on|iel|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{vient elle}} souvent ?
@@ -30460,24 +30460,24 @@ TEST: C’était elle qui avait pris le contrôle.
 __inte_union_nous2!7__
     ,  ~ons$  nous  [<end>|,|)]
     ,  ~ons$  nous  @:¬:(?:1p|Y)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     <start>  ~ons  nous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons  nous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [sommes|étions|fûmes|fussions|serons|serions|avons|avions|eûmes|eussions|aurons|aurions]  nous
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-nous                                                                              && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~ons$  nous  [<end>|,|)]
     *WORD  ~ons$  nous  @:¬:(?:Y|1p)
-        <<- /inte/ space_after(\2, 1, 1) and
+        <<- /inte/ space(\2, 1, 1) and
             ( (value(\2, "|avions|") and not morph(\1, ":A.*:[me]:[sp]") and not morph(\-1, ":(:?3[sp]|Ov)"))
             or (morph(\2, ":V.*:1p", ":[GNW]") and not morph(\1, ":Os")) )
         -2:3>> \2-nous                                                                              && Forme interrogative ? Mettez un trait d’union.
@@ -30496,24 +30496,24 @@ TEST: les avions nous font rêver.
 __inte_union_vous2!7__
     ,  ~ez$  vous  [<end>|,|)]
     ,  ~ez$  vous  @:¬:(?:2p|Y)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     <start>  ~ez$  vous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [êtes|étiez|fûtes|fussiez|serez|seriez|avez|aviez|eûtes|eussiez|aurez|auriez]  vous
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-vous                                                                              && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~..e[zs]$  vous  [<end>|,|)]
     *WORD  ~..e[zs]$  vous  @:¬:(?:Y|2p)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GNW]") and not value(\2, "|veuillez|") and not morph(\1, ":Os")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GNW]") and not value(\2, "|veuillez|") and not morph(\1, ":Os")
         -2:3>> \2-vous                                                                              && Forme interrogative ? Mettez un trait d’union.
 
 TEST: ils seront, me {{direz vous}}, étroitement surveillés, mais rien ne le garantit.
@@ -30529,16 +30529,16 @@ TEST: Veuillez vous instruire avant de contester ces mesures.
 __inte_union_ils!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  ils  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  ils  @:¬:3p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ont|avaient|eurent|eussent|auront|auraient|sont|étaient|furent|fussent|seront|seraient]  ils
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~[eo]nt$  ils  [<end>|,|)]
     *WORD  ~[eo]nt$  ils  @:¬:3p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{Viendront ils}} demain ?
@@ -30549,16 +30549,16 @@ TEST: dans quel retaurant {{iront ils}} ?
 __inte_union_elles_iels!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  [elles|iels]  [<end>|,|)]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  [elles|iels]  @:¬:3p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ont|avaient|eurent|eussent|auront|auraient|sont|étaient|furent|fussent|seront|seraient]  [elles|iels]
-        <<- /inte/ space_after(\2, 1, 1)
+        <<- /inte/ space(\2, 1, 1)
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~[eo]nt$  [elles|iels]  [<end>|,|)]
     *WORD  ~[eo]nt$  [elles|iels]  @:¬:3p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
+        <<- /inte/ space(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|iels|")
         -2:3>> \2-\3                                                                                && Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{viennent elles}} souvent ?
@@ -31142,7 +31142,7 @@ __conj_beaucoup__
         -2>> =suggVerb(\2, ":3p")                                   && Conjugaison erronée. Accord avec “\1”. Le substantif suivant étant au pluriel, le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and tag(\1, "_bcp_sing_") and not morph(\2, ":3s")
         -2>> =suggVerb(\2, ":3s")                                   && Conjugaison erronée. Accord avec “\1”. Le substantif suivant étant au singulier, le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conj/ __else__ and \2 != "a" and not tag(\1, "_bcp_sing_") and not morph(\2, ":3p") and not (space_after(\1, 1, 2) and morph(\2, ":V0"))
+        <<- /conj/ __else__ and \2 != "a" and not tag(\1, "_bcp_sing_") and not morph(\2, ":3p") and not (space(\1, 1, 2) and morph(\2, ":V0"))
         -2>> =suggVerb(\2, ":3p")                                   && Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     beaucoup    qui  @:V¬:(?:3p|P|G)
@@ -32046,13 +32046,13 @@ TEST: nous restâmes, jusqu’à ce que la lumière nous manquât
 
 __conj_nom_propre_virgule__
     <start>  $:M  ,  @:3s¬:[NAGEM]  [<end>|,|)]
-        <<- /conj/ space_after(\2, 0, 0) -2:3>> \2
+        <<- /conj/ space(\2, 0, 0) -2:3>> \2
         && Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")
         && Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
 
     <start>  $:M  ,  @:3s¬:[NAGEM]  @:A.*:[si]
-        <<- /conj/ space_after(\2, 0, 0) and morph(\4, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/") -2:3>> \2
+        <<- /conj/ space(\2, 0, 0) and morph(\4, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/") -2:3>> \2
         && Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")
         && Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
@@ -32066,13 +32066,13 @@ TEST: Valérie, devina Éric, n’avait pas du tout l’intention de mener à bi
 
 __conj_det_nom_sing_virgule__
     <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGEM]  [<end>|,|les|des|ces|mes|tes|ses|nos|vos|leurs]
-        <<- /conj/ space_after(\3, 0, 0) -3:4>> \3
+        <<- /conj/ space(\3, 0, 0) -3:4>> \3
         && Si “\2 \3” est le sujet de “\5”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\5” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")
         && Si “\2 \3” est le sujet de “\5”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\5” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
 
     <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGEM]  @:A.*:[si]
-        <<- /conj/ space_after(\3, 0, 0) and morph(\5, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/")  -3:4>> \3
+        <<- /conj/ space(\3, 0, 0) and morph(\5, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/")  -3:4>> \3
         && Si “\2 \3” est le sujet de “\5”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\5” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")
         && Si “\2 \3” est le sujet de “\5”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\5” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
@@ -32086,11 +32086,11 @@ TEST: L’amour, expliqua la femme.
 
 __conj_det_nom_plur_virgule__
     <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines|maints|maintes]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  [<end>|,|)]
-        <<- /conj/ space_after(\3, 0, 0)
+        <<- /conj/ space(\3, 0, 0)
         -3:4>> \3                                                               && La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
     <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines|maints|maintes]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]  @:A.*:[pi]
-        <<- /conj/ space_after(\3, 0, 0) and morph(\5, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/")
+        <<- /conj/ space(\3, 0, 0) and morph(\5, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/")
         -3:4>> \3                                                               && La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
 TEST: Ces {{imbéciles,}} se ridiculisent.                               ->> imbéciles

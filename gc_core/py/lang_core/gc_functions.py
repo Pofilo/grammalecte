@@ -276,7 +276,7 @@ def g_meta (dToken, sType):
     return dToken["sType"] == sType
 
 
-def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
+def g_space (dToken1, dToken2, nMin, nMax=None):
     "checks if spaces between tokens is >= <nMin> and <= <nMax>"
     nSpace = dToken2["nStart"] - dToken1["nEnd"]
     if nSpace < nMin:
