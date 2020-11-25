@@ -483,7 +483,8 @@ var lexgraph_fr = {
                 case 'WORD_ACRONYM':
                     oToken["aLabels"] = ["sigle ou acronyme"];
                     break;
-                case 'WORD_ELIDED':
+                case 'WORDELD':
+                case 'WORDORD':
                 case 'WORD':
                     if (oToken.hasOwnProperty("lMorph")  &&  oToken["lMorph"].length > 0) {
                         // with morphology

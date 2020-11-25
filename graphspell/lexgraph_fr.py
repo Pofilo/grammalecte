@@ -456,7 +456,7 @@ def setLabelsOnToken (dToken):
             dToken["aLabels"] = ["entité caractère XML/HTML"]
         elif dToken["sType"] == 'HOUR':
             dToken["aLabels"] = ["heure"]
-        elif dToken["sType"] == 'WORD_ORDINAL':
+        elif dToken["sType"] == 'WORDORD':
             dToken["aLabels"] = ["nombre ordinal"]
         elif dToken["sType"] == 'FOLDERUNIX':
             dToken["aLabels"] = ["dossier UNIX (et dérivés)"]
@@ -464,7 +464,7 @@ def setLabelsOnToken (dToken):
             dToken["aLabels"] = ["dossier Windows"]
         elif dToken["sType"] == 'WORD_ACRONYM':
             dToken["aLabels"] = ["sigle ou acronyme"]
-        elif dToken["sType"] == 'WORD' or dToken["sType"] == 'WORD_ELIDED':
+        elif dToken["sType"] == 'WORD' or dToken["sType"] == 'WORDELD':
             if "lMorph" in dToken and dToken["lMorph"]:
                 # with morphology
                 dToken["aLabels"] = []
