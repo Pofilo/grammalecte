@@ -323,6 +323,10 @@ function g_tag (oToken, sTag) {
     return oToken.hasOwnProperty("aTags") && oToken["aTags"].has(sTag);
 }
 
+function g_meta (oToken, sType) {
+    return oToken["sType"] == sType;
+}
+
 function g_space_between_tokens (oToken1, oToken2, nMin, nMax=null) {
     let nSpace = oToken2["nStart"] - oToken1["nEnd"]
     if (nSpace < nMin) {
