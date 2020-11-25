@@ -298,7 +298,7 @@ def g_token (lToken, i):
 
 #### Disambiguator for regex rules
 
-def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+def select (dTokenPos, nPos, sWord, sPattern):
     "Disambiguation: select morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
@@ -309,15 +309,12 @@ def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dTokenPos[nPos]["lMorph"] = lSelect
-    elif lDefault:
-        dTokenPos[nPos]["lMorph"] = lDefault
+    if lSelect and len(lSelect) != len(lMorph):
+        dTokenPos[nPos]["lMorph"] = lSelect
     return True
 
 
-def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+def exclude (dTokenPos, nPos, sWord, sPattern):
     "Disambiguation: exclude morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
@@ -328,11 +325,8 @@ def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dTokenPos[nPos]["lMorph"] = lSelect
-    elif lDefault:
-        dTokenPos[nPos]["lMorph"] = lDefault
+    if lSelect and len(lSelect) != len(lMorph):
+        dTokenPos[nPos]["lMorph"] = lSelect
     return True
 
 
@@ -347,38 +341,26 @@ def define (dTokenPos, nPos, sMorphs):
 
 #### Disambiguation for graph rules
 
-def g_select (dToken, sPattern, lDefault=None):
+def g_select (dToken, sPattern):
     "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
-        if lDefault:
-            dToken["lMorph"] = lDefault
-            #echo("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dToken["lMorph"] = lSelect
-    elif lDefault:
-        dToken["lMorph"] = lDefault
+    if lSelect and len(lSelect) != len(lMorph):
+        dToken["lMorph"] = lSelect
     #echo("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 
 
-def g_exclude (dToken, sPattern, lDefault=None):
+def g_exclude (dToken, sPattern):
     "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
-        if lDefault:
-            dToken["lMorph"] = lDefault
-            #echo("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
-    if lSelect:
-        if len(lSelect) != len(lMorph):
-            dToken["lMorph"] = lSelect
-    elif lDefault:
-        dToken["lMorph"] = lDefault
+    if lSelect and len(lSelect) != len(lMorph):
+        dToken["lMorph"] = lSelect
     #echo("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 

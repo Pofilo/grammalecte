@@ -351,7 +351,7 @@ function g_token (lToken, i) {
 
 //////// Disambiguator for regex rules
 
-function select (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
+function select (dTokenPos, nPos, sWord, sPattern) {
     if (!sWord) {
         return true;
     }
@@ -364,17 +364,13 @@ function select (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
-    if (lSelect.length > 0) {
-        if (lSelect.length != lMorph.length) {
-            dTokenPos.get(nPos)["lMorph"] = lSelect;
-        }
-    } else if (lDefault) {
-        dTokenPos.get(nPos)["lMorph"] = lDefault;
+    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
+        dTokenPos.get(nPos)["lMorph"] = lSelect;
     }
     return true;
 }
 
-function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
+function exclude (dTokenPos, nPos, sWord, sPattern) {
     if (!sWord) {
         return true;
     }
@@ -387,12 +383,8 @@ function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
-    if (lSelect.length > 0) {
-        if (lSelect.length != lMorph.length) {
-            dTokenPos.get(nPos)["lMorph"] = lSelect;
-        }
-    } else if (lDefault) {
-        dTokenPos.get(nPos)["lMorph"] = lDefault;
+    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
+        dTokenPos.get(nPos)["lMorph"] = lSelect;
     }
     return true;
 }
@@ -405,42 +397,28 @@ function define (dTokenPos, nPos, sMorphs) {
 
 //// Disambiguation for graph rules
 
-function g_select (oToken, sPattern, lDefault=null) {
+function g_select (oToken, sPattern) {
     // select morphologies for <oToken> according to <sPattern>, always return true
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
-        if (lDefault) {
-            oToken["lMorph"] = lDefault;
-        }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
-    if (lSelect.length > 0) {
-        if (lSelect.length != lMorph.length) {
-            oToken["lMorph"] = lSelect;
-        }
-    } else if (lDefault) {
-        oToken["lMorph"] = lDefault;
+    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
+        oToken["lMorph"] = lSelect;
     }
     return true;
 }
 
-function g_exclude (oToken, sPattern, lDefault=null) {
+function g_exclude (oToken, sPattern) {
     // select morphologies for <oToken> according to <sPattern>, always return true
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
-        if (lDefault) {
-            oToken["lMorph"] = lDefault;
-        }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
-    if (lSelect.length > 0) {
-        if (lSelect.length != lMorph.length) {
-            oToken["lMorph"] = lSelect;
-        }
-    } else if (lDefault) {
-        oToken["lMorph"] = lDefault;
+    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
+        oToken["lMorph"] = lSelect;
     }
     return true;
 }
