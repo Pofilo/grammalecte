@@ -85,7 +85,7 @@ def getLemmaOfMorph (s):
     "return lemma in morphology <s>"
     return Lemma.search(s).group(1)
 
-def checkAgreement (l1, l2):
+def agreement (l1, l2):
     "returns True if agreement in gender and number is possible between morphologies <l1> and <l2>"
     # check number agreement
     if not mbInv(l1) and not mbInv(l2):

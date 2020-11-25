@@ -95,7 +95,7 @@ def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup
 
 #### Analyse groups for regex rules
 
-def displayInfo (dTokenPos, tWord):
+def info (dTokenPos, tWord):
     "for debugging: retrieve info of word"
     if not tWord:
         echo("> nothing to find")

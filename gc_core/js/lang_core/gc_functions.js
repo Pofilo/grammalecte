@@ -108,7 +108,7 @@ function look (s, sPattern, sNegPattern=null) {
 
 //////// Analyse groups for regex rules
 
-function displayInfo (dTokenPos, aWord) {
+function info (dTokenPos, aWord) {
     // for debugging: info of word
     if (!aWord) {
         console.log("> nothing to find");

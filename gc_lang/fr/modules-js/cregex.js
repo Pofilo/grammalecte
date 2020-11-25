@@ -86,7 +86,7 @@ var cregex = {
         return this._zLemma.exec(sMorph)[1];
     },
 
-    checkAgreement: function (l1, l2) {
+    agreement: function (l1, l2) {
         // check number agreement
         if (!this.mbInv(l1) && !this.mbInv(l2)) {
             if (this.mbSg(l1) && !this.mbSg(l2)) {

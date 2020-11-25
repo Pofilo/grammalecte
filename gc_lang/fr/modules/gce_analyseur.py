@@ -19,7 +19,7 @@ def apposition (sWord1, sWord2):
     return len(sWord2) < 2 or (cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1)))
 
 
-def g_checkAgreement (dToken1, dToken2, bNotOnlyNames=True):
+def g_agreement (dToken1, dToken2, bNotOnlyNames=True):
     "check agreement between <dToken1> and <dToken2>"
     lMorph1 = dToken1["lMorph"]  if "lMorph" in dToken1  else  _oSpellChecker.getMorph(dToken1["sValue"])
     if not lMorph1:
@@ -29,7 +29,7 @@ def g_checkAgreement (dToken1, dToken2, bNotOnlyNames=True):
         return True
     if bNotOnlyNames and not (cr.mbAdj(lMorph2) or cr.mbAdjNb(lMorph1)):
         return False
-    return cr.checkAgreement(lMorph1, lMorph2)
+    return cr.agreement(lMorph1, lMorph2)
 
 
 _zUnitSpecial = re.compile("[µ/⁰¹²³⁴⁵⁶⁷⁸⁹Ωℓ·]")

@@ -21,7 +21,7 @@ function apposition (sWord1, sWord2) {
     return sWord2.length < 2 || (cregex.mbNomNotAdj(gc_engine.oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(gc_engine.oSpellChecker.getMorph(sWord1)));
 }
 
-function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
+function g_agreement (oToken1, oToken2, bNotOnlyNames=true) {
     // check agreement between <oToken1> and <oToken2>
     let lMorph1 = oToken1.hasOwnProperty("lMorph") ? oToken1["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken1["sValue"]);
     if (lMorph1.length === 0) {
@@ -34,7 +34,7 @@ function g_checkAgreement (oToken1, oToken2, bNotOnlyNames=true) {
     if (bNotOnlyNames && !(cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
         return false;
     }
-    return cregex.checkAgreement(lMorph1, lMorph2);
+    return cregex.agreement(lMorph1, lMorph2);
 }
 
 function mbUnit (s) {
