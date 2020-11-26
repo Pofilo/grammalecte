@@ -238,7 +238,7 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_analyse (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {

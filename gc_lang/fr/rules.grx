@@ -1758,16 +1758,16 @@ __purge_mot_nombre_parenthèses_crochets_accolades__
 
     (  [re|ré]  )  *WORD
     [  [re|ré]  ]  *WORD
-        <<- space(\3, 0, 0) ~1:3>>  *
+        <<- space(<1, 1) and space(\3, 0, 0) ~1:3>>  *
 
     [  *NUM  ]
     [  …  ]
         <<- ~>> *
 
-    **  [  *WORD  ]  **
-        <<- space(\1, 1, 3) and space(\-2, 1, 3) >>>
-        <<- morph(\3, ":G") ~2:4>> |\2|
-        <<- __else__ ~2:4>> *
+    [  *WORD  ]
+        <<- space(<1, 1, 3) and space(\-1, 1, 3) >>>
+        <<- morph(\2, ":G") ~>> |\2|
+        <<- __else__ ~>> *
 
     ## chapitres, références
     (  [*WORD|*NUM]  ,  *NUM  )
@@ -1777,8 +1777,10 @@ __purge_mot_nombre_parenthèses_crochets_accolades__
 
 TEST: ce chien […] ne {{semblez}} pas en forme.
 TEST: ce chat {{(…)}} ne {{ressemblez}} pas aux autres.
+TEST: un homme [las] {{devaient}} retrouver la joie de vivre
 TEST: Allons (re)voir ce film
 TEST: et ce malgré [une] condamnation pénale.
+
 
 
 !!
@@ -10948,11 +10950,11 @@ __conf_m_a_ma!7__
         <<- /conf/ --1>> m’a                        && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom “me”, écrivez “m’a”.
 
     ça  [ma|mas]  *WORD
-        <<- /conf/ morph(<1, "<start>|:C|>,/") and analyse(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
+        <<- /conf/ morph(<1, "<start>|:C|>,/") and morph0(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
         -2>> m’a                                    && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom “me”, écrivez “m’a”.
 
     qui ma  *WORD
-        <<- /conf/ analyse(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
+        <<- /conf/ morph0(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
         -2>> m’a                                    && Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom “me”, écrivez “m’a”.
 
     ma  @:(?:Q.*:e:i|V1.*:Y)¬:f:s
@@ -14075,7 +14077,7 @@ __infi_de_bon_ton_de__
     [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~(?:é?es?|ez|ai[ts]?)$
     [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~(?:é?es?|ez|ai[ts]?)$
     [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [lui|leur|y]                    en                        ~(?:é?es?|ez|ai[ts]?)$
-        <<- /infi/ analyse(\-1, ":V") --1>> =suggVerbInfi(\-1)                                      && Incohérence. Après “de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":V") --1>> =suggVerbInfi(\-1)                                       && Incohérence. Après “de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
 
 TEST: il est souvent de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.
 
@@ -21698,7 +21700,7 @@ TEST: Je suis {{septique}} !
 ## se / ce
 __conf_ce_se_nom__
     [de|par|pour|sans]  se  *WORD
-        <<- /conf/ analyse(\3, ":N.*:[me]:[si]", ":Y") -2>> ce                  && Confusion probable. Si “\-1” est bien un nom ou un adjectif, alors écrivez “ce”.
+        <<- /conf/ morph0(\3, ":N.*:[me]:[si]", ":Y") -2>> ce                   && Confusion probable. Si “\-1” est bien un nom ou un adjectif, alors écrivez “ce”.
 
     <start>  se  *WORD  [ne|n’|me|m’|te|t’|se|s’]
     <start>  se  *WORD  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)¬:G
@@ -21706,7 +21708,7 @@ __conf_ce_se_nom__
     <start>  se  *WORD  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
     <start>  se  *WORD  [lui|leur|y]    en                      @:(?:[123][sp]|P)
     <start>  se  *WORD  @:(?:[123][sp]|P)¬:G
-        <<- /conf/ analyse(\3, ":[NA]", ":Y") -2>> ce                           && Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
+        <<- /conf/ morph0(\3, ":[NA]", ":Y") -2>> ce                            && Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
 
 TEST: que sais-tu de {{se}} {{type}}
 TEST: {{se}} type nous emmerde.                                         ->> ce
@@ -24848,7 +24850,7 @@ __infi_loc_à_verbe__
     n’ >avoir qu’ à         ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
     de [façon|manière] à    ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
     enclin à                ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ analyse(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
+        <<- /infi/ morph0(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: de manière à {{obligé}} ces gens
@@ -24877,10 +24879,10 @@ __infi_par_pour_sans__
         <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                                    && Après la préposition “\1”, le verbe devrait probablement être à l’infinitif.
 
     [par|sans]  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]") --1>> =suggVerbInfi(\-1)          && Après la préposition “\1”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]") --1>> =suggVerbInfi(\-1)           && Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
     pour  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ not morph(<1, ">(?:passer|tenir)/") and analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]")
+        <<- /infi/ not morph(<1, ">(?:passer|tenir)/") and morph0(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]")
         --1>> =suggVerbInfi(\-1)                                                                    && Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
     sans pour autant ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ée?s?|ez|ai[st]?)$
@@ -24997,7 +24999,7 @@ TEST: 25 € de gagnés
 __infi_verbe_de_verbe__
     [>accuser|>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>demander|>envisager|>essayer|>éviter|>exiger|>interdire|>jurer|>omettre|>oublier|>permettre|>prévoir|>promettre|>refuser|>suggérer|>tenter]
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
-        <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNGA]"))
+        <<- /infi/ not morph(\1, ":N") and (morph0(\-1, ":V1.*:Q", ":(?:M|Oo)") or morph0(\-1, ":[123][sp]", ":[MNGA]"))
         --1>> =suggVerbInfi(\-1)                                                                    && Après “\1 de”, le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
@@ -25027,134 +25029,134 @@ __infi_qqch_de__
     afin                                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     avant ?même¿                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     marre                                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\1 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “\1 de”, le verbe devrait être à l’infinitif.
 
     à [condition|défaut|dessein|fin|force|même] [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “à \2 de”, le verbe devrait être à l’infinitif.
 
     à deux doigts                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à deux doigts de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “à deux doigts de”, le verbe devrait être à l’infinitif.
 
     à >seul >fin                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “à seule fin de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “à seule fin de”, le verbe devrait être à l’infinitif.
 
     au␣lieu                                     [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “au lieu de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “au lieu de”, le verbe devrait être à l’infinitif.
 
     au␣lieu                                     [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “au lieu de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “au lieu de”, le verbe devrait être à l’infinitif.
 
     >avoir l’ air                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir l’air de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir l’air de”, le verbe devrait être à l’infinitif.
 
     >avoir la chance                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir la chance de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir la chance de”, le verbe devrait être à l’infinitif.
 
     >avoir le droit                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir le droit de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir le droit de”, le verbe devrait être à l’infinitif.
 
     >avoir ?toute¿ hâte                         [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir hâte de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir hâte de”, le verbe devrait être à l’infinitif.
 
     >avoir ?tout¿ lieu                          [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir lieu de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir lieu de”, le verbe devrait être à l’infinitif.
 
     >avoir ?tout¿ loisir                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir loisir de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir loisir de”, le verbe devrait être à l’infinitif.
 
     >avoir tôt fait                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir tôt fait de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/avoir_t%C3%B4t_fait_de
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir tôt fait de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/avoir_t%C3%B4t_fait_de
 
     >avoir besoin                               [de|d’]  [le|les|nous|vous|lui]    ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
 
     >avoir besoin                               [de|d’]  ?[l’|la|leur]¿            ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “avoir besoin de”, le verbe devrait être à l’infinitif.
 
     >avoir d’ >autre choix [que|qu’]            ?[de|d’]¿  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir d’autre choix que”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir d’autre choix que”, le verbe devrait être à l’infinitif.
 
     >avoir la présence d’ esprit                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
     >avoir [peur|raison]                        [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir [peur|raison]                        [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     point [ne|n’] >être besoin                  [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
 
     point [ne|n’] >être besoin                  [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “point n’est besoin de”, le verbe devrait être à l’infinitif.
 
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
     n’ >avoir de cesse                          [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “n’avoir de cesse de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_de_cesse
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “n’avoir de cesse de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_de_cesse
 
     [de|d’]  crainte                            [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “de crainte de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “de crainte de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  crainte                            [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “de crainte de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “de crainte de”, le verbe devrait être à l’infinitif.
 
     en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “\1 \2 de”, le verbe devrait être à l’infinitif.
 
     >faire  [exprès|semblant|mine]              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “faire \2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “faire \2 de”, le verbe devrait être à l’infinitif.
 
     >faire  fort                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") and (value(<1, "|me|m’|te|t’|se|s’|") or (value(<1, "|nous|") and value(<2, "|nous|")) or (value(<1, "|vous|") and value(<2, "|vous|")))
-        --1>> =suggVerbInfi(\-1)                                                                    && Après “se faire fort de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") and (value(<1, "|me|m’|te|t’|se|s’|") or (value(<1, "|nous|") and value(<2, "|nous|")) or (value(<1, "|vous|") and value(<2, "|vous|")))
+        --1>> =suggVerbInfi(\-1)                                                                     && Après “se faire fort de”, le verbe devrait être à l’infinitif.
 
     [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
 
     hors d’ état                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors d’état de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “hors d’état de”, le verbe devrait être à l’infinitif.
 
     hors de question                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “hors de question de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “hors de question de”, le verbe devrait être à l’infinitif.
 
     il >être [temps|admissible|inadmissible|absurde|contraignant|libérateur|difficile|facile|impossible|indispensable|nécessaire|possible|utile|inutile]
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il est \3 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “il est \3 de”, le verbe devrait être à l’infinitif.
 
     il ?n’¿ >être question                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “il (n’)est (pas) question de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “il (n’)est (pas) question de”, le verbe devrait être à l’infinitif.
 
     il ?n’¿ >être question                      [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “il (n’)est (pas) question de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “il (n’)est (pas) question de”, le verbe devrait être à l’infinitif.
 
     pas question                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “pas question de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “pas question de”, le verbe devrait être à l’infinitif.
 
     [<start>|,|(] [>capable|>incapable|impossible|inutile|>libre]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “\2 de”, le verbe devrait être à l’infinitif.
 
     [<start>|,|(] >libre  à [moi|toi|lui|elle|soi|nous|vous|eux|elles]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “\2 de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “\2 de”, le verbe devrait être à l’infinitif.
 
     force [est|était|fut|serait|sera]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
+        <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and morph0(\-1, ":Q", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    && Après “force est de”, le verbe devrait être à l’infinitif.
 
     non >content                                [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “non content de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “non content de”, le verbe devrait être à l’infinitif.
 
     non >content                                [de|d’]  [l’|la|leur]              ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             && Après “non content de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                              && Après “non content de”, le verbe devrait être à l’infinitif.
 
     >prendre garde                              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “prendre garde de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “prendre garde de”, le verbe devrait être à l’infinitif.
 
     sous peine                                  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                && Après “sous peine de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph0(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                 && Après “sous peine de”, le verbe devrait être à l’infinitif.
 
 TEST: à deux doigts de la {{dénoncée}} aux autorités                                                ->> dénoncer
 TEST: afin de leur {{percée}} une ouverture                                                         ->> percer
@@ -25665,7 +25667,7 @@ __infi_mieux_valoir__
     mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez|ai[ts]?)$
     mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez|ai[ts]?)$
     mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [lui|leur|y]                    en                        ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[GM]")
+        <<- /infi/ morph0(\-1, ":V1.*:(?:Q|[123][sp])", ":[GM]")
         --1>> =suggVerbInfi(\-1)                                                                    && Après “mieux vaut…”, le verbe devrait être à l’infinitif.
 
 TEST: Mieux vaut {{consacré}} son temps à des occupations utiles.
@@ -29141,14 +29143,14 @@ __imp_verbe_groupe2_groupe3_t__
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
             and not value(\-1, "|provient|")
             and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MD]|Oo)|>[A-Z]/"))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire|para[îi]tre)/") and analyse(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         && S’il s’agit d’un impératif, la terminaison est “s”, non “t”.
 
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
             and not value(\-1, "|provient|")
             and not (value(\-1, "|vient|dit|surgit|survient|périt|") and morph(>1, ":(?:[MDR]|Oo)|>[A-Z]/"))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire|para[îi]tre)/") and analyse(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         && S’il s’agit d’un impératif, la terminaison est “s”, non “t”.
 
 TEST: {{Finit}} ton assiette.                                           ->> Finis
