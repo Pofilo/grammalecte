@@ -269,7 +269,7 @@ function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bM
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_merged_analyse (oToken1, oToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
+function g_morph2 (oToken1, oToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
     // merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)
     let lMorph = gc_engine.oSpellChecker.getMorph(oToken1["sValue"] + cMerger + oToken2["sValue"]);
     if (lMorph.length == 0) {

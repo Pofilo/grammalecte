@@ -223,7 +223,7 @@ def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemori
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=True):
+def g_morph2 (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=True):
     "merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
     lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"])
     if not lMorph:

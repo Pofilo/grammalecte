@@ -2768,7 +2768,7 @@ __fusions_noms_propres__
         <<- =>> define(\1, ":MP:m:i")
 
     ~^[A-ZÀÂÉÈÊÎÔ].  ~^[A-ZÀÂÉÈÊÎÔ].
-        <<- analyse_with_next(\1, " ", ":") ~>> ␣
+        <<- morph2(\1, " ", ":") ~>> ␣
         <<- __else__ and morph(\1, ":M") and morph(\2, ":V", ":[GM]") =>> define(\2, ":M2")
 
     Me  ~^[A-ZÀÂÉÈÊÎÔ].
@@ -5087,11 +5087,11 @@ TEST: l’{{israélo belge}}
 
 __tu_préfixe_xxxo__
     [macro|magnéto|micro|paléo|rétro|rhino|stéréo]  *WORD
-        <<- /tu/ analyse_with_next(\1, "-", ":")
+        <<- /tu/ morph2(\1, "-", ":")
         ->> \1-\2                                                                                   && S’il s’agit d’un seul mot, il manque un trait d’union.
 
     [électro|ferro|hydro|labio|médico|nano|néo|neuro|physico|politico|sino|socio]  *WORD
-        <<- /tu/ space(\1, 1, 1) and (morph(\2, ":N") or analyse_with_next(\1, "-", ":"))
+        <<- /tu/ space(\1, 1, 1) and (morph(\2, ":N") or morph2(\1, "-", ":"))
         ->> \1-\2                                                                                   && S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: {{ferro électrique}}                              ->> ferro-électrique
@@ -5100,15 +5100,15 @@ TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 
 __tu_préfixe_divers__
     [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
-        <<- /tu/ morph(<1, ":D|<start>|>,") and analyse_with_next(\1, "-", ":")
+        <<- /tu/ morph(<1, ":D|<start>|>,") and morph2(\1, "-", ":")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
     [non|sans]  *WORD
-        <<- /tu/ morph(<1, ":D") and analyse_with_next(\1, "-", ":")
+        <<- /tu/ morph(<1, ":D") and morph2(\1, "-", ":")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
     sous  *WORD
-        <<- /tu/ not(\2 == "forme" and value(>1, "|de|d’|")) and morph(<1, ":D") and analyse_with_next(\1, "-", ":")
+        <<- /tu/ not(\2 == "forme" and value(>1, "|de|d’|")) and morph(<1, ":D") and morph2(\1, "-", ":")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
 TEST: il a pris une balle dans l’{{arrière train}}.
@@ -5138,20 +5138,20 @@ TEST: la {{pseudo taxe}} carbone
 
 __tu_mots_composés_verbe_nom__
     [contre|entre]  *WORD
-        <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V0e)|<start>|>,") and analyse_with_next(\1, "-", ":N")
+        <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V0e)|<start>|>,") and morph2(\1, "-", ":N")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
     [m’|t’|s’] entre *WORD
-        <<- /tu/ morph(\3, ":V") and analyse_with_next(\2, "-", ":V")
+        <<- /tu/ morph(\3, ":V") and morph2(\2, "-", ":V")
         -2:3>> \2-\3                                                                                && Il manque probablement un trait d’union.
 
     nous nous entre ~on[ts]$
     vous vous entre ~e[zr]$
-        <<- /tu/ morph(\4, ":V") and analyse_with_next(\3, "-", ":V") and not morph(<1, ":R")
+        <<- /tu/ morph(\4, ":V") and morph2(\3, "-", ":V") and not morph(<1, ":R")
         -3:4>> \3-\4                                                                                && Il manque probablement un trait d’union.
 
     [attrape|garde|porte|brise|cache|casse|chauffe|coupe|cure|croque|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
-        <<- /tu/ morph(<1, ":(?:D|V0e)|<start>|>,") and analyse_with_next(\1, "-", ":N")
+        <<- /tu/ morph(<1, ":(?:D|V0e)|<start>|>,") and morph2(\1, "-", ":N")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
 TEST: c’est le {{contre exemple}} parfait
