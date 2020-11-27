@@ -138,8 +138,8 @@ def suggVerbInfi (sFlex):
     return "|".join([ sStem  for sStem in _oSpellChecker.getLemma(sFlex)  if conj.isVerb(sStem) ])
 
 
-_dQuiEst = { "je": ":1s", "j’": ":1s", "j’en": ":1s", "j’y": ":1s", \
-             "tu": ":2s", "il": ":3s", "on": ":3s", "elle": ":3s", "nous": ":1p", "vous": ":2p", "ils": ":3p", "elles": ":3p" }
+_dQuiEst = { "je": ":1s", "j’": ":1s", "tu": ":2s", "il": ":3s", "on": ":3s", "elle": ":3s", "iel": ":3s", \
+             "nous": ":1p", "vous": ":2p", "ils": ":3p", "elles": ":3p", "iels": ":3p" }
 _lIndicatif = [":Ip", ":Iq", ":Is", ":If"]
 _lSubjonctif = [":Sp", ":Sq"]
 
@@ -153,11 +153,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
         lMode = [cMode]
     else:
         return ""
-    sWho = _dQuiEst.get(sSuj.lower(), None)
-    if not sWho:
-        if sSuj[0:1].islower(): # pas un pronom, ni un nom propre
-            return ""
-        sWho = ":3s"
+    sWho = _dQuiEst.get(sSuj.lower(), ":3s")
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)

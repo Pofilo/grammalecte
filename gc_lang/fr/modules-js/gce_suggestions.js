@@ -182,9 +182,8 @@ function suggVerbInfi (sFlex) {
 
 
 const _dQuiEst = new Map ([
-    ["je", ":1s"], ["j’", ":1s"], ["j’en", ":1s"], ["j’y", ":1s"],
-    ["tu", ":2s"], ["il", ":3s"], ["on", ":3s"], ["elle", ":3s"],
-    ["nous", ":1p"], ["vous", ":2p"], ["ils", ":3p"], ["elles", ":3p"]
+    ["je", ":1s"], ["j’", ":1s"], ["tu", ":2s"], ["il", ":3s"], ["on", ":3s"], ["elle", ":3s"], ["iel", ":3s"],
+    ["nous", ":1p"], ["vous", ":2p"], ["ils", ":3p"], ["elles", ":3p"], ["iels", ":3p"]
 ]);
 const _lIndicatif = [":Ip", ":Iq", ":Is", ":If"];
 const _lSubjonctif = [":Sp", ":Sq"];
@@ -200,13 +199,7 @@ function suggVerbMode (sFlex, cMode, sSuj) {
     } else {
         return "";
     }
-    let sWho = _dQuiEst.gl_get(sSuj.toLowerCase(), null);
-    if (!sWho) {
-        if (sSuj[0].gl_isLowerCase()) { // pas un pronom, ni un nom propre
-            return "";
-        }
-        sWho = ":3s";
-    }
+    let sWho = _dQuiEst.gl_get(sSuj.toLowerCase(), ":3s");
     let aSugg = new Set();
     for (let sStem of gc_engine.oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
