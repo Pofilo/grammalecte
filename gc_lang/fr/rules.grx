@@ -1971,25 +1971,25 @@ __da_le_la_les_leur_en_y__
         <<- =>> select(\2, ":Ov")
 
     l’  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     le  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     la  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
         <<- __else__ and not value(<1, "|le|ce|du|") =>> exclude(\1, ":N")
 
     les *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     leur    *WORD
         <<- not value(<1, "|le|du|") =>> exclude(\1, ":N")
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and morph(\2, ":[NA]", "*") =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     leurs   *WORD
@@ -2023,7 +2023,7 @@ __da_préverbes_verbes__
     [ne|n’]  [le|la|l’|les]  [lui|leur|en]        @:¬:[OX]
     [ne|n’]  [lui|leur]      en                   @:¬:[OX]
     n’       ?[en|y]¿  @:¬:[OX]
-        <<- =>> select(\-1, ":V")
+        <<- =>> select(\-1, ":[ISKYPE]")
         <<- /-1>> neg
 
     [ne|n’]                 [lui|en|leur|le|la|l’|les|nous|vous|y]
@@ -2037,22 +2037,26 @@ __da_préverbes_verbes__
         <<- morph(<1, ":R") =>> exclude(\1, ":(?:Q|Os)")
 
     [me|m’|te]  ?[le|la|l’|les|en|y]¿  @:¬:[OX]
-        <<- =>> select(\-1, ":V")
+        <<- =>> select(\-1, ":[ISKYPE]")
 
     [se|s’]  ?[le|la|l’|les|en|y]¿  @:¬:[OX]
-        <<- =>> select(\-1, ":[ISKQYP]")
+        <<- =>> select(\-1, ":[ISKYP]")
 
     c’  ?[en|y]¿  @:¬:[OX]
         <<- =>> select(\-1, ":V")
 
+    s’  *WORD
+        <<- not value(\2, "|il|ils|iel|iels") =>> select(\1, ":Ov")
+        <<- __else__ =>> select(\1, ":C")
+
     t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
-        <<- =>> select(\3, ":(?:[123][sp]|P|Y)")
+        <<- =>> select(\3, ":[ISKYPE]")
 
     t’  @:¬:X|>(?:rien|ie?ls?|elles?|on)/
-        <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
+        <<- =>> select(\2, ":[ISKYPE]")
 
     y  @:¬:[OX]
-        <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
+        <<- =>> select(\2, ":[ISKYPE]")
 
     [je|j’|il|ils|on]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:¬:[OX]
     [je|j’|il|ils|on]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:¬:[OX]
@@ -2083,7 +2087,13 @@ __da_préverbes_verbes__
     leur            en                 @:¬:[OXW]
         <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
-    $:M  @:[123]s¬:[QW]
+    nous @:[ISKYPE]¬:1p
+        <<- =>> select(\1, ":Ov")
+
+    vous @:[ISKYPE]¬:2p
+        <<- =>> select(\1, ":Ov")
+
+    $:M  @:[123]s¬:[QWA]
         <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
 
     <start>  $:M  @:(?:[123]s|Ov)¬:A
@@ -2140,7 +2150,7 @@ __da_mots_grammaticaaux__
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
 
     avant [que|qu’|$:D]
-        <<- not value(<1, "|l’|quel|cet|un|mon|ton|son|notre|votre|leur|") =>> select(\2, ":R")
+        <<- not value(<1, "|l’|quel|cet|un|mon|ton|son|notre|votre|leur|") =>> select(\1, ":R")
 
     c’  [>avoir|>être]
         <<- =>> select(\1, ":O")
@@ -2163,16 +2173,26 @@ __da_mots_grammaticaaux__
     [<start>|,|(]  cela  @:(?:[123]s|P)
         <<- =>> exclude(\2, ":V")
 
+    certains  @:[NA].*:[me]:[pi]¬:(?:G|3[sp])
+        <<- =>> exclude(\1, ":O")
+
+    certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
+        <<- =>> exclude(\1, ":O")
+
     dans
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
     [de|d’] @:[MYB]
+    [de|d’] *NUM
     [de|d’] [un|une|le|la|l’|les|ce|cet|cette|ces|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- =>> select(\1, ":R")
 
     [de|d’] @:[NA]¬:[YMGB]
         <<- not \2[0:1].isupper() =>> select(\1, ":D")
+
+    [devant|derrière] $:D
+        <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
 
     entre  *WORD  et  *WORD
         <<- (morph(\2, ":[NA]") and morph(\4, ":[NA]"))
@@ -2220,6 +2240,15 @@ __da_mots_grammaticaaux__
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
+    en outre
+        <<- not value(<1, "|il|on|elle|iel|n’|l’|") =>> select(\1, ":R") and select(\2, ":N")
+
+    [une|cette|quelle|mon|notre|votre] outre
+        <<- =>> select(\2, ":N")
+
+    outre $:D
+        <<- morph(<1, ":V", ":[GA]") =>> select(\1, ":R")
+
     [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
@@ -2230,7 +2259,8 @@ __da_mots_grammaticaaux__
         <<- =>> select(\1, ":R")
 
     [plus|moins]
-        <<- morph(<1, ":V") =>> select(\1, ":W")
+        <<- value(<1, "|le|la|l’|les|leur|") =>> select(\1, ":[NW]")
+        <<- __else__ and morph(<1, ":V") =>> select(\1, ":W")
 
     plus ou moins
         <<- =>> select(\1, ":W") and select(\-1, ":W")
@@ -2241,6 +2271,9 @@ __da_mots_grammaticaaux__
     [plus|moins]  @:[WA] [que|qu’]
         <<- not value(<1, "|je|ne|n’|") =>> select(\1, ":W")
 
+    [un|une|des|le|la|l’|les|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [plus|moins] @:[AW]¬:G
+        <<- =>> select(\2, ":W")
+
     puis
         <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
 
@@ -2250,8 +2283,8 @@ __da_mots_grammaticaaux__
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
-    [un|une|des|le|la|l’|les|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [plus|moins] @:[AW]¬:G
-        <<- =>> select(\2, ":W")
+    personne [ne|n’]
+        <<- not morph(<1, ":[DA].*:[fe]:[si]") =>> select(\1, ":O")
 
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
@@ -2268,7 +2301,6 @@ __da_mots_grammaticaaux__
     si @:[OD]
     s’ [il|ils]
         <<- =>> select(\1, ":C")
-
 
     sur @:[BD]
         <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[0123]e") =>> select(\1, ":R")
@@ -2646,6 +2678,10 @@ __tag_noms__
 !!!! Fusions et immunités                                                                         !!
 
 __fusions_mots_grammaticaux__
+    c’ est-à-dire
+        <<- ~>> ␣
+        <<- =>> setmeta(\1, "WORD")
+
     le ou la  *WORD
     la ou le  *WORD
         <<- morph(\-1, ":[NA]") ~1:3>> ␣
@@ -2675,6 +2711,7 @@ __fusions_noms_communs__
 
     n’ importe [qui|quoi|quel|quelle|quels|quelles|où|ou|lequel|laquelle|lesquels|lesquelles]
         <<- ~1:2>> ␣
+        <<- =>> setmeta(\1, "WORD") and define(\1, ":ÉO")
 
     [cultural|gender] studies
         <<- ~>> ␣
@@ -3179,10 +3216,10 @@ __immunités__
         <<- !3>>
         <<- !5>>
 
-    [<start>|,]  >écrire  [“|”|"]   ?*WORDELD¿ *WORD  [“|”|"]
-    [<start>|,]  >écrire  «         ?*WORDELD¿ *WORD  »
-    [<start>|,]  >écrire  [‘|'|’|`] ?*WORDELD¿ *WORD  [‘|'|’|`]
-    [<start>|,]  >écrire  ‹         ?*WORDELD¿ *WORD  ›
+    [<start>|,|s’]  >écrire  [“|”|"]   ?*WORDELD¿ *WORD  [“|”|"]
+    [<start>|,|s’]  >écrire  «         ?*WORDELD¿ *WORD  »
+    [<start>|,|s’]  >écrire  [‘|'|’|`] ?*WORDELD¿ *WORD  [‘|'|’|`]
+    [<start>|,|s’]  >écrire  ‹         ?*WORDELD¿ *WORD  ›
         <<- !-2>>
 
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
@@ -19265,6 +19302,21 @@ TEST: __mc__ des {{portes-avions}}.
 @@@@
 @@@@
 @@@@
+
+
+
+!!
+!!
+!!!! Désambiguïsation                                                                             !!
+!!
+!!
+
+__da_formes_verbales__
+    >avoir été $:Q¬:G
+        <<- =>> select(\2, ":Q") and select(\3, ":Q")
+
+    [>falloir|>imaginer|>penser|>pouvoir|>savoir|>vouloir] [aller|avoir|être|dire|savoir|manger]
+        <<- =>> select(\2, ":Y")
 
 
 !!
