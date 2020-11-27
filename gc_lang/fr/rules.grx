@@ -1118,14 +1118,14 @@ __[s]/unit(unit_nbsp_avant_unités1)__
 __[s]/unit(unit_nbsp_avant_unités2)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
         <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
-        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si ‹\3› est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si ‹\3› est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 __[s]/unit(unit_nbsp_avant_unités3)__
     ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
         <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
-        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-        <<- __else__ ->> "\2 \3"                                    && Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- option("num") ->> =formatNumber(\2) + " " + \3          && Si ‹\3› est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+        <<- __else__ ->> "\2 \3"                                    && Si ‹\3› est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 TEST: Ça a duré {{3µs}}                                 ->> 3 µs
 TEST: Ça a duré {{3,5 µs}}                              ->> 3,5 µs
@@ -1285,10 +1285,10 @@ TEST: C’est {{“}}compliqué.
 
 __[i]/typo(typo_guillemet_simple_ouvrant_non_fermé)__
     (‘)\w\w[^’']+$  @@0
-        <<- before(" $") or isStart() -1>> _                                                        && Guillemet fermant introuvable dans la suite du paragraphe.
+        <<- before(" $") or start() -1>> _                                                        && Guillemet fermant introuvable dans la suite du paragraphe.
 __[i]/typo(typo_guillemet_simple_fermant_non_ouvert)__
     ^[^‘']+\w\w(’)  @@$
-        <<- after("^ ") or isEnd() -1>> _                                                           && Guillemet ouvrant introuvable dans ce paragraphe.
+        <<- after("^ ") or end() -1>> _                                                           && Guillemet ouvrant introuvable dans ce paragraphe.
 
 TEST: ce {{‘}}test ne finira jamais.
 TEST: ces actions ne représentent rien{{’}} pour moi.
@@ -8044,7 +8044,7 @@ TEST: à tous les sots, je dis “merde”.
     à  ?$:W¿  *WORD
         <<- /conf/ \-1.islower() and not value(\-1, "|coté|sont|") >>>
         <<- /conf/ morph(\-1, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a            && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
-        <<- /conf/ __also__ and morph(\-1, ":V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
+        <<- /conf/ __also__ and morph(\-1, ":V1.*:(?:Ip:2p|Q)", ":N") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
         --1>> =suggVerbInfi(\-1)                                                                    && Le verbe devrait être à l’infinitif.
         <<- /conf/ __else__ and morph(\-1, ":[123][sp]", "*") and not value(\-1, "|tord|tords|") >>>
         <<- /conf/ morph(\-1, ":V2.*:I[ps]:3s", "*") --1>> =suggVerbPpas(\-1, ":m:s")               && Incohérence : “\1” est une préposition ; “\-1” est une forme verbale.
@@ -11866,10 +11866,17 @@ TEST: collait au millimètre près à la réalité
 
 # prix / pris
 __conf_prix_pris!7__
+    ## prix
     [à|a] n’importe [quel+s] pris
+    [à|a] bon pris
     quel [est|était|fut|serait|sera] [le|mon|ton|son|notre|votre|leur|leurs] pris
     à [quel+s] pris
+    >avoir son pris
         <<- /conf/ --1>> prix                                               && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
+
+    au pris [de|d’]
+    [à|a] pris modique
+        <<- /conf/ -2>> prix                                                && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
     [à|a] pris [coûtant|coutant]
         <<- /conf/ ->> à prix coûtant                                       && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
@@ -11877,6 +11884,7 @@ __conf_prix_pris!7__
     [au|aux] pris [fort+s]
         <<- /conf/ ->> au prix fort                                         && Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
+    ## pris
     prix à la gorge
     prix dans [la|une|cette] [tourmente|tempête|tornade]
     prix dans [la|une|cette] coulée de [boue|lave]
@@ -11888,11 +11896,12 @@ __conf_prix_pris!7__
     prix dans [mes|tes|ses|nos|vos|leurs] bras
         <<- /conf/ -1>> pris                                                && Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
 
-TEST: réussir à n’importe quel {{pris}}.
-TEST: quel est leur {{pris}} ?
-TEST: {{prix}} par surprise,
-TEST: vendre {{à pris coûtant}}
-TEST: encore un jeu vendu en kit {{au pris fort}}
+TEST: réussir à n’importe quel {{pris}}.                                ->> prix
+TEST: quel est leur {{pris}} ?                                          ->> prix
+TEST: au {{pris}} de sa vie                                             ->> prix
+TEST: {{prix}} par surprise,                                            ->> pris
+TEST: vendre {{à pris coûtant}}                                         ->> à prix coûtant
+TEST: encore un jeu vendu en kit {{au pris fort}}                       ->> au prix fort
 
 
 # puits / puis
@@ -14721,6 +14730,7 @@ __locutions_temporelles_communes__
     en *NUM                                         {unit_mesure_plur_mas}
     pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur_mas}
     pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur_mas}
+    un ou deux                                      {unit_mesure_plur_mas} plus [tôt|tard]
         <<- not morph(>1, ":A.*:[me]:[pi]") ~>> *
 
     au bout de [nombreuses|plusieurs|quelques]      {unit_mesure_plur_fem}
@@ -14734,10 +14744,12 @@ __locutions_temporelles_communes__
     en *NUM                                         {unit_mesure_plur_fem}
     pendant [des|plusieurs|quelques|*NUM|$:B:e:p]   {unit_mesure_plur_fem}
     pendant près [de|d’] [*NUM|$:B:e:p]             {unit_mesure_plur_fem}
+    une ou deux                                     {unit_mesure_plur_fem} plus [tôt|tard]
         <<- not morph(>1, ":A.*:[fe]:[pi]") ~>> *
 
     $:B:e:p                                         {unit_mesure_plur} auparavant
     $:B:e:p                                         {unit_mesure_plur} plus [tôt|tard]
+    $:B:e:p ou $:B:e:p                              {unit_mesure_plur} plus [tôt|tard]
     à quelques                                      {unit_mesure_plur} près
     après [des|plusieurs|quelques|*NUM|$:B:e:p]     {unit_mesure_plur} de bons et loyaux services
     après près [de|d’] [*NUM|$:B:e:p]               {unit_mesure_plur} de bons et loyaux services
@@ -16809,6 +16821,9 @@ __purge_conditionnelle__
     entre [moi|toi|lui|elle|nous|vous|eux|elles] et [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- ~>> *
 
+    , entre [tous|toutes] ,
+        <<- ~>> *
+
     juste à temps
         <<- not morph(<1, ":D") ~>> *
 
@@ -17611,6 +17626,7 @@ __substantifs_multi_mots__
     >sortie [de|d’] secours
     >soue à >cochon
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
+    >sourire [de|d’] connivence
     >souvenir d’ enfance
     >star du x
     >station [de|d’] radio
@@ -17700,6 +17716,8 @@ __substantifs_multi_mots__
     >vêtement [de|d’] rechange
     >vidéo X
     >vie [de|d’] bohème
+    >violence [par|sur] personne dépositaire de l’ autorité publique
+    >violence [par|sur] personnes dépositaires de l’ autorité publique
     >virage à [*NUM|$:B:e:p] degrés
     virus d’ origine animale
     >vitamine [A|B|C|D|E|F]
@@ -19193,6 +19211,7 @@ TEST: d’une tête plus petit que moi, il mesurait à peine um mètre cinquante
 TEST: triompher par la force, l’intelligence la violence ou la ruse
 TEST: une table en bois brut
 TEST: c’est à devenir fou, à se taper la tête contre les murs
+TEST: quitte à en souffrir et fût-ce au prix de sa vie
 
 
 @@@@
@@ -20029,7 +20048,7 @@ TEST: C’est {{la}} {{champ de l’heur}}.
 
 
 __conf_champ_chant__
-    [chan|>chant] de [>blé|>betterave|>fleur|>force|>lavande|maïs|mais|>tournesol|>tulipe|>vision]
+    [chan|>chant] de [>blé|>betterave|>coquelicot|>fleur|>force|>jonquille|>lavande|maïs|mais|>mine|>navet|>patate|>pavot|>pomme|>tournesol|>tabac|>théier|>thé|>tulipe|>vision]
         <<- /conf/ -1>> =\1.replace("nt", "mp").replace("NT", "MP")     && Confusion probable. Un chant est ce qui se chante.|https://fr.wiktionary.org/wiki/champ
 
     [>tomber|>mourir|>décéder|>trépasser]   [au|aux]    [chan|>chant] d’ >honneur
@@ -20056,7 +20075,7 @@ TEST: donnons-leur le {{chant}} libre et cessons de nous inquieter
 
 # colon / côlon
 __conf_côlon_colon__
-    cancer du colon
+    >cancer du colon
         <<- /conf/ -3>> côlon                           && Confusion : le côlon est un segment du gros intestin, le colon colonise.
 
 TEST: Il a le cancer du {{colon}}.
@@ -26374,7 +26393,7 @@ __purge_syntagmes_nominaux__
     <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  des  @:N.*:[pi]  ?[ne|n’]¿   [lui|leur|y]                    en                           @[123]p
         <<- morph(\3, ":N.*:[pi]") ~4:5>> *
 
-#### isEndOfNG ####
+#### end of NG ####
 # <end>
 # @:[VR]¬:[NAP]
 # , @¬:[NA]
@@ -31693,10 +31712,9 @@ TEST: Quand j’aurai soif et faim, je m’arrêterai.
 
 # Si suivi du conditionnel ou du subjonctif
 __vmode_si_sujet_conditionnel_subjonctif__
-    [<start>|,|(]  si     [j’|J’|t’|T’]       @:[SK]¬:(?:G|V0|I)
     [<start>|,|(]  si     @:(?:Os|M)          @:[SK]¬:(?:G|V0|I)
     [<start>|,|(]  s’     [il|ils|iel|iels]   @:[SK]¬:(?:G|V0|I)
-        <<- /vmode/ -4>> _                                                                          && Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
+        <<- /vmode/ --1>> _                                                                         && Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
 
 TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
 TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
@@ -31775,17 +31793,18 @@ TEST: si le patron {{aurait}} pensé la chose, on l’aurait su.                
 TEST: si les femmes {{auraient}} parlé, je l’aurais su.                             ->> avaient
 
 
-
 # Quand/lorsque/puisque/pourquoi + indicatif
 __vmode_quand_lorsque_indicatif__
-    [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:S¬:[GI]
     [quand|lorsque|lorsqu’|puisque|puisqu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+    [quand|lorsque|lorsqu’|puisque|puisqu’]  $:D¬:R $:N  @:S¬:[GIA]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
 TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
     [<start>|,|(]  pourquoi  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [<start>|,|(]  pourquoi  $:D¬:R $:N  @:V.*:S¬:[GIA]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « pourquoi », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
@@ -31798,22 +31817,21 @@ TEST: quels amis ils eussent trompés pour si peu ?
 
 # Dès que + indicatif
 __vmode_dès_que__
-    dès  [que|qu’]  @:(?:Os|M)  @:S¬:[IG]
-        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                                                && Après “dès que”, le verbe ne devrait pas être au subjonctif.
+    dès  [que|qu’]  @:(?:Os|M)  @:S¬:[GI]
+    dès  [que|qu’]  $:D¬:R $:N  @:S¬:[GIA]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après “dès que”, le verbe ne devrait pas être au subjonctif.
 #        <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    && Ce verbe ne devrait pas être au conditionnel.
 
 #TEST: dès que je le {{verrais}}
 TEST: dès qu’il le {{voie}}
+TEST: dès que l’homme le {{voie}}
 TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’il en aurait l’occasion
 
 
 # indicatif nécessaire
 __vmode_sujet_indicatif__
-    <start>  [je|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                && Ce verbe ne devrait pas être au subjonctif.
-
-    <start>  j’  @:S¬:[GIK]|V0a.*:Sq:1s
-        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", "je")                                              && Ce verbe ne devrait pas être au subjonctif.
+    <start>  [je|j’|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Ce verbe ne devrait pas être au subjonctif.
 
 TEST: Il {{ait}} parti.
 TEST: Il en {{conclue}} qu’il a eu raison.
