@@ -146,7 +146,7 @@ class TestGrammarChecking (unittest.TestCase):
             # test messages
             aGramErrs = gc_engine.parse(purgeMessage(dErr["sMessage"]))
             aGramErrs = [ dMsgErr  for dMsgErr in sorted(aGramErrs, key=lambda d: d["nStart"])  if self._zRuleEnd.sub("", dMsgErr["sRuleId"]) != self._zRuleEnd.sub("", dErr["sRuleId"]) ]
-            aSpellErrs = self._oSpellChecker.parseParagraph(re.sub("‹[\\w ’-]+›", lambda m: " " * len(m.group(0)), dErr["sMessage"]))
+            aSpellErrs = self._oSpellChecker.parseParagraph(re.sub("‹[^›]+›", lambda m: " " * len(m.group(0)), dErr["sMessage"]))
             if aGramErrs or aSpellErrs or "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
                 print("\n# Error in: <" + dErr["sMessage"] + ">\n    " + dErr["sLineId"] + " / " + dErr["sRuleId"])
                 for dMsgErr in aGramErrs:
