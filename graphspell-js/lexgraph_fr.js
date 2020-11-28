@@ -249,7 +249,7 @@ var lexgraph_fr = {
             [':Zs', [" suffixe,", "Suffixe"]],
 
             [':H', ["", "<Hors-norme, inclassable>"]],
-            [':HEL', [" lettre ‹l› euphonique", "Lettre ‹l› euphonique"],
+            [':HEL', [" lettre ‹l› euphonique", "Lettre ‹l› euphonique"]],
 
             [':@',  ["", "<Caractère non alpha-numérique>"]],
             [':@p', [" signe de ponctuation", "Signe de ponctuation"]],
