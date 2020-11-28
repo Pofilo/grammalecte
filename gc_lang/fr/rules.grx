@@ -2000,7 +2000,7 @@ __da_le_la_les_leur_en_y_lui__
 
     en  *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
-        <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":[NADB]", "*") =>> select(\1, ":R")
+        <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":", ":[ISKYPE]") =>> select(\1, ":R")
 
     y   *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)") =>> select(\1, ":Ov")
@@ -2135,6 +2135,9 @@ __da_adverbes__
     grave
         <<- morph(<1, ":D") =>> exclude(\1, ":W")
 
+    [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
+        <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, ":W")
+
 
 __da_mots_grammaticaaux__
     a ?@:[WX]¿ été
@@ -2154,6 +2157,9 @@ __da_mots_grammaticaaux__
 
     c’  [>avoir|>être]
         <<- =>> select(\1, ":O")
+
+    car
+        <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, ":G")
 
     ce  @:[NA].*:[me]:[si]¬:V0e
         <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D") and select(\2, ":[NA]")
@@ -2179,13 +2185,23 @@ __da_mots_grammaticaaux__
     certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
         <<- =>> exclude(\1, ":O")
 
+    contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
+        <<- =>> select(\1, ":R")
+
+    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte  ?[menée+s|lancée+s]¿                         contre
+    [>accusation|>action|>assaut|>attentat|>croisade|>jihad|>guerre|>sortilège]   ?[mené+ses|lancé+ses]¿    contre
+    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                                            contre
+        <<- =>> select(\-1, ":R")
+
+    contre
+        <<- not morph(<1, ":[DA].*:[me]:[si]") =>> exclude(\1, ":N")
+
     dans
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
-    [de|d’] @:[MYB]
+    [de|d’] @:[MYBD]
     [de|d’] *NUM
-    [de|d’] [un|une|le|la|l’|les|ce|cet|cette|ces|ma|ta|sa|mon|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelque|quelques|plusieurs|certains|certaines|maints|maintes]
         <<- =>> select(\1, ":R")
 
     [de|d’] @:[NA]¬:[YMGB]
@@ -2202,6 +2218,7 @@ __da_mots_grammaticaaux__
     entre  $:D¬:R  *WORD  et  $:D¬:R  *WORD
         <<- morph(\3, ":[NA]") and morph(\6, ":[NA]") =>> define(\1, ":R")
 
+    entre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     entre autres
         <<- =>> define(\1, ":R")
 
@@ -2302,8 +2319,11 @@ __da_mots_grammaticaaux__
     s’ [il|ils]
         <<- =>> select(\1, ":C")
 
+    sous $:D
+        <<- not morph(<1, ":[DA].*:[me]:[pi]") =>> select(\1, ":R")
+
     sur @:[BD]
-        <<- morph(<1, "<start>|>,|:(?:V|N.*:f)", ":V[0123]e") =>> select(\1, ":R")
+        <<- not morph(<1, ":(?:V[0123]e|[DN].*:[me]:[si])") =>> select(\1, ":R")
 
     tous @:N.*:[me]:[pi]¬:(?:[AGW]|3p)
         <<- =>> select(\1, ":D")
@@ -2438,7 +2458,7 @@ __da_groupe_nominal__
         <<- =>> select(\-1, ":N")
 
     nombre [de|d’|des]
-        <<- morph(<1, ":V|<start>|>,") =>> select(\1, ":N")
+        <<- morph(<1, ":[VR]|<start>|>,") =>> select(\1, ":N")
 
     par  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
@@ -6259,7 +6279,7 @@ __conf_au_qqch__
         <<- /conf/ not \1.isupper() and not \2.isupper()
         -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   && Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
-    aux [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|iel|iels|nous|vous|on|parce]
+    aux [ces|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|iel|iels|nous|vous|on|parce]
         <<- /conf/ not \1.isupper() and not \2.isupper()
         -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   && Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
@@ -6272,7 +6292,7 @@ __conf_au_qqch__
 
 TEST: au {{nos}} enfants.
 TEST: {{Au quel}} faut-il s’adresser ?
-TEST: ils jouent aux {{des}}.
+TEST: partir aux {{mon}} Tonnerre
 TEST: {{Aux quels}} a-t-il adressé sa requête. ?
 TEST: Des individus {{aux combien}} sensibles aux usages.
 TEST: Au MES, rien de nouveau.
@@ -10009,8 +10029,9 @@ TEST: Jette quelques {{des}} sur la table et voyons.
 TEST: j’en ai marre de ces {{dès}}.
 TEST: Les {{dès}} {{sont}} jetés.
 TEST: J’ai acheté des {{dès}} à jouer.
-TEST: Dieu ne joue pas aux {{dès}}.
 TEST: J’apporte mes {{dès}}.
+TEST: ils jouent aux {{des}}.
+TEST: Dieu ne joue pas aux {{dès}}.
 TEST: {{Des}} 1980, le pays était en crise.
 TEST: {{Des}} dix-huit ans.
 TEST: {{Des}} 4 ans.
@@ -17580,6 +17601,7 @@ __substantifs_multi_mots__
     >poule aux œufs d’ or
     >pouvoir d’ achat
     >prédication [de|d’] rue
+    >préfecture [de|d’] police
     >président en exercice
     >presse à >scandale
     preuve ?suffisante¿ du contraire
@@ -19319,7 +19341,7 @@ __da_formes_verbales__
     >avoir  été  $:Q¬:G
         <<- =>> select(\2, ":Q") and select(\3, ":Q")
 
-    [>aller|>désirer|>devoir|>falloir|>imaginer|>penser|>pouvoir|>savoir|>vouloir]  [aller|avoir|être|dire|savoir|manger]
+    [>aller|>désirer|>devoir|>falloir|>imaginer|>penser|>pouvoir|>savoir|>vouloir]  [aller|avoir|être|dire|savoir|manger|pouvoir]
         <<- =>> select(\2, ":Y")
 
     a       [été|désiré|dû|fallu|imaginé|pensé|pu|su|voulu]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
@@ -19332,19 +19354,33 @@ __da_formes_verbales__
     >être   [allé+ses]                                       ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
         <<- =>> select(\1, ":V") and select(\2, ":Q") and select(\-1, ":Y")
 
+    [>avoir|>être]  $:Q¬:M
+        <<- =>> select(\2, ":Q")
+
     /_VCint_  @:Q
         <<- morphVC(\1, ":V0") =>> select(\-1, ":Q")
 
-    [<start>|,|(|/_start_]  nous  nous  @:V0e.*:1p  $:Q
-    [<start>|,|(|/_start_]  vous  vous  @:V0e.*:2p  $:Q
-        <<- =>> select(\2, ":Os") and select(\3, ":Ov") and select(\-1, ":Q")
+    [<start>|,|(|/_start_]  nous  ?[ne|n’]¿  nous  @:V0e.*:1p  $:Q
+    [<start>|,|(|/_start_]  vous  ?[ne|n’]¿  vous  @:V0e.*:2p  $:Q
+        <<- =>> select(\2, ":Os") and select(\-3, ":Ov") and select(\-1, ":Q")
 
     [le|la|l’|les|lui|nous|vous|leur]  /_VCint_
         <<- =>> select(\1, ":Ov")
 
-    qui  ?[lui|nous|vous|leur]¿  a  $:Q
+    qui  ?[lui|nous|vous|leur]¿  $:V0
+        <<- =>> select(\-1, ":V")
+
+    qui  ?[lui|nous|vous|leur]¿  $:V0  $:Q
         <<- =>> select(\-2, ":V") and select(\-1, ":Q")
 
+    [<start>|,|(]  nous  ?[ne|n’]¿  $:1p
+        <<- =>> select(\2, ":Os") and select(\-1, ":[ISK].*:1p")
+
+    [<start>|,|(]  vous  ?[ne|n’]¿  $:2p
+        <<- =>> select(\2, ":Os") and select(\-1, ":[ISK].*:2p")
+
+    [<start>|,|(]  ça  [le|la|l’|les|lui|nous|vous|leur]  @:3s¬:G
+        <<- =>> select(\-2, ":Ov") and select(\-1, ":3s")
 
 
 !!
@@ -28595,12 +28631,14 @@ __immu_les_avoir_fait_vinfi__
 
 __ppas_ayant__
     ayant  @:(?:Q.*:[fp]|[123][sp])¬:(?:G|N|m:[si])
-        <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") and not value(<1, "|m’|t’|l’|nous|vous|les|")
         --1>> =suggMasSing(\-1)
         && Après avoir, il faut un participe passé au masculin singulier (sauf si le COD se trouve avant le verbe, improbable dans ce cas de figure).
 
 TEST: ayant {{marqués}} les esprits, tout le monde se souvenait d’elles.
 TEST: ayant prise sur les événements, elle ne voyait aucune raison de s’alarmer.
+TEST: je croyais, vous ayant déjà reçus, que vous n’auriez pas à revenir.
+TEST: il pensait, nous ayant oubliés, que nous l’aurions oublié, nous aussi.
 
 
 __ppas_pronom_avoir__
