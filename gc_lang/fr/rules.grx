@@ -1941,33 +1941,33 @@ __écritures_épicènes_invariables__
 !!!
 !!!
 
-__da_le_la_les_leur_en_y__
-    [je|j’] [le|la|l’|les|leur]
+__da_le_la_les_leur_en_y_lui__
+    [je|j’] [le|la|l’|les|leur|lui|nous|vous]
     j’ y
         <<- not morph(<1, ":1s") =>> select(\2, ":Ov")
 
-    tu [le|la|l’|les|leur|y]
+    tu [le|la|l’|les|leur|y|lui|nous|vous]
         <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Ov")
 
-    [il|on] [le|la|l’|les|leur|y]
+    [il|on] [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":3s") =>> select(\2, ":Ov")
 
-    [elle|iel] [le|la|l’|les|leur|y]
+    [elle|iel] [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Ov")
 
-    nous [le|la|l’|les|leur|y]
+    nous [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Ov")
 
-    vous [le|la|l’|les|leur|y]
+    vous [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Ov")
 
-    ils [le|la|l’|les|leur|y]
+    ils [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":3p") =>> select(\2, ":Ov")
 
-    [elles|iels] [le|la|l’|les|leur|y]
+    [elles|iels] [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Ov")
 
-    [ne|n’|me|m’|te|t’|se|s’]  [le|la|l’|les|leur|en|y]
+    [ne|n’|me|m’|te|t’|se|s’]  [le|la|l’|les|leur|en|y|lui|nous|vous]
         <<- =>> select(\2, ":Ov")
 
     l’  *WORD
@@ -1979,7 +1979,7 @@ __da_le_la_les_leur_en_y__
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
     la  *WORD
-        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
+        <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|plupart|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
         <<- __else__ and not value(<1, "|le|ce|du|") =>> exclude(\1, ":N")
 
@@ -2112,10 +2112,10 @@ __da_préverbes_verbes__
         <<- ~>> venir
 
     s’ ra
-        <<- ~>> sera
+        <<- ~>> ␣sera
 
     s’ ras
-        <<- ~>> seras
+        <<- ~>> ␣seras
 
     nous ?[ne|n’]¿ ?[le|l’|en|nous|vous|lui|leur|y]¿  sommes
     nous ?[ne|n’]¿ [nous|vous]   [le|l’|en|y]         sommes
@@ -2484,8 +2484,11 @@ __da_groupe_nominal__cas_particuliers__
     en peine
         <<- not value(<1, "|ne|n’|j’|on|il|elle|iel|") =>> exclude(\2, ":V")
 
-    m’ [dame|sieur]
-        <<- ~>> ␣
+    m’ dame
+        <<- ~>> ␣madame
+
+    m’ sieur
+        <<- ~>> ␣mosieur
 
     tout feu ?,¿ tout >flamme
         <<- ~>> ␣
@@ -2502,6 +2505,8 @@ TEST: Ses rencards finissent par devenir lassants
 TEST: trois espèces de chauve-souris dont une est éteinte
 TEST: Ils sont source de conflits
 TEST: Votre question fait référence à un fait divers déroutant
+TEST: il s’ra bien heureux d’vous voir.
+TEST: tu s’ras bien content d’nous voir.
 
 
 __da_couleurs_invariables__
@@ -17210,7 +17215,7 @@ __substantifs_multi_mots__
     >crayon à [lèvres|sourcils]
     >crêpage [de|d’] >chignon
     >cri [de|d’] ralliement
-    >crime [de|d’] guerre
+    >crime [de|d’] [guerre|lèse-majesté]
     >criminel [de|d’] guerre
     >crise [de|d’] >nerf
     >critère [de|d’] référence
@@ -18835,7 +18840,7 @@ __da_substantifs__
 
 
 __da_locutions_verbales__
-    >avoir [cours|foule|lieu|vent]
+    >avoir [cours|foule|lieu|recours|vent]
     >avoir ni queue ?,¿ ni tête
     >aller bon train
     >aller [de|d’] l’ avant
@@ -18855,7 +18860,6 @@ __da_locutions_verbales__
     >compter à rebours
     >condamner à mort
     >couler à ?grands¿ flots
-    >cour d’ assises
     >demander [assistance|audience|conseil|pardon]
     >dire [adieu|merde]
     [>donner|>redonner] [naissance|sens|suite|vie]
@@ -19312,11 +19316,35 @@ TEST: __mc__ des {{portes-avions}}.
 !!
 
 __da_formes_verbales__
-    >avoir été $:Q¬:G
+    >avoir  été  $:Q¬:G
         <<- =>> select(\2, ":Q") and select(\3, ":Q")
 
-    [>falloir|>imaginer|>penser|>pouvoir|>savoir|>vouloir] [aller|avoir|être|dire|savoir|manger]
+    [>aller|>désirer|>devoir|>falloir|>imaginer|>penser|>pouvoir|>savoir|>vouloir]  [aller|avoir|être|dire|savoir|manger]
         <<- =>> select(\2, ":Y")
+
+    a       [été|désiré|dû|fallu|imaginé|pensé|pu|su|voulu]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    a       [été|désiré|dû|fallu|imaginé|pensé|pu|su|voulu]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    a       [été|désiré|dû|fallu|imaginé|pensé|pu|su|voulu]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    a       [été|désiré|dû|fallu|imaginé|pensé|pu|su|voulu]  ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
+    >être   [allé+ses]                                       ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    >être   [allé+ses]                                       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    >être   [allé+ses]                                       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    >être   [allé+ses]                                       ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
+        <<- =>> select(\1, ":V") and select(\2, ":Q") and select(\-1, ":Y")
+
+    /_VCint_  @:Q
+        <<- morphVC(\1, ":V0") =>> select(\-1, ":Q")
+
+    [<start>|,|(|/_start_]  nous  nous  @:V0e.*:1p  $:Q
+    [<start>|,|(|/_start_]  vous  vous  @:V0e.*:2p  $:Q
+        <<- =>> select(\2, ":Os") and select(\3, ":Ov") and select(\-1, ":Q")
+
+    [le|la|l’|les|lui|nous|vous|leur]  /_VCint_
+        <<- =>> select(\1, ":Ov")
+
+    qui  ?[lui|nous|vous|leur]¿  a  $:Q
+        <<- =>> select(\-2, ":V") and select(\-1, ":Q")
+
 
 
 !!
