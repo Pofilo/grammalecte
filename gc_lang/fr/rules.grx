@@ -1974,6 +1974,12 @@ __da_le_la_les_leur_en_y_lui__
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
 
+    l’ [un|une]
+        <<- =>> define(\1, ">l/:HEL")
+
+    l’ on
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|nous|vous|ils|elles|iels|") =>> define(\1, ">l/:HEL")
+
     le  *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
         <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
@@ -2188,9 +2194,9 @@ __da_mots_grammaticaaux__
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
 
-    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte  ?[menée+s|lancée+s]¿                         contre
-    [>accusation|>action|>assaut|>attentat|>croisade|>jihad|>guerre|>sortilège]   ?[mené+ses|lancé+ses]¿    contre
-    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                                            contre
+    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte  ?[menée+s|lancée+s]¿                                 contre
+    [>accusation|>action|>assaut|>attentat|>croisade|>guerre|>jihad|>offensive|>sortilège] ?[mené+ses|lancé+ses]¿   contre
+    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                                                    contre
         <<- =>> select(\-1, ":R")
 
     contre
