@@ -400,36 +400,26 @@ class TextParser:
             echo("UPDATE:")
             echo(self)
 
-    def _getNextPointers (self, dToken, dGraph, dPointer, bDebug=False):
-        "generator: return nodes where <dToken> “values” match <dNode> arcs"
-        dNode = dGraph[dPointer["iNode"]]
-        iToken1 = dPointer["iToken1"]
+    def _getMatches (self, dGraph, dToken, dNode, bKeep=False):
+        "generator: return matches where <dToken> “values” match <dNode> arcs"
         bTokenFound = False
         # token value
         if dToken["sValue"] in dNode:
-            if bDebug:
-                echo("  MATCH: " + dToken["sValue"])
-            yield { "iToken1": iToken1, "iNode": dNode[dToken["sValue"]] }
+            yield (" ", dToken["sValue"], dNode[dToken["sValue"]])
             bTokenFound = True
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
-                if bDebug:
-                    echo("  MATCH: " + sValue)
-                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
+                yield (" ", sValue, dNode[sValue])
                 bTokenFound = True
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
-                if bDebug:
-                    echo("  MATCH: " + sValue)
-                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
+                yield (" ", sValue, dNode[sValue])
                 bTokenFound = True
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
-                if bDebug:
-                    echo("  MATCH: " + sValue)
-                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
+                yield (" ", sValue, dNode[sValue])
                 bTokenFound = True
         # regex value arcs
         if dToken["sType"] not in frozenset(["INFO", "PUNC", "SIGN"]):
@@ -438,9 +428,7 @@ class TextParser:
                     if "¬" not in sRegex:
                         # no anti-pattern
                         if re.search(sRegex, dToken["sValue"]):
-                            if bDebug:
-                                echo("  MATCH: ~" + sRegex)
-                            yield { "iToken1": iToken1, "iNode": dNode["<re_value>"][sRegex] }
+                            yield ("~", sRegex, dNode["<re_value>"][sRegex])
                             bTokenFound = True
                     else:
                         # there is an anti-pattern
@@ -448,9 +436,7 @@ class TextParser:
                         if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
                             continue
                         if not sPattern or re.search(sPattern, dToken["sValue"]):
-                            if bDebug:
-                                echo("  MATCH: ~" + sRegex)
-                            yield { "iToken1": iToken1, "iNode": dNode["<re_value>"][sRegex] }
+                            yield ("~", sRegex, dNode["<re_value>"][sRegex])
                             bTokenFound = True
         # analysable tokens
         if dToken["sType"][0:4] == "WORD":
@@ -458,9 +444,7 @@ class TextParser:
             if "<lemmas>" in dNode:
                 for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                     if sLemma in dNode["<lemmas>"]:
-                        if bDebug:
-                            echo("  MATCH: >" + sLemma)
-                        yield { "iToken1": iToken1, "iNode": dNode["<lemmas>"][sLemma] }
+                        yield (">", sLemma, dNode["<lemmas>"][sLemma])
                         bTokenFound = True
             # phonetic similarity
             if "<phonet>" in dNode:
@@ -475,9 +459,7 @@ class TextParser:
                             if dToken["sValue"].isupper() and dToken["sValue"].capitalize() == sPhon:
                                 continue
                     if phonet.isSimilAs(dToken["sValue"], sPhonet.rstrip("!")):
-                        if bDebug:
-                            echo("  MATCH: %" + sPhonet)
-                        yield { "iToken1": iToken1, "iNode": dNode["<phonet>"][sPhonet] }
+                        yield ("#", sPhonet, dNode["<phonet>"][sPhonet])
                         bTokenFound = True
             # morph arcs
             if "<morph>" in dNode:
@@ -487,9 +469,7 @@ class TextParser:
                         if "¬" not in sSearch:
                             # no anti-pattern
                             if any(sSearch in sMorph  for sMorph in lMorph):
-                                if bDebug:
-                                    echo("  MATCH: $" + sSearch)
-                                yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                yield ("$", sSearch, dNode["<morph>"][sSearch])
                                 bTokenFound = True
                         else:
                             # there is an anti-pattern
@@ -498,17 +478,13 @@ class TextParser:
                                 # all morphologies must match with <sPattern>
                                 if sPattern:
                                     if all(sPattern in sMorph  for sMorph in lMorph):
-                                        if bDebug:
-                                            echo("  MATCH: $" + sSearch)
-                                        yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                        yield ("$", sSearch, dNode["<morph>"][sSearch])
                                         bTokenFound = True
                             else:
                                 if sNegPattern and any(sNegPattern in sMorph  for sMorph in lMorph):
                                     continue
                                 if not sPattern or any(sPattern in sMorph  for sMorph in lMorph):
-                                    if bDebug:
-                                        echo("  MATCH: $" + sSearch)
-                                    yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                    yield ("$", sSearch, dNode["<morph>"][sSearch])
                                     bTokenFound = True
             # regex morph arcs
             if "<re_morph>" in dNode:
@@ -518,9 +494,7 @@ class TextParser:
                         if "¬" not in sRegex:
                             # no anti-pattern
                             if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
-                                if bDebug:
-                                    echo("  MATCH: @" + sRegex)
-                                yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
+                                yield ("@", sRegex, dNode["<re_morph>"][sRegex])
                                 bTokenFound = True
                         else:
                             # there is an anti-pattern
@@ -529,48 +503,37 @@ class TextParser:
                                 # all morphologies must match with <sPattern>
                                 if sPattern:
                                     if all(re.search(sPattern, sMorph)  for sMorph in lMorph):
-                                        if bDebug:
-                                            echo("  MATCH: @" + sRegex)
-                                        yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
+                                        yield ("@", sRegex, dNode["<re_morph>"][sRegex])
                                         bTokenFound = True
                             else:
                                 if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
                                     continue
                                 if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
-                                    if bDebug:
-                                        echo("  MATCH: @" + sRegex)
-                                    yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
+                                    yield ("@", sRegex, dNode["<re_morph>"][sRegex])
                                     bTokenFound = True
         # token tags
         if "aTags" in dToken and "<tags>" in dNode:
             for sTag in dToken["aTags"]:
                 if sTag in dNode["<tags>"]:
-                    if bDebug:
-                        echo("  MATCH: /" + sTag)
-                    yield { "iToken1": iToken1, "iNode": dNode["<tags>"][sTag] }
+                    yield ("/", sTag, dNode["<tags>"][sTag])
                     bTokenFound = True
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
                 # no regex here, we just search if <dNode["sType"]> exists within <sMeta>
                 if sMeta == "*" or dToken["sType"] == sMeta:
-                    if bDebug:
-                        echo("  MATCH: *" + sMeta)
-                    yield { "iToken1": iToken1, "iNode": dNode["<meta>"][sMeta] }
+                    yield ("*", sMeta, dNode["<meta>"][sMeta])
                     bTokenFound = True
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
-                        if bDebug:
-                            echo("  MATCH: *" + sMeta)
-                        yield { "iToken1": iToken1, "iNode": dNode["<meta>"][sMeta] }
+                        yield ("*", sMeta, dNode["<meta>"][sMeta])
                         bTokenFound = True
-        if not bTokenFound and "bKeep" in dPointer:
-            yield dPointer
+        if not bTokenFound and bKeep:
+            yield (None, "", -1)
         # JUMP
-        # Warning! Recurssion!
+        # Warning! Recursion!
         if "<>" in dNode:
-            dPointer2 = { "iToken1": iToken1, "iNode": dNode["<>"], "bKeep": True }
-            yield from self._getNextPointers(dToken, dGraph, dPointer2, bDebug)
+            yield from self._getMatches(dGraph, dToken, dGraph[dNode["<>"]], bKeep=True)
 
     def parseGraph (self, dGraph, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse graph with tokens from the text and execute actions encountered"
@@ -582,10 +545,21 @@ class TextParser:
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
-                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer, bDebug))
+                for cActionType, sMatch, iNode in self._getMatches(dGraph, dToken, dGraph[dPointer["iNode"]]):
+                    if cActionType is None:
+                        lNextPointer.append(dPointer)
+                        continue
+                    if bDebug:
+                        echo("  MATCH: " + cActionType + sMatch)
+                    lNextPointer.append({ "iToken1": dPointer["iToken1"], "iNode": iNode })
             lPointer = lNextPointer
             # check arcs of first nodes
-            lPointer.extend(self._getNextPointers(dToken, dGraph, { "iToken1": iToken, "iNode": 0 }, bDebug))
+            for cActionType, sMatch, iNode in self._getMatches(dGraph, dToken, dGraph[0]):
+                if cActionType is None:
+                    continue
+                if bDebug:
+                    echo("  MATCH: " + cActionType + sMatch)
+                lPointer.append({ "iToken1": iToken, "iNode": iNode })
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:

@@ -393,45 +393,31 @@ class TextParser {
         }
     }
 
-    * _getNextPointers (oToken, oGraph, oPointer, bDebug=false) {
-        // generator: return nodes where <oToken> “values” match <oNode> arcs
+    * _getMatches (oGraph, oToken, oNode, bKeep=false) {
+        // generator: return matches where <oToken> “values” match <oNode> arcs
         try {
-            let oNode = oGraph[oPointer["iNode"]];
-            let iToken1 = oPointer["iToken1"];
             let bTokenFound = false;
             // token value
             if (oNode.hasOwnProperty(oToken["sValue"])) {
-                if (bDebug) {
-                    console.log("  MATCH: " + oToken["sValue"]);
-                }
-                yield { "iToken1": iToken1, "iNode": oNode[oToken["sValue"]] };
+                yield [" ", oToken["sValue"], oNode[oToken["sValue"]]];
                 bTokenFound = true;
             }
             if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
                 let sValue = oToken["sValue"].toLowerCase();
                 if (oNode.hasOwnProperty(sValue)) {
-                    if (bDebug) {
-                        console.log("  MATCH: " + sValue);
-                    }
-                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
+                    yield [" ", sValue, oNode[sValue]];
                     bTokenFound = true;
                 }
             }
             else if (oToken["sValue"].gl_isUpperCase()) {
                 let sValue = oToken["sValue"].toLowerCase();
                 if (oNode.hasOwnProperty(sValue)) {
-                    if (bDebug) {
-                        console.log("  MATCH: " + sValue);
-                    }
-                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
+                    yield [" ", sValue, oNode[sValue]];
                     bTokenFound = true;
                 }
                 sValue = oToken["sValue"].gl_toCapitalize();
                 if (oNode.hasOwnProperty(sValue)) {
-                    if (bDebug) {
-                        console.log("  MATCH: " + sValue);
-                    }
-                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
+                    yield [" ", sValue, oNode[sValue]];
                     bTokenFound = true;
                 }
             }
@@ -442,10 +428,7 @@ class TextParser {
                         if (!sRegex.includes("¬")) {
                             // no anti-pattern
                             if (oToken["sValue"].search(sRegex) !== -1) {
-                                if (bDebug) {
-                                    console.log("  MATCH: ~" + sRegex);
-                                }
-                                yield { "iToken1": iToken1, "iNode": oNode["<re_value>"][sRegex] };
+                                yield ["~", sRegex, oNode["<re_value>"][sRegex]];
                                 bTokenFound = true;
                             }
                         } else {
@@ -455,10 +438,7 @@ class TextParser {
                                 continue;
                             }
                             if (!sPattern || oToken["sValue"].search(sPattern) !== -1) {
-                                if (bDebug) {
-                                    console.log("  MATCH: ~" + sRegex);
-                                }
-                                yield { "iToken1": iToken1, "iNode": oNode["<re_value>"][sRegex] };
+                                yield ["~", sRegex, oNode["<re_value>"][sRegex]];
                                 bTokenFound = true;
                             }
                         }
@@ -471,10 +451,7 @@ class TextParser {
                 if (oNode.hasOwnProperty("<lemmas>")) {
                     for (let sLemma of gc_engine.oSpellChecker.getLemma(oToken["sValue"])) {
                         if (oNode["<lemmas>"].hasOwnProperty(sLemma)) {
-                            if (bDebug) {
-                                console.log("  MATCH: >" + sLemma);
-                            }
-                            yield { "iToken1": iToken1, "iNode": oNode["<lemmas>"][sLemma] };
+                            yield [">", sLemma, oNode["<lemmas>"][sLemma]];
                             bTokenFound = true;
                         }
                     }
@@ -497,10 +474,7 @@ class TextParser {
                             }
                         }
                         if (phonet.isSimilAs(oToken["sValue"], sPhonet.gl_trimRight("!"))) {
-                            if (bDebug) {
-                                console.log("  MATCH: %" + sPhonet);
-                            }
-                            yield { "iToken1": iToken1, "iNode": oNode["<phonet>"][sPhonet] };
+                            yield ["#", sPhonet, oNode["<phonet>"][sPhonet]];
                             bTokenFound = true;
                         }
                     }
@@ -513,10 +487,7 @@ class TextParser {
                             if (!sSearch.includes("¬")) {
                                 // no anti-pattern
                                 if (lMorph.some(sMorph  =>  (sMorph.includes(sSearch)))) {
-                                    if (bDebug) {
-                                        console.log("  MATCH: $" + sSearch);
-                                    }
-                                    yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                    yield ["$", sSearch, oNode["<morph>"][sSearch]];
                                     bTokenFound = true;
                                 }
                             } else {
@@ -526,10 +497,7 @@ class TextParser {
                                     // all morphologies must match with <sPattern>
                                     if (sPattern) {
                                         if (lMorph.every(sMorph  =>  (sMorph.includes(sPattern)))) {
-                                            if (bDebug) {
-                                                console.log("  MATCH: $" + sSearch);
-                                            }
-                                            yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                            yield ["$", sSearch, oNode["<morph>"][sSearch]];
                                             bTokenFound = true;
                                         }
                                     }
@@ -538,10 +506,7 @@ class TextParser {
                                         continue;
                                     }
                                     if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.includes(sPattern)))) {
-                                        if (bDebug) {
-                                            console.log("  MATCH: $" + sSearch);
-                                        }
-                                        yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                        yield ["$", sSearch, oNode["<morph>"][sSearch]];
                                         bTokenFound = true;
                                     }
                                 }
@@ -557,10 +522,7 @@ class TextParser {
                             if (!sRegex.includes("¬")) {
                                 // no anti-pattern
                                 if (lMorph.some(sMorph  =>  (sMorph.search(sRegex) !== -1))) {
-                                    if (bDebug) {
-                                        console.log("  MATCH: @" + sRegex);
-                                    }
-                                    yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
+                                    yield ["@", sRegex, oNode["<re_morph>"][sRegex]];
                                     bTokenFound = true;
                                 }
                             } else {
@@ -570,10 +532,7 @@ class TextParser {
                                     // all morphologies must match with <sPattern>
                                     if (sPattern) {
                                         if (lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
-                                            if (bDebug) {
-                                                console.log("  MATCH: @" + sRegex);
-                                            }
-                                            yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
+                                            yield ["@", sRegex, oNode["<re_morph>"][sRegex]];
                                             bTokenFound = true;
                                         }
                                     }
@@ -582,10 +541,7 @@ class TextParser {
                                         continue;
                                     }
                                     if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
-                                        if (bDebug) {
-                                            console.log("  MATCH: @" + sRegex);
-                                        }
-                                        yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
+                                        yield ["@", sRegex, oNode["<re_morph>"][sRegex]];
                                         bTokenFound = true;
                                     }
                                 }
@@ -598,10 +554,7 @@ class TextParser {
             if (oToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
                 for (let sTag of oToken["aTags"]) {
                     if (oNode["<tags>"].hasOwnProperty(sTag)) {
-                        if (bDebug) {
-                            console.log("  MATCH: /" + sTag);
-                        }
-                        yield { "iToken1": iToken1, "iNode": oNode["<tags>"][sTag] };
+                        yield ["/", sTag, oNode["<tags>"][sTag]];
                         bTokenFound = true;
                     }
                 }
@@ -611,31 +564,24 @@ class TextParser {
                 for (let sMeta in oNode["<meta>"]) {
                     // no regex here, we just search if <oNode["sType"]> exists within <sMeta>
                     if (sMeta == "*" || oToken["sType"] == sMeta) {
-                        if (bDebug) {
-                            console.log("  MATCH: *" + sMeta);
-                        }
-                        yield { "iToken1": iToken1, "iNode": oNode["<meta>"][sMeta] };
+                        yield ["*", sMeta, oNode["<meta>"][sMeta]];
                         bTokenFound = true;
                     }
                     else if (sMeta.includes("¬")) {
                         if (!sMeta.includes(oToken["sType"])) {
-                            if (bDebug) {
-                                console.log("  MATCH: *" + sMeta);
-                            }
-                            yield { "iToken1": iToken1, "iNode": oNode["<meta>"][sMeta] };
+                            yield ["*", sMeta, oNode["<meta>"][sMeta]];
                             bTokenFound = true;
                         }
                     }
                 }
             }
-            if (!bTokenFound  &&  oPointer.hasOwnProperty("bKeep")) {
-                yield oPointer;
+            if (!bTokenFound && bKeep) {
+                yield [null, "", -1];
             }
             // JUMP
             // Warning! Recurssion!
             if (oNode.hasOwnProperty("<>")) {
-                let oPointer2 = { "iToken1": iToken1, "iNode": oNode["<>"], "bKeep": true };
-                yield* this._getNextPointers(oToken, oGraph, oPointer2, bDebug);
+                yield* this._getMatches(oGraph, oToken, oGraph[oNode["<>"]], bKeep=true);
             }
         }
         catch (e) {
@@ -655,11 +601,28 @@ class TextParser {
                 // check arcs for each existing pointer
                 let lNextPointer = [];
                 for (let oPointer of lPointer) {
-                    lNextPointer.push(...this._getNextPointers(oToken, oGraph, oPointer, bDebug));
+                    for (let [cActionType, sMatch, iNode] of this._getMatches(oGraph, oToken, oGraph[oPointer["iNode"]])) {
+                        if (cActionType === null) {
+                            lNextPointer.push(oPointer);
+                            continue;
+                        }
+                        if (bDebug) {
+                            console.log("  MATCH: " + cActionType + sMatch);
+                        }
+                        lNextPointer.push({ "iToken1": oPointer["iToken1"], "iNode": iNode });
+                    }
                 }
                 lPointer = lNextPointer;
                 // check arcs of first nodes
-                lPointer.push(...this._getNextPointers(oToken, oGraph, { "iToken1": iToken, "iNode": 0 }, bDebug));
+                for (let [cActionType, sMatch, iNode] of this._getMatches(oGraph, oToken, oGraph[0])) {
+                    if (cActionType === null) {
+                        continue;
+                    }
+                    if (bDebug) {
+                        console.log("  MATCH: " + cActionType + sMatch);
+                    }
+                    lPointer.push({ "iToken1": iToken, "iNode": iNode });
+                }
                 // check if there is rules to check for each pointer
                 for (let oPointer of lPointer) {
                     if (oGraph[oPointer["iNode"]].hasOwnProperty("<rules>")) {
