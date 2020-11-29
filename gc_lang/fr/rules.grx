@@ -2191,6 +2191,7 @@ __da_mots_grammaticaaux__
     certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
         <<- =>> exclude(\1, ":O")
 
+    ## contre
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
 
@@ -2202,6 +2203,7 @@ __da_mots_grammaticaaux__
     contre
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> exclude(\1, ":N")
 
+    ##
     dans
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
@@ -2216,6 +2218,7 @@ __da_mots_grammaticaaux__
     [devant|derrière] $:D
         <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
 
+    ## entre
     entre  *WORD  et  *WORD
         <<- (morph(\2, ":[NA]") and morph(\4, ":[NA]"))
             or (morph(\2, ":Y") and morph(\4, ":Y"))
@@ -2228,6 +2231,7 @@ __da_mots_grammaticaaux__
     entre autres
         <<- =>> define(\1, ":R")
 
+    ##
     face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
 
@@ -2247,10 +2251,6 @@ __da_mots_grammaticaaux__
     [son|ton] ,
         <<- =>> select(\1, ":N")
 
-    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
-    [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
-        <<- =>> select(\-1, ":N")
-
     pas mal
         <<- =>> select(\2, ":W")
 
@@ -2263,6 +2263,7 @@ __da_mots_grammaticaaux__
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
+    ## outre
     en outre
         <<- not value(<1, "|il|on|elle|iel|n’|l’|") =>> select(\1, ":R") and select(\2, ":N")
 
@@ -2272,15 +2273,38 @@ __da_mots_grammaticaaux__
     outre $:D
         <<- morph(<1, ":V", ":[GA]") =>> select(\1, ":R")
 
+    ## point
     [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
+    [ne|n’]  $:V  point
+        <<- =>> exclude(\-1, ":N")
+
+    ##
     nos @¬:B
         <<- =>> select(\1, ":D")
 
     parmi *WORD
         <<- =>> select(\1, ":R")
 
+    pas
+        <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
+
+    passé  [<end>|,|$:R]
+        <<- =>> exclude(\1, ":G")
+
+    ## personne
+    personne [ne|n’]
+        <<- not morph(<1, ":[DA].*:[fe]:[si]") =>> select(\1, ":O")
+
+    n’  $:V  personne
+        <<- =>> exclude(\-1, ":N")
+
+    [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles] personne
+    [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
+        <<- =>> select(\-1, ":N")
+
+    ## plus / moins
     [plus|moins]
         <<- value(<1, "|le|la|l’|les|leur|") =>> select(\1, ":[NW]")
         <<- __else__ and morph(<1, ":V") =>> select(\1, ":W")
@@ -2297,20 +2321,12 @@ __da_mots_grammaticaaux__
     [un|une|des|le|la|l’|les|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [plus|moins] @:[AW]¬:G
         <<- =>> select(\2, ":W")
 
-    puis
-        <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
-
-    pas
-        <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
-
-    passé  [<end>|,|$:R]
-        <<- =>> exclude(\1, ":G")
-
-    personne [ne|n’]
-        <<- not morph(<1, ":[DA].*:[fe]:[si]") =>> select(\1, ":O")
-
+    ##
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
+
+    puis
+        <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
 
     SA
         <<- morph(<1, ":D") =>> exclude(\1, ":D")
@@ -19378,6 +19394,9 @@ __da_formes_verbales__
 
     qui  ?[lui|nous|vous|leur]¿  $:V0  $:Q
         <<- =>> select(\-2, ":V") and select(\-1, ":Q")
+
+    qui  [ne|n’]  $:V
+        <<- =>> exclude(\-1, ":E")
 
     [<start>|,|(]  nous  ?[ne|n’]¿  $:1p
         <<- =>> select(\2, ":Os") and select(\-1, ":[ISK].*:1p")
