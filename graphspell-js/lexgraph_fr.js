@@ -451,6 +451,12 @@ var lexgraph_fr = {
                 case 'SIGN':
                     oToken["aLabels"] = [this.dValues.gl_get(oToken["sValue"], "signe de ponctuation divers")];
                     break;
+                case 'SYMB':
+                    oToken["aLabels"] = ["symbole"];
+                    break;
+                case 'EMOJI':
+                    oToken["aLabels"] = ["émoji"];
+                    break;
                 case 'NUM':
                     oToken["aLabels"] = ["nombre"];
                     break;

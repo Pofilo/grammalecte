@@ -443,6 +443,10 @@ def setLabelsOnToken (dToken):
     try:
         if dToken["sType"] == "PUNC" or dToken["sType"] == "SIGN":
             dToken["aLabels"] = [_dValues.get(dToken["sValue"], "signe de ponctuation divers")]
+        elif dToken["sType"] == 'SYMBOL':
+            dToken["aLabels"] = ["symbole"]
+        elif dToken["sType"] == 'EMOJI':
+            dToken["aLabels"] = ["émoji"]
         elif dToken["sType"] == 'NUM':
             dToken["aLabels"] = ["nombre"]
         elif dToken["sType"] == 'LINK':
