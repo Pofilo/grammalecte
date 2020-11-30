@@ -2790,6 +2790,28 @@ __da_chose__
         <<- =>> select(\-1, ":N")
 
 
+__da_pendant__
+    ## évènements
+    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] ?[interminable|long]¿
+        || [accouchement|acte|âge|colloque|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
+    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] ?[interminable|longue]¿
+        || [adolescence|cérémonie|compétition|crise|croisade|dictature|durée|enfance|étude|existence|guerre|intronisation|messe|pause|période|prière|querelle|récréation|régence|retraite|réunion|révolution|séance|thérapie|traversée|tyrannie|union|vacance|vie]
+    ## évènements
+    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreusx]¿
+        || [accouchements|actes|âges|colloques|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
+    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreuses]¿
+        || [adolescences|cérémonies|compétitions|crises|croisades|dictatures|durées|enfances|études|existences|guerres|intronisations|messes|pauses|périodes|prières|querelles|récréations|régences|retraites|réunions|révolutions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
+    ## durée
+    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] [matin|soir|an|mois|trimestre|semestre|an|siècle|millénaire|éon]
+    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] [nanoseconde|microseconde|milliseconde|seconde|minute|heure|matinée|journée|nuit|semaine|année|décennie|éternité]
+    ## durées
+    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreux]¿
+        || [moments|instants|matins|soirs|mois|trimestres|semestres|ans|siècles|millénaires|éons]
+    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreuses]¿
+        || [nanosecondes|microsecondes|millisecondes|secondes|minutes|heures|matinées|journées|nuits|semaines|années|décennies]
+        <<- =>> select(\1, ":R")
+
+
 __da_groupe_nominal__
     à                [la|l’|leur]         @:[NA]¬:Y
     [sans|pour|par]  [la|l’|le|les|leur]  @:[NA]¬:Y
@@ -14290,25 +14312,6 @@ TEST: avec qui la transformer ?
 !!! Processeur: épuration des adverbes, locutions adverbiales, interjections et expressions usuelles  !!
 !!!
 !!!
-
-__da_pendant__
-    ## évènements
-    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] ?[interminable|long]¿
-        || [accouchement|acte|âge|colloque|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
-    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] ?[interminable|longue]¿
-        || [adolescence|cérémonie|compétition|crise|croisade|dictature|enfance|étude|existence|guerre|intronisation|messe|pause|période|prière|querelle|récréation|régence|retraite|réunion|séance|thérapie|traversée|tyrannie|union|vacance|vie]
-    ## évènements
-    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreusx]¿ [accouchements|actes|âges|colloques|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
-    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreuses]¿ [adolescences|cérémonies|compétitions|crises|croisades|dictatures|enfances|études|existences|guerres|intronisations|messes|pauses|périodes|prières|querelles|récréations|régences|retraites|réunions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
-    ## durée
-    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] [matin|soir|an|mois|trimestre|semestre|an|siècle|millénaire|éon]
-    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] [nanoseconde|microseconde|milliseconde|seconde|minute|heure|matinée|journée|nuit|semaine|année|décennie|éternité]
-    ## durées
-    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreux]¿
-        || [moments|instants|matins|soirs|mois|trimestres|semestres|ans|siècles|millénaires|éons]
-    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreuses]¿
-        || [nanosecondes|microsecondes|millisecondes|secondes|minutes|heures|matinées|journées|nuits|semaines|années|décennies]
-        <<- =>> select(\1, ":R")
 
 
 __purge_siècles_millénaires__
