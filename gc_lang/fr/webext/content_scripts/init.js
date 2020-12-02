@@ -300,7 +300,7 @@ const oGrammalecteBackgroundPort = {
     xConnect: browser.runtime.connect({name: "content-script port"}),
 
     start: function () {
-        console.log("[Grammalecte] background port: start.");
+        //console.log("[Grammalecte] background port: start.");
         this.listen();
         this.listen2();
         //this.ping();
