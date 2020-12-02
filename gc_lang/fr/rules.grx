@@ -2508,7 +2508,13 @@ __da_préverbes_verbes__
 
 __da_été__
     >avoir ?@:[WX]¿ été
-        <<- =>> select(\-1, ":Q")
+        <<- =>> select(\1, ":V0") and select(\-1, ":Q")
+
+    ça a
+        <<- =>> select(\2, ":V")
+
+    après avoir $:Q
+        <<- =>> exclude(\2, ":N")
 
 
 __da_adverbes__
@@ -2522,27 +2528,31 @@ __da_adverbes__
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, ":W")
 
 
-__da_mots_grammaticaaux__
-    a ?@:[WX]¿ été
-        <<- =>> select(\1, ":V0")
-
-    ça a
-        <<- =>> select(\2, ":V")
-
-    après avoir $:Q
-        <<- =>> exclude(\2, ":N")
-
+__da_autour__
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> exclude(\1, ":N")
 
+__da_avant__
     avant [que|qu’|$:D]
         <<- not value(<1, "|l’|quel|cet|un|mon|ton|son|notre|votre|leur|") =>> select(\1, ":R")
 
-    c’  [>avoir|>être]
-        <<- =>> select(\1, ":O")
+__da_bien__
+    bien [que|qu’]
+        <<- not morph(<1, ":[DNA].*:[me]:[si]") =>> exclude(\1, ":[AW]")
 
+    bien $:Y
+        <<- not morph(<1, ":[DNA].*:[me]:[si]") =>> select(\1, ":W")
+
+    bien *WORD
+        <<- not value(\2, "|que|qu’|") =>> exclude(\1, ":G")
+
+__da_car__
     car
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, ":G")
+
+__da_ce__
+    c’  [>avoir|>être]
+        <<- =>> select(\1, ":O")
 
     ce  @:[NA].*:[me]:[si]¬:V0e
         <<- not value(<1, "|il|ils|on|ne|n’|") =>> select(\1, ":D") and select(\2, ":[NA]")
@@ -2554,6 +2564,7 @@ __da_mots_grammaticaaux__
     ce [que|qu’|qui|dont|pour|par]
         <<- =>> exclude(\1, ":D")
 
+__da_cela__
     [<start>|,|(]  cela  [ne|n’|me|m’|te|t’|se|s’]
     [<start>|,|(]  cela  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123]s|P)
     [<start>|,|(]  cela  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123]s|P)
@@ -2562,13 +2573,14 @@ __da_mots_grammaticaaux__
     [<start>|,|(]  cela  @:(?:[123]s|P)
         <<- =>> exclude(\2, ":V")
 
+__da_certains_certaines__
     certains  @:[NA].*:[me]:[pi]¬:(?:G|3[sp])
         <<- =>> exclude(\1, ":O")
 
     certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
         <<- =>> exclude(\1, ":O")
 
-    ## contre
+__da_contre__
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
 
@@ -2580,22 +2592,24 @@ __da_mots_grammaticaaux__
     contre
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> exclude(\1, ":N")
 
-    ##
+__da_dans__
     dans
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
 
+__da_de__
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
-    [de|d’] @:[MYBD]
+    [de|d’] @:[MYBD]|#P
     [de|d’] *NUM
         <<- =>> select(\1, ":R")
 
     [de|d’] @:[NA]¬:[YMGB]
         <<- not \2[0:1].isupper() =>> select(\1, ":D")
 
+__da_devant_derrière__
     [devant|derrière] $:D
         <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
 
-    ## entre
+__da_entre__
     entre  *WORD  et  *WORD
         <<- (morph(\2, ":[NA]") and morph(\4, ":[NA]"))
             or (morph(\2, ":Y") and morph(\4, ":Y"))
@@ -2608,16 +2622,18 @@ __da_mots_grammaticaaux__
     entre autres
         <<- =>> define(\1, ":R")
 
-    ##
+__da_face__
     face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
 
+__da_mais__
     mais
         <<- not value(<1, "|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|") =>> exclude(\1, ":N")
 
     n’ en >pouvoir mais
         <<- =>> define(\-1, ">mais/:W")
 
+__da_son_ton__
     [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
         <<- =>> exclude(\2, ":D")
 
@@ -2628,19 +2644,21 @@ __da_mots_grammaticaaux__
     [son|ton] ,
         <<- =>> select(\1, ":N")
 
+__da_mal__
     pas mal
         <<- =>> select(\2, ":W")
 
     mal @:[AQ]
         <<- morph(<1, ":[NV]", ":D.*:[me]:[si]") =>> select(\1, ":W")
 
+__da_même__
     même $:D
         <<- morph(<1, "<start>|>,|:[ISKYP]", "*") =>> select(\1, ":W")
 
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
-    ## outre
+__da_outre__
     en outre
         <<- not value(<1, "|il|on|elle|iel|n’|l’|") =>> select(\1, ":R") and select(\2, ":N")
 
@@ -2650,27 +2668,52 @@ __da_mots_grammaticaaux__
     outre $:D
         <<- morph(<1, ":V", ":[GA]") =>> select(\1, ":R")
 
-    ## point
+__da_point__
     [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
         <<- =>> select(\2, ":N")
 
     [ne|n’]  $:V  point
+    [ne|n’] point
         <<- =>> exclude(\-1, ":N")
 
-    ##
-    nos @¬:B
+__da_nos__
+    nos $¬:B
         <<- =>> select(\1, ":D")
 
+__da_parmi__
     parmi *WORD
         <<- =>> select(\1, ":R")
 
+__da_pas__
     pas
         <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
 
+__da_passé__
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
-    ## personne
+__da_pendant__
+    ## évènements
+    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] ?[interminable|long]¿
+        || [accouchement|acte|âge|colloque|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|entretien|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
+    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] ?[interminable|longue]¿
+        || [adolescence|cérémonie|compétition|crise|croisade|dictature|durée|enfance|étude|existence|guerre|interview|intronisation|messe|pause|période|prière|querelle|rencontre|récréation|régence|retraite|réunion|révolution|séance|thérapie|traversée|tyrannie|union|vacance|vie]
+    ## évènements
+    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreusx]¿
+        || [accouchements|actes|âges|colloques|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|entretiens|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
+    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreuses]¿
+        || [adolescences|cérémonies|compétitions|crises|croisades|dictatures|durées|enfances|études|existences|guerres|interviews|intronisations|messes|pauses|périodes|prières|querelles|rencontres|récréations|régences|retraites|réunions|révolutions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
+    ## durée
+    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] [matin|soir|an|mois|trimestre|semestre|an|siècle|millénaire|éon]
+    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] [nanoseconde|microseconde|milliseconde|seconde|minute|heure|matinée|journée|nuit|semaine|année|décennie|éternité]
+    ## durées
+    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreux]¿
+        || [moments|instants|matins|soirs|mois|trimestres|semestres|ans|siècles|millénaires|éons]
+    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreuses]¿
+        || [nanosecondes|microsecondes|millisecondes|secondes|minutes|heures|matinées|journées|nuits|semaines|années|décennies]
+        <<- =>> select(\1, ":R")
+
+__da_personne__
     personne [ne|n’]
         <<- not morph(<1, ":[DA].*:[fe]:[si]") =>> select(\1, ":O")
 
@@ -2681,7 +2724,7 @@ __da_mots_grammaticaaux__
     [une|la|cette|ma|ta|sa|votre|votre|leur|quel|quelle|quelque] tierce personne
         <<- =>> select(\-1, ":N")
 
-    ## plus / moins
+__da_plus_moins__
     [plus|moins]
         <<- value(<1, "|le|la|l’|les|leur|") =>> select(\1, ":[NW]")
         <<- __else__ and morph(<1, ":V") =>> select(\1, ":W")
@@ -2698,32 +2741,38 @@ __da_mots_grammaticaaux__
     [un|une|des|le|la|l’|les|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [plus|moins] @:[AW]¬:G
         <<- =>> select(\2, ":W")
 
-    ##
+__da_pourvu__
     pourvu
         <<- not value(>1, "|que|qu’|") =>> exclude(\1, ":G")
 
+__da_puis__
     puis
         <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
 
+__da_SA__
     SA
         <<- morph(<1, ":D") =>> exclude(\1, ":D")
 
+__da_selon__
     selon @:(?:[DBM]|Oo)
         <<- =>> select(\1, ":R")
 
     selon [,|<end>]
         <<- =>> select(\1, ":W")
 
-    si @:[OD]
+__da_si__
+    si @:[ODB]
     s’ [il|ils]
         <<- =>> select(\1, ":C")
 
-    sous $:D
+__da_sous_sur__
+    sous @:[BD]
         <<- not morph(<1, ":[DA].*:[me]:[pi]") =>> select(\1, ":R")
 
     sur @:[BD]
         <<- not morph(<1, ":(?:V[0123]e|[DN].*:[me]:[si])") =>> select(\1, ":R")
 
+__da_tout_toute_tous_toutes__
     tous @:N.*:[me]:[pi]¬:(?:[AGW]|3p)
         <<- =>> select(\1, ":D")
 
@@ -2761,18 +2810,26 @@ __da_mots_grammaticaaux__
     toutes  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3p¬:G
         <<- not morph(<1, ":R") =>> select(\1, ":O")
 
+__da_un_une__
     un  @:[NA].*:[me]
         <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
 
     une @:[NA].*:[fe]
         <<- not value(<1, "|la|de|cette|quelle|une|ma|ta|sa|notre|votre|leur|") =>> select(\1, ":D")
 
+__da_vers__
     vers $:D
         <<- morph(<1, ":V") =>> select(\1, ":R")
 
+__da_vis_à_vis__
+    vis-à-vis [de|des|du|d’]
+        <<- not morph(<1, ":(?:[DA].*:[me]|R)") =>> select(\1, ":R")
+
+__da_vu__
     vu  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
+__da_y_compris__
     y compris
         <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
         <<- __also__ =>> define(\1, ":G:R:LR")
@@ -2788,28 +2845,6 @@ __da_chose__
 
     >même >chose
         <<- =>> select(\-1, ":N")
-
-
-__da_pendant__
-    ## évènements
-    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] ?[interminable|long]¿
-        || [accouchement|acte|âge|colloque|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
-    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] ?[interminable|longue]¿
-        || [adolescence|cérémonie|compétition|crise|croisade|dictature|durée|enfance|étude|existence|guerre|intronisation|messe|pause|période|prière|querelle|récréation|régence|retraite|réunion|révolution|séance|thérapie|traversée|tyrannie|union|vacance|vie]
-    ## évènements
-    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreusx]¿
-        || [accouchements|actes|âges|colloques|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
-    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreuses]¿
-        || [adolescences|cérémonies|compétitions|crises|croisades|dictatures|durées|enfances|études|existences|guerres|intronisations|messes|pauses|périodes|prières|querelles|récréations|régences|retraites|réunions|révolutions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
-    ## durée
-    pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] [matin|soir|an|mois|trimestre|semestre|an|siècle|millénaire|éon]
-    pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] [nanoseconde|microseconde|milliseconde|seconde|minute|heure|matinée|journée|nuit|semaine|année|décennie|éternité]
-    ## durées
-    pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreux]¿
-        || [moments|instants|matins|soirs|mois|trimestres|semestres|ans|siècles|millénaires|éons]
-    pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs|$:B] ?[innombrables|interminables|nombreuses]¿
-        || [nanosecondes|microsecondes|millisecondes|secondes|minutes|heures|matinées|journées|nuits|semaines|années|décennies]
-        <<- =>> select(\1, ":R")
 
 
 __da_groupe_nominal__
@@ -2929,7 +2964,7 @@ __da_groupe_nominal__cas_particuliers__
         <<- ~>> ␣madame
 
     m’ sieur
-        <<- ~>> ␣mosieur
+        <<- ~>> ␣
 
     tout feu ?,¿ tout >flamme
         <<- ~>> ␣
@@ -3535,15 +3570,19 @@ __imp_verbes_composés_impératifs__
         <<- />> -leur|-COI|_VCimp_
 
     ~\w-leurs$
-        <<- /imp/ ->> =\1[:-1]                              && Le pronom personnel objet ne prend pas de “s” ; “leurs” est un déterminant (exemple : leurs affaires).
+        <<- /imp/ ->> =\1[:-1]                                          && Le pronom personnel objet ne prend pas de “s” ; “leurs” est un déterminant (exemple : leurs affaires).
         <<- />> -leur|-COI|_VCimp_
 
     ~^\w\w+-y$
+        <<- /imp/ morphVC(\1, ":V1.*:Ip.*:3s")
+        ->> =\1.replace("e-y", "es-y").replace("a-y", "as-y")           && Pour cette forme impérative, un “s” euphonique est ajouté à la fin de la graphie impérative pour faire liaison avec “-y”.
         <<- /imp/ morphVC(\1, ":V", ":(?:E|V1.*:Ip.*:2s)") ->> =suggVerbImpe(\1, True)              && Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         && Ceci n’est pas une forme verbale impérative.
         <<- />> -y|_VCimp_
 
     ~^\w\w+-en$
+        <<- /imp/ morphVC(\1, ":V1.*:Ip.*:3s", ">aller/")
+        ->> =\1.replace("e-en", "es-en")                                && Pour cette forme impérative, un “s” euphonique est ajouté à la fin de la graphie impérative pour faire liaison avec “-y”.
         <<- /imp/ morphVC(\1, ":V", ":(?:E|V1.*:Ip.*:2s)") ->> =suggVerbImpe(\1, True)              && Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         && Ceci n’est pas une forme verbale impérative.
         <<- />> -en|_VCimp_
@@ -3554,13 +3593,13 @@ TEST: {{donne-là-moi}}
 TEST: {{prend-m’en}} trois, s’il te plaît.
 TEST: {{don-nous-en}}
 TEST: {{bat-le}}
-TEST: {{bluff-le}}
+TEST: {{bluff-le}}                                                              ->> bluffe-le
 TEST: {{manges-la}}
 TEST: {{bâton-la}} à son propre jeu
 TEST: {{combat-les}}
-TEST: {{flic-les}}
+TEST: {{flic-les}}                                                              ->> flique-les
 TEST: {{Oublies-moi}}.
-TEST: {{Oubli-moi}}.
+TEST: {{Oubli-moi}}.                                                            ->> Oublie-moi
 TEST: {{Sert-toi}} d’eux autant que tu le peux, puis casse-toi.
 TEST: {{maintien-toi}}
 TEST: {{Prend-lui}} le pouls.
@@ -3573,6 +3612,8 @@ TEST: {{aller-y}}
 TEST: {{dépenser-en}}
 TEST: {{appuis-en}}
 TEST: {{appuis-y}}
+TEST: {{demande-en}}                                                            ->> demandes-en
+TEST: {{demande-y}} comment faire                                               ->> demandes-y
 TEST: c’est mon chez-moi
 TEST: c’est ton chez-toi
 TEST: penses-y
@@ -5196,7 +5237,7 @@ TEST: en {{semi liberté}}
 
 
 __tu_préfixe_gentilés__
-    [afghano|africano|albano|algéro|allemano|américano|andoro|angolo|anglo|anguillo|antartico|arabo|arctico|argentino|armeno|asiatico|atlantico|australo|austro|azéro|bahreïno|banglado|barbado|basco|bélizo|béllarusso|bénino|belgo|bhoutano|birmano|bolivio|bosno|bosniaco|botswano|brésilo|britanno|brunéo|bulgaro|burkanino|burundo|camerouno|canado|chilio|cingalo|colombo|comoro|congolo|coréo|cyprio|costarico|croato|cubano|dano|djibouto|dominico|écosso|égypto|émirato|équato|érythréo|esto|éthiopo|eurasiatico|européano|fidjio|finno|franco|gabono|gallo|gambo|géorgio|ghanéo|britanno|gréco|grenado|guatémalto|guinéo|guyano|hélleno|helvético|hispano|honduro|hungaro|indo|indonéso|italo|irako|irlando|islando|israélo|ivoiro|jamaïco|japono|jordano|khméro|kazakho|kényo|kirghizo|kiribato|koweïto|lao|lésotho|letto|libéro|libyo|liechtenteino|lituano|luxembourgeo|macédono|malgacho|malaiso|malawito|malo|malto|marianno|maroco|marshallo|mauricio|mauritano|mexico|micronésio|moldavo|monégasco|mongolo|monténégrino|mozambico|namibio|nauro|népalo|nicaraguo|nigéro|nigériano|norvégio|néo-zélando|occidentalo|océanio|omano|orientalo|ougando|ouzbéko|pacifico|pakistano|palestino|panaméo|paraguayo|néerlando|hollando|péruvo|philippino|polono|polynésio|luso|qataro|québéco|centrafricano|domenicano|roumano|russo|rwando|sarhao|sahélo|salomono|salvadoro|samoano|santoméo|saskatchéwano|scandinavo|sénégalo|saoudo|sénégambo|serbo|seychello|sierraléono|singapouro|sino|slovaco|somalo|soudano|srilanko|sudafricano|suédo|suisso|surinamo|swazilando|syro|sovieto|tadjiko|tanzano|tchado|tchécoslovavo|tchéco|thaïlando|thraco|tibéto|timoro|togolo|tokélo|tongano|trinidado|tuniso|turkméno|turco|touvalo|tuvalo|ukraino|uruguayo|vaticano|vénézuélo|vietnamo|yéméno|yougoslavo|zaïro|zambio|zimbabwébo]  $;G
+    [afghano|africano|albano|algéro|allemano|américano|andoro|angolo|anglo|anguillo|antartico|arabo|arctico|argentino|armeno|asiatico|atlantico|australo|austro|azéro|bahreïno|banglado|barbado|basco|bélizo|béllarusso|bénino|belgo|bhoutano|birmano|bolivio|bosno|bosniaco|botswano|brésilo|britanno|brunéo|bulgaro|burkanino|burundo|camerouno|canado|chilio|cingalo|colombo|comoro|congolo|coréo|cyprio|costarico|croato|cubano|dano|djibouto|dominico|écosso|égypto|émirato|équato|érythréo|esto|éthiopo|eurasiatico|européano|fidjio|finno|franco|gabono|gallo|gambo|géorgio|ghanéo|britanno|gréco|grenado|guatémalto|guinéo|guyano|hélleno|helvético|hispano|honduro|hungaro|indo|indonéso|italo|irako|irlando|islando|israélo|ivoiro|jamaïco|japono|jordano|khméro|kazakho|kényo|kirghizo|kiribato|koweïto|lao|lésotho|letto|libéro|libyo|liechtenteino|lituano|luxembourgeo|macédono|malgacho|malaiso|malawito|malo|malto|marianno|maroco|marshallo|mauricio|mauritano|mexico|micronésio|moldavo|monégasco|mongolo|monténégrino|mozambico|namibio|nauro|népalo|nicaraguo|nigéro|nigériano|norvégio|néo-zélando|occidentalo|océanio|omano|orientalo|ougando|ouzbéko|pacifico|pakistano|palestino|panaméo|paraguayo|néerlando|hollando|péruvo|philippino|polono|polynésio|luso|qataro|québéco|centrafricano|domenicano|roumano|russo|rwando|sarhao|sahélo|salomono|salvadoro|samoano|santoméo|saskatchéwano|scandinavo|sénégalo|saoudo|sénégambo|serbo|seychello|sierraléono|singapouro|sino|slovaco|somalo|soudano|srilanko|sudafricano|suédo|suisso|surinamo|swazilando|syro|sovieto|tadjiko|tanzano|tchado|tchécoslovavo|tchéco|thaïlando|thraco|tibéto|timoro|togolo|tokélo|tongano|trinidado|tuniso|turkméno|turco|touvalo|tuvalo|ukraino|uruguayo|vaticano|vénézuélo|vietnamo|yéméno|yougoslavo|zaïro|zambio|zimbabwébo]  $#G
         <<- /tu/ ->> \1-\2                                                                          && Il manque un trait d’union.
 
 TEST: des {{franco américains}}
@@ -8541,6 +8582,7 @@ __conf_à_a_locutions__
     a côté [de|d’]
     a couper le souffle
     a ?[si|très|trop]¿ court terme
+    a ?[si|très|trop]¿ court et ?[si|très|trop]¿ [moyen|long] terme
     a ?[si|très|trop]¿ courte [échéance|portée]
     a couilles rabattues
     a >couteau [tiré|tirés]
@@ -8734,6 +8776,7 @@ TEST: Que faire {{a}} propos de ça ?                                          
 TEST: des planètes {{a}} la portée des nouveaux vaisseaux.                              ->> à
 TEST: Il l’a fait {{a}} cause de toi.                                                   ->> à
 TEST: Seront exclus d’office tous contenus {{a}} caractère haineux                      ->> à
+TEST: {{a}} court et moyen terme                                                        ->> à
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -8748,7 +8791,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
         <<- /conf/ \2.islower()
-            and not value(\3, "|accès|bon|bonne|beau|besoin|charge|confiance|connaissance|conscience|crainte|droit|envie|été|faim|grand|grande|hâte|honte|interdiction|lieu|mauvaise|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|vocation|")
+            and not value(\3, "|accès|bon|bonne|beau|besoin|charge|confiance|connaissance|conscience|crainte|droit|envie|été|faim|force|grand|grande|hâte|honte|interdiction|intérêt|lieu|mauvaise|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|trait|vent|vocation|")
             and morph(\1, ":N", "*")
         -2>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
@@ -8770,6 +8813,9 @@ TEST: il a bonne mine
 TEST: Catherine la grande a droit à une nouvelle série télévisée.
 TEST: cet homme a grand besoin d’être soigné.
 TEST: cette femme a grande envie d’un bain
+TEST: L’UE a intérêt à une coopération forte et stratégique avec l’Algérie et tente de renforcer le partenariat bilatéral.
+TEST: Mon désir a force de loi.
+TEST: cette pensée a trait à nos pulsions les plus profondes
 
 
 __conf_a_à_substantifs__
@@ -9855,43 +9901,20 @@ __conf_cour_cours_court_courre__
         || [>administration|>agriculture|>agronomie|>art|>biologie|>chant|>commerce|>culture|>cristallographie|conduite|>cuisine|>danse|>dessin|>ébénisterie|>écriture|>épistémologie|>droit|>éducation|>électronique|>électrotechnique|>élocution|>éthique|>géographie|>gestion|>histoire|>karaté|>kung-fu|>informatique|>interpellation|>langue|>lettre|>littérature|>orientation|>moral|maintien|>mathématique|>math|>mécanique|>médecine|>menuiserie|>musique|>odontologie|>pâtisserie|>peinture|>philosophie|>philo|>physique|>programmation|>psychologie|>science|>sport|>théâtre|>théologie]
         <<- /conf/ -2>> cours                               && Confusion probable : “court” signifie “de peu de longueur”. Pour un enseignement, écrivez “cours”.|https://fr.wiktionary.org/wiki/cours
 
-    >couper  ?@:[WX]¿  [cour+s|courre+s|courts]
-        <<- /conf/ --1>> court                              && Locution “couper court” qui signifie “mettre fin à” ou “cesser”.|https://fr.wiktionary.org/wiki/couper_court
-
-    >tourner  ?@:[WX]¿  [cour+s|courre+s|courts]
-        <<- /conf/ --1>> court                              && Locution “tourner court” qui signifie “avorter” ou “finir plus tôt que prévu”.|https://fr.wiktionary.org/wiki/tourner_court
-
-    >avoir ?@:[WX]¿  [cour|court+s|courre+s]
-        <<- /conf/ --1>> cours                              && Locution « avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
-
-    [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court+s|courre+s]
-        <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
-
-    >changer le [cour|court+s|courre+s] [de|des|du|d’]
-        <<- /conf/ --2>> cours                              && Confusion. Changer le cours de quelque chose.
-
-
 TEST: au {{court}} de cette journée
 TEST: les exercices {{en cour}} se déroulent bien.
-TEST: je vais couper {{cours}} à ces conneries.
-TEST: il faut donner libre {{cour}} à ses envies.
 TEST: elle va en {{court}} de lettres
 TEST: il suit un {{court}} de physique appliquée
 TEST: Nous allons bientôt être à {{cours}} d’argent.
 TEST: le rendement {{à cours terme}} est excellent.
 TEST: Mais, entre une relation nouée au long {{court}} perdue subitement et un nouveau partenariat, l’enjeu n’est pas le même.
 TEST: à {{cours}} d’argent
-TEST: le portage a encore {{cour}}
-TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 TEST: un {{court}} d’eau
 TEST: desdits {{courts}} d’eau
-TEST: elle décida alors de changer le {{court}} de sa vie
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
 TEST: ils vont passer prochainement en cour martiale.
-TEST: je ne veux pas la prendre de court.
-TEST: elle ne veut pas prendre de cours de musique.
 
 
 # cuir / cuire
@@ -10427,17 +10450,17 @@ __conf_en_fait__
         <<- /conf/ not value(<1, "|n’|") and not tagbefore(\1, "_2p_")
         ->> en fait                                         && Confusion probable : « en fait » qui signifie « en réalité ». Le faîte est la partie la plus élevée d’un bâtiment.
 
-TEST: {{en faite}}, on en voit partout, ça grouille.
-TEST: ils sont {{en faîtes}} partis à la montagne.
+TEST: {{en faite}}, on en voit partout, ça grouille.            ->> en fait
+TEST: ils sont {{en faîtes}} partis à la montagne.              ->> en fait
 TEST: Aujourd’hui, n’en faites pas trop.
 
 
 # faim / fin
 __conf_fin_faim__
-    >grève de la fin
+    >grève [de|d’] la fin
         <<- /conf/ -4>> faim                                    && Confusion. La fin désigne la finalité ou la terminaison de quelque chose. Pour évoquer l’envie de manger, écrivez “faim”.
 
-    une fin de loup
+    une fin [de|d’] loup
         <<- /conf/ -2>> faim                                    && Confusion. La fin désigne la finalité ou la terminaison de quelque chose. Pour évoquer l’envie de manger, écrivez “faim”.
 
     à des faims
@@ -10450,26 +10473,26 @@ __conf_fin_faim__
     [>cauchemar|>horreur|>tourment] sans faim
         <<- /conf/ --1>> fin                                    && Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
-    >faim de non-recevoir
-        <<- /conf/ -1>> =\1.replace("a", "").replace("A", "")   && Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
+    >faim [de|d’] non-recevoir
+        <<- /conf/ -1>> =\1.replace("aim", "in").replace("AIM", "IN")       && Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
     !! au peigne fin ¡¡
     [au+x] [peigne+s|>pagne] [>faim|fin+s]
         <<- /conf/ ->> au peigne fin
         && Confusion. Locution “au peigne fin”, c’est-à-dire allégoriquement avec un peigne dont les dents sont resserrées, avec un écart très fin.|https://fr.wiktionary.org/wiki/passer_au_peigne_fin
 
-TEST: Elle manifestait son désaccord par une grève de la {{fin}}.
-TEST: ces enfants avaient une {{fin}} de loup
-TEST: Œuvrez à des {{faims}} funestes.
-TEST: il s’est donné bien des peines à seule {{faim}} de monter en grade
-TEST: Jusqu’à la {{faim}} il n’aura rien deviné de la vérité
-TEST: Même {{faim}} de non-recevoir.
-TEST: il faut passer ça {{au peigne faim}}
+TEST: Elle manifestait son désaccord par une grève de la {{fin}}.               ->> faim
+TEST: ces enfants avaient une {{fin}} de loup                                   ->> faim
+TEST: Œuvrez à des {{faims}} funestes.                                          ->> fins
+TEST: il s’est donné bien des peines à seule {{faim}} de monter en grade        ->> fin
+TEST: Jusqu’à la {{faim}} il n’aura rien deviné de la vérité                    ->> fin
+TEST: Même {{faim}} de non-recevoir.                                            ->> fin
+TEST: il faut passer ça {{au peigne faim}}                                      ->> au peigne fin
 
 
 # faut / faux
 __conf_faux_faut__
-    faut  @:¬(?:Y|Oo|X|M|W)|>qu[e’]/
+    faut  @:¬(?:Y|Ov|X|M|W)|>(?:qu[e’]|bien)/
     faut  <end>
         <<- /conf/ not value(<1, "|il|ils|ne|n’|en|y|leur|lui|nous|vous|me|te|se|m’|t’|s’|la|le|les|qui|<start>|,|")
         -1>> faux                                               && Confusion probable : le terme “faut” est une forme conjuguée de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
@@ -11750,6 +11773,24 @@ __conf_plant_plan__
 TEST: va acheter des {{plans}} de tomate
 
 
+# plus / plu
+__conf_plus_plu__
+    je                  ?[ne|n’]¿ [me|m’] >être ?@:[WX]¿ plus à
+    tu                  ?[ne|n’]¿ [te|t’] >être ?@:[WX]¿ plus à
+    [il|on|elle|iel]    ?[ne|n’]¿ [se|s’] >être ?@:[WX]¿ plus à
+    nous                ?[ne|n’]¿ nous    >être ?@:[WX]¿ plus à
+    vous                ?[ne|n’]¿ vous    >être ?@:[WX]¿ plus à
+    [ils|elles|iels]    ?[ne|n’]¿ [se|s’] >être ?@:[WX]¿ plus à
+    [je|j’|tu|il|elle|iel|ça|cela|ceci]                 ?[ne|n’]¿ [m’|t’|lui|nous|vous|leur] >avoir ?@:[WX]¿ [plus|plut|plût] [<end>|,|)]
+    [nous|vous|ils|elles|iels]                          ?[ne|n’]¿ [m’|t’|lui|nous|vous|leur] >avoir ?@:[WX]¿ [plus|plut|plût] [<end>|,|)]
+    [plusieurs|certain+s|quelques-uns|quelques-unes]    ?[ne|n’]¿ [m’|t’|lui|nous|vous|leur] >avoir ?@:[WX]¿ [plus|plut|plût] [<end>|,|)]
+        <<- /conf/ not morph(<1, ":R") --2>> plu                            && Le participe passé du verbe plaire s’écrit “plu” (il est invariable).|https://fr.wiktionary.org/wiki/Conjugaison:fran%C3%A7ais/plaire
+
+TEST: je me suis {{plus}} à réviser cette matière           ->> plu
+TEST: ça m’avait vachement {{plût}}                         ->> plu
+TEST: ça t’avait plu, cette connerie, non ?
+
+
 # pôle / pole
 __conf_pôle_pole__
     >pole
@@ -12409,6 +12450,18 @@ __conf_roue_roux__
 TEST: ces cons sont constamment {{en roux libre}}
 TEST: cesse de nous mettse des bâtons dans les {{roux}}
 TEST: elle est en roue libre depuis le début.
+
+
+# rue / ru
+__conf_rue_ru1__
+    >ru [bondé+ses]
+    >ru >plein [de|d’] [>monde|gens]
+    >ru [de|d’] $#C
+        <<- /conf/ morph(<1, ":D.*:[me]:[pi]") -1>> rue|rues    && Confusion probable. Un ru est un petit ruisseau. Pour évoquer les voies de circulation, écrivez “rue”.|https://fr.wiktionary.org/wiki/rue
+
+TEST: les {{rus}} bondés                                ->> rue|rues
+TEST: les {{rus}} de New York                           ->> rue|rues
+TEST: les {{rus}} de Paris                              ->> rue|rues
 
 
 # saint / sain / sein / seing
@@ -13171,17 +13224,18 @@ __conf_voie_voix_vois_voit__
     de vive [>voie|vois|voit]
     [à|a] portée [de|d’] [>voie|vois|voit]
     >éclat [de|d’] [>voie|vois|voit]
+    le son de [la|cette|quelle|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs] [>voie|vois|voit]
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     à [>voie|vois|voit] [basse|haute|basses|hautes]
         <<- /conf/ -2>> voix        && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
-    [>entendre|>écouter|>déblayer] ?@:[WX]¿ $:D >voie
-    >donner ?[WX]¿ [de|d’] la >voie
-    >faire entendre [ma|ta|sa|notre|nos|votre|vos|leur+s] >voie
+    [>entendre|>écouter|>déblayer] ?@:[WX]¿ $:D [>voie|vois|voit]
+    >donner ?@:[WX]¿ [de|d’] la >voie
+    >faire entendre [la|cette|ma|ta|sa|notre|nos|votre|vos|leur+s] [>voie|vois|voit]
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
-    >avoir ?@:[WX]¿ voie au chapitre
+    >avoir ?@:[WX]¿ [>voie|vois|voit] au chapitre
         <<- /conf/ --3>> voix       && Confusion. Locution “avoir voix au chapitre”.|https://fr.wiktionary.org/wiki/avoir_voix_au_chapitre
 
     ## voie
@@ -13630,14 +13684,18 @@ __maj_gentilés__
     océan Indien
     [îles|iles] Britanniques
     à [la|l’] [afghane|albanaise|algérienne|allemande|américaine|andorrane|anglaise|angolaise|arabe|argentine|arménienne|australienne|autrichienne|asiatique|azerbaïdjanaise|bahamienne|bangladaise|bengladeshie|barbadienne|basque|belge|bélizienne|béninoise|bretonne|bhoutanaise|biélorusse|birmane|bolivienne|bosnienne|botswanaiso|brésilienne|britannique|brunéiene|bulgare|burkinabé|burundaise|cambodgienne|camerounaise|canadienne|capverdienne|centrafricaine|chilienne|chinoise|chypriote|colombienne|comorienne|congolaise|nord-coréenne|corse|costaricienne|croate|cubaine|danoise|djiboutienne|dominicaine|égyptienne|émiratie|équatorienne|érythréenne|estonienne|espagnole|étatsunienne|états-unienne|étasunienne|éthiopienne|fidjienne|finlandaise|formosane|française|gabonaise|gambienne|géorgienne|ghanéenne|grecque|grenadienne|guadeloupéenne|guatémaltèque|guinéenne|équato-guinéenne|guyanienne|haïtienne|honduriene|hollandaise|hongroise|indienne|indochinoise|indonésienne|irakienne|italienne|iranienne|irlandaise|islandaise|israélienne|ivoirienne|jamaïcaine|japonaise|jordanienne|kazakhe|kényane|kosovare|koweïtienne|laotienne|lapone|lettone|libanaise|libérienne|libyenne|liechtensteinoise|lituanienne|luxembourgeois|macédonienne|maghrébine|malgache|malaisienne|malawite|maldivienne|malienne|maltaise|maorie|marocaine|martienne|mauricienne|mauritanienne|mexicaine|micronésienne|moldave|monégasque|monténégrine|mongole|mozambicaine|namibiene|népalaise|nicaraguayenne|nigérienne|nigériane|néerlandaise|norvégienne|néo-zélandaise|ougandaise|ouzbèke|pakistanaise|palestinienne|panaméenne|paraguayenne|perse|péruvienne|philippine|polonaise|polynésienne|portugaise|québécoise|qatarie|roumaine|russe|rwandaise|saoudienne|scandinave|salvadorienne|sénégalaise|serbe|singapourienne|slovaque|slovène|somalienne|soudanaise|soviétique|srilankaise|suédoise|suisse|surinamaise|syrienne|sud-africaine|sud-coréenne|américaine|tadjike|tanzanienne|tchadienne|tchèque|thaïlandaise|togolaise|tahitienne|tunisiene|turkmène|turque|taïwanaise|ukrainienne|uruguayenne|vénézuélienne|vietnamienne|yéménite|yougoslave|zaïroise|zambienne|zimbabwéenne]
-        <<- !-1>>
+    [>être|>devenir|>redevenir|>sembler|>paraître|>paraitre] [tous|toutes] les [deux|trois] $#G
+        <<- !-1>> maj
 
-    $;G
+    /_VCint_ [tous|toutes] les [deux|trois] $#G
+        <<- morphVC(\1, ":V0e") !-1>> maj
+
+    $#G
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          && S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \1.islower() and not value(\1, "|canadienne|canadiennes|malaise|malaises|avare|avares|") and
             ( value(<1, "|certains|certaines|maints|maintes|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|quel|quelle|quels|quelles|")
-            or ( value(<1, "|le|") and morph(\1, ":N.*:[me]:[si]", ";L") )
-            or ( value(<1, "|l’|") and morph(\1, ":N.*:[si]", ";L") )
+            or ( value(<1, "|le|") and morph(\1, ":N.*:[me]:[si]", "#L") )
+            or ( value(<1, "|l’|") and morph(\1, ":N.*:[si]", "#L") )
             or ( value(<1, "|de|d’|") and morph(<2, ">(?:action|armée|assassinat|attente|bataillon|beaucoup|bus|car|centaine|combien|communauté|complot|couple|descendant|dizaine|douzaine|duel|désir|d[eé]sid[eé]rata|enlèvement|émigration|énormément|équipe|exigence|famille|groupe|génération|immigration|invasion|majorité|meurtre|millier|million|moins|multitude|parole|pas|photo|plus|poignée|portrait|pourcentage|proportion|quart|rassemblement|rencontre|reportage|souhait|tant|tellement|tiers|trio|trop|témoignage|vie|viol|volonté|vote)/") )
             or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:aisé|approximatif|argotique|baragouiné|correct|courant|facile|haché|impeccable|incompréhensible|parfait|prononcé)") )
             or ( morph(<1, ":B:e:p") and not morph(<2, ">numéro/") ) )
@@ -13661,6 +13719,9 @@ TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prono
 TEST: des jardins à l’anglaise.
 TEST: il a eu un malaise
 TEST: combien de malaises avez-vous eus ?
+TEST: elles sont allemandes, ils sont anglais
+TEST: elles semblent toutes les trois autrichiennes
+TEST: sont-ils tous les deux espagnols ?
 
 
 # les langues
@@ -17238,7 +17299,7 @@ __substantifs_multi_mots__
     >chemise sans >manche
     >chèque en blanc
     >chèque sans provision
-    >cheval [de|d’] [bataille|Troie]
+    >cheval [de|d’] [bataille|guerre|Troie]
     >chien [de|d’] [garde|guerre]
     >chili con carne
     >chômage [de|d’] masse
@@ -18920,7 +18981,7 @@ __da_substantifs__
         <<- not before(":O[vs]") =>> exclude(\3, ":V")
 
     [plusieurs|certains|certaines|maints|maintes]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|Q|G)
-        <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
+        <<- =>> select(\2, ":A") and exclude(\3, ":N")
 
 
 __da_locutions_verbales__
@@ -19337,6 +19398,7 @@ TEST: triompher par la force, l’intelligence la violence ou la ruse
 TEST: une table en bois brut
 TEST: c’est à devenir fou, à se taper la tête contre les murs
 TEST: quitte à en souffrir et fût-ce au prix de sa vie
+TEST: – Si fait, je vous connais bien. »
 
 
 @@@@
@@ -20184,6 +20246,34 @@ TEST: ne pas vous en laisser {{compter}}
 TEST: c’est vous qui {{comptez}} fleurette à ma fille ?
 TEST: elle put {{conter}} ça sur les doigts de sa main
 TEST: {{comté}} sur les doigts de la main comme un enfant
+
+
+__conf_cour_cours_court_courre2__
+    >couper  [cour+s|courre+s|courts]
+        <<- /conf/ --1>> court                              && Locution “couper court” qui signifie “mettre fin à” ou “cesser”.|https://fr.wiktionary.org/wiki/couper_court
+
+    >tourner  [cour+s|courre+s|courts]
+        <<- /conf/ --1>> court                              && Locution “tourner court” qui signifie “avorter” ou “finir plus tôt que prévu”.|https://fr.wiktionary.org/wiki/tourner_court
+
+    a court et [moyen|long] terme
+        <<- !2>> conf
+
+    >avoir  [cour|court+s|courre+s]
+        <<- /conf/ --1>> cours                              && Locution « avoir cours ».|https://fr.wiktionary.org/wiki/avoir_cours
+
+    [>avoir|>donner|>laisser]  libre [cour|court+s|courre+s]
+        <<- /conf/ --1>> cours                              && Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
+
+    >changer le [cour|court+s|courre+s] [de|des|du|d’]
+        <<- /conf/ --2>> cours                              && Confusion. Changer le cours de quelque chose.
+
+TEST: je vais couper {{cours}} à ces conneries.
+TEST: il faut donner libre {{cour}} à ses envies.
+TEST: le portage a encore {{cour}}
+TEST: cette expérience ne va pas tarder à tourner {{cours}}.
+TEST: elle décida alors de changer le {{court}} de sa vie
+TEST: je ne veux pas la prendre de court.
+TEST: elle ne veut pas prendre de cours de musique.
 
 
 # courant / courent
@@ -21814,6 +21904,15 @@ __conf_roder_rôder__
 TEST: je {{rodais}} en ville sans but précis                    ->> rôdais
 TEST: elle {{rode}} autour de la maison depuis des semaines     ->> rôde
 TEST: va {{rôder}} ce moteur                                    ->> roder
+
+
+# rue / ru
+__conf_rue_ru__
+    >avoir >pignon sur >ru
+        <<- /conf/ --1>> rue                                        && Locution “avoir pignon sur rue”.|https://fr.wiktionary.org/wiki/avoir_pignon_sur_rue
+
+TEST: elle a pignon sur {{rus}}                                 ->> rue
+TEST: il avait pignon sur rue
 
 
 # sale / salle
@@ -24278,6 +24377,8 @@ __gn_mille__
 TEST: Plus de {{milles}} personnes sont venues.
 TEST: plus de deux cent quatre-vingt mille personnes
 TEST: trente-cinq mille hommes
+TEST: c’est à des milliers de milles d’ici
+TEST: à quelque 18 milles de l’archipel
 
 
 #### Groupes, regroupements, collections, etc.

@@ -1145,7 +1145,7 @@ class Flexion:
         # LEX
         "symb": ";S", "unit": ";U", "col": ";C", "hm": ";É", "pel": ";é",
         # SEM
-        "gent": ";G", "lang": ";L"
+        "gent": "#G", "lang": "#L", "cité": "#C", "pays": "#P"
     }
 
     def _getSimpleTags (self):
