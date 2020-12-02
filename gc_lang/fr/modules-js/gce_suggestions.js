@@ -169,7 +169,7 @@ function suggVerbImpe (sFlex, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx.endsWith("-en") || sSfx.endsWith("-y"))) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
         }
         return Array.from(aSugg).join("|");
     }

@@ -128,7 +128,7 @@ def suggVerbImpe (sFlex, bVC=False):
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":E", ":2p"))
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
+            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if sSfx.endswith(("-en", "-y")) and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 
