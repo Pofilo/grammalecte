@@ -452,7 +452,7 @@ def suggLesLa (sWord):
 
 _zBinary = re.compile("^[01]+$")
 
-def formatNumber (sNumber):
+def formatNumber (sNumber, bOnlySimpleFormat=False):
     "add spaces or hyphens to big numbers"
     nLen = len(sNumber)
     if nLen < 4:
@@ -461,20 +461,21 @@ def formatNumber (sNumber):
     if "," not in sNumber:
         # nombre entier
         sRes = _formatNumber(sNumber, 3)
-        # binaire
-        if _zBinary.search(sNumber):
-            sRes += "|" + _formatNumber(sNumber, 4)
-        # numéros de téléphone
-        if nLen == 10:
-            if sNumber.startswith("0"):
-                sRes += "|" + _formatNumber(sNumber, 2)                                                                 # téléphone français
-                if sNumber[1] == "4" and (sNumber[2]=="7" or sNumber[2]=="8" or sNumber[2]=="9"):
-                    sRes += "|" + sNumber[0:4] + " " + sNumber[4:6] + " " + sNumber[6:8] + " " + sNumber[8:]            # mobile belge
-                sRes += "|" + sNumber[0:3] + " " + sNumber[3:6] + " " + sNumber[6:8] + " " + sNumber[8:]                # téléphone suisse
-            sRes += "|" + sNumber[0:4] + " " + sNumber[4:7] + "-" + sNumber[7:]                                         # téléphone canadien ou américain
-        elif nLen == 9 and sNumber.startswith("0"):
-            sRes += "|" + sNumber[0:3] + " " + sNumber[3:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 1
-            sRes += "|" + sNumber[0:2] + " " + sNumber[2:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 2
+        if not bOnlySimpleFormat:
+            # binaire
+            if _zBinary.search(sNumber):
+                sRes += "|" + _formatNumber(sNumber, 4)
+            # numéros de téléphone
+            if nLen == 10:
+                if sNumber.startswith("0"):
+                    sRes += "|" + _formatNumber(sNumber, 2)                                                                 # téléphone français
+                    if sNumber[1] == "4" and (sNumber[2]=="7" or sNumber[2]=="8" or sNumber[2]=="9"):
+                        sRes += "|" + sNumber[0:4] + " " + sNumber[4:6] + " " + sNumber[6:8] + " " + sNumber[8:]            # mobile belge
+                    sRes += "|" + sNumber[0:3] + " " + sNumber[3:6] + " " + sNumber[6:8] + " " + sNumber[8:]                # téléphone suisse
+                sRes += "|" + sNumber[0:4] + " " + sNumber[4:7] + "-" + sNumber[7:]                                         # téléphone canadien ou américain
+            elif nLen == 9 and sNumber.startswith("0"):
+                sRes += "|" + sNumber[0:3] + " " + sNumber[3:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 1
+                sRes += "|" + sNumber[0:2] + " " + sNumber[2:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 2
     else:
         # Nombre réel
         sInt, sFloat = sNumber.split(",", 1)
