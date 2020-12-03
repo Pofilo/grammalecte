@@ -2773,42 +2773,60 @@ __da_sous_sur__
     sur @:[BD]
         <<- not morph(<1, ":(?:V[0123]e|[DN].*:[me]:[si])") =>> select(\1, ":R")
 
-__da_tout_toute_tous_toutes__
-    tous @:N.*:[me]:[pi]¬:(?:[AGW]|3p)
-        <<- =>> select(\1, ":D")
-
-    tous  @:3p¬:(?:G|W|A|M|N.*:[me]:[pi])
-    tous  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3p¬:G
-    tous  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G
-    tous  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G
-    tous  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3p¬:G
-        <<- not morph(<1, ":R") =>> select(\1, ":O")
-
+__da_tout__
     tout
         <<- morph(<1, "<start>|>,") =>> exclude(\1, ":N")
 
     tout @:N.*:[me]:[si]¬:(?:[AGW]|3s)
         <<- =>> select(\1, ":D")
 
-    tout  est
-    tout  @:3s¬:(?:G|W|A|M|N.*:[me]:[si])
-    tout  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3s¬:G
-    tout  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G
-    tout  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G
-    tout  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3s¬:G
+    tout le monde
+        <<- =>> select(\1, ":W") and select(\2, ":D") and select(\-1, ":N")
+
+    tout le @:[NA].*:[me]:[si]¬:(?:G|3s)
+        <<- =>> select(\1, ":W")
+
+    tout  [est|a|aura]
+    tout  ?[ne|n’]¿   @:3s¬:(?:G|W|A|M|N.*:[me]:[si])
+    tout  ?[ne|n’]¿   [la|les|en|me|m’|te|t’|se|s’|nous|vous|lui|y]         @:3s¬:G
+    tout  [ne|n’]     [la|l’|leur]                                          @:3s¬:G
+    tout  [le|l’|leur]                                                      @:3s¬:(?:G|[NA].*:[me]:[si])
+    tout  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]   @:3s¬:G
+    tout  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]       @:3s¬:G
+    tout  ?[ne|n’]¿   [lui|leur|y]                    en                    @:3s¬:G
         <<- not morph(<1, ":(?:R|D.*:[me]:[si])") =>> select(\1, ":O")
 
+__da_toute__
     toute @:N.*:[fe]:[si]¬:[AGW]
         <<- =>> select(\1, ":D")
 
+    toute la @:[NA].*:[fe]:[si]¬:G
+        <<- =>> select(\1, ":W")
+
+__da_tous__
+    tous @:N.*:[me]:[pi]¬:(?:[AGW]|3p)
+        <<- =>> select(\1, ":D")
+
+    tous  ?[ne|n’]¿   @:3p¬:(?:G|W|A|M|N.*:[me]:[pi])
+    tous  ?[ne|n’]¿   [le|la|l’|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:3p¬:G
+    tous  [ne|n’]     les                                                   @:3p¬:G
+    tous  les                                                               @:3s¬:(?:G|[NA].*:[me]:[pi])
+    tous  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]   @:3p¬:G
+    tous  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]       @:3p¬:G
+    tous  ?[ne|n’]¿   [lui|leur|y]                    en                    @:3p¬:G
+        <<- not morph(<1, ":R") =>> select(\1, ":O")
+
+__da_toutes__
     toutes @:N.*:[fe]:[pi]¬:(?:[AGW]|3p)
         <<- =>> select(\1, ":D")
 
-    toutes  @:3p¬:(?:G|W|A|M|N.*:[fe]:[pi])
-    toutes  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3p¬:G
-    toutes  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G
-    toutes  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G
-    toutes  ?[ne|n’]¿   [lui|leur|y]                    en                          @:3p¬:G
+    toutes  ?[ne|n’]¿   @:3p¬:(?:G|W|A|M|N.*:[fe]:[pi])
+    toutes  ?[ne|n’]¿   [le|la|l’|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:3p¬:G
+    toutes  [ne|n’]     les                                                     @:3p¬:G
+    toutes  les                                                                 @:3s¬:(?:G|[NA].*:[fe]:[pi])
+    toutes  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3p¬:G
+    toutes  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]         @:3p¬:G
+    toutes  ?[ne|n’]¿   [lui|leur|y]                    en                      @:3p¬:G
         <<- not morph(<1, ":R") =>> select(\1, ":O")
 
 __da_un_une__
@@ -11671,9 +11689,7 @@ TEST: habitées par un peuple de prostituées […], vivant là, entassées pêl
 
 # peu / peux / peut
 __conf_peu_peut_peux!6__
-    peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
-        <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)/") -1>> peut        && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
-
+    ## peu
     !! peu à peu ¡¡
     [peux|peut|peu] [a|à|ah|ha|as] [peux|peut|peu]
     peu-a-peu
@@ -11705,18 +11721,30 @@ __conf_peu_peut_peux!6__
     un  [peux|peut]
         <<- /conf/ not value(<1, "|quelqu’|l’|d’|sauf|") -2>> peu           && Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
 
-    [il|on] ?[ne|n’]¿ peu
-        <<- /conf/ --1>> peut                                               && Confusion : « peu » signifie « pas beaucoup ».
-
-    [je|tu] ?[ne|n’]¿ peu
-        <<- /conf/ --1>> peux                                               && Confusion : « peu » signifie « pas beaucoup ».
-
-    [ne|se|n’|s’] peu
-        <<- /conf/ -2>> peut                                                && Confusion. Exemples : Il est peu habile, mais il peut y arriver.
-
     [peut|peux]  @:A¬:(?:[MGWYX]|3[sp])
         <<- /conf/ not morph(\2, ">(?:seul|beau)/") and not morph(<1, ">(?:je|tu|il|on|ne)/")
-        -1>> peu                                                            && Confusion probable : « \1 » est une conjugaison de « pouvoir », utilisez « peu ».
+        -1>> peu                                                            && Confusion probable : « \1 » est une conjugaison de « pouvoir », utilisez “peu” pour dire “pas beaucoup”.
+
+    ## pouvoir
+    peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
+        <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)/") -1>> peut        && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
+
+    [il|on] ?[ne|n’]¿ ?[le|l’]¿ peu
+        <<- /conf/ --1>> peut                                               && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
+
+    [je|tu] ?[ne|n’]¿ ?[le|l’]¿ peu
+        <<- /conf/ --1>> peux                                               && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peux”.
+
+    [ne|se|n’|s’] peu
+        <<- /conf/ -2>> peut                                                && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
+
+    [ça|ceci|cela|elle|iel] peu [ne|n’|me|m’|te|t’|se|s’]
+    [ça|ceci|cela|elle|iel] peu [le|la|l’|les|en|nous|vous|lui|leur|y]  $:Y
+    [ça|ceci|cela|elle|iel] peu [nous|vous]     [le|la|l’|les|en|y]     $:Y
+    [ça|ceci|cela|elle|iel] peu [le|la|l’|les]  [lui|leur|en|y]         $:Y
+    [ça|ceci|cela|elle|iel] peu [lui|leur|y]    en                      $:Y
+    [ça|ceci|cela|elle|iel] peu $:Y
+        <<- /conf/ not morph(<1, ":R") -2>> peut                            && Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
 
 TEST: {{peu}} rarement y arriver.
 TEST: Il est un {{peut}} comme une forêt
@@ -11733,6 +11761,7 @@ TEST: tu ne {{peu}} en savoir plus
 TEST: {{peut}} {{embarrassés}} par leurs déboires, ils poursuivirent comme si de rien n’était.
 TEST: Et {{peut}} de gens peuvent en dire autant.
 TEST: Pour {{peut}} que quelqu’un se soucie d’eux.
+TEST: ça {{peu}} réussir
 TEST: pour peu qu’ils soient entendus.
 TEST: Il est guéri et peut de nouveau travailler.
 TEST: l’homme peut bel et bien devenir immortel
