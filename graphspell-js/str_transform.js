@@ -253,7 +253,8 @@ var str_transform = {
     },
 
     showDistance (s1, s2) {
-        console.log(`Distance: ${s1} / ${s2} = ${this.distanceDamerauLevenshtein(s1, s2)})`);
+        console.log(`Distance Jaro-Winkler: ${s1} / ${s2} = ${this.distanceJaroWinkler(s1, s2)})`);
+        console.log(`Distance Damerau-Levenshtein: ${s1} / ${s2} = ${this.distanceDamerauLevenshtein(s1, s2)})`);
     },
 
     // Suffix only
@@ -341,7 +342,7 @@ if (typeof(exports) !== 'undefined') {
     exports.spellingNormalization = str_transform.spellingNormalization;
     exports.longestCommonSubstring = str_transform.longestCommonSubstring;
     exports.distanceDamerauLevenshtein = str_transform.distanceDamerauLevenshtein;
-    exports.distanceDamerauLevenshtein2 = str_transform.distanceDamerauLevenshtein2;
+    exports.distanceJaroWinkler = str_transform.distanceJaroWinkler;
     exports.showDistance = str_transform.showDistance;
     exports.changeWordWithSuffixCode = str_transform.changeWordWithSuffixCode;
     exports.changeWordWithAffixCode = str_transform.changeWordWithAffixCode;

@@ -254,6 +254,7 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
 
 def showDistance (s1, s2):
     "display Damerau-Levenshtein distance and Sift4 distance between <s1> and <s2>"
+    print("Jaro-Winkler: " + s1 + "/" + s2 + " = " + distanceJaroWinkler(s1, s2))
     print("Damerau-Levenshtein: " + s1 + "/" + s2 + " = " + distanceDamerauLevenshtein(s1, s2))
     print("Sift4:" + s1 + "/" + s2 + " = " + distanceSift4(s1, s2))
 
