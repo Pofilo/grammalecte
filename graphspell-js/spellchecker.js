@@ -149,13 +149,13 @@ class SpellChecker {
         for (let sElem of this.lexicographer.split(sWord)) {
             if (sElem) {
                 let lMorph = this.getMorph(sElem);
-                let sLex = this.lexicographer.analyze(sElem)
+                let sLex = this.lexicographer.analyze(sElem);
                 let aRes = [];
                 if (sLex) {
                     aRes = [ [lMorph.join(" | "), sLex] ];
                 } else {
                     for (let sMorph of lMorph) {
-                        aRes.push([sMorph, this.lexicographer.formatTags(sMorph)]);
+                        aRes.push([sMorph, this.lexicographer.readableMorph(sMorph)]);
                     }
                 }
                 if (aRes.length > 0) {
@@ -170,7 +170,7 @@ class SpellChecker {
         if (!this.lexicographer) {
             return [];
         }
-        return this.lexicographer.formatTags(sMorph);
+        return this.lexicographer.readableMorph(sMorph);
     }
 
     setLabelsOnToken (oToken) {
