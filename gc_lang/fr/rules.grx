@@ -2585,9 +2585,10 @@ __da_contre__
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
 
-    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte  ?[menée+s|lancée+s]¿                                 contre
-    [>accusation|>action|>assaut|>attentat|>croisade|>guerre|>jihad|>offensive|>sortilège] ?[mené+ses|lancé+ses]¿   contre
-    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                                                    contre
+    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte       ?[menée+s|lancée+s]¿    contre
+    [>accusation|>action|>assaut|>attentat|>croisade|>guerre]       ?[mené+ses|lancé+ses]¿  contre
+    [>guerre|>jihad|>offensive|>ratonnade|>sortilège]               ?[mené+ses|lancé+ses]¿  contre
+    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                            contre
         <<- =>> select(\-1, ":R")
 
     contre
@@ -2622,6 +2623,9 @@ __da_entre__
     entre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     entre autres
         <<- =>> define(\1, ":R")
+
+    >différence entre
+        <<- =>> select(\-1, ":R")
 
 __da_face__
     face [à|au|aux]
@@ -2765,6 +2769,9 @@ __da_si__
     si @:[ODB]
     s’ [il|ils]
         <<- =>> select(\1, ":C")
+
+    si bien [que|qu’]
+        <<- =>> select(\1, ":W") and select(\2, ":W")
 
 __da_sous_sur__
     sous @:[BD]
@@ -4710,15 +4717,19 @@ TEST: le déterminant “sa” doit être placé devant un nom féminin.
 
 
 # nouvel / nouveaux
-__eleu_nouvel_nouveau_euphonie__
+__eleu_beau_bel_nouvel_nouveau_euphonie__
     [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  homme
-        <<- /eleu/ -2>> nouvel                                              && Euphonie. Écrivez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  ?[très|plus|moins]¿  beau  homme
+        <<- /eleu/ --2>> =\-2.replace("eau", "el").replace("EAU", "EL")   && Euphonie. Écrivez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
     [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aâeéèêiîoôuûyœæ]
-        <<- /eleu/ morph(\3, ":[NA].*:[me]:s", ":[123][sp]") -2>> nouvel    && Euphonie. Écrivez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  ?[très|plus|moins]¿  beau  ~^[aâeéèêiîoôuûyœæ]
+        <<- /eleu/ morph(\3, ":[NA].*:[me]:s", ":[123][sp]")
+        --2>> =\-2.replace("eau", "el").replace("EAU", "EL")              && Euphonie. Écrivez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-TEST: ce {{nouveau}} homme
-TEST: un {{nouveau}} élément relance l’enquête
+TEST: ce {{nouveau}} homme                                              ->> nouvel
+TEST: un {{nouveau}} élément relance l’enquête                          ->> nouvel
+TEST: un très {{beau}} homme                                            ->> bel
 TEST: il se sentait de nouveau homme
 TEST: il se sentait à nouveau homme
 
@@ -8220,8 +8231,18 @@ TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
 TEST: à tous les sots, je dis “merde”.
 
 
-    à  ?$:W¿  *WORD
-        <<- /conf/ \-1.islower() and not value(\-1, "|coté|sont|") >>>
+    à  *WORD
+        <<- /conf/ \-1.islower() and not value(\-1, "|coté|sont|peu|") >>>
+        <<- /conf/ morph(\-1, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a            && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+        <<- /conf/ __also__ and morph(\-1, ":V1.*:(?:Ip:2p|Q)", ":N") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
+        --1>> =suggVerbInfi(\-1)                                                                    && Le verbe devrait être à l’infinitif.
+        <<- /conf/ __else__ and morph(\-1, ":[123][sp]", "*") and not value(\-1, "|tord|tords|") >>>
+        <<- /conf/ morph(\-1, ":V2.*:I[ps]:3s", "*") --1>> =suggVerbPpas(\-1, ":m:s")               && Incohérence : “\1” est une préposition ; “\-1” est une forme verbale.
+        <<- /conf/ __also__ -1>> a                                                                  && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+        <<- /conf/ __else__ --1>> _                                                                 && Incohérence : “\1” est une préposition ; “\-1” est une forme verbale.
+
+    à  $:W  *WORD
+        <<- /conf/ \-1.islower() and not value(\-1, "|coté|sont|peu|") and not value(\2, "|peu|") >>>
         <<- /conf/ morph(\-1, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a            && Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __also__ and morph(\-1, ":V1.*:(?:Ip:2p|Q)", ":N") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
         --1>> =suggVerbInfi(\-1)                                                                    && Le verbe devrait être à l’infinitif.
@@ -8238,18 +8259,22 @@ TEST: Ne pas hésiter {{à}} {{demandé}} des conseils.                         
 TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.           ->> a|||jeter
 TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
 TEST: cet individu {{à}} {{finit}} par comprendre son erreur.                           ->> a|||fini
+TEST: cette femme {{à}} réellement ouvert                                               ->> a
+TEST: la petite {{à}} souvent {{trouvé}} de l’aide auprès de sa grande sœur             ->> a|||trouver
+TEST: la grande {{à}} toujours {{finit}} ses devoirs très tôt                           ->> a|||fini
 TEST: il en a.
 TEST: elle en a.
 TEST: celle qui à contrario nous a foutu dans la merde.
 TEST: ceux qui à Somewhere se sont si mal illustrés.
 TEST: en à peine vingt ans
+TEST: Les publicités sont peu à peu ouvertes et retirées de leur coffrage.
 
 
 __conf_à_a_infinitif__
-    a  $:Y¬:G
-    a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  $:Y
-    a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] $:Y
-    a  [le|la|l’|les|leur]  $:Y¬:N
+    a  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    a  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    a  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    a  ?[ne|n’]¿  [lui|leur|y]                    en                          $:Y
         <<- /conf/ not value(<1, "|il|elle|iel|on|n’|m’|t’|l’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
         -1>> à                                                      && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
@@ -13030,11 +13055,13 @@ __conf_tard_tare__
     [se|s’] >faire %tard!
     [me|m’|te|t’|se|s’] >lever ?$:W¿ %tard!
     [quelque+s|un] temps plus %tard!
+    [quelque+s] [instants|moments|nanosecondes|millisecondes|secondes|minutes|heures|jours|nuits|semaines|mois|trimestres|semestres|ans|années|décennies|siècles|millénaires|éons] plus %tard!
         <<- /conf/ --1>> tard                                       && Confusion. Pour dire que le temps a passé, écrivez “tard”.|https://fr.wiktionary.org/wiki/tard
 
 TEST: il est trop {{tare}}                                  ->> tard
 TEST: quelque temps plus {{tares}}                          ->> tard
 TEST: s’fait {{tare}}                                       ->> tard
+TEST: Quelques heures plus {{tarent}}                       ->> tard
 TEST: quelque temps plus tard
 TEST: QUELQUE TEMPS PLUS TARD
 TEST: Quelque Temps Plus Tard
@@ -19537,8 +19564,18 @@ __da_formes_verbales__
     [<start>|,|(]  vous  ?[ne|n’]¿  $:2p
         <<- =>> select(\2, ":Os") and select(\-1, ":[ISK].*:2p")
 
-    [<start>|,|(]  ça  [le|la|l’|les|lui|nous|vous|leur]  @:3s¬:G
+    [<start>|,|(]  [ça|cela|ceci|elle|iel]  [le|la|l’|les|lui|nous|vous|leur]  @:3s¬:G
         <<- =>> select(\-2, ":Ov") and select(\-1, ":3s")
+
+    [elle|iel|celui-ci|celle-ci|celui-là|celle-là|ça|ceci] [a|fut|aura|est]
+    [<start>|,|(] cela [a|fut|aura|est]
+        <<- =>> select(\-1, ":V")
+
+
+__da_contre2__
+    [>aller|>appuyer|>frapper|>hurler|>manifester|>marcher|>râler|>protester]  contre
+        <<- =>> select(\-1, ":R")
+
 
 
 !!
@@ -26192,6 +26229,49 @@ __conf_adj_de_voir_que__
         <<- /conf/ morph(\2, ":V1.*:Y") -2>> =suggVerbPpas(\2)                          && Confusion probable. Si vous décrivez un état de fait (et non une action), il faut un participe passé.
 
 TEST: {{tétaniser}} de voir que leurs théories grandioses ne valent rien
+
+
+!!!! Il reste                                                                                     !!
+
+__conj_il_reste__
+    ils [restent|restaient|resteraient] [des|ces|nos|vos|ses|leurs|quelques|plusieurs] @:[NA].*:[pi]
+        <<- /conj/ value(\2, "|restent|") -1:2>> il reste                               && Il reste, c’est-à-dire ce qui reste, toujours au singulier. Tout comme “il pleut des cordes”.
+        <<- /conj/ value(\2, "|restaient|") -1:2>> il restait                           && Il restait, c’est-à-dire ce qui restait, toujours au singulier. Tout comme “il pleuvait des cordes”.
+        <<- /conj/ value(\2, "|resteraient|") -1:2>> il resterait                       && Il resterait, c’est-à-dire ce qui resterait, toujours au singulier.
+
+    ils [me|te|lui|nous|vous|leur] [restent|restaient|resteraient] [des|ces|nos|vos|ses|leurs|quelques|plusieurs] @:[NA].*:[pi]
+        <<- /conj/ value(\3, "|restent|") -1:3>> il \2 reste                            && Il reste, c’est-à-dire ce qui reste, toujours au singulier. Tout comme “il pleut des cordes”.
+        <<- /conj/ value(\3, "|restaient|") -1:3>> il \2 restait                        && Il restait, c’est-à-dire ce qui restait, toujours au singulier. Tout comme “il pleuvait des cordes”.
+        <<- /conj/ value(\3, "|resteraient|") -1:3>> il \2 resterait                    && Il resterait, c’est-à-dire ce qui resterait, toujours au singulier.
+
+    ils ne [restent|restaient|resteraient] [aucun+e] @:[NA].*:[si]
+    ils ne [restent|restaient|resteraient] que peu [de|d’] @:[NA]
+    ils ne [restent|restaient|resteraient] que des @:[NA].*:[pi]
+        <<- /conj/ value(\3, "|restent|") -1:3>> il ne reste                            && Il reste, c’est-à-dire ce qui reste, toujours au singulier. Tout comme “il pleut des cordes”.
+        <<- /conj/ value(\3, "|restaient|") -1:3>> il ne restait                        && Il restait, c’est-à-dire ce qui restait, toujours au singulier. Tout comme “il pleuvait des cordes”.
+        <<- /conj/ value(\3, "|resteraient|") -1:3>> il ne resterait                    && Il resterait, c’est-à-dire ce qui resterait, toujours au singulier.
+
+    ils ne [me|te|lui|nous|vous|leur] [restent|restaient|resteraient] [aucun+e] @:[NA].*:[si]
+    ils ne [me|te|lui|nous|vous|leur] [restent|restaient|resteraient] que peu [de|d’] @:[NA]
+    ils ne [me|te|lui|nous|vous|leur] [restent|restaient|resteraient] que des @:[NA].*:[pi]
+        <<- /conj/ value(\4, "|restent|") -1:4>> il ne \3 reste                         && Il reste, c’est-à-dire ce qui reste, toujours au singulier. Tout comme “il pleut des cordes”.
+        <<- /conj/ value(\4, "|restaient|") -1:4>> il ne \3 restait                     && Il restait, c’est-à-dire ce qui restait, toujours au singulier. Tout comme “il pleuvait des cordes”.
+        <<- /conj/ value(\4, "|resteraient|") -1:4>> il ne \3 resterait                 && Il resterait, c’est-à-dire ce qui resterait, toujours au singulier.
+
+TEST: {{ils restent}} des nouilles                                          ->> il reste
+TEST: {{ils me restent}} des sous                                           ->> il me reste
+TEST: {{ils ne restent}} aucun homme en vie                                 ->> il ne reste
+TEST: {{ils ne nous restent}} que des miettes                               ->> il ne nous reste
+TEST: {{ils restaient}} des nouilles                                        ->> il restait
+TEST: {{ils me restaient}} des sous                                         ->> il me restait
+TEST: {{ils ne restaient}} aucun homme en vie                               ->> il ne restait
+TEST: {{ils ne nous restaient}} que des miettes                             ->> il ne nous restait
+TEST: {{ils resteraient}} des nouilles                                      ->> il resterait
+TEST: {{ils me resteraient}} des sous                                       ->> il me resterait
+TEST: {{ils ne resteraient}} aucun homme en vie                             ->> il ne resterait
+TEST: {{ils ne nous resteraient}} que des miettes                           ->> il ne nous resterait
+TEST: ils restent
+TEST: ils restent là
 
 
 
