@@ -2386,6 +2386,14 @@ __da_le_la_les_leur_en_y_lui__
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
         <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":", ":[ISKYPE]") =>> select(\1, ":R")
 
+    en la           @:[NA].*:[fe]:si
+    en le           @:[NA].*:[me]:si
+    en [l’|leur]    @:[NA].*:si
+    en [un|une|de|d’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]
+    en [les|des|ces|mes|tes|ses|nos|vos|leurs]
+    en [plusieurs|quelques|certains|certaines|maints|maintes]
+        <<- =>> select(\1, ":R")
+
     y   *WORD
         <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)") =>> select(\1, ":Ov")
 
@@ -2505,6 +2513,9 @@ __da_préverbes_verbes__
     nous ?[ne|n’]¿ [nous|vous]   [le|l’|en|y]         sommes
     nous ?[ne|n’]¿ [lui|leur]      en                 sommes
         <<- not morph(<1, ":R") =>> select(\-1, ":V0")
+
+    [de|d’|par|pour|sans|contre] [elle|lui|nous|vous|eux|elles|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
+        <<- =>> select(\-1, ":Oo")
 
 
 __da_été__
@@ -2629,6 +2640,10 @@ __da_entre__
 
 __da_face__
     face [à|au|aux]
+        <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
+
+__da_grâce__
+    grâce [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
 
 __da_mais__
@@ -19555,7 +19570,10 @@ __da_formes_verbales__
     qui  ?[lui|nous|vous|leur]¿  $:V0  $:Q
         <<- =>> select(\-2, ":V") and select(\-1, ":Q")
 
-    qui  [ne|n’]  $:V
+    qui  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:V
+    qui  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:V
+    qui  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             $:V
+    qui  ?[ne|n’]¿  [lui|leur|y]                    en                          $:V
         <<- =>> exclude(\-1, ":E")
 
     [<start>|,|(]  nous  ?[ne|n’]¿  $:1p
