@@ -264,10 +264,13 @@ _dTAGS = {
 
     ';S': (" : symbole (unité de mesure)", "Symbole (unité de mesure)"),
     ';C': (" : couleur", "Couleur"),
-    ';G': (" : gentilé", "Gentilé"),
-    ';L': ("", "Langue"),
     ';É': ("", "Élision requise"),
     ';é': ("", "Pas d’élision"),
+
+    '#G': (" : gentilé", "Gentilé"),
+    '#L': ("", "Langue"),
+    '#C': (" : cité", "Cité"),
+    '#P': (" : pays", "Pays"),
 
     '/*': ("", "Sous-dictionnaire <Commun>"),
     '/C': (" <classique>", "Sous-dictionnaire <Classique>"),
