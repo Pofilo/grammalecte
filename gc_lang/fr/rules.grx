@@ -2596,10 +2596,10 @@ __da_contre__
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
 
-    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte       ?[menée+s|lancée+s]¿    contre
-    [>accusation|>action|>assaut|>attentat|>croisade|>guerre]       ?[mené+ses|lancé+ses]¿  contre
-    [>guerre|>jihad|>offensive|>ratonnade|>sortilège]               ?[mené+ses|lancé+ses]¿  contre
-    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]                            contre
+    [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte       ?$:A¬:G¿  contre
+    [>accusation|>action|>assaut|>attentat|>croisade|>guerre]       ?$:A¬:G¿  contre
+    [>guerre|>jihad|>offensive|>ratonnade|>sortilège|>violence]     ?$:A¬:G¿  contre
+    [>antidote|>crime|>philtre|>remède|>sérum|>vaccin|>solution]    ?$:A¬:G¿  contre
         <<- =>> select(\-1, ":R")
 
     contre
@@ -2631,11 +2631,16 @@ __da_entre__
     entre  $:D¬:R  *WORD  et  $:D¬:R  *WORD
         <<- morph(\3, ":[NA]") and morph(\6, ":[NA]") =>> define(\1, ":R")
 
+    entre [dans|sur]
+    entre à l’ intérieur
+        <<- =>> select(\1, ":V")
+
     entre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     entre autres
         <<- =>> define(\1, ":R")
 
     >différence entre
+    >choisir entre
         <<- =>> select(\-1, ":R")
 
 __da_face__
@@ -11858,6 +11863,7 @@ __conf_plus_plu__
 
 TEST: je me suis {{plus}} à réviser cette matière           ->> plu
 TEST: ça m’avait vachement {{plût}}                         ->> plu
+TEST: ils se sont {{plus}} à nous faire chier               ->> plu
 TEST: ça t’avait plu, cette connerie, non ?
 
 
@@ -12747,7 +12753,7 @@ __conf_soi_soit_soie__
         <<- /conf/ not (value(\-1, "|soit|") and after(" soit ")) --1>> soi                         && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
     en soit
-        <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
+        <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|iel|n’|m’|t’|s’|nous|vous|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
         -2>> soi                                                                                    && Confusion probable.|https://fr.wiktionary.org/wiki/soi
 
     >aller ?$:W¿ de soit
@@ -16495,7 +16501,7 @@ __purge_locutions__
     sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans dire mot
     sans en avoir conscience
-    sans états d’ âme
+    sans >état d’ âme
     sans [m’|t’|s’|nous|vous] en apercevoir
     sans [m’|t’|s’|nous|vous] en rendre compte
     sans [me|m’|te|t’|se|s’|nous|vous] faire [attendre|avoir|comprendre|désirer|entendre|prier|remarquer|repérer|surprendre|voir]
@@ -16524,6 +16530,7 @@ __purge_locutions__
     sans précédent
     sans raison apparente
     sans résultat probant
+    sans tambour ?,¿ ni trompette
     sans [croiser|rencontrer|voir] personne
     sans [croiser|rencontrer|voir] âme qui vive
     sans ?jamais¿ [ciller|flancher|tergiverser]
@@ -17414,6 +17421,7 @@ __substantifs_multi_mots__
     >convention [récepteur|générateur]
     >coque [de|d’] noix
     >corbeille à >pain
+    >corne [de|d’] brume
     >correspondant [de|d’] guerre
     >cotte [de|d’] mailles
     >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|éponge|épée|estoc|État|foudre|fil|filet|force|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|>tatane|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
@@ -17566,6 +17574,7 @@ __substantifs_multi_mots__
     >fusée [de|d’] détresse
     >fusil à [chasse|lunette|plomb|pompe]
     >gala [de|d’] charité
+    >galerie d’ art ?[contemporain|moderne]¿
     >galette des rois
     >garde à vue
     >garde du corps
@@ -17726,6 +17735,7 @@ __substantifs_multi_mots__
     orge [perlé|mondé|carré]
     os à ronger
     >outrage à personne dépositaire de l’ autorité publique
+    >ouvrage d’ art
     >nuit [de|d’] noces
     >pacte [de|d’] [non-agression|sang]
     >pain au levain ?liquide¿
@@ -21840,6 +21850,24 @@ TEST: « Oui, sans doute », mais peut-être pas pour tout le monde
 TEST: La réalisation de composants (injection plastique…) peut être limitée.
 
 
+# poux / pouls
+__conf_pouls_poux__
+    [>connaître|>connaitre|>entendre|>mesurer|>prendre|>sentir|>tâter] [mon|ton|son|notre|votre|leur] >pou
+        <<- /conf/ --1>> pouls              && Confusion probable. Les poux sont des insectes parasites. Pour la pulsation des artères, écrivez “pouls”.|https://fr.wiktionary.org/wiki/pouls
+
+    [mon|ton|son|notre|votre|leur]  pou  @:V.e  faible
+    [mon|ton|son|notre|votre|leur]  pou  >battre
+        <<- /conf/ -2>> pouls               && Confusion probable. Les poux sont des insectes parasites. Pour la pulsation des artères, écrivez “pouls”.|https://fr.wiktionary.org/wiki/pouls
+
+    >écraser $:D¬:R pouls
+        <<- /conf/ --1>> pou|poux           && Confusion probable. Le pouls est la pulsation des artères. Pour évoquer les insectes parasites, écrivez “pou” (“poux” au pluriel).|https://fr.wiktionary.org/wiki/pou
+
+TEST: je pris son {{pou}}                                       ->> pouls
+TEST: son {{pou}} semblait faible                               ->> pouls
+TEST: écrase ce {{pouls}}                                       ->> pou|poux
+TEST: écrase ce pou !
+
+
 # prendre son mal en patience
 __conf_prendre_son_mal_en_patience__
     >prendre [mon|ton|son|notre|votre|leur|leurs] >mâle en [>patience|patiente|patientes]
@@ -22062,11 +22090,17 @@ TEST: ce témoignage va dans le sens de la victime.
 
 
 # aller sans dire
-__conf_aller_sans_dire__
+__conf_sans_s_en__
     [il|ça|cela|ceci] >aller s’ en dire
         <<- /conf/ -3:4>> sans                                      && Confusion. Locution “aller sans dire”.|https://fr.wiktionary.org/wiki/cela_va_sans_dire#fr
 
-TEST: Évidemment, cela va {{s’en}} dire.
+    >savoir [à|a] quoi [sans|sens|san] tenir
+        <<- /conf/ --2>> s’en                                       && Confusion. Locution “savoir à quoi s’en tenir”.
+
+TEST: Évidemment, cela va {{s’en}} dire.                            ->> sans
+TEST: avec ceux-là, elle avait su à quoi {{sans}} tenir             ->> s’en
+TEST: ils ne savaient par à quoi s’en tenir
+TEST: mais, cela va sans dire, je n’ajouterai à ce sujet
 
 
 # sceptique / septique
@@ -23978,12 +24012,12 @@ TEST: {{hommes}} {{marié}}
 
 __gn_start_3m__
     <start>  @:[NA]¬*  @:[NA]¬*  @:[NA]¬*
-        <<- /gn/ morph(\2, ":p") and morph(\3, ":[pi]") and morph(\4, ":s") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-        <<- /gn/ morph(\2, ":i") and morph(\3, ":p")    and morph(\4, ":s") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-        <<- /gn/ morph(\2, ":s") and morph(\3, ":[si]") and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
-        <<- /gn/ morph(\2, ":i") and morph(\3, ":s")    and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
-        <<- /gn/ morph(\2, ":m", ":[fe]") and morph(\3, ":[me]") and morph(\4, ":f") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au masculin.
-        <<- /gn/ morph(\2, ":f", ":[me]") and morph(\3, ":[fe]") and morph(\4, ":m") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au féminin.
+        <<- /gn/ morph(\2, ":p") and morph(\3, ":[pi]") and morph(\4, ":s", ":[pi]") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+        <<- /gn/ morph(\2, ":i") and morph(\3, ":p")    and morph(\4, ":s", ":[pi]") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+        <<- /gn/ morph(\2, ":s") and morph(\3, ":[si]") and morph(\4, ":p", ":[si]") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":i") and morph(\3, ":s")    and morph(\4, ":p", ":[si]") and \4.islower() -4>> =switchPlural(\4)  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":m", ":[fe]") and morph(\3, ":[me]") and morph(\4, ":f", ":[me]") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au masculin.
+        <<- /gn/ morph(\2, ":f", ":[me]") and morph(\3, ":[fe]") and morph(\4, ":m", ":[fe]") and \4.islower() -4>> =switchGender(\4)  && Accord de genre erroné avec « \2 \3 » : « \4 » devrait être au féminin.
 
 TEST: Grande manifestation {{réprimées}} dans le sang.                  ->> réprimée
 TEST: Petite manifestation {{ignorées}} par les médias.                 ->> ignorée
@@ -23992,6 +24026,7 @@ TEST: Grandes démonstrations {{oubliée}} par l’Histoire.                ->> 
 TEST: Prix incroyables {{valable}} uniquement jusqu’à demain.           ->> valables
 TEST: Petites filles {{oubliés}}                                        ->> oubliées
 TEST: Petits écarts {{pardonnées}}                                      ->> pardonnés
+TEST: Bon schéma cinématique
 
 
 ## Prépositions
@@ -25807,9 +25842,6 @@ TEST: savoirs déconsidérés par les tyrans
 
 __infi_vouloir!5__
     >vouloir  ~..(?:ée?s?|ez)$
-    >vouloir  ~..(?:ée?s?|ez)$
-    >vouloir  ~..(?:ée?s?|ez)$
-    >vouloir  ~..(?:ée?s?|ez)$
         <<- /infi/ not value(\1, "|vouloirs|") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
@@ -25832,10 +25864,10 @@ __infi_vouloir!5__
         <<- /infi/ not value(\1, "|vouloirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tagbefore(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
-    [de|d’]  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
-    [de|d’]  vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ai[ts]?)$
-    [de|d’]  vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ai[ts]?)$
-    [de|d’]  vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ai[ts]?)$
+    [à|de|d’|entre|par|pour|sans]  vouloir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ai[ts]?)$
+    [à|de|d’|entre|par|pour|sans]  vouloir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ai[ts]?)$
+    [à|de|d’|entre|par|pour|sans]  vouloir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ai[ts]?)$
+    [à|de|d’|entre|par|pour|sans]  vouloir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ai[ts]?)$
         <<- /infi/ morph(\-1, ":V", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “\2”, ce verbe devrait être à l’infinitif.
 
