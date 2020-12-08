@@ -533,7 +533,7 @@ class Dictionnaire:
         copyTemplate('orthographe', spDic, 'README_dict_fr.txt', dVars)
         createZipFiles(spDic, spDst, sDicName + '.zip')
 
-    def createLibreOfficeExtension (self, spBuild, dTplVars, lDictVars, spDestGL=""):
+    def createLibreOfficeExtension (self, spBuild, dTplVars, lDictVars, sThesVer, spDestGL=""):
         # LibreOffice extension
         echo(" * Dictionnaire >> extension pour LibreOffice")
         dTplVars['version'] = self.sVersion
@@ -565,6 +565,8 @@ class Dictionnaire:
         file_util.copy_file('césures/hyph-fr.tex', spExt+'/dictionaries')
         file_util.copy_file('césures/README_hyph_fr-3.0.txt', spExt+'/dictionaries')
         file_util.copy_file('césures/README_hyph_fr-2.9.txt', spExt+'/dictionaries')
+        # thesaurus
+        dir_util.copy_tree(spBuild + "/thesaurus-v" + sThesVer, spExt + "/dictionaries")
         # zip
         createZipFiles(spExt, spBuild, sExtensionName + '.oxt')
         # copy to Grammalecte Project
@@ -1503,7 +1505,7 @@ def main ():
     oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, spLexiconDestGL)
     oFrenchDict.createFileIfqForDB(spBuild)
     createThesaurusPackage(spBuild, "2.4", spLibreOfficeExtDestGL)
-    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
+    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], "2.4", spLibreOfficeExtDestGL)
     oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
     oFrenchDict.createDictConj(spBuild, spDataDestGL)
     oFrenchDict.createDictDecl(spBuild, spDataDestGL)
