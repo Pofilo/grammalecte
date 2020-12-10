@@ -376,7 +376,7 @@ var lexgraph_fr = {
     _aPartDemExceptList: new Set(["celui", "celle", "ceux", "celles", "de", "jusque", "par", "marie-couche-toi"]),
     _zInterroVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|on|[nv]ous))$", "i"),
     _zImperatifVerb: new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$", "i"),
-    _zTag: new RegExp("[:;/][a-zA-Z0-9É@*!][^:;/]*", "g"),
+    _zTag: new RegExp("[:;/#][a-zA-Z0-9É@*!][^:;/#]*", "g"),
 
     split: function (sWord) {
         // returns an arry of strings (prefix, trimed_word, suffix)

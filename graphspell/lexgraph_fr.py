@@ -380,7 +380,7 @@ _dValues = {
 
 _zElidedPrefix = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([\\w-]+)")
 _zCompoundWord = re.compile("(?i)(\\w+)(-(?:(?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts]’(?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous|ce))$")
-_zTag = re.compile("[:;/][\\w@*!][^:;/]*")
+_zTag = re.compile("[:;/#][\\w@*!][^:;/#]*")
 
 def split (sWord):
     "split word in 3 parts: prefix, root, suffix"
