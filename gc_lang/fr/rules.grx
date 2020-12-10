@@ -2618,8 +2618,21 @@ __da_de__
     [de|d’] @:[NA]¬:[YMGB]
         <<- not \2[0:1].isupper() =>> select(\1, ":D")
 
-__da_devant_derrière__
-    [devant|derrière] $:D
+__da_devant__
+    devant [<end>|,|)]
+        <<- not morph(<1, ":D.*:[me]:[si]") =>> select(\1, ":W")
+
+    devant $:D
+        <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
+
+    devant $:B [euros|dollars|francs]
+        <<- =>> select(\1, ":V")
+
+__da_derrière__
+    derrière [<end>|,|)]
+        <<- not morph(<1, ":D.*:[me]:[si]") =>> select(\1, ":W")
+
+    derrière $:D
         <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
 
 __da_entre__
@@ -2635,7 +2648,8 @@ __da_entre__
     entre à l’ intérieur
         <<- =>> select(\1, ":V")
 
-    entre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
+    entre [nous|vous|eux|elles|iels]
+    entre [moi|toi|soi|lui|elle|iel] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     entre autres
         <<- =>> define(\1, ":R")
 
@@ -11504,6 +11518,14 @@ TEST: cela peut vouloir dire plusieurs choses : qu’il y a anguille sous roche
 TEST: c’en est où ?
 
 
+__conf_oui_ouïe__
+    [>être|>rester|>demeurer|>sembler|>paraître|>paraitre] ?@[WX]¿ [tout|toute+s|tous] oui
+        <<- /conf/ --2:-1>> tout ouïe
+        && Confusion probable : “oui” est une interjection signifiant l’approbation, l’accord. Pour évoquer l’écoute, écrivez “ouïe”.|https://fr.wiktionary.org/wiki/ou%C3%AFe
+
+TEST: nous étions {{tous oui}}                          ->> tout ouïe
+
+
 # pale / pâle
 __conf_pâle_pale__
     [bien|très|trop|si|vraiment|tellement] >pale
@@ -16156,7 +16178,7 @@ __purge_locutions__
     en cas [de|d’] doute ?[légitime|suffisant]¿
     en cas [de|d’] nécessité ?[absolue|impérieuse]¿
     en cas d’ urgence ?[absolue|impérieuse]¿
-    en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
+    en [chacun|chacune] [de|d’] ?entre¿ [nous|vous|eux|elles|iels]
     en chair et en os
     en chômage partiel
     en chute libre
@@ -17671,6 +17693,7 @@ __substantifs_multi_mots__
     >main d’ œuvre
     >maison à colombages
     >maison [de|d’] [campagne|passe|retraite]
+    [>maître|>maitre] d’ hôtel
     >mal [de|d’] [tête|poitrine|ventre|mer]
     >manche à balai
     >mandat [de|d’] [arrêt|dépôt]
@@ -17877,6 +17900,7 @@ __substantifs_multi_mots__
     sas [de|d’] [confinement|décompression|décontamination|désinfection|livraison|protection|secours|sécurité]
     >scène [de|d’] crime
     >sclérose en plaques
+    >seau à [champagne|glace]
     >seconde d’ arc
     >secret [de|d’] polichinelle
     >sel [de|d’] [aluminium|ammonium|mer]
@@ -19482,6 +19506,7 @@ TEST: une table en bois brut
 TEST: c’est à devenir fou, à se taper la tête contre les murs
 TEST: quitte à en souffrir et fût-ce au prix de sa vie
 TEST: – Si fait, je vous connais bien. »
+TEST: l’étrangère passive qu’elle était devenue ressemblait aux gravures de mode
 
 
 @@@@
@@ -21597,7 +21622,7 @@ TEST: nous avons du {{pin}} sur la planche                          ->> pain
 
 
 # pair / paire
-__conf_aller_de_pair__
+__conf_pair_paire__
     >aller de [pairs|paire|paires|pers|perd|perds|>père]
         <<- /conf/ -3>> pair                                     && Confusion. On écrit « aller de pair ».
 
@@ -23868,19 +23893,19 @@ TEST: puis il y a entre 4 à 1 millions d’années sous une forme proche de la 
 ##  det nom et det nom adj
 __gn_det_nom_et_det_nom__
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|G)
-        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]") and morph(\5, ":[NA].*:[me]:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]") and morph(\5, ":[NA].*:[me]:[si]", ":V0") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
         --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
 
     [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|G)
-        <<- /gn/ morph(\2, ":[NA].*:m:[si]") and morph(\5, ":[NA].*:f:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]") and morph(\5, ":[NA].*:f:[si]", ":V0") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
         --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
 
     [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|G)
-        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:m:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:m:[si]", ":V0") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
         --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
 
     [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|G)
-        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:f:[si]") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:f:[si]", ":V0") and not (value(<1, "|,|") and morph(<2, ":[NA]"))
         --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
 
 TEST: avec ce fils et notre neveu {{arrogante}}                                     ->> arrogant|arrogants
@@ -23897,6 +23922,7 @@ TEST: un frère et une sœur décédée
 TEST: une sœur et un frère décédés
 TEST: une sœur et une sœur réunies
 TEST: une nation avec une armée et une volonté a toutes les chances d’y parvenir
+TEST: un crochet est sorti de la voiture et l’a ralentie
 
 
 ##  trouver ça/ceci/cela + adj
@@ -28271,6 +28297,7 @@ TEST: Leur passe-temps, ça a été faire n’importe quoi.
 TEST: Ne pas ressortir le livre le plus remarqué de la collaboration aurait été faire acte de censure.
 TEST: Partir aurait été assurer sa survie.
 TEST: J’ai été conseiller régional
+TEST: la femme qu’elle avait été accueillait avec enthousiasme les surprises
 
 
 !!!! Participes passés: accord en nombre avec la conjugaison de « être » (et équivalent)          !!
