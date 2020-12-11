@@ -2350,7 +2350,7 @@ __da_le_la_les_leur_en_y_lui__
 
     l’  *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
-        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
 
     l’ [un|une]
         <<- =>> define(\1, ">l/:HEL")
@@ -2360,21 +2360,24 @@ __da_le_la_les_leur_en_y_lui__
 
     le  *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
-        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
+
+    le [*NUM|*WORDORD]
+        <<- =>> select(\1, ":D")
 
     la  *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|plupart|")) =>> select(\1, ":D")
-        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
         <<- __else__ and not value(<1, "|le|ce|du|") =>> exclude(\1, ":N")
 
     les *WORD
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
-        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
 
     leur    *WORD
         <<- not value(<1, "|le|du|") =>> exclude(\1, ":N")
         <<- not value(<1, "|je|j’|il|on|elle|nous|vous|ils|elles|iel|iels|ne|n’|me|m’|te|t’|se|s’|") and (morph(\2, ":[NABWM]", "*") or value(\2, "|plus|moins|")) =>> select(\1, ":D")
-        <<- __else__ and morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- __else__ and morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
 
     leurs   *WORD
         <<- not value(<1, "|les|des|") =>> exclude(\1, ":N")
@@ -2383,7 +2386,7 @@ __da_le_la_les_leur_en_y_lui__
         <<- =>> select(\1, ":R")
 
     en  *WORD
-        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":(?:[123][sp]|P|Y)", "*") =>> select(\1, ":Ov")
+        <<- value(<1, "|j’|n’|m’|t’|s’|l’|c’|") or morph(\2, ":[ISKYPE]", "*") =>> select(\1, ":Ov")
         <<- __else__ and not morph(<1, ":O[sv]") and morph(\2, ":", ":[ISKYPE]") =>> select(\1, ":R")
 
     en la           @:[NA].*:[fe]:si
@@ -2469,11 +2472,11 @@ __da_préverbes_verbes__
         <<- not morph(<1, ":V0") =>> select(\-1, ":[ISKP]")
 
     lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)¬:W
-        <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
+        <<- not morph(<1, ":R") =>> select(\3, ":[ISKYPE]")
 
     [nous|vous]     [le|la|l’|les|en]  @:¬:[OXW]
     lui             en                 @:¬:[OXW]
-        <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
+        <<- not morph(<1, ":R") =>> select(\3, ":[ISKYPE]")
 
     [le|la|l’|les]  [lui|leur|en]      @:¬:[OXW]
     leur            en                 @:¬:[OXW]
@@ -2517,28 +2520,17 @@ __da_préverbes_verbes__
     [de|d’|par|pour|sans|contre] [elle|lui|nous|vous|eux|elles|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
         <<- =>> select(\-1, ":Oo")
 
-
-__da_été__
-    >avoir ?@:[WX]¿ été
-        <<- =>> select(\1, ":V0") and select(\-1, ":Q")
-
-    ça a
-        <<- =>> select(\2, ":V")
-
     après avoir $:Q
         <<- =>> exclude(\2, ":N")
 
 
-__da_adverbes__
-    environ  [$:B|*NUM]
-        <<- not value(<1, "|l’|un|cet|quel|") =>> exclude(\1, ":N")
-
-    grave
-        <<- morph(<1, ":D") =>> exclude(\1, ":W")
-
+__da_jours__
     [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche]
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, ":W")
 
+__da_a__
+    [ça|ceci|cela] a
+        <<- =>> select(\2, ":V")
 
 __da_autour__
     autour [de|du|d’|des]
@@ -2592,6 +2584,22 @@ __da_certains_certaines__
     certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
         <<- =>> exclude(\1, ":O")
 
+    certains [ne|n’|me|m’|te|t’|se|s’]               @:3p
+    certains [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p
+    certains [nous|vous]     [le|la|l’|les|en|y]     @:3p
+    certains [le|la|l’|les]  [lui|leur|en|y]         @:3p
+    certains [lui|leur|y]    en                      @:3p
+    certains @:3p¬:(?:G|[NA].*:[me]:[pi]|V.e)
+        <<- not morph(<1, ":[NAD].*:[me]:[pi]") =>> select(\1, ":O")
+
+    certaines [ne|n’|me|m’|te|t’|se|s’]               @:3p
+    certaines [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p
+    certaines [nous|vous]     [le|la|l’|les|en|y]     @:3p
+    certaines [le|la|l’|les]  [lui|leur|en|y]         @:3p
+    certaines [lui|leur|y]    en                      @:3p
+    certaines @:3p¬:(?:G|[NA].*:[fe]:[pi]|V.e)
+        <<- not morph(<1, ":[NAD].*:[fe]:[pi]") =>> select(\1, ":O")
+
 __da_contre__
     contre [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
         <<- =>> select(\1, ":R")
@@ -2613,6 +2621,7 @@ __da_de__
     [de|d’] [me|m’|te|t’|se|s’|en|y|nous|vous|moi|toi|soi|lui|elle|iel|eux|elles|iels]
     [de|d’] @:[MYBD]|#P
     [de|d’] *NUM
+    [de|d’] entre
         <<- =>> select(\1, ":R")
 
     [de|d’] @:[NA]¬:[YMGB]
@@ -2634,6 +2643,11 @@ __da_derrière__
 
     derrière $:D
         <<- morph(<1, ":V|<start>|>,", ":G") =>> select(\1, ":R")
+
+__da_ensemble__
+    ensemble
+        <<- morph(<1, ":V") =>> select(\1, ":W")
+        <<- __else__ and morph(<1, ":D", ">la/") =>> select(\1, ":N")
 
 __da_entre__
     entre  *WORD  et  *WORD
@@ -2657,13 +2671,29 @@ __da_entre__
     >choisir entre
         <<- =>> select(\-1, ":R")
 
+__da_environ__
+    environ  [$:B|*NUM]
+        <<- not value(<1, "|l’|un|cet|quel|") =>> exclude(\1, ":N")
+
+__da_été__
+    >avoir ?@:[WX]¿ été
+        <<- =>> select(\1, ":V0") and select(\-1, ":Q")
+
+    [un|l’|quel|cet|mon|ton|son|notre|votre|leur] été
+        <<- =>> select(\-1, ":N")
+
 __da_face__
     face [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
+        <<- __else__ =>> select(\1, ":N")
 
 __da_grâce__
     grâce [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> exclude(\1, ":N")
+
+__da_grave__
+    grave
+        <<- morph(<1, ":D") =>> exclude(\1, ":W")
 
 __da_mais__
     mais
@@ -2671,17 +2701,6 @@ __da_mais__
 
     n’ en >pouvoir mais
         <<- =>> define(\-1, ">mais/:W")
-
-__da_son_ton__
-    [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
-        <<- =>> exclude(\2, ":D")
-
-    [son|ton] *WORD
-        <<- morph(\2, ":G", ":[NA]") or value(<1, "|du|le|ce|un|quel|mon|") =>> exclude(\1, ":D")
-        <<- __else__ and morph(\2, ":N", "*") =>> select(\1, ":D")
-
-    [son|ton] ,
-        <<- =>> select(\1, ":N")
 
 __da_mal__
     pas mal
@@ -2697,6 +2716,13 @@ __da_même__
     [le|la|l’|les|du|chaque|ces|des|mes|tes|ses|nos|vos|leurs|quelques|quels|quelles] même
         <<- =>> select(\2, ":A")
 
+__da_or__
+    <start> or ?,¿ @:(?:Os|D)
+        <<- =>> select(\2, ":G")
+
+    [un|l’|d’|quel|cet|mon|ton|son|notre|votre|leur] or
+        <<- =>> select(\-1, ":N")
+
 __da_outre__
     en outre
         <<- not value(<1, "|il|on|elle|iel|n’|l’|") =>> select(\1, ":R") and select(\2, ":N")
@@ -2705,7 +2731,7 @@ __da_outre__
         <<- =>> select(\2, ":N")
 
     outre $:D
-        <<- morph(<1, ":V", ":[GA]") =>> select(\1, ":R")
+        <<- morph(<1, ":V|<start>", ":[GA]") =>> select(\1, ":R")
 
 __da_point__
     [le|l’|un|mon|notre|votre|leur|chaque|mes|tes|ses|nos|vos|leurs|quel|quels|quelle|quelles] point
@@ -2727,6 +2753,9 @@ __da_pas__
     pas
         <<- morph(<1, ":[VWX]") =>> exclude(\1, ":N")
 
+    pourquoi pas
+        <<- =>> select(\2, ":X")
+
 __da_passé__
     passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
@@ -2734,14 +2763,14 @@ __da_passé__
 __da_pendant__
     ## évènements
     pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] ?[interminable|long]¿
-        || [accouchement|acte|âge|colloque|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|entretien|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
+        || [accouchement|acte|âge|colloque|confinement|conflit|cours|couronnement|déjeuner|dîner|diner|entracte|entrainement|entraînement|entretien|examen|événement|évènement|interrègne|jihad|mandat|mariage|match|passage|procès|repas|règne|sommeil|souper|temps|travail|voyage]
     pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] ?[interminable|longue]¿
-        || [adolescence|cérémonie|compétition|crise|croisade|dictature|durée|enfance|étude|existence|guerre|interview|intronisation|messe|pause|période|prière|querelle|rencontre|récréation|régence|retraite|réunion|révolution|séance|thérapie|traversée|tyrannie|union|vacance|vie]
+        || [adolescence|cérémonie|compétition|crise|croisade|dictature|durée|enfance|étude|existence|guerre|interview|intronisation|messe|partie|pause|période|prière|querelle|rencontre|récréation|régence|retraite|réunion|révolution|séance|thérapie|traversée|tyrannie|union|vacance|vie]
     ## évènements
     pendant ?tous¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreusx]¿
-        || [accouchements|actes|âges|colloques|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|entretiens|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
+        || [accouchements|actes|âges|colloques|confinements|conflits|cours|couronnements|déjeuners|dîners|diners|entractes|entrainementt|entraînements|entretiens|examens|événements|évènements|interrègnes|jihads|mandats|mariages|matchs|passages|procès|repas|règnes|sommeils|soupers|temps|travaux|voyages]
     pendant ?toutes¿ [les|ces|mes|tes|ses|nos|vos|leurs] ?[innombrables|interminables|nombreuses]¿
-        || [adolescences|cérémonies|compétitions|crises|croisades|dictatures|durées|enfances|études|existences|guerres|interviews|intronisations|messes|pauses|périodes|prières|querelles|rencontres|récréations|régences|retraites|réunions|révolutions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
+        || [adolescences|cérémonies|compétitions|crises|croisades|dictatures|durées|enfances|études|existences|guerres|interviews|intronisations|messes|parties|pauses|périodes|prières|querelles|rencontres|récréations|régences|retraites|réunions|révolutions|séances|thérapies|traversées|tyrannies|unions|vacances|vies]
     ## durée
     pendant ?tout¿ [le|l’|ce|cet|mon|ton|son|notre|votre|leur] [matin|soir|an|mois|trimestre|semestre|an|siècle|millénaire|éon]
     pendant ?toute¿ [la|l’|cette|ma|ta|sa|mon|ton|son|notre|votre|leur] [nanoseconde|microseconde|milliseconde|seconde|minute|heure|matinée|journée|nuit|semaine|année|décennie|éternité]
@@ -2788,6 +2817,13 @@ __da_puis__
     puis
         <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> exclude(\1, ":V")
 
+__da_quelque__
+    quelque *NUM
+        <<- =>> select(\1, ":W")
+
+    quelque [autre|chose|temps|part]
+        <<- =>> select(\1, ":D")
+
 __da_SA__
     SA
         <<- morph(<1, ":D") =>> exclude(\1, ":D")
@@ -2806,6 +2842,26 @@ __da_si__
 
     si bien [que|qu’]
         <<- =>> select(\1, ":W") and select(\2, ":W")
+
+    si @:[AW]¬:G
+        <<- morph(<1, ":N", ":D") =>> select(\1, ":W")
+
+__da_son_ton__
+    [le|ce|cet|mon|ton|son|quel|quelque|notre|votre|un|leur|ledit|dudit|chaque|des|les|quelques|quel|quelle|quels|quelles]  [son|ton]
+        <<- =>> exclude(\2, ":D")
+
+    [son|ton] *WORD
+        <<- morph(\2, ":G", ":[NA]") or value(<1, "|du|le|ce|un|quel|mon|") =>> exclude(\1, ":D")
+        <<- __else__ and morph(\2, ":N", "*") =>> select(\1, ":D")
+
+    [son|ton] ,
+        <<- =>> select(\1, ":N")
+
+__da_sans__
+    sans [que|qu’]
+        <<- =>> select(\1, ":C")
+
+
 
 __da_sous_sur__
     sous @:[BD]
@@ -2871,10 +2927,12 @@ __da_toutes__
         <<- not morph(<1, ":R") =>> select(\1, ":O")
 
 __da_un_une__
+    un  [de|d’|des]
     un  @:[NA].*:[me]
         <<- not value(<1, "|le|de|ce|quel|") =>> select(\1, ":D")
 
-    une @:[NA].*:[fe]
+    une  des  @:(?:W|[NA].*:[fe]:[pi])
+    une  @:[NA].*:[fe]
         <<- not value(<1, "|la|de|cette|quelle|une|ma|ta|sa|notre|votre|leur|") =>> select(\1, ":D")
 
 __da_vers__
@@ -28271,16 +28329,24 @@ TEST: iels sont devenus faibles.
 
 
 __ppas_avoir_été__
+    l’  homme   [que|qu’] [je|tu|il|iel]              >avoir   été $:3s
+    la  femme   [que|qu’] [je|tu|elle|iel]            >avoir   été $:3s
+    l’  enfant  [que|qu’] [je|tu|il|elle|iel]         >avoir   été $:3s
+    les hommes  [que|qu’] [nous|vous|ils|iels]        >avoir   été $:3p
+    les femmes  [que|qu’] [nous|vous|elles|iels]      >avoir   été $:3p
+    les enfants [que|qu’] [nous|vous|ils|elles|iels]  >avoir   été $:3p
+        <<- !-1>> ppas
+
     >avoir  été  *WORD
-        <<- /ppas/ morph(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(\3)         && Après “avoir été”, il faut un participe passé.
+        <<- /ppas/ morph(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(\3)                     && Après “avoir été”, il faut un participe passé.
         <<- /ppas/ not before("[çcCÇ]’$|[cC][eE] n’$|[çÇ][aA] (?:[nN]’|)$") and not before("(?i)^ *ne pas ") and not morph(<1, ":Y") >>>
-        <<- /ppas/ morph(\3, ":Y", ":[AN]") -1:2>> _                                && Tournure familière. Écrivez “être allé” plutôt que “avoir été”.
+        <<- /ppas/ morph(\3, ":Y", ":[AN]") -1:2>> _                                            && Tournure familière. Écrivez “être allé” plutôt que “avoir été”.
         <<- /ppas/ morph(\3, ":V1..t.*:Y", ":[AN]") and not morph(>1, ":D")
-        -3>> =suggVerbPpas(\3)                                                      && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
+        -3>> =suggVerbPpas(\3)                                                                  && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
 
     >avoir étés
         <<- not (value(>1, "|et|ou|") and value(>2, "|hivers|automnes|printemps|"))
-        --1>> été                                                                   && Le participe passé du verbe “être” est invariable.
+        --1>> été                                                                               && Le participe passé du verbe “être” est invariable.
 
 TEST: j’ai été {{instruis}} par elle
 TEST: avoir été {{prit}} par surprise
