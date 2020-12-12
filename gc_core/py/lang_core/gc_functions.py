@@ -298,7 +298,7 @@ def g_token (lToken, i):
 
 #### Disambiguator for regex rules
 
-def select (dTokenPos, nPos, sWord, sPattern):
+def select (dTokenPos, nPos, sWord, sPattern, sNegPattern=""):
     "Disambiguation: select morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
@@ -308,23 +308,16 @@ def select (dTokenPos, nPos, sWord, sPattern):
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph or len(lMorph) == 1:
         return True
-    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect and len(lSelect) != len(lMorph):
-        dTokenPos[nPos]["lMorph"] = lSelect
-    return True
-
-
-def exclude (dTokenPos, nPos, sWord, sPattern):
-    "Disambiguation: exclude morphologies of <sWord> matching <sPattern>"
-    if not sWord:
+    if sPattern:
+        if sNegPattern:
+            lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) and not re.search(sNegPattern, sMorph) ]
+        else:
+            lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
+    elif sNegPattern:
+        lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sNegPattern, sMorph) ]
+    else:
+        echo("# Error: missing pattern for disambiguation selection...")
         return True
-    if nPos not in dTokenPos:
-        echo("Error. There should be a token at this position: ", nPos)
-        return True
-    lMorph = _oSpellChecker.getMorph(sWord)
-    if not lMorph or len(lMorph) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect and len(lSelect) != len(lMorph):
         dTokenPos[nPos]["lMorph"] = lSelect
     return True
@@ -341,24 +334,21 @@ def define (dTokenPos, nPos, sMorphs):
 
 #### Disambiguation for graph rules
 
-def g_select (dToken, sPattern):
-    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
+def g_select (dToken, sPattern, sNegPattern=""):
+    "Disambiguation: select morphologies for <dToken> according to <sPattern>, removing those matching <sNegPattern>; always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
         return True
-    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
-    if lSelect and len(lSelect) != len(lMorph):
-        dToken["lMorph"] = lSelect
-    #echo("DA:", dToken["sValue"], dToken["lMorph"])
-    return True
-
-
-def g_exclude (dToken, sPattern):
-    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
-    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph or len(lMorph) == 1:
+    if sPattern:
+        if sNegPattern:
+            lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) and not re.search(sNegPattern, sMorph) ]
+        else:
+            lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
+    elif sNegPattern:
+        lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sNegPattern, sMorph) ]
+    else:
+        echo("# Error: missing pattern for disambiguation selection...")
         return True
-    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect and len(lSelect) != len(lMorph):
         dToken["lMorph"] = lSelect
     #echo("DA:", dToken["sValue"], dToken["lMorph"])

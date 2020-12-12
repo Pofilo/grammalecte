@@ -351,7 +351,7 @@ function g_token (lToken, i) {
 
 //////// Disambiguator for regex rules
 
-function select (dTokenPos, nPos, sWord, sPattern) {
+function select (dTokenPos, nPos, sWord, sPattern, sNegPattern="") {
     if (!sWord) {
         return true;
     }
@@ -363,26 +363,22 @@ function select (dTokenPos, nPos, sWord, sPattern) {
     if (lMorph.length === 0  ||  lMorph.length === 1) {
         return true;
     }
-    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
-    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
-        dTokenPos.get(nPos)["lMorph"] = lSelect;
+    let lSelect;
+    if (sPattern) {
+        if (sNegPattern) {
+            lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 && sMorph.search(sNegPattern) === -1 );
+        }
+        else {
+            lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
+        }
     }
-    return true;
-}
-
-function exclude (dTokenPos, nPos, sWord, sPattern) {
-    if (!sWord) {
+    else if (sNegPattern) {
+        lSelect = lMorph.filter( sMorph => sMorph.search(sNegPattern) === -1 );
+    }
+    else {
+        console.log("[Grammalecte] Error: missing pattern for disambiguation selection...");
         return true;
     }
-    if (!dTokenPos.has(nPos)) {
-        console.log("Error. There should be a token at this position: ", nPos);
-        return true;
-    }
-    let lMorph = gc_engine.oSpellChecker.getMorph(sWord);
-    if (lMorph.length === 0  ||  lMorph.length === 1) {
-        return true;
-    }
-    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0 && lSelect.length != lMorph.length) {
         dTokenPos.get(nPos)["lMorph"] = lSelect;
     }
@@ -397,26 +393,28 @@ function define (dTokenPos, nPos, sMorphs) {
 
 //// Disambiguation for graph rules
 
-function g_select (oToken, sPattern) {
+function g_select (oToken, sPattern, sNegPattern="") {
     // select morphologies for <oToken> according to <sPattern>, always return true
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         return true;
     }
-    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
-    if (lSelect.length > 0 && lSelect.length != lMorph.length) {
-        oToken["lMorph"] = lSelect;
+    let lSelect;
+    if (sPattern) {
+        if (sNegPattern) {
+            lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 && sMorph.search(sNegPattern) === -1 );
+        }
+        else {
+            lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
+        }
     }
-    return true;
-}
-
-function g_exclude (oToken, sPattern) {
-    // select morphologies for <oToken> according to <sPattern>, always return true
-    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
-    if (lMorph.length === 0  || lMorph.length === 1) {
+    else if (sNegPattern) {
+        lSelect = lMorph.filter( sMorph => sMorph.search(sNegPattern) === -1 );
+    }
+    else {
+        console.log("[Grammalecte] Error: missing pattern for disambiguation selection...");
         return true;
     }
-    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0 && lSelect.length != lMorph.length) {
         oToken["lMorph"] = lSelect;
     }
