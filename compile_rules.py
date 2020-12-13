@@ -66,7 +66,7 @@ def prepareFunction (s):
     s = re.sub(r"\brealend\(\)", 'after("^ *$")', s)
     s = re.sub(r"\bend0\(\)", 'after0("^ *$|^,")', s)
     s = re.sub(r"\brealend0\(\)", 'after0("^ *$")', s)
-    s = re.sub(r"\bselect[(][\\](\d+)", '\\1(dTokenPos, m.start(\\2), m.group(\\2)', s)
+    s = re.sub(r"\bselect[(][\\](\d+)", '\\1(dTokenPos, m.start(\\1), m.group(\\1)', s)
     s = re.sub(r"\bdefine[(][\\](\d+)", 'define(dTokenPos, m.start(\\1)', s)
     s = re.sub(r"\b(morph|info)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
     s = re.sub(r"\b(morph|info)[(]", '\\1(dTokenPos, ', s)
