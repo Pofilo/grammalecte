@@ -69,6 +69,7 @@ dStrings = {
         "misc5": "Apostrophes manquantes",
         "misc5b": "lettres isolées (j’ n’ m’ t’ s’ c’ d’ l’)",
         "misc5c": "Maj.",
+        "misccustom": "Transformations personnelles",
 
         "struct": "~Restructuration [!]",
         "struct_help": "Attention : la restructuration coupe ou fusionne les paragraphes.",
@@ -81,6 +82,8 @@ dStrings = {
         "default_help": "Options par défaut",
 
         "bsel": "Sur la sélection active",
+        "editor": "~Editeur…",
+        "editor_help": "Éditeur de transformations",
         "apply": "~Appliquer",
         "close": "~Fermer",
 
@@ -153,6 +156,7 @@ dStrings = {
         "misc5": "Missing apostrophes",
         "misc5b": "single letters (j’ n’ m’ t’ s’ c’ d’ l’)",
         "misc5c": "Cap.",
+        "misccustom": "Custom transformations",
 
         "struct": "~Restructuration [!]",
         "struct_help": "Caution: Restructuration cuts or merges paragraphs.",
@@ -165,6 +169,8 @@ dStrings = {
         "default_help": "Default options",
 
         "bsel": "On current selection",
+        "editor": "~Editor…",
+        "editor_help": "Transformations editor",
         "apply": "~Apply",
         "close": "~Close",
 

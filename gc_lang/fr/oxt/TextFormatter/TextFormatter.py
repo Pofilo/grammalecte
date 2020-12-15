@@ -14,16 +14,18 @@ import tf_options
 import tf_tabrep
 import helpers
 
+import TextFormatterEditor
+
 import unohelper
 import uno
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
 
-
 from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
 # DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
 from com.sun.star.awt.MessageBoxType import INFOBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+
 
 def MessageBox (xParentWin, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
     ctx = uno.getComponentContext()
@@ -38,6 +40,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
         self.xDialog = None
+        helpers.startConsole()
 
     # XJobExecutor
     def trigger (self, args):
@@ -60,6 +63,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         return xWidget
 
     def run (self, sLang):
+        self.sLang = sLang
         self.dUI = tf_strings.getUI(sLang)
 
         ## dialog
@@ -210,14 +214,18 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.misc5 = self._addWidget('misc5', 'CheckBox', x2, y+45, nWidth, nHeight, Label = self.dUI.get('misc5', "#err"), State = True)
         self.misc5b = self._addWidget('misc5b', 'CheckBox', x2+10, y+55, nWidth-40, nHeight, Label = self.dUI.get('misc5b', "#err"), State = False)
         self.misc5c = self._addWidget('misc5c', 'CheckBox', x2+nWidth-25, y+55, 30, nHeight, Label = self.dUI.get('misc5c', "#err"), State = False)
+        self.misccustom = self._addWidget('misccustom', "CheckBox", x2, y+65, nWidth-40, nHeight, Label = self.dUI.get('misccustom', "#err"), State = False)
+        self.beditor = self._addWidget('editor', 'Button', x2+95, y+64, 30, 9, Label = self.dUI.get('editor', "#err"), \
+                                        HelpText = self.dUI.get('editor_help', "#err"), FontDescriptor = xFDsmall)
         self.misc1_res = self._addWidget('misc1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
         self.misc2_res = self._addWidget('misc2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
         self.misc3_res = self._addWidget('misc3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
         #self.misc4_res = self._addWidget('misc4_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
         self.misc5_res = self._addWidget('misc5_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
+        self.misccustom_res = self._addWidget('misccustom_res', 'FixedText', nPosRes, y+55, 20, nHeight, Label = "", Align = 2)
 
         # group box // restructuration
-        y = y + 65
+        y = y + 75
         self.struct = self._addWidget('struct', 'CheckBox', x2, y+2, nWidth, nHeight, Label = self.dUI.get('struct', "#err"), FontDescriptor = xFD1, \
                                       FontRelief = 1, TextColor = nColor, HelpText = self.dUI.get('struct_help', "#err"), State = False)
         self._addWidget("section6", 'FixedLine', nRightLimit2-(nWidth//3), y, nWidth//3, nHeight)
@@ -230,7 +238,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.struct3_res = self._addWidget('struct3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
 
         # dialog height
-        self.xDialog.Height = 272
+        self.xDialog.Height = 277
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -244,7 +252,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             "typo":     [self.typo1, self.typo2, self.typo3, self.typo3a, self.typo3b, self.typo4, self.typo4a, self.typo4b, self.typo5, self.typo6, \
                          self.typo7, self.typo8, self.typo8a, self.typo8b, self.typo_ff, self.typo_fi, self.typo_ffi, self.typo_fl, self.typo_ffl, \
                          self.typo_ft, self.typo_st],
-            "misc":     [self.misc1, self.misc2, self.misc3, self.misc5, self.misc1a, self.misc5b, self.misc5c], #self.misc4,
+            "misc":     [self.misc1, self.misc2, self.misc3, self.misc5, self.misc1a, self.misc5b, self.misc5c, self.misccustom], #self.misc4,
             "struct":   [self.struct1, self.struct2, self.struct3]
         }
 
@@ -274,6 +282,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.setVisible(False)
         self.xContainer.getControl('info').addActionListener(self)
         self.xContainer.getControl('info').setActionCommand('Info')
+        self.xContainer.getControl('editor').addActionListener(self)
+        self.xContainer.getControl('editor').setActionCommand('Editor')
         self.xContainer.getControl('default').addActionListener(self)
         self.xContainer.getControl('default').setActionCommand('Default')
         self.xContainer.getControl('apply').addActionListener(self)
@@ -350,6 +360,9 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             elif xActionEvent.ActionCommand == 'Default':
                 self._setConfig(tf_options.dDefaultOpt)
                 self._setApplyButtonLabel()
+            elif xActionEvent.ActionCommand == 'Editor':
+                xDialog = TextFormatterEditor.TextFormatterEditor(self.ctx)
+                xDialog.run(self.sLang)
             elif xActionEvent.ActionCommand == 'Info':
                 xDesktop = self.xSvMgr.createInstanceWithContext('com.sun.star.frame.Desktop', self.ctx)
                 xDoc = xDesktop.getCurrentComponent()
@@ -661,6 +674,10 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                         if self.misc5c.State:
                             n += self._replaceList(xElem, "misc5c")
                     self.misc5_res.Label = str(n)
+                    self.pbar.ProgressValue += 1
+                if self.misccustom.State:
+                    n = self._replaceList(xElem, "misccustom")
+                    self.misccustom_res.Label = str(n)
                     self.pbar.ProgressValue += 1
                 self.misc.State = False
                 self._switchCheckBox(self.misc)
