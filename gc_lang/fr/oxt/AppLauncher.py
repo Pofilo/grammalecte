@@ -78,6 +78,8 @@ class AppLauncher (unohelper.Base, XJobExecutor):
                 xGODialog.run(self.sLang)
             elif sCmd.startswith("FA/"):
                 findAll(sCmd[6:], (sCmd[3:4] == "y"), (sCmd[4:5] == "y"))
+            elif sCmd == "Console":
+                helpers.startConsole()
             # elif sCmd.startswith("URL/"):
             #     # Call from context menu to launch URL?
             #     # http://opengrok.libreoffice.org/xref/core/sw/source/ui/lingu/olmenu.cxx#785
