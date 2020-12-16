@@ -11400,7 +11400,23 @@ TEST: nous vous proposons de faire vôtre une autre volonté
 TEST: Elle récitait sans cesse des Notre Père.
 
 
+# nui / nuis
+__conf_nuit_nui__
+    [une|la|cette|ma|ta|sa|notre|votre] [nui+s]
+        <<- /conf/ --1>> nuit                                       && Confusion : la partie nocturne d’une journée s’écrit “nuit”.|https://fr.wiktionary.org/wiki/nuit
 
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques] [nui+s]
+        <<- /conf/ --1>> nuits                                      && Confusion : la partie nocturne d’une journée s’écrit “nuit”.|https://fr.wiktionary.org/wiki/nuit
+
+    [nui+s] sans >lune
+    [nui+s] d’ >insomnie
+    [nui+s] [de|d’] folie
+        <<- /conf/ -1>> nuit|nuits                                  && Confusion probable : la partie nocturne d’une journée s’écrit “nuit”.|https://fr.wiktionary.org/wiki/nuit
+
+TEST: une {{nui}} sans lune                                     ->> nuit
+TEST: les {{nuis}} à jouer au poker                             ->> nuits
+TEST: {{nuis}} d’insomnie                                       ->> nuit|nuits
+TEST: je leur nuis tous les jours
 
 
 # nulle part
@@ -12009,6 +12025,9 @@ __conf_poing_point__
         <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
         -1>> =\1.replace("t", "g").replace("T", "G")                        && Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
 
+    >poing sur [le+s|ce|un] i
+        <<- /conf/ -1>> =\1.replace("g", "t").replace("G", "T")             && Confusion probable. Un “poing” est une main fermée.|https://fr.wiktionary.org/wiki/point
+
     !! à point nommé ¡¡
     [à|a] [point+s|>poing] [nommé|+ses]
         <<- /conf/ ->> à point nommé                                        && Locution “à point nommé”.|https://fr.wiktionary.org/wiki/%C3%A0_point_nomm%C3%A9
@@ -12017,9 +12036,10 @@ __conf_poing_point__
     [à|a] [>point|poing+s] [fermé+ses]
         <<- /conf/ ->> à poings fermés                                      && Locution “à poings fermés”.|https://fr.wiktionary.org/wiki/dormir_%C3%A0_poings_ferm%C3%A9s
 
-TEST: une arme de {{point}}
-TEST: Elles ont tapé du {{point}} sur la table.
-TEST: les {{points}} serrés
+TEST: une arme de {{point}}                                                 ->> poing
+TEST: Elles ont tapé du {{point}} sur la table.                             ->> poing
+TEST: les {{points}} serrés                                                 ->> poings
+TEST: mettre les {{poings}} sur les i                                       ->> points
 TEST: venir {{a point nommé}}                                               ->> à point nommé
 TEST: {{a points fermés}}                                                   ->> à poings fermés
 TEST: Tu contres son coup de poing.
@@ -12058,6 +12078,11 @@ __conf_porc_port_pore__
     >élevage [de|d’] [>pore|>port]
         <<- /conf/ --1>> porc|porcs                                         && Confusion. Pour évoquer l’animal, écrivez “porc”.|https://fr.wiktionary.org/wiki/porc
 
+    >pore [qui|qué] [>pique|>pic]
+    >porc [qui|qué] [>pique|>pic]
+    >port [qui|qué] [>pique|>pic]
+        <<- morph(<1, ":D|<start>|>,") ->> porc-épic|porcs-épics            && Confusion générale ? Si vous parlez de l’animal, écrivez “porc-épic”.|https://fr.wiktionary.org/wiki/porc-%C3%A9pic
+
     ## port
     [>pore|>porc] [de|d’] [plaisance|pêche]
     [>pore|>porc] [>maritime|>spatial]
@@ -12084,6 +12109,7 @@ TEST: du {{port}} au caramel                                                ->> 
 TEST: elle prépare une blanquette de {{port}}                               ->> porc
 TEST: un filet mignon de {{pore}}                                           ->> porc
 TEST: j’en ai marre de bouffer du {{port}}                                  ->> porc|porcs
+TEST: un {{porc qui pique}}                                                 ->> porc-épic|porcs-épics
 TEST: le {{pore}} de l’étoile jaune                                         ->> port
 TEST: un petit {{porc}} de plaisance                                        ->> port|ports
 TEST: nous parvenons enfin à bon {{pore}}                                   ->> port
@@ -12546,6 +12572,7 @@ TEST: Nous allons le {{résonner}}.
 
 # repère /  repaire
 __conf_repaire_repère__
+    ## repaire
     >repère  [dangereux|sécurisé+s]
     >repère  [de|du|d’|des]  [>assassin|>bandit|>brigand|>cambrioleur|>corsaire|>criminel|>dragon|>escroc|>fanatique|>filou|>flibustier|>flibuste|>gangster|>lion|>loup|>louve|>mafioso|>malfaiteur|>malfrat|>maraudeur|>monstre|>murène|ours|>pickpocket|>pillard|>pirate|>scélérat|>taupe|>tigre|>truand|>voleur|>voyou|>yéti]
     >repère  de  $:D         [>assassin|>bandit|>brigand|>cambrioleur|>corsaire|>criminel|>dragon|>escroc|>fanatique|>filou|>flibustier|>flibuste|>gangster|>lion|>loup|>louve|>mafioso|>malfaiteur|>malfrat|>maraudeur|>monstre|>murène|ours|>pickpocket|>pillard|>pirate|>scélérat|>taupe|>tigre|>truand|>voleur|>voyou|>yéti]
@@ -12560,8 +12587,13 @@ __conf_repaire_repère__
         <<- /conf/ --1>> repaire
         && Confusion probable. Un repère est une marque laissée pour retrouver quelque chose. Pour le lieu où se cachent des personnes ou des animaux, écrivez “repaire”.|https://fr.wiktionary.org/wiki/repaire
 
+    ## repère
     [>écrire|>graver|>tracer|>marquer] [un|le|ce|son|des|les|ces|ses] >repaire
         <<- /conf/ --1>> =\-1.replace("ai", "è").replace("AI", "È")
+        && Confusion probable. Un repaire est un lieu où se cachent des personnes ou des animaux. Pour une marque laissée pour retrouver quelque chose, écrivez “repère”.|https://fr.wiktionary.org/wiki/repère
+
+    >point [de|d’] >repaire
+        <<- /conf/ morph(<1, ":D") --1>> repère
         && Confusion probable. Un repaire est un lieu où se cachent des personnes ou des animaux. Pour une marque laissée pour retrouver quelque chose, écrivez “repère”.|https://fr.wiktionary.org/wiki/repère
 
     >repaire au [crayon|charbon|sang|stylo]
@@ -12573,11 +12605,13 @@ __conf_repaire_repère__
         <<- /conf/ -1>> =\1.replace("ai", "è").replace("AI", "È")
         && Confusion probable. Un repaire est un lieu où se cachent des personnes ou des animaux. Pour une marque laissée pour retrouver quelque chose, écrivez “repère”.|https://fr.wiktionary.org/wiki/repère
 
-TEST: Le {{repère}} des brigands.
-TEST: Au {{repère}} de la voleuse.
-TEST: on va le débusquer dans son {{repère}}
-TEST: Elle traça un {{repaire}}.
-TEST: Elle remarqua un {{repaire}} à la craie.
+TEST: Le {{repère}} des brigands.                                               ->> repaire
+TEST: Au {{repère}} de la voleuse.                                              ->> repaire
+TEST: on va le débusquer dans son {{repère}}                                    ->> repaire
+TEST: Elle traça un {{repaire}}.                                                ->> repère
+TEST: Elle remarqua un {{repaire}} à la craie.                                  ->> repère
+TEST: elle a perdu ses points de {{repaire}}                                    ->> repère
+TEST: point de repaire de brigands dans la région, messire.
 
 
 # ris / riz
@@ -13065,10 +13099,17 @@ TEST: ta gueule, connard.
 
 # temps / tant / tan
 __conf_tant_temps_tan_1__
-    combien [de|d’] [>tant|tan]
-    un bon bout [de|d’] [>tant|tan]
-    une question [de|d’] [>tant|tan]
-    chaque chose en son [>tant|tan]
+    ## temps
+    combien [de|d’] [tant|>tan]
+    un bon bout [de|d’] [tant|>tan]
+    une question [de|d’] [tant|>tan]
+    chaque chose en son [tant|>tan]
+    [un|le] signe des tant @:¬A.*:[pi]
+    [un|le] signe des >tan
+    perte [de|d’] tant  @:¬>d[e’]/
+    perte [de|d’] >tan
+    la nuit des tant @:¬A.*:[pi]
+    la nuit des >tan
         <<- /conf/ --1>> temps                              && Confusion. Pour ce qui est temporel, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
     un [>tan|tant] [de|d’]
@@ -13092,6 +13133,7 @@ __conf_tant_temps_tan_1__
     en [>tan|tant] et en >heure
         <<- /conf/ -2>> temps                               && Confusion. Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
 
+    ## tant
     [après|avec] [temps|>tan] [de|d’]
         <<- /conf/ -2>> tant                                && Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|https://fr.wiktionary.org/wiki/tant
 
@@ -13114,6 +13156,7 @@ TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à
 TEST: ils vont {{de tan en tan}} au restaurant                                                      ->> de temps en temps
 TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.                                   ->> tant
 TEST: il travaille à {{tant}} partiel                                                               ->> temps
+TEST: un signe des {{tans}}                                                                         ->> temps
 TEST: il faut un {{tant}} d’adaptation                                                              ->> temps
 TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.                          ->> en même temps
 TEST: en {{tan}} que telle, cette méthode n’est pas parfaite, mais avec de l’intuition              ->> tant
@@ -17416,7 +17459,7 @@ __substantifs_multi_mots__
     >carabine à plomb
     >carburant [de|d’] synthèse
     >carte à jouer
-    >carte [de|d’] [crédit|identité|presse]
+    >carte [de|d’] [crédit|identité|presse|visite]
     >carton d’ emballage
     cas [de|d’] figure
     cas [de|d’] force majeure
@@ -17648,7 +17691,7 @@ __substantifs_multi_mots__
     frais [de|d’] gestion ?[immobilière|locative]¿
     frais [de|d’] maintenance ?informatique¿
     >frayeur [de|d’] tous les diables
-    >frein à >tambour
+    >frein à [>tambour|main]
     >frousse [de|d’] tous les diables
     >fuite en avant
     >fusée [de|d’] détresse
@@ -17979,7 +18022,7 @@ __substantifs_multi_mots__
     >sortie [de|d’] secours
     >soue à >cochon
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
-    >sourire [de|d’] connivence
+    >sourire [de|d’] [complaisance|connivence|contentement|convenance]
     >souvenir d’ enfance
     >star du x
     >station [de|d’] radio
@@ -20787,6 +20830,15 @@ TEST: Une histoire {{dénudée}} d’intérêt.
 TEST: Des hommes {{dénudés}} de compassion.
 
 
+# dessein / dessin
+__conf_dessein_dessin__
+    à dessin
+        <<- morph(<1, ":V") -2>> dessein                    && Confusion probable. Faire quelque chose “à dessein”, c’est-à-dire avec un but.|https://fr.wiktionary.org/wiki/%C3%A0_dessein
+
+TEST: agir à {{dessin}}                                     ->> dessein
+TEST: venir à dessein ici
+
+
 # desceller / déceler / desseller
 __conf_erreur_déceler_desseller_desceller__
     [>erreur|>faute|>incohérence|>problème|>bug|>bogue|>faille|>maladie|>défaut|>défaillance|>perturbation|>irrégularité] <> [>desseller|>desceller]
@@ -21713,6 +21765,21 @@ TEST: Elle est très {{pale}} !
 TEST: Sous une lumière {{pale}},
 TEST: Se faire porter {{pale}}.
 TEST: elle a {{pale}} figure
+
+
+# par / pare / part
+__conf_par_part_pare__
+    !! >faire >chambre à part ¡¡
+    >faire >chambre [à|a] [par|part+s|pare+s|parent]
+        <<- /conf/ --2:0>> à part                               && Confusion. Locution “faire chambre à part”.|https://fr.wiktionary.org/wiki/faire_chambre_%C3%A0_part
+
+    >faire [par|parts|pare+s] [de|d’|du|des|<end>|,]
+        <<- /conf/ -2>> part                                    && Confusion. Locution “faire part”.|https://fr.wiktionary.org/wiki/faire_part
+
+TEST: ils ne font jamais chambre {{a parts}}            ->> à part
+TEST: nous faire {{pare}} de vos soucis                 ->> part
+TEST: ne faisons pas encore chambre à part
+TEST: nous leur en ferons part
 
 
 # pas / par
@@ -24642,7 +24709,7 @@ __gn_cage_d_escalier__
         <<- /gn/ -3>> escalier                                          && Usuellement, pas de “s” à escalier.
 
 __gn_carnet_de__
-    >carnet de [chèque|note|timbre|ticket|vacance]
+    >carnet [de|d’] [chèque|note|timbre|ticket|vacance]
         <<- /gn/ -3>> \3s                                               && Il manque un “s”. Il y en a plusieurs dans un carnet.
 
 __gn_collection_de__
@@ -24650,11 +24717,11 @@ __gn_collection_de__
         <<- /gn/ -3>> =suggPlur(\3)                                     && Il manque un “s”. Il y en a plusieurs dans une collection.
 
 __gn_concours_de_circonstances__
-    concours de circonstance
+    concours [de|d’] circonstance
         <<- /gn/ -3>> circonstances                                     && Un concours de circonstances signifie qu’il y a plusieurs circonstances.
 
 __gn_confluence_de__
-    >confluence de [rivière|fleuve|ruisseau]
+    >confluence [de|d’] [rivière|fleuve|ruisseau]
         <<- /gn/ -3>> =suggPlur(\3)                                     && Confluence de plusieurs cours d’eau : mettez au pluriel.
 
 __gn_d_armes__
@@ -24662,15 +24729,23 @@ __gn_d_armes__
         <<- /gn/ -3>> armes                                             && Les compagnons d’armes.|https://fr.wiktionary.org/wiki/compagnon_d%E2%80%99armes
 
 __gn_débit_de_boissons__
-    >débit de boisson
+    >débit [de|d’] boisson
         <<- /gn/ -3>> boissons                                          && Dans la locution “débit de boissons”, “boissons” est au pluriel.
 
 __gn_distributeur_de_billets__
     >distributeur [de|d’] billet
         <<- /gn/ --1>> billets                                          && Mettre au pluriel. Un distributeur en distribue généralement plusieurs.
 
+__gn_erreur_d_orthographe__
+    [>faute|>erreur] d’ orthographes
+        <<- /gn/ --1>> orthographe                                      && Mettez au singulier. C’est l’orthographe qui est transgressée.
+
+__gn_pâté_de_maisons__
+    >pâté [de|d’] maison
+        <<- /gn/ --1>> maisons                                          && Mettre au pluriel. Il y a plusieurs maisons dans un pâté.
+
 __gn_points_de_suspension__
-    points de suspensions
+    points [de|d’] suspensions
         <<- /gn/ -3>> suspension                                        && Dans la locution nominale “points de suspension”, le dernier terme est au singulier.
 
 __gn_troupeau_de__
@@ -24684,18 +24759,20 @@ __gn_trousseau_de__
     >trousseau [de|d’] mariages
         <<- /gn/ -3>> mariage                                           && Mettez au singulier.
 
-TEST: d’un air compassé, il sortit son carnet de {{chèque}}.
-TEST: Elle est passée par la cage d’{{escaliers}}
-TEST: Rends-moi ma collection de {{film}} !
-TEST: C’est un malheureux concours de {{circonstance}}.
-TEST: à la confluence de {{rivière}}
-TEST: mes frères d’{{arme}}
-TEST: ils ont ouvert un débit de {{boisson}} à Paris.
+TEST: d’un air compassé, il sortit son carnet de {{chèque}}.            ->> chèques
+TEST: Elle est passée par la cage d’{{escaliers}}                       ->> escalier
+TEST: Rends-moi ma collection de {{film}} !                             ->> films
+TEST: C’est un malheureux concours de {{circonstance}}.                 ->> circonstances
+TEST: à la confluence de {{rivière}}                                    ->> rivières
+TEST: mes frères d’{{arme}}                                             ->> armes
+TEST: ils ont ouvert un débit de {{boisson}} à Paris.                   ->> boissons
 TEST: distributeur de {{billet}}                                        ->> billets
-TEST: C’est un putain de troupeau de {{mouton}} !
-TEST: Arrête de mettre des points de {{suspensions}} partout.
-TEST: où est mon trousseau de {{clé}} ?
-TEST: un trousseau de {{mariages}}
+TEST: beaucoup d’erreurs d’{{orthographes}}                             ->> orthographe
+TEST: pâté de {{maison}}                                                ->> maisons
+TEST: C’est un putain de troupeau de {{mouton}} !                       ->> moutons
+TEST: Arrête de mettre des points de {{suspensions}} partout.           ->> suspension
+TEST: où est mon trousseau de {{clé}} ?                                 ->> clés
+TEST: un trousseau de {{mariages}}                                      ->> mariage
 
 
 #### Locutions
@@ -27008,6 +27085,16 @@ __énumérations_noms_propres__
 __da_été2__
     >avoir été
         <<- =>> select(\2, ":Q")
+
+
+__purge_pronom_substantifs__
+    [moi|toi|iel]       ,   pauvre [mortel|mortelle|homme|femme|enfant|garçon|fille|fillette]  ,
+    lui                 ,   pauvre [mortel|homme|enfant|garçon]  ,
+    elle                ,   pauvre [mortelle|femme|enfant|fille|fillette]  ,
+    [nous|vous|iels]    ,   pauvres [mortels|mortelles|hommes|femmes|enfant|garçons|filles|fillettes]  ,
+    eux                 ,   pauvres [mortels|hommes|enfants|garçons]  ,
+    elles               ,   pauvres [mortelles|femmes|enfants|filles|fillettes]  ,
+        <<- ~2:0>> *
 
 
 __purge_subst_plur_comme_nom_sing__
@@ -29354,6 +29441,7 @@ TEST: ma chatte que tu as {{dressé}}                                           
 TEST: l’Université que nos amis ont {{choisi}}                                  ->> choisie
 TEST: notre tour que ces sots ont {{ruinées}}                                   ->> ruinée
 TEST: votre ami que notre mère a {{appelés}}                                    ->> appelé
+TEST: la promesse qu’elle lui avait {{arraché}}                                 ->> arrachée
 TEST: le flacon qu’ils ont réussi à acquérir
 TEST: la danse qu’ils ont réussi à faire
 TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
