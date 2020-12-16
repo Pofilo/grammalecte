@@ -6,7 +6,8 @@ sUI = "fr"
 
 def selectLang (sLang):
     global sUI
-    sUI = sLang  if sLang in dStrings  else "fr"
+    if sLang in dStrings:
+        sUI = sLang
 
 
 def get (sMsgCode):
@@ -56,7 +57,14 @@ dStrings = {
 
         "modify_name_error": "Une autre règle porte déjà ce nom. Veuillez modifier le nom de la règle.",
         "modify_name_error_title": "Nouveau nom déjà utilisé par une autre règle",
+
+        "import_question": "Voulez-vous que les règles importées écrasent celles existantes si elles possèdent un nom identique ?",
+        "import_title": "Importation d’un fichier de règles de transformation",
+
+        "error": "Erreur",
+        "file_not_found": "Fichier introuvable : ",
     },
+
     "en": {
         "title": "Grammalecte · Editor for custom transformations",
 
@@ -96,6 +104,12 @@ dStrings = {
 
         "modify_name_error": "This rule name is already used by another rule. Please, modify the rule name.",
         "modify_name_error_title": "New rule name already used by another rule",
+
+        "import_question": "Do you want that imported rules replace existing ones if they have the same name?",
+        "import_title": "Importation of a transformation rules file",
+
+        "error": "Error",
+        "file_not_found": "File not found: ",
     }
 }
 

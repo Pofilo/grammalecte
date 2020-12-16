@@ -6,6 +6,7 @@ import unohelper
 import uno
 import traceback
 import platform
+import os
 import json
 import re
 
@@ -16,10 +17,10 @@ import grammalecte.graphspell as sc
 from com.sun.star.awt import XActionListener
 from com.sun.star.awt.grid import XGridSelectionListener
 
-from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK, BUTTONS_YES_NO_CANCEL
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
 # DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
-from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX, QUERYBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
 
 
 def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
@@ -132,11 +133,11 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self._addWidget('newreplacelbl', 'FixedText', nX+65, nY1+10, 130, nHeight, Label = ui.get("replace"))
         self._addWidget('newbylbl', 'FixedText', nX+200, nY1+10, 100, nHeight, Label = ui.get("by"))
 
-        self.xNewname = self._addWidget('newname', 'Edit', nX, nY1+19, 60, 10, FontDescriptor = xFDMono)
-        self.xNewreplace = self._addWidget('newreplace', 'Edit', nX+65, nY1+19, 130, 10, FontDescriptor = xFDMono)
-        self.xNewby = self._addWidget('newby', 'Edit', nX+200, nY1+19, 100, 10, FontDescriptor = xFDMono)
-        self.xNewregex = self._addWidget('newregex', 'CheckBox', nX+305, nY1+21, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"))
-        self.xNewcasesens = self._addWidget('newcasesens', 'CheckBox', nX+340, nY1+21, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), State=True)
+        self.xNewname = self._addWidget('newname', 'Edit', nX, nY1+20, 60, 10, FontDescriptor = xFDMono)
+        self.xNewreplace = self._addWidget('newreplace', 'Edit', nX+65, nY1+20, 130, 10, FontDescriptor = xFDMono)
+        self.xNewby = self._addWidget('newby', 'Edit', nX+200, nY1+20, 100, 10, FontDescriptor = xFDMono)
+        self.xNewregex = self._addWidget('newregex', 'CheckBox', nX+305, nY1+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"))
+        self.xNewcasesens = self._addWidget('newcasesens', 'CheckBox', nX+340, nY1+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), State=True)
 
         self._addWidget('add', 'Button', self.xDialog.Width-50, nY1+31, 40, 11, Label = ui.get('add'))
 
@@ -156,11 +157,11 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self._addWidget('editreplacelbl', 'FixedText', nX+65, nY2+10, 130, nHeight, Label = ui.get("replace"))
         self._addWidget('editbylbl', 'FixedText', nX+200, nY2+10, 100, nHeight, Label = ui.get("by"))
 
-        self.xEditname = self._addWidget('editname', 'Edit', nX, nY2+19, 60, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditreplace = self._addWidget('editreplace', 'Edit', nX+65, nY2+19, 130, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditby = self._addWidget('editby', 'Edit', nX+200, nY2+19, 100, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditregex = self._addWidget('editregex', 'CheckBox', nX+305, nY2+21, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"), Enabled = False)
-        self.xEditcasesens = self._addWidget('editcasesens', 'CheckBox', nX+340, nY2+21, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), Enabled = False)
+        self.xEditname = self._addWidget('editname', 'Edit', nX, nY2+20, 60, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditreplace = self._addWidget('editreplace', 'Edit', nX+65, nY2+20, 130, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditby = self._addWidget('editby', 'Edit', nX+200, nY2+20, 100, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditregex = self._addWidget('editregex', 'CheckBox', nX+305, nY2+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"), Enabled = False)
+        self.xEditcasesens = self._addWidget('editcasesens', 'CheckBox', nX+340, nY2+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), Enabled = False)
 
         self.xDeleteButton = self._addWidget('delete', 'Button', nX, nY2+31, 40, 11, Label = ui.get('delete'), TextColor = 0xAA0000, Enabled = False)
         self.xApplyButton = self._addWidget('apply', 'Button', nX + (self.xDialog.Width/2)-20, nY2+31, 40, 11, Label = ui.get('apply'), HelpText="apply_help", TextColor = 0x0000AA, Enabled = False)
@@ -176,6 +177,10 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         # data
         self.dRules = {}
         self.iSelectedRow = -1
+
+
+        # load configuration
+        self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", True)
         self.loadRules()
 
         # container
@@ -299,7 +304,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         return (sRuleName, self.dRules[sRuleName]["sReplace"], self.dRules[sRuleName]["sBy"], str(self.dRules[sRuleName]["bRegex"]), str(self.dRules[sRuleName]["bCaseSens"]))
 
     def _checkRuleName (self, sRuleName):
-        return re.match(r"\w[\w_#.,;!?-]*", sRuleName)
+        return re.search(r"^\w[\w_#.,;!?-]*$", sRuleName)
 
     def modifyRule (self):
         if not self._checkRuleName(self.xEditname.Text):
@@ -344,14 +349,76 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         pass
 
     def loadRules (self):
-        pass
+        try:
+            xChild = self.xGLOptionNode.getByName("o_${lang}")
+            sTFEditorOptions = xChild.getPropertyValue("tfe_rules")
+            if not sTFEditorOptions:
+                return
+            self.dRules = json.loads(sTFEditorOptions)
+            xGridDataModel = self.xGridModel.GridDataModel
+            for sRuleName in self.dRules:
+                xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+        except:
+            sMessage = traceback.format_exc()
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
 
     @_waitPointer
     def saveRules (self):
-        pass
+        try:
+            xChild = self.xGLOptionNode.getByName("o_${lang}")
+            xChild.setPropertyValue("tfe_rules", json.dumps(self.dRules))
+            self.xGLOptionNode.commitChanges()
+        except:
+            sMessage = traceback.format_exc()
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
 
+    @_waitPointer
     def importRules (self):
-        pass
+        spfImported = ""
+        try:
+            xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
+            xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE")]) # seems useless
+            xFilePicker.appendFilter("Supported files", "*.json")
+            xFilePicker.setDefaultName("grammalecte_tf_trans_rules.json") # useless, doesn’t work
+            xFilePicker.setDisplayDirectory("")
+            xFilePicker.setMultiSelectionMode(False)
+            nResult = xFilePicker.execute()
+            if nResult == 1:
+                # lFile = xFilePicker.getSelectedFiles()
+                lFile = xFilePicker.getFiles()
+                #print(lFile)
+                spfImported = lFile[0][5:].lstrip("/") # remove file://
+                if platform.system() != "Windows":
+                    spfImported = "/" + spfImported
+        except:
+            sMessage = traceback.format_exc()
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
+            return
+        if not spfImported or not os.path.isfile(spfImported):
+            sMessage = ui.get('file_not_found') + "<" + spfImported + ">"
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
+            return
+        try:
+            with open(spfImported, "r", encoding="utf-8") as hFile:
+                dImportedRules = json.load(hFile)
+        except:
+            sMessage = traceback.format_exc()
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
+        else:
+            nButton = MessageBox(self.xDocument, ui.get('import_question'), ui.get('import_title'), QUERYBOX, BUTTONS_YES_NO_CANCEL)
+            if nButton == 0: # cancel
+                return
+            xGridDataModel = self.xGridModel.GridDataModel
+            if nButton == 2: # yes
+                self.dRules.update(dImportedRules)
+                self.xGridModel.GridDataModel.removeAllRows()
+                for sRuleName in self.dRules:
+                    xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+            else: # 3 = no
+                for sRuleName, dValues in dImportedRules.items():
+                    if not sRuleName in self.dRules:
+                        self.dRules[sRuleName] = dValues
+                        xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
 
     def exportRules (self):
         if not self.dRules:
@@ -376,4 +443,4 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
                     hDst.write(sText)
         except:
             sMessage = traceback.format_exc()
-            MessageBox(self.xDocument, sMessage, self.ui.get('export_title'), ERRORBOX)
+            MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
