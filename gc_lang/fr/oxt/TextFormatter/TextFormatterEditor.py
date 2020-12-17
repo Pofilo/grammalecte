@@ -130,21 +130,21 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self._addWidget("new_entry", 'FixedLine', nX, nY1, nWidth, nHeight, Label = ui.get("new_entry"), FontDescriptor = xFDTitle)
 
         self._addWidget('newnamelbl', 'FixedText', nX, nY1+10, 60, nHeight, Label = ui.get("name"))
-        self._addWidget('newreplacelbl', 'FixedText', nX+65, nY1+10, 130, nHeight, Label = ui.get("replace"))
-        self._addWidget('newbylbl', 'FixedText', nX+200, nY1+10, 100, nHeight, Label = ui.get("by"))
+        self._addWidget('newreplacelbl', 'FixedText', nX+65, nY1+10, 130, nHeight, Label = ui.get("pattern"))
+        self._addWidget('newbylbl', 'FixedText', nX+200, nY1+10, 100, nHeight, Label = ui.get("repl"))
 
-        self.xNewname = self._addWidget('newname', 'Edit', nX, nY1+20, 60, 10, FontDescriptor = xFDMono)
-        self.xNewreplace = self._addWidget('newreplace', 'Edit', nX+65, nY1+20, 130, 10, FontDescriptor = xFDMono)
-        self.xNewby = self._addWidget('newby', 'Edit', nX+200, nY1+20, 100, 10, FontDescriptor = xFDMono)
-        self.xNewregex = self._addWidget('newregex', 'CheckBox', nX+305, nY1+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"))
-        self.xNewcasesens = self._addWidget('newcasesens', 'CheckBox', nX+340, nY1+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), State=True)
+        self.xNewName = self._addWidget('newname', 'Edit', nX, nY1+20, 60, 10, FontDescriptor = xFDMono)
+        self.xNewPattern = self._addWidget('newreplace', 'Edit', nX+65, nY1+20, 130, 10, FontDescriptor = xFDMono)
+        self.xNewRepl = self._addWidget('newby', 'Edit', nX+200, nY1+20, 100, 10, FontDescriptor = xFDMono)
+        self.xNewRegex = self._addWidget('newregex', 'CheckBox', nX+305, nY1+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"))
+        self.xNewCaseSens = self._addWidget('newcasesens', 'CheckBox', nX+340, nY1+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), State=True)
 
         self._addWidget('add', 'Button', self.xDialog.Width-50, nY1+31, 40, 11, Label = ui.get('add'))
 
         lColumns = [
             {"Title": ui.get("name"),     "ColumnWidth": 80},
-            {"Title": ui.get("replace"),  "ColumnWidth": 140},
-            {"Title": ui.get("by"),       "ColumnWidth": 140},
+            {"Title": ui.get("pattern"),  "ColumnWidth": 140},
+            {"Title": ui.get("repl"),     "ColumnWidth": 140},
             {"Title": ui.get("regex"),    "ColumnWidth": 60},
             {"Title": ui.get("casesens"), "ColumnWidth": 60},
         ]
@@ -152,32 +152,31 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
 
         # Modify
         self._addWidget("edit_entry", 'FixedLine', nX, nY2, nWidth, nHeight, Label = ui.get("edit_entry"), FontDescriptor = xFDTitle)
-
         self._addWidget('editnamelbl', 'FixedText', nX, nY2+10, 60, nHeight, Label = ui.get("name"))
-        self._addWidget('editreplacelbl', 'FixedText', nX+65, nY2+10, 130, nHeight, Label = ui.get("replace"))
-        self._addWidget('editbylbl', 'FixedText', nX+200, nY2+10, 100, nHeight, Label = ui.get("by"))
+        self._addWidget('editreplacelbl', 'FixedText', nX+65, nY2+10, 130, nHeight, Label = ui.get("pattern"))
+        self._addWidget('editbylbl', 'FixedText', nX+200, nY2+10, 100, nHeight, Label = ui.get("repl"))
 
-        self.xEditname = self._addWidget('editname', 'Edit', nX, nY2+20, 60, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditreplace = self._addWidget('editreplace', 'Edit', nX+65, nY2+20, 130, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditby = self._addWidget('editby', 'Edit', nX+200, nY2+20, 100, 10, FontDescriptor = xFDMono, Enabled = False)
-        self.xEditregex = self._addWidget('editregex', 'CheckBox', nX+305, nY2+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"), Enabled = False)
-        self.xEditcasesens = self._addWidget('editcasesens', 'CheckBox', nX+340, nY2+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), Enabled = False)
+        self.xEditName = self._addWidget('editname', 'Edit', nX, nY2+20, 60, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditPattern = self._addWidget('editreplace', 'Edit', nX+65, nY2+20, 130, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditRepl = self._addWidget('editby', 'Edit', nX+200, nY2+20, 100, 10, FontDescriptor = xFDMono, Enabled = False)
+        self.xEditRegex = self._addWidget('editregex', 'CheckBox', nX+305, nY2+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"), Enabled = False)
+        self.xEditCaseSens = self._addWidget('editcasesens', 'CheckBox', nX+340, nY2+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), Enabled = False)
 
         self.xDeleteButton = self._addWidget('delete', 'Button', nX, nY2+31, 40, 11, Label = ui.get('delete'), TextColor = 0xAA0000, Enabled = False)
         self.xApplyButton = self._addWidget('apply', 'Button', nX + (self.xDialog.Width/2)-20, nY2+31, 40, 11, Label = ui.get('apply'), HelpText="apply_help", TextColor = 0x0000AA, Enabled = False)
+        self.xApplyRes = self._addWidget('apply_res', 'FixedText', nX + (self.xDialog.Width/2)+30, nY2+33, 60, 10, Label = "", Align = 2, Enabled = False)
         self.xModifyButton = self._addWidget('modify', 'Button', self.xDialog.Width-50, nY2+31, 40, 11, Label = ui.get('modify'), TextColor = 0x00AA00, Enabled = False)
 
         # import, export, save, close
-        self._addWidget("buttons_line", 'FixedLine', nX, self.xDialog.Height-35, nWidth, nHeight)
-        self._addWidget('import', 'Button', nX, self.xDialog.Height-25, 50, 14, Label = ui.get('import'), FontDescriptor = xFDTitle, TextColor = 0x0000AA)
-        self._addWidget('export', 'Button', nX+60, self.xDialog.Height-25, 50, 14, Label = ui.get('export'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
-        self._addWidget('save', 'Button', self.xDialog.Width-120, self.xDialog.Height-25, 50, 14, Label = ui.get('save'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
-        self._addWidget('close', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = ui.get('close'), FontDescriptor = xFDTitle, TextColor = 0xAA0000)
+        self._addWidget("buttons_line", 'FixedLine', nX, self.xDialog.Height-30, nWidth, nHeight)
+        self._addWidget('import', 'Button', nX, self.xDialog.Height-20, 50, 14, Label = ui.get('import'), FontDescriptor = xFDTitle, TextColor = 0x0000AA)
+        self._addWidget('export', 'Button', nX+55, self.xDialog.Height-20, 50, 14, Label = ui.get('export'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
+        self._addWidget('delete_all', 'Button', nX + (self.xDialog.Width/2)-35, self.xDialog.Height-20, 70, 14, Label = ui.get('delete_all'), FontDescriptor = xFDTitle, TextColor = 0xAA0000)
+        self._addWidget('save_and_close', 'Button', self.xDialog.Width-110, self.xDialog.Height-20, 100, 14, Label = ui.get('save_and_close'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
 
         # data
         self.dRules = {}
         self.iSelectedRow = -1
-
 
         # load configuration
         self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", True)
@@ -192,16 +191,18 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self.xContainer.getControl('add').setActionCommand('Add')
         self.xContainer.getControl('delete').addActionListener(self)
         self.xContainer.getControl('delete').setActionCommand('Delete')
+        self.xContainer.getControl('apply').addActionListener(self)
+        self.xContainer.getControl('apply').setActionCommand('Apply')
         self.xContainer.getControl('modify').addActionListener(self)
         self.xContainer.getControl('modify').setActionCommand('Modify')
         self.xContainer.getControl('import').addActionListener(self)
         self.xContainer.getControl('import').setActionCommand('Import')
         self.xContainer.getControl('export').addActionListener(self)
         self.xContainer.getControl('export').setActionCommand('Export')
-        self.xContainer.getControl('save').addActionListener(self)
-        self.xContainer.getControl('save').setActionCommand('Save')
-        self.xContainer.getControl('close').addActionListener(self)
-        self.xContainer.getControl('close').setActionCommand('Close')
+        self.xContainer.getControl('delete_all').addActionListener(self)
+        self.xContainer.getControl('delete_all').setActionCommand('DeleteAll')
+        self.xContainer.getControl('save_and_close').addActionListener(self)
+        self.xContainer.getControl('save_and_close').setActionCommand('SaveAndClose')
         self.xContainer.setVisible(False)    # True for non modal dialog
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
@@ -217,14 +218,15 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             elif xActionEvent.ActionCommand == "Modify":
                 self.modifyRule()
             elif xActionEvent.ActionCommand == "Apply":
-                self.apply()
-            elif xActionEvent.ActionCommand == "Save":
-                self.saveRules()
+                self.applyRule()
             elif xActionEvent.ActionCommand == "Import":
                 self.importRules()
             elif xActionEvent.ActionCommand == "Export":
                 self.exportRules()
-            elif xActionEvent.ActionCommand == "Close":
+            elif xActionEvent.ActionCommand == "DeleteAll":
+                self.deleteAll()
+            elif xActionEvent.ActionCommand == "SaveAndClose":
+                self.saveRules()
                 self.xContainer.endExecute()       # Modal dialog
         except:
             traceback.print_exc()
@@ -235,83 +237,87 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             aRows = self.xGridControl.getSelectedRows()
             if aRows and len(aRows) == 1:
                 self.iSelectedRow = aRows[0]
-                self.sSelectedRuleName, sReplace, sBy, sRegex, sCaseSens = self.xGridModel.GridDataModel.getRowData(self.iSelectedRow)
+                self.sSelectedRuleName, sPattern, sRepl, sRegex, sCaseSens = self.xGridModel.GridDataModel.getRowData(self.iSelectedRow)
                 # fill fields
-                self.xEditname.Text = self.sSelectedRuleName
-                self.xEditreplace.Text = sReplace
-                self.xEditby.Text = sBy
-                self.xEditregex.State = sRegex == "True"
-                self.xEditcasesens.State = sCaseSens == "True"
+                self.xEditName.Text = self.sSelectedRuleName
+                self.xEditPattern.Text = sPattern
+                self.xEditRepl.Text = sRepl
+                self.xEditRegex.State = sRegex == "True"
+                self.xEditCaseSens.State = sCaseSens == "True"
                 # enable widgets
-                self.xEditname.Enabled = True
-                self.xEditreplace.Enabled = True
-                self.xEditby.Enabled = True
-                self.xEditregex.Enabled = True
-                self.xEditcasesens.Enabled = True
+                self.xEditName.Enabled = True
+                self.xEditPattern.Enabled = True
+                self.xEditRepl.Enabled = True
+                self.xEditRegex.Enabled = True
+                self.xEditCaseSens.Enabled = True
                 self.xDeleteButton.Enabled = True
                 self.xApplyButton.Enabled = True
                 self.xModifyButton.Enabled = True
+                self.xApplyRes.Enabled = True
+                self.xApplyRes.Label = ""
         except:
             self._clearEditFields()
             traceback.print_exc()
 
     # Code
     def _clearAddFields (self):
-        self.xNewname.Text = ""
-        self.xNewreplace.Text = ""
-        self.xNewby.Text = ""
-        self.xNewregex.State = False
-        self.xNewcasesens.State = True
+        self.xNewName.Text = ""
+        self.xNewPattern.Text = ""
+        self.xNewRepl.Text = ""
+        self.xNewRegex.State = False
+        self.xNewCaseSens.State = True
 
     def _clearEditFields (self):
-        self.xEditname.Text = ""
-        self.xEditreplace.Text = ""
-        self.xEditby.Text = ""
-        self.xEditregex.State = False
-        self.xEditcasesens.State = True
+        self.xEditName.Text = ""
+        self.xEditPattern.Text = ""
+        self.xEditRepl.Text = ""
+        self.xEditRegex.State = False
+        self.xEditCaseSens.State = True
         # disable widgets
-        self.xEditname.Enabled = False
-        self.xEditreplace.Enabled = False
-        self.xEditby.Enabled = False
-        self.xEditregex.Enabled = False
-        self.xEditcasesens.Enabled = False
+        self.xEditName.Enabled = False
+        self.xEditPattern.Enabled = False
+        self.xEditRepl.Enabled = False
+        self.xEditRegex.Enabled = False
+        self.xEditCaseSens.Enabled = False
         self.xDeleteButton.Enabled = False
         self.xApplyButton.Enabled = False
         self.xModifyButton.Enabled = False
+        self.xApplyRes.Enabled = False
+        self.xApplyRes.Label = ""
 
     def addRule (self):
-        if not self._checkRuleName(self.xNewname.Text):
+        if not self._checkRuleName(self.xNewName.Text):
             MessageBox(self.xDocument, ui.get("name_error"), ui.get("name_error_title"), ERRORBOX)
             return
-        if not self.xNewname.Text or not self.xNewreplace.Text:
+        if not self.xNewName.Text or not self.xNewPattern.Text:
             MessageBox(self.xDocument, ui.get("name_and_replace_error"), ui.get("name_and_replace_error_title"), ERRORBOX)
             return
-        sRuleName = self.xNewname.Text
+        sRuleName = self.xNewName.Text
         if sRuleName in self.dRules:
             MessageBox(self.xDocument, ui.get('add_name_error'), ui.get("add_name_error_title"), ERRORBOX)
             return
         self.dRules[sRuleName] = {
-            "sReplace": self.xNewreplace.Text,
-            "sBy": self.xNewby.Text,
-            "bRegex": self.xNewregex.State == 1,
-            "bCaseSens": self.xNewcasesens.State == 1
+            "sPattern": self.xNewPattern.Text,
+            "sRepl": self.xNewRepl.Text,
+            "bRegex": self.xNewRegex.State == 1,
+            "bCaseSens": self.xNewCaseSens.State == 1
         }
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
         self._clearAddFields()
 
     def _getValuesForRow (self, sRuleName):
-        return (sRuleName, self.dRules[sRuleName]["sReplace"], self.dRules[sRuleName]["sBy"], str(self.dRules[sRuleName]["bRegex"]), str(self.dRules[sRuleName]["bCaseSens"]))
+        return (sRuleName, self.dRules[sRuleName]["sPattern"], self.dRules[sRuleName]["sRepl"], str(self.dRules[sRuleName]["bRegex"]), str(self.dRules[sRuleName]["bCaseSens"]))
 
     def _checkRuleName (self, sRuleName):
         return re.search(r"^\w[\w_#.,;!?-]*$", sRuleName)
 
     def modifyRule (self):
-        if not self._checkRuleName(self.xEditname.Text):
+        if not self._checkRuleName(self.xEditName.Text):
             MessageBox(self.xDocument, ui.get("name_error"), ui.get("name_error_title"), ERRORBOX)
             return
-        sRuleName = self.xEditname.Text
-        if self.iSelectedRow < 0 or not sRuleName or not self.xEditreplace.Text:
+        sRuleName = self.xEditName.Text
+        if self.iSelectedRow < 0 or not sRuleName or not self.xEditPattern.Text:
             MessageBox(self.xDocument, ui.get("name_and_replace_error"), ui.get("name_and_replace_error_title"), ERRORBOX)
             return
         if sRuleName != self.sSelectedRuleName and sRuleName in self.dRules:
@@ -319,10 +325,10 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             return
         try:
             self.dRules[sRuleName] = {
-                "sReplace": self.xEditreplace.Text,
-                "sBy": self.xEditby.Text,
-                "bRegex": self.xEditregex.State == 1,
-                "bCaseSens": self.xEditcasesens.State == 1
+                "sPattern": self.xEditPattern.Text,
+                "sRepl": self.xEditRepl.Text,
+                "bRegex": self.xEditRegex.State == 1,
+                "bCaseSens": self.xEditCaseSens.State == 1
             }
             aColumns = (0, 1, 2, 3, 4)
             self.xGridModel.GridDataModel.updateRowData(aColumns, self.iSelectedRow, self._getValuesForRow(sRuleName))
@@ -330,7 +336,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             traceback.print_exc()
 
     def deleteRule (self):
-        if self.sSelectedRuleName != self.xEditname.Text:
+        if self.sSelectedRuleName != self.xEditName.Text:
             MessageBox(self.xDocument, ui.get('delete_name_error'), ui.get("delete_name_error_title"), ERRORBOX)
             return
         sRuleName = self.sSelectedRuleName
@@ -344,9 +350,24 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         except:
             traceback.print_exc()
 
+    def deleteAll (self):
+        self.dRules.clear()
+        self.xGridModel.GridDataModel.removeAllRows()
+
     @_waitPointer
-    def apply (self):
-        pass
+    def applyRule (self):
+        if self.xEditPattern.Text == "":
+            return
+        try:
+            xRD = self.xDocument.createReplaceDescriptor()
+            xRD.SearchString = self.xEditPattern.Text
+            xRD.ReplaceString = self.xEditRepl.Text
+            xRD.SearchRegularExpression = self.xEditRegex.State
+            xRD.SearchCaseSensitive = self.xEditCaseSens.State
+            n = self.xDocument.replaceAll(xRD)
+            self.xApplyRes.Label = str(n) + " " + ui.get("modif")
+        except:
+            traceback.print_exc()
 
     def loadRules (self):
         try:

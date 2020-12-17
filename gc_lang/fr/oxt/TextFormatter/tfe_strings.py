@@ -22,26 +22,27 @@ dStrings = {
         "title": "Grammalecte · Éditeur des transformations personnalisées",
 
         "name": "Nom de la règle",
-        "replace": "Remplacer",
-        "by": "par",
+        "pattern": "Motif de remplacement",
+        "repl": "par",
         "regex": "Regex",
         "regex_help": "Une expression régulière est une forme de syntaxe décrivant un motif de recherche de caractères",
         "casesens": "Casse rigide",
         "casesens_help": "La casse des caractères sera respectée telle quelle.",
 
         "new_entry": "Nouvelle entrée",
-        "edit_entry": "Édition de l’entrée sélectionnée",
+        "edit_entry": "Entrée sélectionnée",
 
         "add": "Ajouter",
         "delete": "Supprimer",
         "modify": "Modifier",
         "apply": "Appliquer",
         "apply_help": "Appliquer cette règle sur le texte",
+        "modif": "modifications",
 
-        "save": "Enregistrer",
         "import": "Importer",
         "export": "Exporter",
-        "close": "Fermer",
+        "delete_all": "Tout supprimer",
+        "save_and_close": "Enregistrer et fermer",
 
         "name_error": "Pour le nom des règles, utilisez uniquement les lettres, les nombres et les caractères parmi ‹_-#.,;!?›.",
         "name_error_title": "Le nom de la règle n’est pas conforme.",
@@ -64,31 +65,31 @@ dStrings = {
         "error": "Erreur",
         "file_not_found": "Fichier introuvable : ",
     },
-
     "en": {
         "title": "Grammalecte · Editor for custom transformations",
 
         "name": "Rule name",
-        "replace": "Replace",
-        "by": "by",
+        "pattern": "Replacement pattern",
+        "repl": "by",
         "regex": "Regex",
         "regex_help": "A regular expression is a kind of syntax describing a search pattern of characters",
         "casesens": "Case sensitivity",
         "casesens_help": "Characters case will be treated as written.",
 
         "new_entry": "New entry",
-        "edit_entry": "Edition for selected entry",
+        "edit_entry": "Selected entry",
 
         "add": "Add",
         "delete": "Delete",
         "modify": "Modify",
         "apply": "Apply",
         "apply_help": "Apply this rule on the text",
+        "modif": "modifications",
 
-        "save": "Save",
         "import": "Import",
         "export": "Export",
-        "close": "Close",
+        "delete_all": "Delete all",
+        "save_and_close": "Save and close",
 
         "name_error": "For rules names, only use letters, numbers et characters among ‹_-#.,;!?›",
         "name_error_title": "Le nom de la règle n’est pas conforme.",

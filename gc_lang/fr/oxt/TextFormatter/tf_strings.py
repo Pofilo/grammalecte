@@ -1,8 +1,21 @@
+# strings for text formatter
 
-def getUI (sLang):
+
+sUI = "fr"
+
+
+def selectLang (sLang):
+    global sUI
     if sLang in dStrings:
-        return dStrings[sLang]
-    return dStrings["fr"]
+        sUI = sLang
+
+
+def get (sMsgCode):
+    try:
+        return dStrings[sUI].get(sMsgCode, sMsgCode)
+    except:
+        return "#error"
+
 
 dStrings = {
     "fr": {
