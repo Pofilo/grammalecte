@@ -8,7 +8,7 @@ import re
 import traceback
 
 import helpers
-import go_strings
+import go_strings as ui
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
@@ -36,7 +36,7 @@ class GraphicOptions (unohelper.Base, XActionListener, XJobExecutor):
         return xWidget
 
     def run (self, sLang):
-        self.dUI = go_strings.getUI(sLang)
+        ui.selectLang(sLang)
 
         self.xDesktop = self.xSvMgr.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
         self.xDocument = self.xDesktop.getCurrentComponent()
@@ -46,7 +46,7 @@ class GraphicOptions (unohelper.Base, XActionListener, XJobExecutor):
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
         self.xDialog.Height = 220
-        self.xDialog.Title = self.dUI.get('title', "#title#")
+        self.xDialog.Title = ui.get('title')
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -73,26 +73,26 @@ class GraphicOptions (unohelper.Base, XActionListener, XJobExecutor):
         nHeight = 10
 
         # Info
-        self._addWidget("graphic_info", 'FixedText', nX, nY1, nWidth, nHeight*2, Label = self.dUI.get("graphic_info", "#err"), MultiLine = True, FontDescriptor = xFDSubTitle)
-        self._addWidget("spell_info", 'FixedText', nX, nY1+20, nWidth, nHeight*2, Label = self.dUI.get("spell_info", "#err"), MultiLine = True)
+        self._addWidget("graphic_info", 'FixedText', nX, nY1, nWidth, nHeight*2, Label = ui.get("graphic_info"), MultiLine = True, FontDescriptor = xFDSubTitle)
+        self._addWidget("spell_info", 'FixedText', nX, nY1+20, nWidth, nHeight*2, Label = ui.get("spell_info"), MultiLine = True)
 
         # Line type
-        self._addWidget('linetype_section', 'FixedLine', nX, nY2, nWidth, nHeight, Label = self.dUI.get('linetype_section', "#err"), FontDescriptor = xFDTitle)
-        self.xWaveLine = self._addWidget('wave_line', 'RadioButton', nX, nY2+15, nWidth, nHeight, Label = self.dUI.get('wave_line', "#err"))
-        self.xBoldWaveLine = self._addWidget('boldwave_line', 'RadioButton', nX, nY2+25, nWidth, nHeight, Label = self.dUI.get('boldwave_line', "#err"))
-        self.xBoldLine = self._addWidget('bold_line', 'RadioButton', nX, nY2+35, nWidth, nHeight, Label = self.dUI.get('bold_line', "#err"))
+        self._addWidget('linetype_section', 'FixedLine', nX, nY2, nWidth, nHeight, Label = ui.get('linetype_section'), FontDescriptor = xFDTitle)
+        self.xWaveLine = self._addWidget('wave_line', 'RadioButton', nX, nY2+15, nWidth, nHeight, Label = ui.get('wave_line'))
+        self.xBoldWaveLine = self._addWidget('boldwave_line', 'RadioButton', nX, nY2+25, nWidth, nHeight, Label = ui.get('boldwave_line'))
+        self.xBoldLine = self._addWidget('bold_line', 'RadioButton', nX, nY2+35, nWidth, nHeight, Label = ui.get('bold_line'))
 
         # Color
-        self._addWidget("color_section", 'FixedLine', nX, nY3, nWidth, nHeight, Label = self.dUI.get("color_section", "#err"), FontDescriptor = xFDTitle)
-        self.xMulticolor = self._addWidget('multicolor_line', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = self.dUI.get('multicolor_line', "#err"))
-        self._addWidget('multicolor_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*4, Label = self.dUI.get('multicolor_descr', "#err"), MultiLine = True)
+        self._addWidget("color_section", 'FixedLine', nX, nY3, nWidth, nHeight, Label = ui.get("color_section"), FontDescriptor = xFDTitle)
+        self.xMulticolor = self._addWidget('multicolor_line', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = ui.get('multicolor_line'))
+        self._addWidget('multicolor_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*4, Label = ui.get('multicolor_descr'), MultiLine = True)
 
         # Restart message
-        self._addWidget('restart', 'FixedText', nX, nY4, nWidth, nHeight*2, Label = self.dUI.get('restart', "#err"), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
+        self._addWidget('restart', 'FixedText', nX, nY4, nWidth, nHeight*2, Label = ui.get('restart'), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
 
         # Button
-        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = self.dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
-        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = self.dUI.get('cancel_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = ui.get('apply_button'), FontDescriptor = xFDTitle, TextColor = 0x005500)
+        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = ui.get('cancel_button'), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         self._loadOptions()
 

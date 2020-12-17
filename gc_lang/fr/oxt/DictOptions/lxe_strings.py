@@ -1,7 +1,21 @@
-def getUI (sLang):
+# Strings for Lexicon Editor
+
+
+sUI = "fr"
+
+
+def selectLang (sLang):
+    global sUI
     if sLang in dStrings:
-        return dStrings[sLang]
-    return dStrings["fr"]
+        sUI = sLang
+
+
+def get (sMsgCode):
+    try:
+        return dStrings[sUI].get(sMsgCode, sMsgCode)
+    except:
+        return "#error"
+
 
 dStrings = {
     "fr": {

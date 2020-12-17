@@ -7,7 +7,7 @@ import uno
 import traceback
 
 import helpers
-import ti_strings
+import ti_strings as ui
 
 import grammalecte.graphspell.lexgraph_fr as lxg
 
@@ -58,13 +58,13 @@ class TagsInfo (unohelper.Base, XActionListener):
 
     def run (self, sLang):
         # ui lang
-        self.dUI = ti_strings.getUI(sLang)
+        ui.selectLang(sLang)
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 360
         self.xDialog.Height = 305
-        self.xDialog.Title = self.dUI.get('title', "#title#")
+        self.xDialog.Title = ui.get('title')
         #xWindowSize = helpers.getWindowSize()
         #self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         #self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -96,28 +96,28 @@ class TagsInfo (unohelper.Base, XActionListener):
         nHeight = 10
 
         #### Add word
-        self._addWidget("add_section", 'FixedLine', nX1, nY0, 100, nHeight, Label = self.dUI.get("information_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("add_section", 'FixedLine', nX1, nY0, 100, nHeight, Label = ui.get("information_section"), FontDescriptor = xFDTitle)
 
-        self._addWidget('save_label', 'FixedText', nX1, nY1, 100, nHeight, Label = self.dUI.get('save', "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('save_desc_label', 'FixedText', nX1, nY1+10, 100, nHeight*5, Label = self.dUI.get('save_desc', "#err"), MultiLine=True)
+        self._addWidget('save_label', 'FixedText', nX1, nY1, 100, nHeight, Label = ui.get('save'), FontDescriptor = xFDTitle)
+        self._addWidget('save_desc_label', 'FixedText', nX1, nY1+10, 100, nHeight*5, Label = ui.get('save_desc'), MultiLine=True)
 
-        self._addWidget('duplicates_label', 'FixedText', nX1, nY2, 100, nHeight, Label = self.dUI.get('duplicates', "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('duplicates_desc_label', 'FixedText', nX1, nY2+10, 100, nHeight*5, Label = self.dUI.get('duplicates_desc', "#err"), MultiLine=True)
+        self._addWidget('duplicates_label', 'FixedText', nX1, nY2, 100, nHeight, Label = ui.get('duplicates'), FontDescriptor = xFDTitle)
+        self._addWidget('duplicates_desc_label', 'FixedText', nX1, nY2+10, 100, nHeight*5, Label = ui.get('duplicates_desc'), MultiLine=True)
 
-        self._addWidget('compilation_label', 'FixedText', nX1, nY3, 100, nHeight, Label = self.dUI.get('compilation', "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('compilation_desc_label', 'FixedText', nX1, nY3+10, 100, nHeight*7, Label = self.dUI.get('compilation_desc', "#err"), MultiLine=True)
+        self._addWidget('compilation_label', 'FixedText', nX1, nY3, 100, nHeight, Label = ui.get('compilation'), FontDescriptor = xFDTitle)
+        self._addWidget('compilation_desc_label', 'FixedText', nX1, nY3+10, 100, nHeight*7, Label = ui.get('compilation_desc'), MultiLine=True)
 
-        self._addWidget('warning_label', 'FixedText', nX1, nY4, 100, nHeight, Label = self.dUI.get('warning', "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('warning_desc_label', 'FixedText', nX1, nY4+10, 100, nHeight*7, Label = self.dUI.get('warning_desc', "#err"), MultiLine=True)
+        self._addWidget('warning_label', 'FixedText', nX1, nY4, 100, nHeight, Label = ui.get('warning'), FontDescriptor = xFDTitle)
+        self._addWidget('warning_desc_label', 'FixedText', nX1, nY4+10, 100, nHeight*7, Label = ui.get('warning_desc'), MultiLine=True)
 
         #### Tags
-        self._addWidget("tags_section", 'FixedLine', nXB, nY0, 230, nHeight, Label = self.dUI.get("tags_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("tags_section", 'FixedLine', nXB, nY0, 230, nHeight, Label = ui.get("tags_section"), FontDescriptor = xFDTitle)
         self.xGridModel = self._addGrid("list_grid_tags", nXB, nY0+10, 230, 265, [
-            {"Title": self.dUI.get("tags", "#err"), "ColumnWidth": 40},
-            {"Title": self.dUI.get("meaning", "#err"), "ColumnWidth": 190}
+            {"Title": ui.get("tags"), "ColumnWidth": 40},
+            {"Title": ui.get("meaning"), "ColumnWidth": 190}
         ])
 
-        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         self.loadData()
 

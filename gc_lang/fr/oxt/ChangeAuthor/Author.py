@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Modify author field
 # by Olivier R.
 # License: MPL 2
@@ -8,7 +7,7 @@ import uno
 import re
 import traceback
 
-import ca_strings
+import ca_strings as ui
 import helpers
 
 from com.sun.star.awt import XActionListener
@@ -20,7 +19,7 @@ class Author (unohelper.Base, XActionListener):
         self.ctx = ctx
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
-        
+
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
         xWidget.Name = name
@@ -35,13 +34,13 @@ class Author (unohelper.Base, XActionListener):
 
     def run (self, sLang):
         try:
-            dUI = ca_strings.getUI(sLang)
+            ui.selectLang(sLang)
 
             # dialog
             self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
             self.xDialog.Width = 160
             self.xDialog.Height = 85
-            self.xDialog.Title = dUI.get('title', "#err")
+            self.xDialog.Title = ui.get('title')
             xWindowSize = helpers.getWindowSize()
             self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
             self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -55,21 +54,21 @@ class Author (unohelper.Base, XActionListener):
             # document
             xDesktop = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
             self.xDoc = xDesktop.getCurrentComponent()
-            sAuthor = self.xDoc.DocumentProperties.Author  if self.xDoc.DocumentProperties.Author  else  dUI.get('empty', "#err")
+            sAuthor = self.xDoc.DocumentProperties.Author  if self.xDoc.DocumentProperties.Author  else  ui.get('empty')
 
             # widgets
             nTextWidth = self.xDialog.Width - 20
-            state = self._addWidget('state', 'FixedText', 10, 10, nTextWidth, 10, Label = dUI.get('state', "#err"))
+            state = self._addWidget('state', 'FixedText', 10, 10, nTextWidth, 10, Label = ui.get('state'))
             value = self._addWidget('value', 'FixedText', 10, 20, nTextWidth, 10, Label = sAuthor, FontSlant = 2, TextColor = 0x000044)
-            
-            inputlbl = self._addWidget('inputlbl', 'FixedText', 10, 34, nTextWidth, 10, Label = dUI.get('newvalue', "#err"))
+
+            inputlbl = self._addWidget('inputlbl', 'FixedText', 10, 34, nTextWidth, 10, Label = ui.get('newvalue'))
             self.inputtxt = self._addWidget('input', 'Edit', 10, 45, nTextWidth-20, 12, Text=self.xDoc.DocumentProperties.Author, MaxTextLen=150)
-            but0 = self._addWidget('reset', 'Button', self.xDialog.Width-25, 45, 15, 12, Label = u"×", FontDescriptor = xFDBut, TextColor = 0x440000)
+            but0 = self._addWidget('reset', 'Button', self.xDialog.Width-25, 45, 15, 12, Label = "×", FontDescriptor = xFDBut, TextColor = 0x440000)
 
             but1 = self._addWidget('modify', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, \
-                                   Label = dUI.get('modify', "#err"), FontDescriptor = xFDBut, TextColor = 0x004400)
+                                   Label = ui.get('modify'), FontDescriptor = xFDBut, TextColor = 0x004400)
             but2 = self._addWidget('cancel', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, \
-                                   Label = dUI.get('cancel', "#err"), FontDescriptor = xFDBut, TextColor = 0x440000)
+                                   Label = ui.get('cancel'), FontDescriptor = xFDBut, TextColor = 0x440000)
 
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -86,7 +85,7 @@ class Author (unohelper.Base, XActionListener):
             self.xContainer.execute()
         except:
             traceback.print_exc()
-    
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:

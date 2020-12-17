@@ -8,7 +8,7 @@ import traceback
 import re
 
 import helpers
-import sw_strings
+import sw_strings as ui
 import grammalecte.graphspell as sc
 import grammalecte.graphspell.ibdawg as ibdawg
 
@@ -98,14 +98,14 @@ class SearchWords (unohelper.Base, XActionListener):
 
     def run (self, sLang, oPersonalDicJSON):
         # ui lang
-        self.dUI = sw_strings.getUI(sLang)
+        ui.selectLang(sLang)
         self.oPersonalDicJSON = oPersonalDicJSON
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 350
         self.xDialog.Height = 305
-        self.xDialog.Title = self.dUI.get('title', "#title#")
+        self.xDialog.Title = ui.get('title')
         #xWindowSize = helpers.getWindowSize()
         #self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         #self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -132,29 +132,29 @@ class SearchWords (unohelper.Base, XActionListener):
         nHeight = 10
 
         #### Search
-        self._addWidget("search_section", 'FixedLine', nX1, nY0, 120, nHeight, Label = self.dUI.get("search_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget("similar_search_section", 'FixedLine', nX1, nY1, 120, nHeight, Label = self.dUI.get("similar_search_section", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("search_section", 'FixedLine', nX1, nY0, 120, nHeight, Label = ui.get("search_section"), FontDescriptor = xFDTitle)
+        self._addWidget("similar_search_section", 'FixedLine', nX1, nY1, 120, nHeight, Label = ui.get("similar_search_section"), FontDescriptor = xFDSubTitle)
         self.xWord = self._addWidget('word', 'Edit', nX1, nY1+10, 100, nHeight)
-        self._addWidget('similar_search_button', 'Button', nX1, nY1+22, 55, 12, Label = self.dUI.get('similar_search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('similar_search_button', 'Button', nX1, nY1+22, 55, 12, Label = ui.get('similar_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
 
 
-        self._addWidget("regex_search_section", 'FixedLine', nX1, nY2, 120, nHeight, Label = self.dUI.get("regex_search_section", "#err"), FontDescriptor = xFDSubTitle)
-        self._addWidget('flexion_label', 'FixedText', nX1, nY2+10, 30, nHeight, Label = self.dUI.get('flexion', "#err"))
+        self._addWidget("regex_search_section", 'FixedLine', nX1, nY2, 120, nHeight, Label = ui.get("regex_search_section"), FontDescriptor = xFDSubTitle)
+        self._addWidget('flexion_label', 'FixedText', nX1, nY2+10, 30, nHeight, Label = ui.get('flexion'))
         self.xFlexion = self._addWidget('flexion', 'Edit', nX1+35, nY2+10, 85, nHeight)
-        self._addWidget('tags_label', 'FixedText', nX1, nY2+22, 30, nHeight, Label = self.dUI.get('tags', "#err"))
+        self._addWidget('tags_label', 'FixedText', nX1, nY2+22, 30, nHeight, Label = ui.get('tags'))
         self.xTags = self._addWidget('tags', 'Edit', nX1+35, nY2+22, 85, nHeight)
-        self._addWidget('regex_search_button', 'Button', nX1, nY2+34, 55, 12, Label = self.dUI.get('regex_search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
-        self._addWidget('result_warning', 'FixedText', nX1, nY2+50, 120, nHeight*7, Label = self.dUI.get('result_warning', '#err'), MultiLine = True)
+        self._addWidget('regex_search_button', 'Button', nX1, nY2+34, 55, 12, Label = ui.get('regex_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('result_warning', 'FixedText', nX1, nY2+50, 120, nHeight*7, Label = ui.get('result_warning'), MultiLine = True)
 
         #### Results
-        self._addWidget("result_section", 'FixedLine', nX2, nY0, 200, nHeight, Label = self.dUI.get("result_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("result_section", 'FixedLine', nX2, nY0, 200, nHeight, Label = ui.get("result_section"), FontDescriptor = xFDTitle)
         self.xGridModel = self._addGrid("list_grid_search", nX2, nY0+10, 200, 265, [
-            {"Title": self.dUI.get("res_flexion", "#err"), "ColumnWidth": 70},
-            {"Title": self.dUI.get("res_lemma", "#err"), "ColumnWidth": 60},
-            {"Title": self.dUI.get("res_tags", "#err"), "ColumnWidth": 70}
+            {"Title": ui.get("res_flexion"), "ColumnWidth": 70},
+            {"Title": ui.get("res_lemma"), "ColumnWidth": 60},
+            {"Title": ui.get("res_tags"), "ColumnWidth": 70}
         ])
 
-        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -195,7 +195,7 @@ class SearchWords (unohelper.Base, XActionListener):
         if sWord:
             xGridDataModel = self.xGridModel.GridDataModel
             xGridDataModel.removeAllRows()
-            lResult = self.oSpellChecker.getSimilarEntries(sWord, 20);
+            lResult = self.oSpellChecker.getSimilarEntries(sWord, 20)
             for i, aEntry in enumerate(lResult):
                 xGridDataModel.addRow(i, aEntry)
 
@@ -208,13 +208,13 @@ class SearchWords (unohelper.Base, XActionListener):
             if sFlexPattern:
                 re.compile(sFlexPattern)
         except:
-            MessageBox(self.xDocument, self.dUI.get("regex_error_flexion", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
+            MessageBox(self.xDocument, ui.get("regex_error_flexion"), ui.get("error"), nBoxType=ERRORBOX)
             sFlexPattern = ""
         try:
             if sTagsPattern:
                 re.compile(sTagsPattern)
         except:
-            MessageBox(self.xDocument, self.dUI.get("regex_error_tags", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
+            MessageBox(self.xDocument, ui.get("regex_error_tags"), ui.get("error"), nBoxType=ERRORBOX)
             sTagsPattern = ""
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.removeAllRows()

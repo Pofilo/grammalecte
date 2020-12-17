@@ -1,7 +1,21 @@
-def getUI (sLang):
+# Strings for Search Word
+
+
+sUI = "fr"
+
+
+def selectLang (sLang):
+    global sUI
     if sLang in dStrings:
-        return dStrings[sLang]
-    return dStrings["fr"]
+        sUI = sLang
+
+
+def get (sMsgCode):
+    try:
+        return dStrings[sUI].get(sMsgCode, sMsgCode)
+    except:
+        return "#error"
+
 
 dStrings = {
     "fr": {
@@ -22,7 +36,7 @@ dStrings = {
         "res_flexion": "Flexions",
         "res_lemma": "Lemmes",
         "res_tags": "Étiquettes",
-        
+
         "close_button": "Fermer",
 
         "error": "Erreur",
@@ -32,7 +46,7 @@ dStrings = {
 
     "en": {
         "title": "Grammalecte · Search and informations",
-        
+
         "search_section": "Search",
 
         "similar_search_section": "Similar words",
@@ -48,7 +62,7 @@ dStrings = {
         "res_flexion": "Flexions",
         "res_lemma": "Lemmas",
         "res_tags": "Tags",
-        
+
         "close_button": "Close",
 
         "error": "Error",

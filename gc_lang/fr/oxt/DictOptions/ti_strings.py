@@ -1,7 +1,21 @@
-def getUI (sLang):
+# Strings for Tags Info
+
+
+sUI = "fr"
+
+
+def selectLang (sLang):
+    global sUI
     if sLang in dStrings:
-        return dStrings[sLang]
-    return dStrings["fr"]
+        sUI = sLang
+
+
+def get (sMsgCode):
+    try:
+        return dStrings[sUI].get(sMsgCode, sMsgCode)
+    except:
+        return "#error"
+
 
 dStrings = {
     "fr": {
@@ -30,7 +44,7 @@ dStrings = {
 
     "en": {
         "title": "Grammalecte · Informations",
-        
+
         "information_section": "Informations",
 
         "save": "Save",

@@ -8,7 +8,7 @@ import traceback
 import platform
 
 import helpers
-import enum_strings
+import enum_strings as ui
 import grammalecte.graphspell as sc
 
 from com.sun.star.task import XJobExecutor
@@ -103,13 +103,13 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         return xGridModel
 
     def run (self, sLang):
-        self.dUI = enum_strings.getUI(sLang)
+        ui.selectLang(sLang)
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 240
         self.xDialog.Height = 280
-        self.xDialog.Title = self.dUI.get('title', "#title#")
+        self.xDialog.Title = ui.get('title')
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -134,29 +134,29 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         nHeight = 10
 
         # List
-        self._addWidget("list_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = self.dUI.get("list_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 11, Label = self.dUI.get('count_button', "#err"))
-        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 11, Label = self.dUI.get('count2_button', "#err"))
-        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 11, Label = self.dUI.get('unknown_button', "#err"))
+        self._addWidget("list_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = ui.get("list_section"), FontDescriptor = xFDTitle)
+        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 11, Label = ui.get('count_button'))
+        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 11, Label = ui.get('count2_button'))
+        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 11, Label = ui.get('unknown_button'))
         self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 181, \
-            [ {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175}, {"Title": "Occurrences", "ColumnWidth": 45} ], \
+            [ {"Title": ui.get("words"), "ColumnWidth": 175}, {"Title": "Occurrences", "ColumnWidth": 45} ], \
             SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI") \
         )
-        self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 30, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
+        self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 30, nHeight, Label = ui.get('num_of_entries'), Align = 2)
         self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+35, nY1+210, 25, nHeight, Label = "—")
-        self._addWidget('tot_of_entries', 'FixedText', nX+60, nY1+210, 30, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
+        self._addWidget('tot_of_entries', 'FixedText', nX+60, nY1+210, 30, nHeight, Label = ui.get('tot_of_entries'), Align = 2)
         self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+95, nY1+210, 30, nHeight, Label = "—")
-        self.xSearch = self._addWidget('search_button', 'Button', nX+145, nY1+210, 30, nHeight, Label = ">>>", HelpText=self.dUI.get('goto', "#err"), Enabled = False)
-        self.xExport = self._addWidget('export_button', 'Button', nX+180, nY1+210, 40, nHeight, Label = self.dUI.get('export', "#err"), Enabled = False)
+        self.xSearch = self._addWidget('search_button', 'Button', nX+145, nY1+210, 30, nHeight, Label = ">>>", HelpText=ui.get('goto'), Enabled = False)
+        self.xExport = self._addWidget('export_button', 'Button', nX+180, nY1+210, 40, nHeight, Label = ui.get('export'), Enabled = False)
 
         # Tag
         # Note: the only way to group RadioButtons is to create them successively
-        self._addWidget("charstyle_section", 'FixedLine', nX, nY2, 200, nHeight, Label = self.dUI.get("charstyle_section", "#err"), FontDescriptor = xFDTitle)
-        self.xAccent = self._addWidget('emphasis', 'RadioButton', nX, nY2+12, 55, nHeight, Label = self.dUI.get('emphasis', "#err"))
-        self.xStrongAccent = self._addWidget('strong_emphasis', 'RadioButton', nX+60, nY2+12, 70, nHeight, Label = self.dUI.get('strong_emphasis', "#err"))
-        self.xNoAccent = self._addWidget('nostyle', 'RadioButton', nX+140, nY2+12, 45, nHeight, Label = self.dUI.get('nostyle', "#err"))
+        self._addWidget("charstyle_section", 'FixedLine', nX, nY2, 200, nHeight, Label = ui.get("charstyle_section"), FontDescriptor = xFDTitle)
+        self.xAccent = self._addWidget('emphasis', 'RadioButton', nX, nY2+12, 55, nHeight, Label = ui.get('emphasis'))
+        self.xStrongAccent = self._addWidget('strong_emphasis', 'RadioButton', nX+60, nY2+12, 70, nHeight, Label = ui.get('strong_emphasis'))
+        self.xNoAccent = self._addWidget('nostyle', 'RadioButton', nX+140, nY2+12, 45, nHeight, Label = ui.get('nostyle'))
 
-        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500, Enabled=False)
+        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = ui.get('tag_button'), FontDescriptor = xFDTitle, TextColor = 0x005500, Enabled=False)
 
         # Progress bar
         self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
@@ -164,7 +164,7 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xProgressBar.ProgressValueMax = 1 # to calculate later
 
         # Close
-        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = ui.get('close_button'), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -194,17 +194,17 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == "Count":
-                self.count(self.dUI.get("words", "#err"))
+                self.count(ui.get("words"))
                 self.xTag.Enabled = True
                 self.xSearch.Enabled = True
                 self.xExport.Enabled = True
             elif xActionEvent.ActionCommand == "CountByLemma":
-                self.count(self.dUI.get("lemmas", "#err"), bByLemma=True)
+                self.count(ui.get("lemmas"), bByLemma=True)
                 self.xTag.Enabled = False
                 self.xSearch.Enabled = False
                 self.xExport.Enabled = True
             elif xActionEvent.ActionCommand == "UnknownWords":
-                self.count(self.dUI.get("unknown_words", "#err"), bOnlyUnknownWords=True)
+                self.count(ui.get("unknown_words"), bOnlyUnknownWords=True)
                 self.xTag.Enabled = True
                 self.xSearch.Enabled = True
                 self.xExport.Enabled = True
@@ -348,7 +348,7 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
                     hDst.write(sText)
         except:
             sMessage = traceback.format_exc()
-            MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"), ERRORBOX)
+            MessageBox(self.xDocument, sMessage, ui.get('export_title'), ERRORBOX)
 
     @_waitPointer
     def tagText (self, aWord, sAction=""):

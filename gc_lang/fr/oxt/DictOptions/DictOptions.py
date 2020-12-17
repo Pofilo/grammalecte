@@ -8,7 +8,7 @@ import re
 import traceback
 
 import helpers
-import do_strings
+import do_strings as ui
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
@@ -48,7 +48,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         return xWidget
 
     def run (self, sLang):
-        self.dUI = do_strings.getUI(sLang)
+        ui.selectLang(sLang)
 
         self.xDesktop = self.xSvMgr.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
         self.xDocument = self.xDesktop.getCurrentComponent()
@@ -64,7 +64,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
         self.xDialog.Height = 285
-        self.xDialog.Title = self.dUI.get('title', "#title#")
+        self.xDialog.Title = ui.get('title')
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -92,30 +92,30 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         nHeight = 10
 
         # Graphspell dictionary section
-        self._addWidget("graphspell_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = self.dUI.get("graphspell_section", "#err"), FontDescriptor = xFDTitle)
-        self.xMainDic = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = self.dUI.get('activate_main', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, State = True)
-        self._addWidget('activate_main_descr', 'FixedText', nX+10, nY1+25, nWidth-10, nHeight*2, Label = self.dUI.get('activate_main_descr', "#err"), MultiLine = True)
-        self._addWidget('spelling', 'FixedText', nX+10, nY1+45, nWidth-80, nHeight, Label = self.dUI.get('spelling', "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("graphspell_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = ui.get("graphspell_section"), FontDescriptor = xFDTitle)
+        self.xMainDic = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = ui.get('activate_main'), FontDescriptor = xFDSubTitle, TextColor = 0x000088, State = True)
+        self._addWidget('activate_main_descr', 'FixedText', nX+10, nY1+25, nWidth-10, nHeight*2, Label = ui.get('activate_main_descr'), MultiLine = True)
+        self._addWidget('spelling', 'FixedText', nX+10, nY1+45, nWidth-80, nHeight, Label = ui.get('spelling'), FontDescriptor = xFDSubTitle)
         self.xInfoDicButton = self._addWidget('info_dic_button', 'Button', nX+160, nY1+45, 12, 9, Label = "‹i›")
-        self.xSelClassic = self._addWidget('classic', 'RadioButton', nX+10, nY1+55, 50, nHeight, Label = self.dUI.get('classic', "#err"))
-        self.xSelReform = self._addWidget('reform', 'RadioButton', nX+65, nY1+55, 55, nHeight, Label = self.dUI.get('reform', "#err"))
-        self.xSelAllvars = self._addWidget('allvars', 'RadioButton', nX+120, nY1+55, 60, nHeight, Label = self.dUI.get('allvars', "#err"))
-        self.xCommunityDic = self._addWidget('activate_community', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = self.dUI.get('activate_community', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
-        self._addWidget('activate_community_descr', 'FixedText', nX+10, nY2+25, nWidth-10, nHeight*1, Label = self.dUI.get('activate_community_descr', "#err"), MultiLine = True)
-        self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = self.dUI.get('activate_personal', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY3+25, nWidth-10, nHeight*1, Label = self.dUI.get('activate_personal_descr', "#err"), MultiLine = True)
+        self.xSelClassic = self._addWidget('classic', 'RadioButton', nX+10, nY1+55, 50, nHeight, Label = ui.get('classic'))
+        self.xSelReform = self._addWidget('reform', 'RadioButton', nX+65, nY1+55, 55, nHeight, Label = ui.get('reform'))
+        self.xSelAllvars = self._addWidget('allvars', 'RadioButton', nX+120, nY1+55, 60, nHeight, Label = ui.get('allvars'))
+        self.xCommunityDic = self._addWidget('activate_community', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = ui.get('activate_community'), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
+        self._addWidget('activate_community_descr', 'FixedText', nX+10, nY2+25, nWidth-10, nHeight*1, Label = ui.get('activate_community_descr'), MultiLine = True)
+        self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = ui.get('activate_personal'), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY3+25, nWidth-10, nHeight*1, Label = ui.get('activate_personal_descr'), MultiLine = True)
 
         # Spell suggestion engine section
-        self._addWidget("suggestion_section", 'FixedLine', nX, nY4, nWidth, nHeight, Label = self.dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY4+15, nWidth, nHeight, Label = self.dUI.get('activate_spell_sugg', "#err"))
-        self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY4+25, nWidth, nHeight*6, Label = self.dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
+        self._addWidget("suggestion_section", 'FixedLine', nX, nY4, nWidth, nHeight, Label = ui.get("suggestion_section"), FontDescriptor = xFDTitle)
+        self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY4+15, nWidth, nHeight, Label = ui.get('activate_spell_sugg'))
+        self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY4+25, nWidth, nHeight*6, Label = ui.get('activate_spell_sugg_descr'), MultiLine = True)
 
         # Restart message
-        self._addWidget('restart', 'FixedText', nX, nY5, nWidth, nHeight*2, Label = self.dUI.get('restart', "#err"), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
+        self._addWidget('restart', 'FixedText', nX, nY5, nWidth, nHeight*2, Label = ui.get('restart'), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
 
         # Button
-        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = self.dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
-        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = self.dUI.get('cancel_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = ui.get('apply_button'), FontDescriptor = xFDTitle, TextColor = 0x005500)
+        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = ui.get('cancel_button'), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         self._loadOptions()
 
@@ -168,7 +168,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
                 # Close window
                 self.xContainer.endExecute()
             elif xActionEvent.ActionCommand == 'InfoDic':
-                MessageBox(self.xDocument, self.dUI.get('spelling_descr', "#err"), "Orthographe du français", nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK)
+                MessageBox(self.xDocument, ui.get('spelling_descr'), "Orthographe du français", nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK)
             else:
                 self.xContainer.endExecute()
         except:
