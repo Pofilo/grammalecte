@@ -139,6 +139,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self.xNewRegex = self._addWidget('newregex', 'CheckBox', nX+305, nY1+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"))
         self.xNewCaseSens = self._addWidget('newcasesens', 'CheckBox', nX+340, nY1+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), State=True)
 
+        self._addWidget('order_info', 'FixedText', nX, nY1+32, 300, nHeight, Label = ui.get("order_info"))
         self._addWidget('add', 'Button', self.xDialog.Width-50, nY1+31, 40, 11, Label = ui.get('add'))
 
         lColumns = [
@@ -238,13 +239,14 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             aRows = self.xGridControl.getSelectedRows()
             if aRows and len(aRows) == 1:
                 self.iSelectedRow = aRows[0]
-                self.sSelectedRuleName, sPattern, sRepl, sRegex, sCaseSens = self.xGridModel.GridDataModel.getRowData(self.iSelectedRow)
+                self.sSelectedRuleName, *_ = self.xGridModel.GridDataModel.getRowData(self.iSelectedRow)
                 # fill fields
+                dRule = self.dRules[self.sSelectedRuleName]
                 self.xEditName.Text = self.sSelectedRuleName
-                self.xEditPattern.Text = sPattern
-                self.xEditRepl.Text = sRepl
-                self.xEditRegex.State = sRegex == "True"
-                self.xEditCaseSens.State = sCaseSens == "True"
+                self.xEditPattern.Text = dRule["sPattern"]
+                self.xEditRepl.Text = dRule["sRepl"]
+                self.xEditRegex.State = dRule["bRegex"]
+                self.xEditCaseSens.State = dRule["bCaseSens"]
                 # enable widgets
                 self.xEditName.Enabled = True
                 self.xEditPattern.Enabled = True
@@ -312,7 +314,10 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self._clearAddFields()
 
     def _getValuesForRow (self, sRuleName):
-        return (sRuleName, self.dRules[sRuleName]["sPattern"], self.dRules[sRuleName]["sRepl"], str(self.dRules[sRuleName]["bRegex"]), str(self.dRules[sRuleName]["bCaseSens"]))
+        return (sRuleName, self.dRules[sRuleName]["sPattern"],
+                self.dRules[sRuleName]["sRepl"],
+                "✓"  if self.dRules[sRuleName]["bRegex"]  else "",
+                "✓"  if self.dRules[sRuleName]["bCaseSens"]  else "")
 
     def _checkRuleName (self, sRuleName):
         return re.search(r"^\w[\w_#.,;!?-]{,14}$", sRuleName)

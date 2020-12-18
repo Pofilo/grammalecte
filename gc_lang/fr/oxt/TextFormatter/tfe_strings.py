@@ -28,6 +28,7 @@ dStrings = {
         "regex_help": "Une expression régulière est une forme de syntaxe décrivant un motif de recherche de caractères",
         "casesens": "Casse rigide",
         "casesens_help": "La casse des caractères sera respectée telle quelle.",
+        "order_info": "Les règles seront appliquées dans l’ordre alphabétique défini par leur nom.",
 
         "new_entry": "Nouvelle entrée",
         "edit_entry": "Entrée sélectionnée",
@@ -80,6 +81,7 @@ dStrings = {
         "regex_help": "A regular expression is a kind of syntax describing a search pattern of characters",
         "casesens": "Case sensitivity",
         "casesens_help": "Characters case will be treated as written.",
+        "order_info": "Rules will applied according to the alphabetical order defined by their name.",
 
         "new_entry": "New entry",
         "edit_entry": "Selected entry",
