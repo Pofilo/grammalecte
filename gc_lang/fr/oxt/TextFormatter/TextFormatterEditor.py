@@ -17,7 +17,7 @@ import grammalecte.graphspell as sc
 from com.sun.star.awt import XActionListener
 from com.sun.star.awt.grid import XGridSelectionListener
 
-from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK, BUTTONS_YES_NO_CANCEL
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK, BUTTONS_YES_NO_CANCEL, BUTTONS_YES_NO
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
 # DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
 from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX, QUERYBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
@@ -143,8 +143,8 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
 
         lColumns = [
             {"Title": ui.get("name"),     "ColumnWidth": 80},
-            {"Title": ui.get("pattern"),  "ColumnWidth": 140},
-            {"Title": ui.get("repl"),     "ColumnWidth": 140},
+            {"Title": ui.get("pattern"),  "ColumnWidth": 160},
+            {"Title": ui.get("repl"),     "ColumnWidth": 120},
             {"Title": ui.get("regex"),    "ColumnWidth": 60},
             {"Title": ui.get("casesens"), "ColumnWidth": 60},
         ]
@@ -177,6 +177,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         # data
         self.dRules = {}
         self.iSelectedRow = -1
+        self.nFieldMaxLen = 250
 
         # load configuration
         self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", True)
@@ -292,6 +293,9 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         if not self.xNewName.Text or not self.xNewPattern.Text:
             MessageBox(self.xDocument, ui.get("name_and_replace_error"), ui.get("name_and_replace_error_title"), ERRORBOX)
             return
+        if len(self.xNewPattern.Text) > self.nFieldMaxLen or len(self.xNewRepl.Text) > self.nFieldMaxLen:
+            MessageBox(self.xDocument, ui.get("max_len_error"), ui.get("max_len_error_title"), ERRORBOX)
+            return
         sRuleName = self.xNewName.Text
         if sRuleName in self.dRules:
             MessageBox(self.xDocument, ui.get('add_name_error'), ui.get("add_name_error_title"), ERRORBOX)
@@ -304,13 +308,14 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         }
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+        xGridDataModel.sortByColumn(0, True)
         self._clearAddFields()
 
     def _getValuesForRow (self, sRuleName):
         return (sRuleName, self.dRules[sRuleName]["sPattern"], self.dRules[sRuleName]["sRepl"], str(self.dRules[sRuleName]["bRegex"]), str(self.dRules[sRuleName]["bCaseSens"]))
 
     def _checkRuleName (self, sRuleName):
-        return re.search(r"^\w[\w_#.,;!?-]*$", sRuleName)
+        return re.search(r"^\w[\w_#.,;!?-]{,14}$", sRuleName)
 
     def modifyRule (self):
         if not self._checkRuleName(self.xEditName.Text):
@@ -319,6 +324,9 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         sRuleName = self.xEditName.Text
         if self.iSelectedRow < 0 or not sRuleName or not self.xEditPattern.Text:
             MessageBox(self.xDocument, ui.get("name_and_replace_error"), ui.get("name_and_replace_error_title"), ERRORBOX)
+            return
+        if len(self.xEditPattern.Text) > self.nFieldMaxLen or len(self.xEditRepl.Text) > self.nFieldMaxLen:
+            MessageBox(self.xDocument, ui.get("max_len_error"), ui.get("max_len_error_title"), ERRORBOX)
             return
         if sRuleName != self.sSelectedRuleName and sRuleName in self.dRules:
             MessageBox(self.xDocument, ui.get("modify_name_error"), ui.get("modify_name_error_title"), ERRORBOX)
@@ -351,8 +359,10 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             traceback.print_exc()
 
     def deleteAll (self):
-        self.dRules.clear()
-        self.xGridModel.GridDataModel.removeAllRows()
+        nButton = MessageBox(self.xDocument, ui.get('delete_all_confirm'), ui.get('delete_all'), QUERYBOX, BUTTONS_YES_NO)
+        if nButton == 2: # ok
+            self.dRules.clear()
+            self.xGridModel.GridDataModel.removeAllRows()
 
     @_waitPointer
     def applyRule (self):
@@ -379,6 +389,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             xGridDataModel = self.xGridModel.GridDataModel
             for sRuleName in self.dRules:
                 xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+            xGridDataModel.sortByColumn(0, True)
         except:
             sMessage = traceback.format_exc()
             MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
@@ -440,6 +451,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
                     if not sRuleName in self.dRules:
                         self.dRules[sRuleName] = dValues
                         xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+            xGridDataModel.sortByColumn(0, True)
 
     def exportRules (self):
         if not self.dRules:

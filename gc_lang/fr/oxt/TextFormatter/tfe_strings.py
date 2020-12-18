@@ -22,8 +22,8 @@ dStrings = {
         "title": "Grammalecte · Éditeur des transformations personnalisées",
 
         "name": "Nom de la règle",
-        "pattern": "Motif de remplacement",
-        "repl": "par",
+        "pattern": "Motif de recherche",
+        "repl": "remplacer par",
         "regex": "Regex",
         "regex_help": "Une expression régulière est une forme de syntaxe décrivant un motif de recherche de caractères",
         "casesens": "Casse rigide",
@@ -44,8 +44,10 @@ dStrings = {
         "delete_all": "Tout supprimer",
         "save_and_close": "Enregistrer et fermer",
 
-        "name_error": "Pour le nom des règles, utilisez uniquement les lettres, les nombres et les caractères parmi ‹_-#.,;!?›.",
-        "name_error_title": "Le nom de la règle n’est pas conforme.",
+        "delete_all_confirm": "Voulez-vous réellement tout supprimer ?",
+
+        "name_error": "Pour le nom des règles, utilisez uniquement les lettres, les nombres et les caractères parmi ‹_-#.,;!?›. 15 caractères maximum.",
+        "name_error_title": "Nom de la règle non conforme.",
 
         "name_and_replace_error": "Ni le nom de la règle, ni ce qui doit être remplacé ne peut être vide. Veuillez remplir les champs requis.",
         "name_and_replace_error_title": "L’un des champs requis est vide",
@@ -59,6 +61,9 @@ dStrings = {
         "modify_name_error": "Une autre règle porte déjà ce nom. Veuillez modifier le nom de la règle.",
         "modify_name_error_title": "Nouveau nom déjà utilisé par une autre règle",
 
+        "max_len_error": "Le motif de recherche et le texte remplacé ne peuvent dépasser 250 caractères.",
+        "max_len_error_title": "Champs non conformes",
+
         "import_question": "Voulez-vous que les règles importées écrasent celles existantes si elles possèdent un nom identique ?",
         "import_title": "Importation d’un fichier de règles de transformation",
 
@@ -69,8 +74,8 @@ dStrings = {
         "title": "Grammalecte · Editor for custom transformations",
 
         "name": "Rule name",
-        "pattern": "Replacement pattern",
-        "repl": "by",
+        "pattern": "Search pattern",
+        "repl": "replace by",
         "regex": "Regex",
         "regex_help": "A regular expression is a kind of syntax describing a search pattern of characters",
         "casesens": "Case sensitivity",
@@ -91,7 +96,9 @@ dStrings = {
         "delete_all": "Delete all",
         "save_and_close": "Save and close",
 
-        "name_error": "For rules names, only use letters, numbers et characters among ‹_-#.,;!?›",
+        "delete_all_confirm": "Do you really want to delete all entries?",
+
+        "name_error": "For rules names, only use letters, numbers et characters among ‹_-#.,;!?›. Maximum: 15 characters.",
         "name_error_title": "Le nom de la règle n’est pas conforme.",
 
         "name_and_replace_error": "Neither the rule name, neither what has to be replaced can be empty. Please, fill the required fields.",
@@ -105,6 +112,9 @@ dStrings = {
 
         "modify_name_error": "This rule name is already used by another rule. Please, modify the rule name.",
         "modify_name_error_title": "New rule name already used by another rule",
+
+        "max_len_error": "The search pattern and the replacing text can’t exceed 250 characters.",
+        "max_len_error_title": "Non-compliant fields",
 
         "import_question": "Do you want that imported rules replace existing ones if they have the same name?",
         "import_title": "Importation of a transformation rules file",
