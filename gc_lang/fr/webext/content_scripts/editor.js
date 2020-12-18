@@ -189,7 +189,7 @@ class HTMLPageEditor {
                 }
                 //console.log("[Grammalecte debug] Text sent to xWhat via event:", xEvent.detail);
             }
-            else if (iParagraph < this.lNode.length) {
+            else if (iParagraph < this.lNode.length  &&  this.lNode[iParagraph].textContent != oGrammalecteTextEditor.getParagraph(iParagraph)) {
                 this.lNode[iParagraph].textContent = oGrammalecteTextEditor.getParagraph(iParagraph);
             }
         }
