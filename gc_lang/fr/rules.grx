@@ -12286,6 +12286,22 @@ TEST: Il vient tel quel puis semble avoir des doutes.
 TEST: avec un puis plusieurs autres.
 
 
+# que / queue
+__conf_queue_que__
+    la que entre les jambes
+        <<- /conf/ -2>> queue                                               && Confusion. Locution “la queue entre les jambes”.|https://fr.wiktionary.org/wiki/la_queue_entre_les_jambes
+        <<- !1>> conf
+
+    >tirer ?@:[WX]¿ le diable par la que
+        <<- /conf/ --1>> queue                                              && Confusion. Locution “tirer le diable par la queue”.|https://fr.wiktionary.org/wiki/tirer_le_diable_par_la_queue
+        <<- !-2>> conf
+
+TEST: déguerpir la {{que}} entre les jambes                             ->> queue
+TEST: tirer le diable par la {{que}}                                    ->> queue
+TEST: il s’est enfui la queue entre les jambes
+TEST: elle ne cesse de tirer le diable par la queue
+
+
 # camp / quand / quant / qu’en
 __conf_camp_quand_quant__
     >foutre le [quand|quant]
@@ -17375,7 +17391,7 @@ __substantifs_multi_mots__
     >aire d’ atterrissage
     >aire [de|d’] >jeu
     >ami d’ enfance
-    >animal [de|d’] compagnie
+    >animal [de|d’] [compagnie|foire|production|rente|trait]
     >appartement à louer
     >appât du gain ?[facile|rapide]¿
     >appel au secours
@@ -17447,6 +17463,7 @@ __substantifs_multi_mots__
     >cabine [de|d’] pilotage
     >cabinet [de|d’] [toilette|travail]
     >cadeau [de|d’] [anniversaire|mariage|Noël]
+    >cale à poncer
     >camarade [de|d’] classe
     >caméra [de|d’] [surveillance|vidéoprotection|vidéo-protection]
     >camp [de|d’] [concentration|été|hiver|internement|rééducation|travail|vacances]
@@ -17686,6 +17703,7 @@ __substantifs_multi_mots__
     >fosse à [merde|>ordure|purin]
     >fosse aux lions
     >fou à lier
+    >foutage [de|d’] gueule
     [>fourgon|>fourgonnette] [de|d’] location
     frais [de|d’] [copropriété|courtage|déplacement|dossier|douane|donation|justice|notaire|scolarité|succession]
     frais d’ [entretien|exploitation|huissier]
@@ -17755,6 +17773,7 @@ __substantifs_multi_mots__
     >journal à >sensation
     >journalisme d’ investigation
     >journaliste d’ investigation
+    >journée [de|d’] merde
     >juge d’ instruction
     jus [de|d’] chaussettes ?sales¿
     >langue [de|d’] bois
@@ -18708,7 +18727,7 @@ __purge_adverbes__
     complètement
         <<- not morph(<1, ":D.*:m") ~>> *
 
-    ~.ment$  ?[parlant|pas]¿
+    ~.ment$  ?[parlant|pas|rien]¿
         <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
 
 
@@ -22034,9 +22053,9 @@ __conf_prendre_son_mal_en_patience__
     [prie|pries] [mon|ton|son|notre|votre|leur|leurs] [>mâle|mal] en [>patience|patiente|patientes]
         <<- /conf/ -1>> pris|prit                               && Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
 
-TEST: Il prit son {{mâle en patience}}
-TEST: Elle prend son {{mal en patiente}}.
-TEST: Il {{prie}} une fois de plus son mal en patience.
+TEST: Il prit son {{mâle en patience}}                                  ->> mal en patience
+TEST: Elle prend son {{mal en patiente}}.                               ->> mal en patience
+TEST: Il {{prie}} une fois de plus son mal en patience.                 ->> pris|prit
 
 
 # prit / prie
@@ -22049,17 +22068,19 @@ __conf_prie_prit__
     [me|te|le|la|nous|vous|les] prit [de|d’] $:Y
         <<- /conf/ not tagbefore(\1, "_cequi_") -2>> prie               && Confusion probable. Si vous voulez dire “prier de faire quelque chose”, écrivez “prie”.|https://fr.wiktionary.org/wiki/prier
 
-TEST: elle me {{prit}} d’obéir
+TEST: elle me {{prit}} d’obéir                                  ->> prie
 TEST: je ne sais pas ce qui me prit de lui écrire
 
 
 # prêt / près / pré
 __conf_suivre_de_près__
-    >suivre ?[ça|cela|ceci]¿ de [>prêt|>pré]
+    [>dévisager|>examiner|>observer|>regarder|>reluquer|>scruter|>suivre|>surveiller|>voir]  ?[ça|cela|ceci]¿ de [>prêt|>pré]
+    [>dévisager|>examiner|>observer|>regarder|>reluquer|>scruter|>suivre|>surveiller|>voir]  $:D  @:[NA]      de [>prêt|>pré]
         <<- /conf/ --1>> près           && Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-TEST: on va suivre ça de {{prêt}}.
-TEST: elle suit ça de {{prêt}}
+TEST: on va suivre ça de {{prêt}}.                              ->> près
+TEST: elle suit ça de {{prêt}}                                  ->> près
+TEST: il faut surveiller ce con de {{prêt}}                     ->> près
 
 
 # pris / prix
@@ -22067,8 +22088,8 @@ __conf_pris_prix__
     [>avoir|>être] prix
         <<- /conf/ --1>> pris                                   && Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
 
-TEST: elle ne l’a pas {{prix}}, par dépit.
-TEST: ils ont été {{prix}}.
+TEST: elle ne l’a pas {{prix}}, par dépit.                      ->> pris
+TEST: ils ont été {{prix}}.                                     ->> pris
 
 
 # pu / pus
@@ -22076,10 +22097,10 @@ __conf_pu_pus__
     >avoir  [pus|pue|pues]
         <<- /conf/ -2>> pu                                      && Confusion. Pour le participe passé de pouvoir, écrivez “pu”.
 
-TEST: Ils étaient partis au restaurant après avoir {{pue}} dire un mot.           ->> pu
-TEST: avoir {{pus}} réussir
-TEST: ce qu’ils ont {{pue}}
-TEST: il a {{pues}} partir
+TEST: Ils étaient partis au restaurant après avoir {{pue}} dire un mot.             ->> pu
+TEST: avoir {{pus}} réussir                                                         ->> pu
+TEST: ce qu’ils ont {{pue}}                                                         ->> pu
+TEST: il a {{pues}} partir                                                          ->> pu
 
 
 # puits / puis
@@ -22089,8 +22110,8 @@ __conf_puits_puis2__
         <<- /conf/ --1>> puits
         && Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
 
-TEST: Forage de son {{puis}} prévu demain
-TEST: Creuser un {{puis}}, pas si compliqué
+TEST: Forage de son {{puis}} prévu demain                           ->> puits
+TEST: Creuser un {{puis}}, pas si compliqué                         ->> puits
 
 
 # qu’à / cas / ca
@@ -22110,7 +22131,7 @@ __conf_qu_à_cas__
 
 TEST: elles n’ont {{ca}} nous laisser tranquilles           ->> qu’à
 TEST: ils ont {{qua}} s’en prendre à eux-mêmes              ->> qu’à
-TEST: tu n’as {{cas}} prendre le train
+TEST: tu n’as {{cas}} prendre le train                      ->> qu’à
 
 
 # quand même / comme même
@@ -22119,8 +22140,8 @@ __conf_quand_même__
     comme même @:(?:Os|C)
         <<- /conf/ space(\1, 1, 1) -1:2>> quand même      && Confusion probable.|https://fr.wiktionary.org/wiki/quand_m%C3%AAme
 
-TEST: {{comme même}} il y va fort, le saligaud !
-TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}…
+TEST: {{comme même}} il y va fort, le saligaud !                                    ->> quand même
+TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}…        ->> quand même
 
 
 # quoi qu’il en soit
@@ -22134,12 +22155,12 @@ TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez co
 
 # rebooter / rebouter
 __conf_rebooter_rebouter__
-    >rebouter  $:D  [>appareil|>imprimante|iPhone|kernel|>machine|>modem|>noyau|>ordinateur|>ordi|PC|>portable|>programme|>routeur|serveur|serveurs|>système|>tablette|>téléphone|terminal|terminaux]
+    >rebouter  $:D  [>appareil|>imprimante|iPhone+s|>kernel|>machine|>modem|>noyau|>ordinateur|>ordi|PC|>portable|>programme|>routeur|serveur|serveurs|>smartphone|>système|>tablette|>téléphone|terminal|terminaux]
     >rebouter  [Android|Linux|iOS|Unix|Windows]
         <<- /conf/ -1>> =\1.replace("out", "oot").replace("OUT", "OOT")         && Confusion probable. Rebouter est un terme de botanique.
 
-TEST: {{Reboute}} l’ordinateur.
-TEST: On {{reboute}} Windows et ça devrait aller.
+TEST: {{Reboute}} l’ordinateur.                         ->> Reboote
+TEST: On {{reboute}} Windows et ça devrait aller.       ->> reboote
 
 
 # rebrousser chemin
@@ -22148,7 +22169,7 @@ __conf_rebrousser_chemin__
         <<- /conf/ -1>> =\1.replace("etr", "ebr").replace("ETR", "EBR").replace("dét", "reb").replace("Dét", "Reb").replace("DÉT", "REB")
         && Confusion probable. Locution “rebrousser chemin”.|https://fr.wiktionary.org/wiki/rebrousser_chemin
 
-TEST: elle {{retrousse}} chemin
+TEST: elle {{retrousse}} chemin                                 ->> rebrousse
 
 
 # rester en contact
@@ -22156,7 +22177,7 @@ __conf_rester_en_contact__
     >rester en [contacte+s]
         <<- /conf/ --1>> contact                                    && Confusion. Locution “rester en contact”.
 
-TEST: il va rester en {{contacte}} avec eux
+TEST: il va rester en {{contacte}} avec eux                     ->> contact
 TEST: Restons en contact.
 
 
@@ -22269,8 +22290,8 @@ __conf_sceptique_septique__
         <<- /conf/ not morph(<1, ">plaie/")
         -2>> =\2.replace("sep", "scep").replace("SEP", "SCEP")                  && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/sceptique
 
-TEST: cette fosse {{sceptique}} est pleine.
-TEST: Je suis {{septique}} !
+TEST: cette fosse {{sceptique}} est pleine.                     ->> septique
+TEST: Je suis {{septique}} !                                    ->> sceptique
 
 
 ## se / ce
@@ -22312,8 +22333,8 @@ __conf_suer_savoir__
     [su|sus|sut]  comme une [baleine|vache]
         <<- /conf/ -1>> sue                                 && Confusion. Si vous voulez dire « transpirer abondamment », écrivez « sue » du verbe « suer ».|https://fr.wiktionary.org/wiki/tache
 
-TEST: il {{sut}} comme un goret
-TEST: je {{sus}} à grosses gouttes chaque été
+TEST: il {{sut}} comme un goret                             ->> sue
+TEST: je {{sus}} à grosses gouttes chaque été               ->> sue
 
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
