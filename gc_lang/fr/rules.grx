@@ -1718,7 +1718,7 @@ __tag_mots_entre_guillemets__
     [‘|'|’|`]   [*WORD|*WORDELD]   [‘|'|’|`]
         <<- space(\1, 0, 0) and space(\2, 0, 0) /2>> eg1mot
 
-    ["|“|”]  [*WORD|*WORDELD]  *[*WORD|*WORDELD]
+    ["|“|”]  [*WORD|*WORDELD]  [*WORD|*WORDELD]
         <<- space(\1, 0, 0) /2:0>> egxmot
 
     [*WORD|*WORDELD]  [*WORD|*WORDELD]  ["|“|”]
@@ -2310,9 +2310,9 @@ __tag_noms__
         <<- />> -là
         <<- =>> =definefrom(\1, 0, -3) and select(\1, ":[NA]")
 
-    ## _1M_  : première lettre majuscule
+    ## _Maj_ : première lettre majuscule
     ## _CAP_ : toutes capitales
-    ## _Cap_ : première lettre capitale, les autres minuscules
+    ## _Tit_ : première lettre capitale, les autres minuscules
     ~^[A-ZÀÂÉÈÊÎÏÔ]
         <<- />> _Maj_
         <<- \1.isupper() />> _CAP_
@@ -5631,6 +5631,9 @@ __tu_substantifs!7__
     >arrière >petit >nièce
         <<- /tu/ ->> arrière-petite-nièce|arrière-petites-nièces    && Mettez des traits d’union.
 
+    >assurance >vie
+        <<- /conf/ morph(<1, ":D") ->> \1-vie                       && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/assurance-vie
+
     au jour d’ [hui+s|oui|huit]
     [au-jour-d’hui+s]
     au-jour d’ [hui+s|oui|huit]
@@ -5685,6 +5688,9 @@ __tu_substantifs!7__
     [auto|moto] >club
         <<- /tu/ ->> \1\2|\1-\2|\2 \1                           && Mettez un trait d’union, fusionnez ou inversez les termes.
         <<- ~>> ␣
+
+    >compte >goutte
+        <<- /tu/ morph(<1, ":D", ":R") ->> compte-gouttes|comptes-gouttes   && Il manque un trait d’union.|https://fr.wiktionary.org/wiki/compte-gouttes
 
     [copié+ses|copier] / [coller|collé+ses]
     [copié-coller|copiée-coller|copiés-coller|copiées-coller]
@@ -5846,6 +5852,7 @@ TEST: son {{arrière petite fille}}
 TEST: mon {{arrière petit fils}}
 TEST: un {{arrière petit neveu}}
 TEST: ton {{arrière petite nièce}}
+TEST: vendeur d’{{assurances vie}}                                              ->> assurances-vie
 TEST: {{au jour d’hui}}
 TEST: je déteste le {{basket ball}}
 TEST: sur le {{bas côté}}
@@ -5862,6 +5869,7 @@ TEST: un {{château fort}} n’est pas une demeure confortable
 TEST: des {{châteaux forts}}
 TEST: un {{coffre fort}}
 TEST: des {{coffres forts}}
+TEST: un {{compte goutte}}                                                      ->> compte-gouttes|comptes-gouttes
 TEST: {{copié/coller}}
 TEST: encore un {{cul de sac}}
 TEST: Le {{moto club}} était sur le point de faire faillite.
@@ -7866,16 +7874,17 @@ TEST: Il reste de nombreux militants sincères à la FI.
 
 __conf_de_vconj__
     [de|d’]  @:[123][sp]¬:[GNA]
-        <<- /conf/ not \2.istitle() and not value(\2, "|jure|") and not tag(\2, "eg1mot")
+        <<- /conf/ not \2.istitle() and not \2.isupper() and not value(\2, "|jure|") and not tag(\2, "eg1mot")
         -2>> =suggSimil(\2, ":[NA]", True)                                                          && Incohérence avec « \1 » : “\2” est une forme verbale conjuguée.
 
 TEST: il s’agit de {{mette}} en évidence.
 
 
     [de|d’]  [l’|leur]  @:[123][sp]¬:[GNAQ]
-        <<- /conf/ not \3.istitle() -3>> =suggSimil(\3, ":[NA]:.:[si]", True)                       && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
+        <<- /conf/ not \3.istitle() and not \3.isupper() -3>> =suggSimil(\3, ":[NA]:.:[si]", True)  && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
 
 TEST: de l’{{arrivait}}
+TEST: la production d’électricité par des énergies renouvelables aurait encore augmenté de 7 %, selon les calculs de l’AIE
 
 
     [de|d’]  le  *WORD
@@ -9829,6 +9838,9 @@ __conf_compte__
     à [>conte|comte+s] d’ >auteur
         <<- /conf/ -2>> compte                                  && Confusion. Locution “à compte d’auteur”.|https://fr.wiktionary.org/wiki/%C3%A0_compte_d%E2%80%99auteur
 
+    [au|le|un|du] [conte|comte] [>goutte|goûte+s]
+        <<- /conf/ -2:3>> compte-gouttes                        && Confusion. Écrivez “compte-gouttes”.|https://fr.wiktionary.org/wiki/compte-gouttes
+
     [comte+s|>conte] à [rebours|découvert|terme]
     [comte+s|>conte] [>bancaire|rendu|rendus|joint|joints|courant|courants|>chèque]
     [comte+s|>conte] des opérations
@@ -9839,10 +9851,10 @@ __conf_compte__
         <<- /conf/ not morph(<1, ":D")-1>> compte               && Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
     en [>fin|>faim] de [comte+s|>conte]
-        <<- /conf/ ->> en fin de compte                         && Confusion. Locution “en fin de compte”.|https://fr.wiktionary.org/wiki/en_fin_de_compte
+        <<- /loc/ ->> en fin de compte                          && Confusion. Locution “en fin de compte”.|https://fr.wiktionary.org/wiki/en_fin_de_compte
 
     en >ligne [de|d’] [comte+s|>conte]
-        <<- /conf/ ->> en ligne de compte                       && Confusion. Locution “en ligne de compte”.|https://fr.wiktionary.org/wiki/en_ligne_de_compte
+        <<- /loc/ ->> en ligne de compte                        && Confusion. Locution “en ligne de compte”.|https://fr.wiktionary.org/wiki/en_ligne_de_compte
 
     la cour des [contes|comtes]
         <<- /conf/ -4>> comptes                                 && Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
@@ -9866,21 +9878,22 @@ __conf_compte__
     tout [comte|>conte] fait
         <<- /conf/ -2>> compte                                  && Confusion. Locution “tout compte fait”.|https://fr.wiktionary.org/wiki/tout_compte_fait
 
-TEST: il s’en est tiré à bon {{conte}}.
-TEST: à ce {{conte-là}}, il ne va pas faire long feu.
-TEST: mon {{comte}} bancaire est encore à sec.
-TEST: à {{conte}} d’auteur
-TEST: {{comte}} tenu du dysfonctionnement du moteur
-TEST: mais {{en fin de comte}}, ce n’était qu’une arnaque de plus.
-TEST: Rien de tout ceci n’entre {{en ligne de conte}}.
-TEST: la cour des {{contes}} publie un nouveau rapport.
-TEST: Ils sont encore tous deux loin du {{conte}}.
-TEST: elle travaille à son propre {{comte}}
-TEST: Elle a l’impression d’être laissée pour {{comte}}.
-TEST: C’est un règlement de {{comte}} entre voyous.
-TEST: ils ont fait un relevé de {{comte}}
-TEST: on va lui régler son {{conte}}, à cet enculé.
-TEST: tout {{conte}} fait, ça reste un salopard.
+TEST: il s’en est tiré à bon {{conte}}.                                     ->> compte
+TEST: à ce {{conte-là}}, il ne va pas faire long feu.                       ->> compte-là
+TEST: mon {{comte}} bancaire est encore à sec.                              ->> compte|comptes
+TEST: à {{conte}} d’auteur                                                  ->> compte
+TEST: {{comte}} tenu du dysfonctionnement du moteur                         ->> compte
+TEST: il nous livre au {{conte goutte}}                                     ->> compte-gouttes
+TEST: mais {{en fin de comte}}, ce n’était qu’une arnaque de plus.          ->> en fin de compte
+TEST: Rien de tout ceci n’entre {{en ligne de conte}}.                      ->> en ligne de compte
+TEST: la cour des {{contes}} publie un nouveau rapport.                     ->> comptes
+TEST: Ils sont encore tous deux loin du {{conte}}.                          ->> compte
+TEST: elle travaille à son propre {{comte}}                                 ->> compte
+TEST: Elle a l’impression d’être laissée pour {{comte}}.                    ->> compte
+TEST: C’est un règlement de {{comte}} entre voyous.                         ->> comptes
+TEST: ils ont fait un relevé de {{comte}}                                   ->> compte
+TEST: on va lui régler son {{conte}}, à cet enculé.                         ->> compte
+TEST: tout {{conte}} fait, ça reste un salopard.                            ->> compte
 
 
 __conf_conte__
@@ -10211,9 +10224,12 @@ __conf_dès_des_dés__
         <<- /conf/ not value(<1, "|un|une|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
         -1>> dès                                                                                    && Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|nous|vous|on|ceux|celles|celui|celle]
+    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|nous|vous|on]
         <<- /conf/ not \1.isupper() and not \2.isupper() -1>> de|dès                                && Confusion probable. Pour la préposition, écrivez “dès” ou “de”.
         <<- /conf/ __also__ and hasSimil(\2, ":[NA].*:[pi]") -2>> =suggSimil(\2, ":[NA].*:[pi]", True)      && Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    des [celui|celui-ci|celui-là|celle|celle-ci|celle-là|ceux|ceux-ci|ceux-là|celles|celles-ci|celles-là]
+        <<- /conf/ not \1.isupper() and not \2.isupper() -1>> de                                   && Confusion probable. Pour la préposition, écrivez “de”.
 
     des ~^\d{2,5}$  [<end>|,|)]
     des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
@@ -10245,27 +10261,28 @@ __conf_dès_des_dés__
     les dès
         <<- /conf/ not morph(<1, ":E") -2>> dés                                                     && Confusion probable. Pour la couture ou les jeux, écrivez “dé”.|https://fr.wiktionary.org/wiki/d%C3%A9
 
-TEST: il ne sait rien {{des}} l’affaire en cours.
-TEST: il faut {{des}} à présent s’en souvenir.
-TEST: {{Des}} à présent
-TEST: {{Dés}} à présent
-TEST: {{dés}} qu’il fait beau, je sors.
-TEST: Jette quelques {{des}} sur la table et voyons.
-TEST: j’en ai marre de ces {{dès}}.
-TEST: Les {{dès}} {{sont}} jetés.
-TEST: J’ai acheté des {{dès}} à jouer.
-TEST: J’apporte mes {{dès}}.
-TEST: ils jouent aux {{des}}.
-TEST: Dieu ne joue pas aux {{dès}}.
-TEST: {{Des}} 1980, le pays était en crise.
-TEST: {{Des}} dix-huit ans.
-TEST: {{Des}} 4 ans.
-TEST: Viens {{des}} 9 heures
-TEST: {{Des}} l’arrivée, ça a commencé à dégénérer
-TEST: c’était {{dés}} trois heures.
-TEST: {{dés}} que nous sommes partis, il a piqué une crise
+TEST: il ne sait rien {{des}} l’affaire en cours.                           ->> dès
+TEST: il faut {{des}} à présent s’en souvenir.                              ->> dès
+TEST: {{Des}} à présent                                                     ->> Dès
+TEST: {{Dés}} à présent                                                     ->> Dès
+TEST: {{dés}} qu’il fait beau, je sors.                                     ->> dès
+TEST: {{des}} ceux-ci, rien à tirer                                         ->> de
+TEST: Jette quelques {{des}} sur la table et voyons.                        ->> dés
+TEST: j’en ai marre de ces {{dès}}.                                         ->> dés
+TEST: Les {{dès}} {{sont}} jetés.                                           ->> dés|||son
+TEST: J’ai acheté des {{dès}} à jouer.                                      ->> dés
+TEST: J’apporte mes {{dès}}.                                                ->> dés
+TEST: ils jouent aux {{des}}.                                               ->> dés
+TEST: Dieu ne joue pas aux {{dès}}.                                         ->> dés
+TEST: jette leurs {{dès}} sans attendre.                                    ->> dés
+TEST: {{Des}} 1980, le pays était en crise.                                 ->> Dès
+TEST: {{Des}} dix-huit ans.                                                 ->> Dès
+TEST: {{Des}} 4 ans.                                                        ->> Dès
+TEST: Viens {{des}} 9 heures                                                ->> dès
+TEST: {{Des}} l’arrivée, ça a commencé à dégénérer                          ->> Dès
+TEST: c’était {{dés}} trois heures.                                         ->> dès
+TEST: {{dés}} que nous sommes partis, il a piqué une crise                  ->> dès
 TEST: {{des}} {{les}} premiers symptômes, appelez-moi
-TEST: jette leurs {{dès}} sans attendre.
 TEST: Les dés sont jetés.
 TEST: C’est un des leurs.
 TEST: Plusieurs dès qu’on en saura plus.
@@ -10329,6 +10346,7 @@ TEST: ils font ça en {{publique}}.
 
 # différend / différent
 __conf_différent_différend__
+    ## différent
     >différend
         <<- /conf/ morph(<1, ":W") ->> =\1.replace("nd", "nt").replace("ND", "NT")  && Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez “différent”.
 
@@ -10339,6 +10357,7 @@ __conf_différent_différend__
     [mon|notre|votre|leur]  différent  <end>
         <<- /conf/ -2>> différend                                       && Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
+    ## différend
     [ton|son]  différent  @:[GVX]¬:[NAQ]
     [ton|son]  différent  <end>
         <<- /conf/ not morph(<1, ":D") -2>> différend                   && Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
@@ -10358,27 +10377,29 @@ __conf_différent_différend__
     >être  pas  si      >différend
         <<- /conf/ --1>> =\-1.replace("nd", "nt").replace("ND", "NT")   && Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
-TEST: Très {{différends}} de nous, ces gens-là !
+TEST: Très {{différends}} de nous, ces gens-là !                        ->> différents
 TEST: {{différends}} hommes                                             ->> différents
-TEST: Régler votre {{différent}}.
-TEST: Notre {{différent}} avec eux perdure.
-TEST: son {{différent}} avec lui n’en finit pas.
-TEST: Un {{différent}} peut toujours se résoudre.
-TEST: J’en ai marre de leurs {{différents}}.
-TEST: Il y a des {{différents}} que nul ne saurait résoudre.
-TEST: ce qui l’occupe, c’est son {{différent}} avec eux.
-TEST: Ils sont pas si {{différends}} de nous.
+TEST: Régler votre {{différent}}.                                       ->> différend
+TEST: Notre {{différent}} avec eux perdure.                             ->> différend
+TEST: son {{différent}} avec lui n’en finit pas.                        ->> différend
+TEST: Un {{différent}} peut toujours se résoudre.                       ->> différend
+TEST: J’en ai marre de leurs {{différents}}.                            ->> différends
+TEST: Il y a des {{différents}} que nul ne saurait résoudre.            ->> différends
+TEST: ce qui l’occupe, c’est son {{différent}} avec eux.                ->> différend
+TEST: Ils sont pas si {{différends}} de nous.                           ->> différents
+TEST: nous avons eu des {{différents}} par le passé                     ->> différends
 TEST: Cette fois, il parla avec un ton différent.
 TEST: J’en veux un différent.
 TEST: Il en veut des différents.
 TEST: dans ses différents ouvrages
 TEST: dans ses différents postes gouvernementaux
+TEST: un son différent de tout ce qu’on connaît
 
 
 # dites / dîtes
 __conf_dites_dîtes__
     *WORD  dîtes  @:A¬:G
-        <<- /conf/ morph(\1, ":[NA].*:[fe]:[pi]", ":G") -2>> dites      && Confusion probable : “dîtes” est une forme verbale de dire au subjonctif. Pour l’adjectif, écrivez “dites”.
+        <<- /conf/ morph(\1, ":[NA].*:[fe]:[pi]", ":G") -2>> dites      && Confusion probable : “dîtes” est une forme verbale de “dire” au subjonctif. Pour l’adjectif, écrivez “dites”.
 
 TEST: Des armes {{dîtes}} létales.                                          ->> dites
 TEST: usage débridé des armes dites létales
@@ -10744,7 +10765,7 @@ TEST: versez du caramel sur le flan.
 
 # en son for intérieur / fort
 __conf_for_intérieur__
-    [en|dans] [mon|ton|son|leur|notre|votre] [fort|forts|fore|fores|fors] [>intérieur]
+    [en|dans] [mon|ton|son|leur|notre|votre] [fort+s|fore+s|fors] [>intérieur]
         <<- /conf/ -3:4>> for intérieur                                     && Confusion : “for” vient du mot latin “forum” et le “for intérieur” évoque la conscience individuelle.
 
 TEST: En mon {{fort intérieur}}, je le crois.                           ->> for intérieur
@@ -11691,6 +11712,7 @@ __conf_pare_balle__
         <<- /conf/ -2:3>> pare-balles                                       && Confusion. Un gilet pare-balles, c’est-à-dire qui pare les balles.
 
 TEST: Elle a enfilé son gilet {{par balle}}.
+TEST: un gilet pare-balles
 
 
 # pas / par
@@ -11708,16 +11730,35 @@ __conf_pas_par__
     pas rapport [à|aux]
         <<- /conf/ not morph(<1, ":V") -1>> par                             && Confusion possible. Voulez-vous écrire “par rapport \3” ?
 
-    en [commençant|finissant] pas
-        <<- /conf/ not value(<1, "|n’|") --1>> par                          && Erreur de frappe. Voulez-vous écrire “par”
+    >commencer  pas  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    >commencer  pas  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    >commencer  pas  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    >commencer  pas  ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
+        <<- /conf/ morph(<1, ":Os|<start>|>,") -2>> par         && Confusion probable : “pas” est un adverbe de négation. Si “\-1” est l’action par laquelle il faut commencer, écrivez “par”.
 
-TEST: je ne sais {{pa}}                                                     ->> pas
-TEST: Il ne le deviendra {{par}}.                                           ->> pas
-TEST: ne viens {{par}}, c’est dangereux.
-TEST: {{pas}} rapport à notre situation                                     ->> par
-TEST: il y a de quoi dire, en commençant {{pas}} les mensonges devant la juge sur la date de signature des contrats.
+    en commençant pas
+        <<- /conf/ not value(<1, "|n’|") --1>> par              && Confusion probable : “pas” est un adverbe de négation. Écrivez “par”.
+
+    >finir  pas  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
+    >finir  pas  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
+    >finir  pas  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             $:Y
+    >finir  pas  ?[ne|n’]¿   [lui|leur|y]                    en                          $:Y
+        <<- /conf/ morph(<1, ":Os|<start>|>,") -2>> par         && Confusion probable : “pas” est un adverbe de négation. Si “\-1” est l’action par laquelle il faut finir, écrivez “par”.
+
+    en finissant pas
+        <<- /conf/ not value(<1, "|n’|") --1>> par              && Confusion probable : “pas” est un adverbe de négation. Écrivez “par”.
+
+TEST: je ne sais {{pa}}                                                                                                 ->> pas
+TEST: Il ne le deviendra {{par}}.                                                                                       ->> pas
+TEST: ne viens {{par}}, c’est dangereux.                                                                                ->> pas
+TEST: {{pas}} rapport à notre situation                                                                                 ->> par
+TEST: elle commence {{pas}} flatter l’orgueil des clients                                                               ->> par
+TEST: ils finiront {{pas}} s’en rendre compte                                                                           ->> par
+TEST: il y a de quoi dire, en commençant {{pas}} les mensonges devant la juge sur la date de signature des contrats.    ->> par
+TEST: en finissant {{pas}} la tournée des bars                                                                          ->> par
 TEST: il ne tient par contre que grâce à nous
 TEST: elle ne savait par qui passer pour arriver à ses fins.
+TEST: les négociations n’en finissant pas, je suis parti.
 
 
 # par le bout du nez
@@ -13476,7 +13517,6 @@ __conf_voie_voix_vois_voit__
 
     [>entendre|>écouter] ?@:[WX]¿ $:D [>voie|vois|voit]
     [>donner|>redonner] ?@:[WX]¿ [de|d’] la >voie
-    >faire entendre [la|cette|ma|ta|sa|notre|nos|votre|vos|leur+s] [>voie|vois|voit]
         <<- /conf/ --1>> voix       && Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|https://fr.wiktionary.org/wiki/voix
 
     >avoir ?@:[WX]¿ [>voie|vois|voit] au chapitre
@@ -15888,6 +15928,7 @@ __purge_locutions__
     à mains nues
     à maints égards
     à marche forcée
+    à marée [basse|haute]
     à même le sol
     à merveille
     à [mi-course|mi-distance|mi-temps]
@@ -15905,6 +15946,8 @@ __purge_locutions__
     à n’ en [pas|point] douter
     à n’ en plus finir
     à n’importe quel prix
+    à nul autre pareil
+    à nulle autre pareille
     à parler [franc|franchement|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
@@ -16035,7 +16078,9 @@ __purge_locutions__
     au saut du lit
     au second plan
     au sens [figuré|large|littéral|propre]
-    au sens littéral du terme
+    au sens figuré comme au sens [littéral|propre]
+    au sens [littéral|propre] comme au sens figuré
+    au sens [étroit|figuré|large|littéral] du terme
     au surplus
     au-delà du descriptible
     ?tout¿ aussi
@@ -17599,6 +17644,7 @@ __substantifs_multi_mots__
     >coup d’ un soir
     >coup du sort
     >coupage [de|d’] cheveux en quatre
+    >courant d’ air
     >coureur [de|d’] >jupon
     >courroie [de|d’] transmission
     >course contre la montre
@@ -17686,6 +17732,7 @@ __substantifs_multi_mots__
     >faiblesse [de|d’] caractère
     >faisceau [de|d’] présomptions
     faits et gestes
+    >famille d’ accueil
     farces et attrapes
     >fard à [joues|paupières]
     >faute d’ orthographe
@@ -17718,6 +17765,7 @@ __substantifs_multi_mots__
     >figure de proue
     >fin [de] non-recevoir
     >fleuve à sec
+    >flic en civil
     >flocon [de|d’] neige ?électronique¿
     >foire d’ >empoigne
     fonds d’ investissement
@@ -17740,6 +17788,7 @@ __substantifs_multi_mots__
     >frayeur [de|d’] tous les diables
     >frein à [>tambour|main]
     >frousse [de|d’] tous les diables
+    >fruit [de|d’] mer
     >fuite en avant
     >fusée [de|d’] détresse
     >fusil à [chasse|lunette|plomb|pompe]
@@ -18672,15 +18721,9 @@ __purge_adverbes_de_négation__
     pas ?[moins|plus]¿
         <<- morph(<1, ":[VW]", ":G") ~>> *
 
-    rien
-        <<- morph(<1, ":V") and not value(>1, "|qui|de|d’|") ~>> *
-
     /_VCint_  [pas|point|bien|ensemble]
     /_VCint_  pas ?[moins|plus]¿
         <<- ~2>> *
-
-    /_VCint_  rien
-        <<- not value(>1, "|qui|de|d’|") ~2>> *
 
 
 __purge_avant_adjectifs_adverbes__
@@ -18755,7 +18798,7 @@ __purge_adverbes__
     complètement
         <<- not morph(<1, ":D.*:m") ~>> *
 
-    ~.ment$  ?[parlant|pas|rien]¿
+    ~.ment$  ?[parlant|pas]¿
         <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
 
 
@@ -19411,6 +19454,17 @@ __da_participe_passé__
 
     >être   $:Q
         <<- not value(\1, "|être|êtres|") and not morph(<1, ":D") =>> rewrite(\2, ":A", "")
+
+
+__purge_rien__
+    rien  $:Q  [d’|de]
+        <<- /2>> _rien_
+
+    rien
+        <<- morph(<1, ":V") and not value(>1, "|qui|de|d’|ne|n’|") ~>> *
+
+    /_VCint_  rien
+        <<- not value(>1, "|qui|de|d’|") ~2>> *
 
 
 __purge_vite__
@@ -21304,7 +21358,7 @@ __conf_fond_fonds_fonts__
         <<- /conf/ -3>> fonds                   && Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
     à [fond|fonts] [perdu+ses]
-        <<- /conf/ ->> à fonds perdus           && Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
+        <<- /loc/ ->> à fonds perdus            && Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
     [fond|fonts] [>monétaire|spéculatif+s|>international|souverain+s]
     [fond|fonts] [de|d’] [commerce|garantie|roulement|pension|placement|retraite|roulement|solidarité]
@@ -21314,16 +21368,17 @@ __conf_fond_fonds_fonts__
     fonds baptismaux
         <<- /conf/ -1>> fonts                   && Confusion. Écrivez “fonts”, qui vient du mot latin ‹fons› et signifie « fontaine, source ».
 
-    [un|le|du|ce] [fonds|fonts] [de|d’] ?[la|l’]¿ [assiette|bouteille|cuve|casserolle|marmite|poêle]
-    [un|le|du|ce] [fonds|fonts] du [seau|tupperware|wok]
+    [un|le|du|ce|au+x] [fonds|fonts] [de|d’] ?[la|l’]¿ [abîme|abime|abysse|assiette|bouteille|crevasse|cuve|casserolle|marmite|poêle]
+    [un|le|du|ce|au+x] [fonds|fonts] du [puits|ravin|seau|trou|tupperware|wok]
         <<- /conf/ -2>> fond                    && Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
-TEST: faire une levée de {{fond}}.
-TEST: jouer {{à fond perdu}}
-TEST: elle a vendu son {{fond}} de commerce
-TEST: il a reçu de l’argent d’un {{fond}} d’investissement
-TEST: les {{fonds}} baptismaux.
-TEST: le {{fonds}} de la cuve
+TEST: faire une levée de {{fond}}.                              ->> fonds
+TEST: jouer {{à fond perdu}}                                    ->> à fonds perdus
+TEST: elle a vendu son {{fond}} de commerce                     ->> fonds
+TEST: il est au {{fonds}} du trou                               ->> fond
+TEST: il a reçu de l’argent d’un {{fond}} d’investissement      ->> fonds
+TEST: les {{fonds}} baptismaux.                                 ->> fonts
+TEST: le {{fonds}} de la cuve                                   ->> fond
 
 
 # glaciaire / glacière
@@ -21843,8 +21898,9 @@ __conf_pas_par2__
     [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,|)]
         <<- /conf/ morph(\-3, ":V") --2>> pas                   && Confusion probable. Après “\1 \-3”, il est probable qu’il faille écrire l’adverbe de négation “pas” au lieu de la préposition “par”.
 
-TEST: Ils ne viendront probablement {{par}}…
-TEST: Elles ne s’en soucient {{par}} vraiment, quoi qu’elles en disent.
+TEST: Ils ne viendront probablement {{par}}…                                            ->> pas
+TEST: Elles ne s’en soucient {{par}} vraiment, quoi qu’elles en disent.                 ->> pas
+
 
 
 # partir en quenouille / vrille
@@ -22658,9 +22714,9 @@ __conf_vie_vis_vit__
     vis [de|d’] [>aventure|>crime|>douleur|>labeur|>misère|>peine|>renoncement]
     vis sans [>amour|>ambition|envergure|grandeur|>passion]
         <<- /conf/ morph(<1, ":[DA].*:[fe]") -1>> vie
-        && Confusion probable. Une vis est une pièce mécanique destinée à être vissée. Si vous parlez d’existence, écrivez “vie”.|https://fr.wiktionary.org/wiki/ne_pas_donner_signe_de_vie
+        && Confusion probable. Une vis est une pièce mécanique destinée à être vissée. Si vous parlez d’existence, écrivez “vie”.|https://fr.wiktionary.org/wiki/vie
 
-    >donner  [signe+s]  [de|d’]  %vie!
+    >donner  [signe+s]  [de|d’]  [vis|vit|vies]
         <<- /conf/ --1>> vie                                    && Locution “donner signe de vie”.|https://fr.wiktionary.org/wiki/ne_pas_donner_signe_de_vie
 
     !! >question [de|d’] vie [ou|et] [de|d’] mort ¡¡
@@ -22671,11 +22727,18 @@ __conf_vie_vis_vit__
     [droit+s] [de|d’] [vis|vit|vie+s] et de [mort+s|mors|mord+s|maure+s]
         <<- /conf/ -2:0>> de vie et de mort                     && Locution “avoir droit de vie et de mort”.|https://fr.wiktionary.org/wiki/droit_de_vie_et_de_mort
 
+    ## vit
+    [<start>|,|(]  [un|le|l’|ce|cet|mon|ton|son|notre|votre|leur|du]  *WORD  vie
+        <<- /conf/ morph(\3, ":N.*:[me]:[si]", ":[GAVW]") and not tag(\-1, "egxmot")
+        --1>> vit                                               && Confusion probable. Le verbe “vivre” s’écrit “vit” à la 3ᵉ personne du singulier.
+
 TEST: elle a mené une {{vis}} insignifiante                     ->> vie
 TEST: quelle {{vis}} incroyable !                               ->> vie
 TEST: elle donne rarement signe de {{vis}}                      ->> vie
 TEST: une question {{de vie ou de mors}}                        ->> de vie ou de mort
 TEST: avoir droit {{de vis et de mors}}                         ->> de vie et de mort
+TEST: l’homme {{vie}} ses derniers instants                     ->> vit
+TEST: le sortilège “vie de merde” n’eut aucun effet
 TEST: c’est comme toujours une question de vie ou de mort
 TEST: il avait droit de vie et de mort sur tous.
 TEST: donne signe de vie plus souvent, s’il te plaît.
@@ -25619,7 +25682,7 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             && Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
-        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/") and not morph(\2, ">(?:fieffer|sacrer)/")
+        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/") and not morph(\2, ">(?:fieffer|sacrer)/") and not tag(<1, "_rien_")
             and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tagbefore(\1, "_ceque_")
         -2>> =suggVerbInfi(\2)                                                          && Le verbe devrait être à l’infinitif.
@@ -25638,6 +25701,7 @@ TEST: ils étaient susceptibles de m’y {{trouvaient}}
 TEST: sa façon de {{nettoyez}} était inefficace.
 TEST: elle a délibérément omis de les {{inclurent}}.
 TEST: d’{{mangé}} je ne suis pas capable
+TEST: elles n’ont rien touché de souillé
 TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: de leur plus grand fils, ils attendent beaucoup.
@@ -29283,6 +29347,7 @@ TEST: celle-ci avait {{tenue}} compte de notre passé                           
 TEST: elle sait que j’ai {{agis}} comme il le fallait                               ->> agi
 TEST: que j’ai {{prit}} le temps de le lui expliquer                                ->> pris
 TEST: pourquoi je n’y ai pas {{pensais}} plus tôt ?                                 ->> pensé
+TEST: il n’a absolument rien {{négligés}}                                           ->> négligé
 TEST: Ils avaient barre sur lui.
 TEST: il y a risque de brûlures
 TEST: il y a faute, il y a erreur
