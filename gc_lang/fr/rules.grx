@@ -2106,6 +2106,26 @@ __immunités_termes_grammaticaux__
     [les|des|aux] signes            tels que    ‹          *SIGN  ›               et  ‹          *SIGN  ›
         <<- ~3:0>> *
 
+    [la|une] lettre                 ?comme¿     [“|”|"]    *WORD  [“|”|"]
+    [la|une] lettre                 ?comme¿     «          *WORD  »
+    [la|une] lettre                 ?comme¿     [‘|'|’|`]  *WORD  [‘|'|’|`]
+    [la|une] lettre                 ?comme¿     ‹          *WORD  ›
+    [la|une] lettre                 telle que   [“|”|"]    *WORD  [“|”|"]
+    [la|une] lettre                 telle que   «          *WORD  »
+    [la|une] lettre                 telle que   [‘|'|’|`]  *WORD  [‘|'|’|`]
+    [la|une] lettre                 telle que   ‹          *WORD  ›
+        <<- \-2.__len__() == 1 ~3:0>> *
+
+    [les|des|aux] lettres           ?comme¿     [“|”|"]    *WORD  [“|”|"]    et  [“|”|"]    *WORD  [“|”|"]
+    [les|des|aux] lettres           ?comme¿     «          *WORD  »          et  «          *WORD  »
+    [les|des|aux] lettres           ?comme¿     [‘|'|’|`]  *WORD  [‘|'|’|`]  et  [‘|'|’|`]  *WORD  [‘|'|’|`]
+    [les|des|aux] lettres           ?comme¿     ‹          *WORD  ›          et  ‹          *WORD  ›
+    [les|des|aux] lettres           telles que  [“|”|"]    *WORD  [“|”|"]    et  [“|”|"]    *WORD  [“|”|"]
+    [les|des|aux] lettres           telles que  «          *WORD  »          et  «          *WORD  »
+    [les|des|aux] lettres           telles que  [‘|'|’|`]  *WORD  [‘|'|’|`]  et  [‘|'|’|`]  *WORD  [‘|'|’|`]
+    [les|des|aux] lettres           telles que  ‹          *WORD  ›          et  ‹          *WORD  ›
+        <<- \-2.__len__() == 1 and \-6.__len__() == 1 ~3:0>> *
+
     [le|un|du|au] participe passé   ?comme¿     [“|”|"]    $:Q  [“|”|"]
     [le|un|du|au] participe passé   ?comme¿     «          $:Q  »
     [le|un|du|au] participe passé   ?comme¿     [‘|'|’|`]  $:Q  [‘|'|’|`]
@@ -3129,12 +3149,11 @@ __da_sans__
     sans [que|qu’]
         <<- =>> select(\1, ":C")
 
-
-
-__da_sous_sur__
+__da_sous__
     sous @:[BD]
         <<- not morph(<1, ":[DA].*:[me]:[pi]") =>> select(\1, ":R")
 
+__da_sur__
     sur @:[BD]
         <<- not morph(<1, ":(?:V[0123]e|[DN].*:[me]:[si])") =>> select(\1, ":R")
 
@@ -3985,14 +4004,6 @@ __ocr_contre__
 TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
 
 
-# de / da
-__ocr_de__
-    da
-        <<- /ocr/ ->> de                                                                            && Erreur de numérisation ?
-
-TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
-
-
 # dans / bans / clans
 __ocr_dans__
     bans
@@ -4019,8 +4030,14 @@ TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
 TEST: __ocr__ cette {{daine}} élégamment vêtue.
 
 
-# dé / de / dés / des / dès / dos
+# de / dé / da / dés / des / dès / dos / das
 __ocr_de_des__
+    da
+        <<- /ocr/ ->> de                                                                            && Erreur de numérisation ?
+
+    das
+        <<- /ocr/ ->> des                                                                           && Erreur de numérisation ?
+
     dé
         <<- /ocr/ not morph(<1, ":D.*:m:[si]") ->> de                                               && Erreur de numérisation ?
 
@@ -4033,6 +4050,8 @@ __ocr_de_des__
     dos
         <<- /ocr/ not morph(<1, ":D.*:[me]") ->> des|dès                                            && Erreur de numérisation ?
 
+TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
+TEST: __ocr__ le nombre {{das}} ennemis semblait croître chaque minute
 TEST: __ocr__ {{dé}} gros camions circulaient toute la journée
 TEST: __ocr__ {{dés}} fois, ça ne passe pas
 TEST: __ocr__ {{do}} bon matin.
@@ -9322,6 +9341,7 @@ __conf_aile_elle__
 
     [des|mes|tes|ses|ces|nos|vos] ([elle+s])
     les ([elle+s]) [de|des|du|d’]
+    >brûler [les|leurs] ([elle+s])
     [sous|sur] leurs ([elle+s]) [<end>|,|$:R]
         <<- /conf/ -1>> ailes
         && Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
@@ -15890,6 +15910,7 @@ __purge_locutions__
     à juste [raison|titre]
     à l’ [accoutumée|amiable|arrache|arraché|arrachée|avance|avenant|aveuglette|emporte-pièce|envi|évidence|étouffée|improviste|inverse|unanimité|unisson]
     à l’ air libre
+    à l’ autre bout du fil
     à l’ avenir ?[incertain|prometteur]¿
     à l’ échelon [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
     à l’ échelle [locale|cantonale|départementale|régionale|nationale|européenne|américaine|africaine|asiatique|continentale|internationale|planétaire|galactique|universelle]
@@ -16431,6 +16452,7 @@ __purge_locutions__
     en ?[assez|si|très|trop]¿ petit nombre
     en place publique
     en plein [air|cœur|essor|marasme|jour|visage]
+    en plein dans le mille
     en pleine [face|gueule|figure|forme|nuit|poire|tronche]
     en perte [de|d’] vitesse
     en ?[assez|si|très|trop]¿ [piteux|piètre] état
@@ -17301,6 +17323,16 @@ __purge_conditionnelle__
     , entre [tous|toutes] ,
         <<- ~>> *
 
+    jusqu’ à ce que         je                  @:V[123]_i_.*:S.*:1s
+    jusqu’ à ce que         tu                  @:V[123]_i_.*:S.*:2s
+    jusqu’ à ce qu’         [il|elle|on|iel]    @:V[123]_i_.*:S.*:3s
+    jusqu’ à ce [que|qu’]   $:M                 @:V[123]_i_.*:S.*:3s
+    jusqu’ à ce que         nous                @:V[123]_i_.*:S.*:1p
+    jusqu’ à ce que         vous                @:V[123]_i_.*:S.*:2p
+    jusqu’ à ce qu’         [ils|elles|iels]    @:V[123]_i_.*:S.*:3p
+    jusqu’ à ce [que|qu’]   $:M  et  $:M        @:V[123]_i_.*:S.*:3p
+        <<- ~>> *
+
     juste à temps
         <<- not morph(<1, ":D") ~>> *
 
@@ -17986,6 +18018,7 @@ __substantifs_multi_mots__
     perspectives d’ avenir
     >perte [de|d’] temps ?précieux¿
     >peur [de|d’] tous les diables
+    >phase [I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV|XV|XVI|XVII|XVIII|XIX|XX|XXI|XXII|XXIII|XXIV|XXV|XXVI|XXVII|XXVIII|XXIX|XXX]
     >piano à queue
     >pièce à conviction
     >pièce [de|d’] [théâtre|monnaie|rechange]
@@ -18047,6 +18080,7 @@ __substantifs_multi_mots__
     >qualité [de|d’] vie ?[campagnarde|étudiante|urbaine]¿
     >quartier d’ hiver
     quelqu’un d’ autre
+    quelqu’un [de|d’] confiance
     >question [de|d’] vie ou [de|d’] mort
     >rampe d’ accès
     >rampe [de|d’] lancement
@@ -18148,6 +18182,7 @@ __substantifs_multi_mots__
     >tempête [de|d’] neige
     tenants et aboutissants
     >ténor du barreau
+    >tentative [de|d’] suicide
     >tenue [de|d’] rechange
     >terrain [de|d’] [atterrissage|chasse|entente|golf]
     >tête à claques
@@ -19714,6 +19749,12 @@ TEST: quitte à en souffrir et fût-ce au prix de sa vie
 TEST: – Si fait, je vous connais bien. »
 TEST: l’étrangère passive qu’elle était devenue ressemblait aux gravures de mode
 TEST: c’est de Monsieur Charles Beaudelaire
+TEST: nous avons tous nos limites
+TEST: on a tous nos limites
+TEST: on a tous une envie inassouvie
+TEST: on a tous le rythme dans la peau
+TEST: on a tous la haine
+
 
 
 @@@@
@@ -20381,14 +20422,21 @@ __conf_bitte_bite__
     [ma|ta|sa|notre|votre|nos|vos|leur|leurs|grande+s|grosse+s|petite+s|longue+s|>énorme|>minuscule|>sale] >bitte
     >être [une|des] >bitte
     [>aimer|>adorer|>astiquer|>avaler|>bouffer|>branler|>fourrer|>lécher|>mettre|>mordre|>pomper|>sucer] $:D >bitte
+    >faire >chier la >bitte
         <<- /conf/ --1>> =\-1.replace("itte", "ite")                    && Confusion probable. Si vous parlez de pénis, écrivez “bite” (terme argotique).|https://fr.wiktionary.org/wiki/bite
 
     >bitte [>circoncis|>dégueulasse|>dur|>mou|>puant|>raide|>répugnant|>sale|vidé+ses]
         <<- /conf/ -1>> =\1.replace("itte", "ite")                      && Confusion probable. Si vous parlez de pénis, écrivez “bite” (terme argotique).|https://fr.wiktionary.org/wiki/bite
 
-TEST: les mouettes sur les {{bites}} d’amarrage.
-TEST: on se fout de savoir ce qu’ils font avec leurs {{bittes}}.
-TEST: il m’a mis sous le nez une {{bitte}} répugnante.
+    !! la bite [à|a] l’ air ¡¡
+    [la|là] [>bitte|bite+s] [a|à|as] l’ [air+s|>ère|>hère|erre+s|>aire]
+        <<- /loc/ ->> la bite à l’air                                   && Confusion. Locution “la bite à l’air”.
+
+TEST: les mouettes sur les {{bites}} d’amarrage.                        ->> bittes
+TEST: on se fout de savoir ce qu’ils font avec leurs {{bittes}}.        ->> bites
+TEST: il m’a mis sous le nez une {{bitte}} répugnante.                  ->> bite
+TEST: {{la bitte a l’ère}}                                              ->> la bite à l’air
+TEST: il s’avança, la bite à l’air, inconscient de sa nudité.
 
 
 # bonne et due forme / bonnet difforme / bon uniforme
@@ -24211,81 +24259,53 @@ TEST: ils trouvent ça de plus en plus {{idiots}}              ->> idiot
 
 __gn_seul_e_s_det_substantifs_nombre__
     [<start>|,|(]  [seul|seule]  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:[pi]¬:G
-    [<start>|,|(]  [seul|seule]  les  @:[NA].*:[pi]¬:(?:G|3s)
-        <<- /gn/ -2>> \2s                                                           && Si “\2” se réfère au substantif “\4”, il faut le mettre au pluriel.
+    [<start>|,|(]  [seul|seule]  les                                                                                         @:[NA].*:[pi]¬:(?:G|3s)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/")
+        -2>> \2s                                                                    && Si “\2” se réfère au substantif “\4”, il faut le mettre au pluriel.
 
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         @:3s¬*
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  @:3s¬*
-        <<- /gn/ -2>> =\2[:-1]                                                      && Si “\2” se réfère au substantif “\4”, il faut le mettre au singulier.
+    [<start>|,|(]  [seuls|seules]  [un|du|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G
+    [<start>|,|(]  [seuls|seules]  [le|la|l’]                                                               @:[NA].*:[si]¬:(?:G|3s)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/") and not after(" et ")
+        -2>> =\2[:-1]                                                      && Si “\2” se réfère au substantif “\4”, il faut le mettre au singulier.
 
-TEST: {{seule}} ces femmes peuvent nous aider
-TEST: {{seul}} nos hommes sauront résoudre ce problème
-TEST: {{seuls}} ce chien sait détecter cette substance.
-TEST: {{seules}} cette chatte sut deviner le piège.
+TEST: {{seule}} ces femmes peuvent nous aider                                                       ->> seules
+TEST: {{seul}} nos hommes sauront résoudre ce problème                                              ->> seuls
+TEST: {{seuls}} ce chien sait détecter cette substance.                                             ->> seul
+TEST: {{seules}} cette chatte sut deviner le piège.                                                 ->> seule
+TEST: Seuls le patron et le vieux Félix disposent d’une crèche individuelle
 
 
 __gn_seul_e_s_det_substantifs_genre__
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        @:3s¬*
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  @:3s¬*
-        <<- /gn/ -2>> seule                                                         && Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
+    [<start>|,|(]  seul  [une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]
+    [<start>|,|(]  seul  [la|l’]                                                   @:[NA].*:f:[si]¬:(?:G|3s|m)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/")
+        -2>> seule                                                         && Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
 
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        @:3s¬*
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [lui|leur|y]    en                      @:3s¬:G
-    [<start>|,|(]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  @:3s¬*
-        <<- /gn/ -2>> seul                                                          && Si “\2” se réfère au substantif masculin “\4”, il faut le mettre au masculin.
+    [<start>|,|(]  seule  [un|du|ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]
+    [<start>|,|(]  seule  [le|l’]                                            @:[NA].*:m:[si]¬:(?:G|3s|f)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/")
+        -2>> seul                                                          && Si “\2” se réfère au substantif masculin “\4”, il faut le mettre au masculin.
 
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p¬:G
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]     @:3p¬:G
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]         @:3p¬:G
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [lui|leur|y]    en                      @:3p¬:G
-    [<start>|,|(]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        @:3p¬*
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p¬:G
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [nous|vous]     [le|la|l’|les|en|y]     @:3p¬:G
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les]  [lui|leur|en|y]         @:3p¬:G
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [lui|leur|y]    en                      @:3p¬:G
-    [<start>|,|(]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  @:3p¬*
-        <<- /gn/ -2>> seules                                                        && Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
+    [<start>|,|(]  seuls  [des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certaines|lesdites]  @:[NA].*:f:[pi]¬:[Gm]
+    [<start>|,|(]  seuls  les                                                                        @:[NA].*:f:[pi]¬:(?:G|3p|m)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/") and not after(" et ")
+        -2>> seules                                                        && Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
 
-    [<start>|,|(]  seules  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:m:[pi]¬:[Gf]
-    [<start>|,|(]  seules  les  @:[NA].*:m:[pi]¬:(?:G|3p|f)
-        <<- /gn/ -2>> seuls                                                         && Si “\2” se réfère au substantif masculin “\4”, il faut le mettre au masculin.
+    [<start>|,|(]  seules [des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|lesdits]    @:[NA].*:m:[pi]¬:[Gf]
+    [<start>|,|(]  seules les                                                                        @:[NA].*:m:[pi]¬:(?:G|3p|f)
+        <<- /gn/ not morph(\-1, ">(?:matin|matinée|après-midi|soir|soirée|nuit|jour|journée|semaine|mois|trimestre|semestre|année|décennie|siècle|millénaire)/")
+        -2>> seuls                                                         && Si “\2” se réfère au substantif masculin “\4”, il faut le mettre au masculin.
 
-TEST: {{seul}} cette partie peut nous aider                         ->> seule
-TEST: {{seule}} notre ordinateur serait assez puissant pour ça      ->> seul
-TEST: {{seuls}} vos forces suffirent                                ->> seules
-TEST: {{seules}} nos tests réussirent à la convaincre.              ->> seuls
-
+TEST: {{seul}} cette partie peut nous aider                                                         ->> seule
+TEST: {{seule}} notre ordinateur serait assez puissant pour ça                                      ->> seul
+TEST: {{seuls}} vos forces suffirent                                                                ->> seules
+TEST: {{seules}} nos tests réussirent à la convaincre.                                              ->> seuls
+TEST: {{seules}} des hommes et des ados costauds peuvent y parvenir                                 ->> seuls
+TEST: Jusqu’ici, {{seuls}} des informations industrielles ou commerciales avaient fuité
+TEST: seules des jours entiers, elles n’en pouvaient plus
+TEST: seule du matin au soir
+TEST: seuls le jour de Noël, c’est difficile
+TEST: seul la matinée du 13 à l’école, il ne pouvait être à l’autre bout de la ville
 
 
 !!
@@ -24330,6 +24350,45 @@ TEST: Bon schéma cinématique
 TEST: nécessité fait loi
 
 
+__gn_start_3m_et__
+    <start> *WORD et *WORD  @:N.*:m:s¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[me]:[si]|G|W)|;C") -2>> =suggMasSing(\2, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[me]:[si]|G|W)|;C") -4>> =suggMasSing(\4, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+    <start> *WORD et *WORD  @:N.*:f:s¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[fe]:[si]|G|W)|;C") -2>> =suggFemSing(\2, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[fe]:[si]|G|W)|;C") -4>> =suggFemSing(\4, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+    <start> *WORD et *WORD  @:N.*:e:s¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[si]|G|W)|;C") -2>> =suggSing(\2, True)                  && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[si]|G|W)|;C") -4>> =suggSing(\4, True)                  && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+    <start> *WORD et *WORD  @:N.*:m:p¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[me]:[pi]|G|W)|;C") -2>> =suggMasPlur(\2, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[me]:[pi]|G|W)|;C") -4>> =suggMasPlur(\4, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+    <start> *WORD et *WORD  @:N.*:f:p¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[fe]:[pi]|G|W)|;C") -2>> =suggFemPlur(\2, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[fe]:[pi]|G|W)|;C") -4>> =suggFemPlur(\4, True)           && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+    <start> *WORD et *WORD  @:N.*:e:p¬*
+        <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[pi]|G|W)|;C") -2>> =suggPlur(\2, True)                   && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[pi]|G|W)|;C") -4>> =suggPlur(\4, True)                   && Cet adjectif n’est pas accordé avec le nom “\-1”.
+
+TEST: {{petite}} et {{grande}} homme                            ->> petit|||grand
+TEST: {{bel}} et {{grand}} nation                               ->> belle|||grande
+TEST: {{stupides}} et {{intellectuels}} psychologue             ->> stupide|||intellectuel
+TEST: {{petite}} et {{grande}} hommes                           ->> petits|||grands
+TEST: {{bel}} et {{grand}} nations                              ->> belles|||grandes
+TEST: {{stupide}} et {{intellectuel}} psychologues              ->> stupides|||intellectuels
+
+
 ## Prépositions
 __gn_pfx_en_2m__
     en  @:[NA]¬*  @:[NA]¬*
@@ -24346,7 +24405,7 @@ TEST: en {{femme}} {{cultivées}}
 
 
 __gn_pfx_à_par_pour_sans_2m__
-    [à|par|pour|sans]  @:[NA]¬:Y  @:[NA]¬:G
+    [à|par|pour|sans]  @:[NA]¬:[YG]  @:[NA]¬:G
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3)                                                                      && Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 && Accord de genre erroné avec « \3 ».
@@ -24360,7 +24419,7 @@ TEST: une femme sans a priori
 
 
 __gn_pfx_de_2m__
-    [de|d’]  @:[NA]¬:Y  @:[NA]¬*
+    [de|d’]  @:[NA]¬:[YG]  @:[NA]¬*
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
             and not apposition(\2, \3) and not morph(<1, ":[NA]|>(?:et|ou)/")
         -3>> =switchGender(\3)                                                                      && Accord de genre erroné avec « \2 ».
@@ -24372,7 +24431,7 @@ __gn_pfx_de_2m__
 
 TEST: Ils ont de {{grandes}} {{oreille}}
 TEST: de {{grands}} {{homme}}
-TEST: de {{manière}} {{légal}}
+TEST: de manière {{légal}}
 TEST: de {{petite}} {{homme}}
 TEST: de {{pousse}} {{actif}}
 TEST: De {{bon}} {{conseils}}
@@ -24381,7 +24440,7 @@ TEST: Ces produits sont de {{belle}} {{qualités}}.
 
 
 __gn_pfx_sur_avec_après_2m__
-    [sur|avec|après]  @:[NA]¬:V0  @:[NA]¬*
+    [sur|avec|après]  @:[NA]¬:(?:V0|G)  @:[NA]¬*
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
             and not apposition(\2, \3) and morph(<1, ":[VRX]|<start>")
         -3>> =switchGender(\3)                                                                      && Accord de genre erroné avec « \2 ».
@@ -24399,15 +24458,18 @@ TEST: ils choisissent de devenir indépendants
 
 
 __gn_de_manière_façon_1m__
-    de  [manière|façon]  @:A.*:(?:m|f:p)¬:[GM]
+    [de|d’]  [manière|façon]  @:A.*:(?:m|f:p)¬:[GM]
+        <<- !2>>
         <<- /gn/ -3>> =suggFemSing(\3)                                                              && Accord erroné avec “\2” : l’adjectif devrait être au féminin singulier.
 
 TEST: il fit cela tans de fois et avec brio de manière {{élégant}}.
 TEST: elle s’y prit avec cet individu de façon {{charmant}}.
+TEST: de manière {{élégant}}
+TEST: de façon {{idiot}}
 
 
 ## Conjonctions
-__gn_pfx_conj_2m__
+__gn_nom_adj_2m__
     [que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’]  @:[NA]¬:(?:Y|V0|W|G)  @:[NA]¬*
         <<- /gn/ \3.islower() >>>
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
@@ -33073,7 +33135,6 @@ TEST: les nerfs du vieux Paul lâchent
 TEST: Il sortit de sa léthargie, épuisé et trempé
 TEST: Les étrangers étaient à ce point dévisagés qu’ils en devenaient invisibles.
 TEST: Si Leila Khaled est surtout connue pour des détournements ayant eu lieu il y a plus de 40 ans.
-TEST: Seuls le patron et le vieux Félix disposent d’une crèche individuelle
 TEST: Il ou elle ne conçoivent même plus qu’on veuille empiéter sur la liberté des choix.
 TEST: La fusion entre eux et les Espagnols arabisés affaiblit
 TEST: Le mépris dans sa voix et ses yeux le poignarda.
