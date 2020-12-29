@@ -74,8 +74,10 @@ class TestGrammarChecking (unittest.TestCase):
             print(f"No file <gc_test.txt> in <{spHere}>")
             return
         with open(spfParsingTest, "r", encoding="utf-8") as hSrc:
-            nError = 0
-            for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
+            nUnexpectedErrors = 0
+            nTestWithExpectedError = 0
+            nTestWithExpectedErrorAndSugg = 0
+            for i, sLine in enumerate( s for s in hSrc if not s.startswith("#") and s.strip() ):
                 sLineNum = sLine[:10].strip()
                 sLine = sLine[10:].strip()
                 sOption = None
@@ -85,10 +87,13 @@ class TestGrammarChecking (unittest.TestCase):
                     sOption = m.group(1)
                 if "->>" in sLine:
                     sErrorText, sExceptedSuggs = self._splitTestLine(sLine)
+                    nTestWithExpectedErrorAndSugg += 1
                 else:
                     sErrorText = sLine.strip()
                     sExceptedSuggs = ""
                 sExpectedErrors = self._getExpectedErrors(sErrorText)
+                if sExpectedErrors.strip() != "":
+                    nTestWithExpectedError += 1
                 sTextToCheck = sErrorText.replace("}}", "").replace("{{", "")
                 sFoundErrors, sListErr, sFoundSuggs = self._getFoundErrors(sTextToCheck, sOption)
                 # tests
@@ -98,7 +103,7 @@ class TestGrammarChecking (unittest.TestCase):
                           "\n  expected: " + sExpectedErrors + \
                           "\n  found:    " + sFoundErrors + \
                           "\n  errors:   \n" + sListErr)
-                    nError += 1
+                    nUnexpectedErrors += 1
                 elif sExceptedSuggs:
                     if sExceptedSuggs != sFoundSuggs:
                         print("\n# Line num: " + sLineNum + \
@@ -106,9 +111,10 @@ class TestGrammarChecking (unittest.TestCase):
                               "\n  expected: " + sExceptedSuggs + \
                               "\n  found:    " + sFoundSuggs + \
                               "\n  errors:   \n" + sListErr)
-                        nError += 1
-            if nError:
-                print("Unexpected errors:", nError)
+                        nUnexpectedErrors += 1
+            print("Tests with expected errors:", nTestWithExpectedError, " and suggestions:", nTestWithExpectedErrorAndSugg, ":", str(nTestWithExpectedErrorAndSugg/nTestWithExpectedError*100), "%")
+            if nUnexpectedErrors:
+                print("Unexpected errors:", nUnexpectedErrors)
         # untested rules
         aUntestedRules = set()
         for _, sOpt, sLineId, sRuleId in gc_engine.listRules():
@@ -152,7 +158,7 @@ class TestGrammarChecking (unittest.TestCase):
                 for dMsgErr in aGramErrs:
                     print("        error: {sLineId} / {sRuleId}  at  {nStart}:{nEnd}".format(**dMsgErr))
                 for dMsgErr in aSpellErrs:
-                    print("        spelling mistake: <{sValue}>  at {nStart}:{nEnd}".format(**dMsgErr))
+                    print("        spelling mistake: <{sValue}>  at  {nStart}:{nEnd}".format(**dMsgErr))
         return sRes, sListErr, "|||".join(lAllSugg)
 
     def _getExpectedErrors (self, sLine):
