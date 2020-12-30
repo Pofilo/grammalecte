@@ -15885,11 +15885,11 @@ __purge_locutions_distance__
     à [de|d’] nombreuses [lieues|verstes|UA|années-lumière] plus loin
     à [de|d’] nombreuses [lieues|verstes|UA|années-lumière] à la ronde
     à [de|d’] nombreuses [lieues|verstes|UA|années-lumière] aux alentours
-    à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] [de|d’] [distance|ici]
-    à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] en [amont|aval]
-    à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] plus loin
-    à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] à la ronde
-    à des [dizaines|douzaines|centaines|milliers|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] aux alentours
+    à des [dizaines|douzaines|centaines|milliers|millions|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] [de|d’] [distance|ici]
+    à des [dizaines|douzaines|centaines|milliers|millions|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] en [amont|aval]
+    à des [dizaines|douzaines|centaines|milliers|millions|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] plus loin
+    à des [dizaines|douzaines|centaines|milliers|millions|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] à la ronde
+    à des [dizaines|douzaines|centaines|milliers|millions|milliards] [de|d’] [nanomètres|millimètres|centimètres|décamètres|pas|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] aux alentours
     à un jet [de|d’] pierre [de|d’] [distance|ici]
     à un jet [de|d’] pierre en [amont|aval]
     à un jet [de|d’] pierre plus loin
@@ -23076,21 +23076,21 @@ __gn_la_1m__
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    && Accord de genre erroné : « \2 » est un déterminant féminin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggFemSing(\3)       && Accord de nombre erroné : « \3 » devrait être au singulier.
 
-TEST: c’est ennuyeux, la {{parties}} deux est ratée.
-TEST: j’en sais rien, {{la}} {{parti}} est foutu
-TEST: {{La}} Cameroun                                         ->> Le
-TEST: {{La}} mustang est un cheval sauvage.                   ->> Le
-TEST: {{La}} tableau.                                         ->> Le
-TEST: dans la {{parties}}                                     ->> partie
-TEST: je connais {{la}} {{parti}}
-TEST: la {{vilénies}} des mensonges                           ->> vilénie
-TEST: de {{la}} vin                                           ->> le
-TEST: {{la}} {{véhicule}}
-TEST: {{La}} {{pris}}
-TEST: {{Le}} {{commandeuse}}
-TEST: {{Le}} {{commanderesse}}
-TEST: {{le}} {{doctoresse}} est là.
-TEST: la force de la {{formes}} parfaite
+TEST: c’est ennuyeux, la {{parties}} deux est ratée.            ->> partie
+TEST: j’en sais rien, {{la}} {{parti}} est foutu                ->> le|||partie
+TEST: {{La}} Cameroun                                           ->> Le
+TEST: {{La}} mustang est un cheval sauvage.                     ->> Le
+TEST: {{La}} tableau.                                           ->> Le
+TEST: dans la {{parties}}                                       ->> partie
+TEST: je connais {{la}} {{parti}}                               ->> le|||partie
+TEST: la {{vilénies}} des mensonges                             ->> vilénie
+TEST: de {{la}} vin                                             ->> le
+TEST: {{la}} {{véhicule}}                                       ->> le|||véhiculée
+TEST: {{La}} {{pris}}                                           ->> Le|||prise
+TEST: {{Le}} {{commandeuse}}                                    ->> La|||commandeur
+TEST: {{Le}} {{commanderesse}}                                  ->> La|||commandeur
+TEST: {{le}} {{doctoresse}} est là.                             ->> la|||docteur
+TEST: la force de la {{formes}} parfaite                        ->> forme
 TEST: à la Richard Nixon Foundation
 TEST: à ne plus se laisser faire la fois d’après
 TEST: il pense à la fois où nous avons eu cet accident idiot.
@@ -23111,9 +23111,9 @@ __gn_la_2m__
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: La plus grande {{cinglé}}.
-TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.
-TEST: je voyais de la pluie {{noires}}
+TEST: La plus grande {{cinglé}}.                                                ->> cinglée
+TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.         ->> noire
+TEST: je voyais de la pluie {{noires}}                                          ->> noire
 TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
 TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
@@ -23147,10 +23147,10 @@ __gn_leur_1m__
         <<- /gn/ morph(\3, ":[NA].*:p", ":[siGW]") -2>> leurs                               && Accord de nombre erroné avec « \3 ».
         <<- /gn/ __also__ -3>> =suggSing(\3)                                                && Accord de nombre erroné : « \3 » devrait être au singulier.
 
-TEST: Tu sais, {{leur}} {{impatiences}} est notoire.
-TEST: J’en ai assez de {{leur}} {{délires}}
-TEST: {{Leur}} {{perceptions}} des choses m’exaspère.
-TEST: dans {{leur}} {{usines}}
+TEST: Tu sais, {{leur}} {{impatiences}} est notoire.                            ->> leurs|||impatience
+TEST: J’en ai assez de {{leur}} {{délires}}                                     ->> leurs|||délire
+TEST: {{Leur}} {{perceptions}} des choses m’exaspère.                           ->> Leurs|||perception
+TEST: dans {{leur}} {{usines}}                                                  ->> leurs|||usine
 
 
 __gn_leur_2m__
@@ -23174,14 +23174,14 @@ __gn_leur_2m__
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
         <<- /gn/ __also__ and morph(\3, ":[NA].*:i") -2>> leurs                             && Accord de nombre erroné avec « \3 \4 ».
 
-TEST: leur puissance {{perdues}}
-TEST: leur arbre {{élaguée}}
-TEST: leur {{petit}} {{grosse}}
-TEST: elle se souvenait de leur {{grande}} {{sot}}
-TEST: je me souviens de leur verve {{décalé}}
-TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.
-TEST: {{leur}} gros {{grains}}
-TEST: Que ferons-nous de {{leur}} gros {{grains}}
+TEST: leur puissance {{perdues}}                                                ->> perdue
+TEST: leur arbre {{élaguée}}                                                    ->> élagué
+TEST: leur {{petit}} {{grosse}}                                                 ->> petite|||gros
+TEST: elle se souvenait de leur {{grande}} {{sot}}                              ->> grand|||sotte
+TEST: je me souviens de leur verve {{décalé}}                                   ->> décalée
+TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.      ->> insupportable
+TEST: {{leur}} gros {{grains}}                                                  ->> leurs|||grain
+TEST: Que ferons-nous de {{leur}} gros {{grains}}                               ->> leurs|||grain
 TEST: 3 milliards d’euros que depuis 2012 l’État leur a volés
 
 
@@ -23206,9 +23206,9 @@ __gn_ledit_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{ledit}} femme ne sut comment nous éclairer
-TEST: {{ledit}} {{boulangère}} nous enseigna sa méthode
-TEST: ledit {{accords}} ne vaut rien.
+TEST: {{ledit}} femme ne sut comment nous éclairer                                  ->> ladite
+TEST: {{ledit}} {{boulangère}} nous enseigna sa méthode                             ->> ladite|||boulanger
+TEST: ledit {{accords}} ne vaut rien.                                               ->> accord
 
 
 __gn_ladite_1m__
@@ -23217,9 +23217,9 @@ __gn_ladite_1m__
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{ladite}} vélo était en panne
-TEST: {{ladite}} {{professeur}} était intarissable
-TEST: ladite {{passions}} l’avait conduit à sa perte.
+TEST: {{ladite}} vélo était en panne                                                ->> ledit
+TEST: {{ladite}} {{professeur}} était intarissable                                  ->> ledit|||professeure
+TEST: ladite {{passions}} l’avait conduit à sa perte.                               ->> passion|passée
 
 
 __gn_aucun_1m__
@@ -23228,9 +23228,9 @@ __gn_aucun_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{aucun}} femme ne réagirait si bêtement
-TEST: {{aucun}} {{animale}}
-TEST: aucun {{accords}} n’y changera rien.
+TEST: {{aucun}} femme ne réagirait si bêtement                                      ->> aucune
+TEST: {{aucun}} {{animale}}                                                         ->> aucune|||animal
+TEST: aucun {{accords}} n’y changera rien.                                          ->> accord
 
 
 __gn_aucune_1m__
@@ -23239,9 +23239,9 @@ __gn_aucune_1m__
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{aucune}} homme ne comprendrait ça
-TEST: {{aucune}} {{conseiller}} ne vint nous aider
-TEST: aucune {{passions}} n’est digne qu’on meurt pour elle.
+TEST: {{aucune}} homme ne comprendrait ça                                           ->> aucun
+TEST: {{aucune}} {{conseiller}} ne vint nous aider                                  ->> aucun|||conseillère|conseillée
+TEST: aucune {{passions}} n’est digne qu’on meurt pour elle.                        ->> passion|passée
 
 
 __gn_nul_1m__
@@ -23250,9 +23250,9 @@ __gn_nul_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: nul {{accords}} n’y changera rien.
-TEST: {{nul}} femme ne réagirait si bêtement
-TEST: {{nul}} {{ratée}} ne survint
+TEST: nul {{accords}} n’y changera rien.                                            ->> accord
+TEST: {{nul}} femme ne réagirait si bêtement                                        ->> nulle
+TEST: {{nul}} {{ratée}} ne survint                                                  ->> nulle|||raté
 
 
 __gn_nulle_1m__
@@ -23261,9 +23261,9 @@ __gn_nulle_1m__
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: nulle {{passions}} n’est digne qu’on meurt pour elle.
-TEST: {{nulle}} homme ne comprendrait ça
-TEST: {{nulle}} {{damné}} à sauver
+TEST: nulle {{passions}} n’est digne qu’on meurt pour elle.                         ->> passion|passée
+TEST: {{nulle}} homme ne comprendrait ça                                            ->> nul
+TEST: {{nulle}} {{damné}} à sauver                                                  ->> nul|||damnée
 
 
 __gn_un_1m__
@@ -23289,23 +23289,23 @@ __gn_une_des_1m__
         <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|G|W|V0|3s)") -1>> un                       && Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
 
-TEST: {{Un}} {{amie}}
-TEST: {{un}} des {{chattes}}
-TEST: {{une}} des {{chats}}
+TEST: {{Un}} {{amie}}                                           ->> Une|||ami
+TEST: {{un}} des {{chattes}}                                    ->> une|||chats
+TEST: {{une}} des {{chats}}                                     ->> un|||chattes
+TEST: un {{slashs}}                                             ->> slash
+TEST: un {{fromages}}.                                          ->> fromage
+TEST: Un {{ballons}}                                            ->> ballon
+TEST: Une {{cinglées}}                                          ->> cinglée
+TEST: {{une}} des {{chats}}                                     ->> un|||chattes
+TEST: {{une}} kyste                                             ->> un
+TEST: {{une}} {{chien}}                                         ->> un|||chienne
+TEST: {{une}} des {{joueurs}}                                   ->> un|||joueuses
+TEST: un {{cailloux}}                                           ->> caillou
+TEST: {{un}} {{petite}} animal                                  ->> une|||petit
+TEST: une {{femmes}}                                            ->> femme
+TEST: {{une}} {{petit}}                                         ->> un|||petite
 TEST: Trente et un hommes sur le pont.
 TEST: Ces enfants n’ont jamais vu quelqu’un lire.
-TEST: un {{slashs}}                                           ->> slash
-TEST: un {{fromages}}.                                        ->> fromage
-TEST: Un {{ballons}}                                          ->> ballon
-TEST: Une {{cinglées}}                                        ->> cinglée
-TEST: {{une}} des {{chats}}
-TEST: {{une}} kyste                                           ->> un
-TEST: {{une}} {{chien}}                                       ->> un|||chienne
-TEST: {{une}} des {{joueurs}}
-TEST: un {{cailloux}}                                         ->> caillou
-TEST: {{un}} {{petite}} animal                                ->> une|||petit
-TEST: une {{femmes}}                                          ->> femme
-TEST: {{une}} {{petit}}                                       ->> un|||petite
 TEST: mille et une merveilles
 TEST: Quatorze heures découpées en quatre parties, une sortant en salles chaque semaine
 
@@ -23326,12 +23326,12 @@ __gn_un_2m__
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: un exercice pas très {{utiles}}.                        ->> utile
-TEST: un homme {{grands}}                                     ->> grand
-TEST: un homme {{futiles}}                                    ->> futile
-TEST: que sais-tu d’un homme {{grande}} comme un arbre
-TEST: je me souviens d’un homme {{arrogants}}
-TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{bancale}}.
+TEST: un exercice pas très {{utiles}}.                                                      ->> utile
+TEST: un homme {{grands}}                                                                   ->> grand
+TEST: un homme {{futiles}}                                                                  ->> futile
+TEST: que sais-tu d’un homme {{grande}} comme un arbre                                      ->> grand
+TEST: je me souviens d’un homme {{arrogants}}                                               ->> arrogant
+TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{bancale}}.     ->> bancal
 
 
 __gn_une_2m__
@@ -23349,12 +23349,12 @@ __gn_une_2m__
         <<- /gn/ \3 != "fois" and morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: Une femme {{laconiques}}.                               ->> laconique
-TEST: Une grande {{homme}}.
-TEST: une géologue {{intelligents}}
-TEST: Et une femme {{déterminées}}
-TEST: on parle là d’une femme {{inconnu}}
-TEST: on parle d’une Église {{brûlées}}
+TEST: Une femme {{laconiques}}.                                                 ->> laconique
+TEST: Une grande {{homme}}.                                                     ->>
+TEST: une géologue {{intelligents}}                                             ->> intelligente
+TEST: Et une femme {{déterminées}}                                              ->> déterminée
+TEST: on parle là d’une femme {{inconnu}}                                       ->> inconnue
+TEST: on parle d’une Église {{brûlées}}                                         ->> brûlée
 TEST: L’or allume le feu d’une cupidité d’une couleur et d’une sorte différentes.
 
 
@@ -23370,10 +23370,10 @@ __gn_dudit_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: cette bouffe, c’est du {{chiens}}
-TEST: cette bouffe, c’est {{du}} {{chienne}}
-TEST: les consignes dudit {{présidents}} étaient contratritoires.
-TEST: les consignes {{dudit}} {{présidente}} étaient contratritoires.
+TEST: cette bouffe, c’est du {{chiens}}                                         ->> chien
+TEST: cette bouffe, c’est {{du}} {{chienne}}                                    ->> de la|||chien
+TEST: les consignes dudit {{présidents}} étaient contratritoires.               ->> président
+TEST: les consignes {{dudit}} {{présidente}} étaient contratritoires.           ->> de ladite|||président
 
 
 __gn_ce_1m__
@@ -23383,10 +23383,10 @@ __gn_ce_1m__
         <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") and morph(\2, ":3s") -1>> cette|se       && Accord de genre erroné : « \2 » est féminin. Ou bien vous confondez le déterminant “ce” avec le pronom “se”.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{Ce}} animal.                                          ->> Cet
-TEST: {{ce}} {{folle}} espoir qui ne la quitte pas
-TEST: ce {{claviers}}
-TEST: {{ce}} donne
+TEST: {{Ce}} animal.                                                            ->> Cet
+TEST: {{ce}} {{folle}} espoir qui ne la quitte pas                              ->> cette|||fou
+TEST: ce {{claviers}}                                                           ->> clavier
+TEST: {{ce}} donne avec passion                                                 ->> cette|se
 
 
 __gn_cet_1m__
@@ -23396,9 +23396,9 @@ __gn_cet_1m__
         <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].+:[NA].*:m", ":[efGW]") -1>> ce         && Accord de genre correct, mais euphonie non respectée.|http://fr.wikipedia.org/wiki/Euphonie
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{Cet}} {{idiote}}.
-TEST: {{cet}} ballon.                                         ->> ce
-TEST: cet {{oliviers}}
+TEST: {{Cet}} {{idiote}}.                                                       ->> Cette|||idiot
+TEST: {{cet}} ballon.                                                           ->> ce
+TEST: cet {{oliviers}}                                                          ->> olivier
 
 
 __gn_cette_1m__
@@ -23407,8 +23407,8 @@ __gn_cette_1m__
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{Cette}} {{animal}} mort.
-TEST: cette {{illusions}} que nous voyons plus clair que quiconque
+TEST: {{Cette}} {{animal}} mort.                                                ->> Cet|||animale
+TEST: cette {{illusions}} que nous voyons plus clair que quiconque              ->> illusion
 
 
 __gn_au_1m__
@@ -23418,9 +23418,9 @@ __gn_au_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
         <<- /gn/ __also__ -1>> aux                                                          && Accord de nombre erroné : « \2 » est au pluriel.
 
-TEST: {{au}} {{États-Unis}}
-TEST: Téléphone {{au}} personne qui ont donné leur accord.
-TEST: téléphone {{au}} {{boulangère}}
+TEST: {{au}} {{États-Unis}}                                                     ->> aux|||États-Unis
+TEST: Téléphone {{au}} personne qui ont donné leur accord.                      ->> à la
+TEST: téléphone {{au}} {{boulangère}}                                           ->> à la|||boulanger
 TEST: au chien, au chat, au poulet
 TEST: à partir de pièces détachées, au départ entièrement venues de l’étranger puis en partie fabriquées sur place
 
@@ -23440,10 +23440,10 @@ __gn_det_mas_sing_2m__
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: cet outil {{terribles}} qu’il a dans les mains
-TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.
-TEST: au petit {{publique}}
-TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
+TEST: cet outil {{terribles}} qu’il a dans les mains                            ->> terrible
+TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.               ->> gauchiste
+TEST: au petit {{publique}}                                                     ->> public
+TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.               ->> délirant
 
 
 __gn_det_mas_sing_3m__
@@ -23451,7 +23451,7 @@ __gn_det_mas_sing_3m__
         <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[me]:[si]") and morph(\3, ":[NA].*:[me]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:[pf]", "*") and \4.islower()
         -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au masculin singulier.
 
-TEST: ledit martyr oublié {{réhabilitée}}                       ->> réhabilité
+TEST: ledit martyr oublié {{réhabilitée}}                                       ->> réhabilité
 TEST: un gros connard {{pathétiques}}                                           ->> pathétique
 TEST: servi pas un style et une exigence historique remarquables
 TEST: ils eurent besoins d’au minimum cent ans pour s’en remettre
@@ -23464,9 +23464,9 @@ __gn_mon_ton_son_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: mon {{excellentes}} mémoire
-TEST: {{ton}} {{belle}} mémoire
-TEST: {{mon}} {{chienne}}
+TEST: mon {{excellentes}} mémoire                                               ->> excellente
+TEST: {{ton}} {{belle}} mémoire                                                 ->> ta|||beau
+TEST: {{mon}} {{chienne}}                                                       ->> ma|||chien
 
 
 __gn_mon_ton_son_2m__
@@ -23477,7 +23477,7 @@ __gn_mon_ton_son_2m__
         <<- /gn/ morph(\2, ">[aâeéèêiîoôuûyœæ].*:[NAQ].*:f", ":(?:B|G|e|V0|m)") and morph(\3, ":[NAQ].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3, True)                                                         && Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NAQ].*:p", ":[GWsi]") and not apposition(\2, \3)
-        -3>> =suggMasSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
+        -3>> =suggSing(\3)                                                                  && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
     [et|ou|de|d’]  [mon|ton|son]  *WORD  *WORD
         <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
@@ -23486,13 +23486,13 @@ __gn_mon_ton_son_2m__
         <<- /gn/ morph(\3, ">[aâeéèêiîoôuûyœæ].*:[NA].*:f", ":(?:B|G|e|V0|m)") and morph(\4, ":[NAQ].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4, True)                                                         && Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NAQ].*:p", ":[GWsi]") and not apposition(\3, \4)
-        -4>> =suggMasSing(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: il brandissait avec fougue son drapeau {{déchirés}}
-TEST: comment osez-vous médire de mon héritage {{glorieuse}}
-TEST: on parlait de son escapade {{éperdu}} au milieu de la nuit.
-TEST: ton étonnante {{secret}} ne sera pas au programme.
-TEST: elle s’étonnait de ton opposition {{grandissantes}}
+TEST: il brandissait avec fougue son drapeau {{déchirés}}                       ->> déchiré
+TEST: comment osez-vous médire de mon héritage {{glorieuse}}                    ->> glorieux
+TEST: on parlait de son escapade {{éperdu}} au milieu de la nuit.               ->> éperdue
+TEST: ton étonnante {{secret}} ne sera pas au programme.                        ->> secrète
+TEST: elle s’étonnait de ton opposition {{grandissantes}}                       ->> grandissante
 TEST: le ton monte.
 
 
@@ -23523,9 +23523,9 @@ __gn_ma_ta_sa_1m__
         -2>> =suggFemSing(\2, True)                                                         && Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{ma}} {{parti}}
-TEST: {{ma}} amour                                            ->> mon
-TEST: ma {{carlingues}}
+TEST: {{ma}} {{parti}}                                                          ->> mon|||partie
+TEST: {{ma}} amour                                                              ->> mon
+TEST: ma {{carlingues}}                                                         ->> carlingue
 TEST: Après cet épisode, la SA a joué un rôle marginal dans l’histoire du Troisième Reich
 TEST: “ma” est un déterminant féminin
 
@@ -23545,10 +23545,10 @@ __gn_det_fem_sing_2m__
         <<- /gn/ morph(\3, ":[NAQ].*:[si]", ":G") and morph(\4, ":[NAQ].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: quelle belle {{étourdi}}, cette gamine
-TEST: j’en ai assez de cette ville {{stressées}} en permanence.
-TEST: Peut-on imaginer de plus {{beaux}} {{enfant}} ?
-TEST: de ma grande {{ami}}
+TEST: quelle belle {{étourdi}}, cette gamine                                    ->> étourdie
+TEST: j’en ai assez de cette ville {{stressées}} en permanence.                 ->> stressée
+TEST: Peut-on imaginer de plus {{beaux}} {{enfant}} ?                           ->> beau|||enfants
+TEST: de ma grande {{ami}}                                                      ->> amie
 TEST: il fut cette fois ulcéré de voir son entreprise une fois de plus ruinée par la malchance.
 
 
@@ -23557,14 +23557,14 @@ __gn_det_fem_sing_3m__
         <<- /gn/ morph(<1, "<start>|:V", "*") and morph(\2, ":[NA].*:[fe]:[si]") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:[123][sp]|G|P|B)|;C") and morph(\4, ":[NA].*:[pm]", "*") and \4.islower()
         -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au féminin singulier.
 
-TEST: une amie prodigieuse {{récompensé}}                           ->> récompensée
+TEST: une amie prodigieuse {{récompensé}}                                       ->> récompensée
 
 
 __gn_notre_votre_chaque_1m__
     [notre|votre|chaque]  *WORD
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggSing(\2)                       && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: Chaque {{chiens}}.                                            ->> chien
+TEST: Chaque {{chiens}}.                                                        ->> chien
 
 
 __gn_quelque_1m__
@@ -23572,7 +23572,7 @@ __gn_quelque_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siG]") and not value(>1, "|que|qu’|")
         -1>> quelques                                                                       && Il manque un “s” à « quelque » ou « \2 » doit être au singulier.
 
-TEST: {{Quelque}} amis                                              ->> Quelques
+TEST: {{Quelque}} amis                                                          ->> Quelques
 
 
 __gn_det_epi_sing_2m__
@@ -23594,12 +23594,12 @@ __gn_det_epi_sing_2m__
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggSing(\4)                                                                  && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
-TEST: chaque élément {{terrestres}}
-TEST: notre {{belle}} {{avenu}}
-TEST: ils viennent de chaque coin {{ignorée}} du pays.
-TEST: que faire de votre {{ennuyeuse}} {{avocat}}
-TEST: de quelque cartable {{vides}}
-TEST: de notre petit {{amis}}
+TEST: chaque élément {{terrestres}}                                             ->> terrestre
+TEST: notre {{belle}} {{avenu}}                                                 ->> beau|||avenue
+TEST: ils viennent de chaque coin {{ignorée}} du pays.                          ->> ignoré
+TEST: que faire de votre {{ennuyeuse}} {{avocat}}                               ->> ennuyeux|||avocate
+TEST: de quelque cartable {{vides}}                                             ->> vide
+TEST: de notre petit {{amis}}                                                   ->> ami
 TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 
@@ -23636,13 +23636,13 @@ __gn_les_1m__
         <<- /gn/ morph(\3, ":[NA].*:s", ":[ipYPGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -3>> =suggPlur(\3)                                                                  && Accord de nombre erroné : « \3 » devrait être au pluriel.
 
-TEST: ils viennent, les {{petit}}
-TEST: Les {{tiret}}                                           ->> tirets
-TEST: Les plus {{grand}} hommes.                              ->> grands
-TEST: les {{véhicule}}                                        ->> véhicules
-TEST: Les {{démoralisation}}.                                 ->> démoralisations
-TEST: dans les {{usine}}                                      ->> usines
-TEST: les {{abricot}}                                         ->> abricots
+TEST: ils viennent, les {{petit}}                                               ->> petits
+TEST: Les {{tiret}}                                                             ->> tirets
+TEST: Les plus {{grand}} hommes.                                                ->> grands
+TEST: les {{véhicule}}                                                          ->> véhicules
+TEST: Les {{démoralisation}}.                                                   ->> démoralisations
+TEST: dans les {{usine}}                                                        ->> usines
+TEST: les {{abricot}}                                                           ->> abricots
 TEST: tels que les décrit Macron
 TEST: J’en ramasse quelques-unes, puis les glisse dans l’une de mes poches, ça me fera un souvenir.
 
@@ -23666,13 +23666,13 @@ __gn_les_2m__
         <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -4>> =suggPlur(\4)                                                                          && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
-TEST: les pitres {{imbécile}}
-TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.
-TEST: les {{petites}} {{oubliés}}
-TEST: c’est ça, et les femmes {{retrouvés}} seront emmenées à l’hôpital.
-TEST: fais ce que tu peux, ou les {{petites}} {{perdus}} le seront à jamais
-TEST: ça ou les éternels {{imbécile}} du coin
-TEST: les {{éventuels}} {{fiches}}
+TEST: les pitres {{imbécile}}                                                   ->> imbéciles
+TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.         ->> oubliées
+TEST: les {{petites}} {{oubliés}}                                               ->> petits|||oubliées
+TEST: c’est ça, et les femmes {{retrouvés}} seront emmenées à l’hôpital.        ->> retrouvées
+TEST: fais ce que tu peux, ou les {{petites}} {{perdus}} le seront à jamais     ->> petits|||perdues
+TEST: ça ou les éternels {{imbécile}} du coin                                   ->> imbéciles
+TEST: les {{éventuels}} {{fiches}}                                              ->> éventuelles|||fichés
 TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
@@ -23688,9 +23688,9 @@ __gn_leurs_1m__
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
         <<- /gn/ __also__ -1>> leur                                                         && Accord de nombre erroné avec « \2 ».
 
-TEST: {{leurs}} {{action}}
-TEST: {{leur}} {{données}}
-TEST: {{leurs}} {{abricot}}
+TEST: {{leurs}} {{action}}                                                      ->> leur|||actions
+TEST: {{leur}} {{données}}                                                      ->> leurs|||donnée
+TEST: {{leurs}} {{abricot}}                                                     ->> leur|||abricots
 
 
 __gn_det_pluriel_1m__
@@ -23698,11 +23698,11 @@ __gn_det_pluriel_1m__
         <<- /gn/ morph(\2, ":[NA].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NA]"))
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné : « \2 » devrait être au pluriel.
 
-TEST: des {{pain}}                                              ->> pains
-TEST: Quelques {{homme}}.                                       ->> hommes
-TEST: plusieurs {{femme}} sont venues.                          ->> femmes
-TEST: des {{abricot}}                                           ->> abricots
-TEST: des {{son}} que nous entendons jour et nuit.              ->> sons
+TEST: des {{pain}}                                                              ->> pains
+TEST: Quelques {{homme}}.                                                       ->> hommes
+TEST: plusieurs {{femme}} sont venues.                                          ->> femmes
+TEST: des {{abricot}}                                                           ->> abricots
+TEST: des {{son}} que nous entendons jour et nuit.                              ->> sons
 TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
 
 
@@ -23714,13 +23714,13 @@ __gn_ces_aux_pluriel_1m__
         <<- /gn/ \1.endswith("x") or \1.endswith("X") -1>> au                               && Accord de nombre erroné : « \2 » est au singulier.
         <<- /gn/ __else__ -1>> ce                                                           && Accord de nombre erroné : « \2 » est au singulier.
 
-TEST: {{ces}} {{détournement}} de fonds et ces vols             ->> ce|||détournements
-TEST: ces {{étudiant}} sont légion.                             ->> étudiants
-TEST: je vais {{aux}} {{cinéma}}                                ->> au|||cinémas
-TEST: il l’a donné aux {{étudiant}}                             ->> étudiants
-TEST: aux {{personne}}                                          ->> personnes
-TEST: j’entends ces {{même}} âneries tous les jours             ->> mêmes
-TEST: clafoutis aux {{abricot}}                                 ->> abricots
+TEST: {{ces}} {{détournement}} de fonds et ces vols                             ->> ce|||détournements
+TEST: ces {{étudiant}} sont légion.                                             ->> étudiants
+TEST: je vais {{aux}} {{cinéma}}                                                ->> au|||cinémas
+TEST: il l’a donné aux {{étudiant}}                                             ->> étudiants
+TEST: aux {{personne}}                                                          ->> personnes
+TEST: j’entends ces {{même}} âneries tous les jours                             ->> mêmes
+TEST: clafoutis aux {{abricot}}                                                 ->> abricots
 
 
 __gn_det_epi_plur_2m__
@@ -23743,10 +23743,10 @@ __gn_det_epi_plur_2m__
             and not (value(\1, "|de|d’|") and value(<1, "|un|une|"))
         -4>> =suggPlur(\4)                                                                          && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
-TEST: ces {{beaux}} {{institutions}}
-TEST: nos petites {{fille}}
-TEST: de plusieurs {{grands}} {{avocates}}
-TEST: de vos défauts {{terrible}}, je connais presque tout.
+TEST: ces {{beaux}} {{institutions}}                                            ->> belles|||
+TEST: nos petites {{fille}}                                                     ->> filles
+TEST: de plusieurs {{grands}} {{avocates}}                                      ->> grandes|||avocats
+TEST: de vos défauts {{terrible}}, je connais presque tout.                     ->> terribles
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
 TEST: Pour maintenir le potentiel de membrane qui lui permet de communiquer avec ses voisins sous forme d’influx nerveux, un neurone a besoin d’énergie.
@@ -32552,7 +32552,7 @@ TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.           
 !!
 
 __conj_que_où_comment_verbe_sans_sujet!3__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorqu’|auquel|auxquels|auxquelles|duquel|desquels|desquelles|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorsqu’|auquel|auxquels|auxquelles|duquel|desquels|desquelles|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
         <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
         <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
