@@ -105,7 +105,7 @@ class TestGrammarChecking (unittest.TestCase):
                           "\n  errors:   \n" + sListErr)
                     nUnexpectedErrors += 1
                 elif sExceptedSuggs:
-                    if sExceptedSuggs != sFoundSuggs:
+                    if not self._checkSuggestions(sExceptedSuggs, sFoundSuggs):
                         print("\n# Line num: " + sLineNum + \
                               "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
                               "\n  expected: " + sExceptedSuggs + \
@@ -168,6 +168,16 @@ class TestGrammarChecking (unittest.TestCase):
             nEnd = m.end() - (4 * (i+1))
             sRes = sRes[:nStart] + "~" * (nEnd - nStart) + sRes[nEnd:-4]
         return sRes
+
+    def _checkSuggestions (self, sExceptedSuggs, sFoundSuggs):
+        lAllExpectedSuggs = sExceptedSuggs.split("|||")
+        lAllFoundSuggs = sFoundSuggs.split("|||")
+        if len(lAllExpectedSuggs) != len(lAllFoundSuggs):
+            return False
+        for sExceptedSuggs, sFoundSuggs in zip(lAllExpectedSuggs, lAllFoundSuggs):
+            if set(sExceptedSuggs.split("|")) != set(sFoundSuggs.split("|")):
+                return False
+        return True
 
 
 def purgeMessage (sMessage):
