@@ -125,7 +125,7 @@ class HTMLPageEditor {
         // recursive function
         try {
             for (let xNode of xRootNode.childNodes) {
-                if (xNode.className !== "moz-cite-prefix" && xNode.className !== "moz-forward-container"
+                if (xNode.className !== "moz-cite-prefix" && xNode.className !== "moz-forward-container" && xNode.className !== "moz-signature"
                     && ! (bThunderbird && xNode.tagName == "BLOCKQUOTE" && xNode.cite)
                     && ( xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")) )
                     && xNode.textContent !== "") {
