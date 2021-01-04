@@ -199,6 +199,7 @@ class HTMLPageEditor {
     }
 
     loadText (sText) {
+        // function also used by the text formatter
         oGrammalecteTextEditor.loadText(sText);
         this.write();
     }
@@ -209,7 +210,7 @@ class HTMLPageEditor {
         }
         for (let [i, sParagraph] of oGrammalecteTextEditor.getParagraphs()) {
             if (i < this.lNode.length) {
-                this.lNode[iParagraph].textContent = sParagraph;
+                this.lNode[i].textContent = sParagraph;
             }
         }
     }
