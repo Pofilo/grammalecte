@@ -3101,6 +3101,13 @@ __da_pourvu__
     pourvu
         <<- not value(>1, "|que|qu’|") =>> select(\1, "", ":G")
 
+__da_pouvoir_savoir_vouloir__
+    [un|le|ce|du|quel|mon|ton|son|notre|votre|leur] [pouvoir|savoir|vouloir]
+        <<- =>> select(\-1, ":N")
+
+    [un|le|ce|du|quel|mon|ton|son|notre|votre|leur] *WORD [pouvoir|savoir|vouloir]
+        <<- morph(\2, ":A.*:[me]:[si]") =>> select(\-1, ":N")
+
 __da_puis__
     puis
         <<- not value(<1, "|je|ne|n’|le|l’|leur|") =>> select(\1, "", ":V")
@@ -11448,7 +11455,7 @@ __conf_nez_né__
     [à|a] [mon|ton|son|notre|votre|leur] né
     au [né+ses]
     [dans|sur|sous] le [né+ses]
-    >crotte [de|d’] [né+ses]
+    [>crotte|>pied] [de|d’] [né+ses]
     >saignement [de|d’] [né+ses]
     [>mettre|>fourrer] ?@:[WX]¿ [le|mon|ton|son|notre|votre|leur] [né+ses]
     >pendre ?@:[WX]¿ [au|aux] [né+s]
@@ -22847,6 +22854,9 @@ __conf_vie_vis_vit__
     >donner  [signe+s]  [de|d’]  [vis|vit|vies]
         <<- /conf/ --1>> vie                                    && Locution “donner signe de vie”.|https://fr.wiktionary.org/wiki/ne_pas_donner_signe_de_vie
 
+    >sauver @:D.*:[fe] [vis|vit]
+        <<- /conf/ --1>> vie|vies                               && Confusion probable. Sauver une existence, c’est-à-dire une vie.|https://fr.wiktionary.org/wiki/vie
+
     !! >question [de|d’] vie [ou|et] [de|d’] mort ¡¡
     >question de [vis|vit|vie+s] [ou|et] de [mort+s|mors|mord+s|maure+s]
         <<- /conf/ -2:0>> de vie \-3 de mort                    && Locution “une question de vie ou/et de mort”.
@@ -22863,6 +22873,7 @@ __conf_vie_vis_vit__
 TEST: elle a mené une {{vis}} insignifiante                     ->> vie
 TEST: quelle {{vis}} incroyable !                               ->> vie
 TEST: elle donne rarement signe de {{vis}}                      ->> vie
+TEST: sauver des {{vis}}, c’est vital pour elle                 ->> vie|vies
 TEST: une question {{de vie ou de mors}}                        ->> de vie ou de mort
 TEST: avoir droit {{de vis et de mors}}                         ->> de vie et de mort
 TEST: l’homme {{vie}} ses derniers instants                     ->> vit
@@ -23020,9 +23031,10 @@ TEST: j’aide l’homme et par amour pour lui le laisse libre.
 
 __gn_le_1m__
     ,  le  *WORD
+        <<- /gn/ morph(\2, ":D") >>>
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\3)           && Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            && Accord de genre erroné : « \2 » est un déterminant masculin.
-        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggMasSing(\3)               && Accord de nombre erroné : « \3 » devrait être au singulier.
+        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":(?:[siPGWY]|[123][sp])") -3>> =suggMasSing(\3)   && Accord de nombre erroné : « \3 » devrait être au singulier.
         <<- /gn/ __also__ -2>> les                                                                  && Accord de nombre erroné : « \3 » est au pluriel.
 
     *WORD  le  *WORD
@@ -23037,7 +23049,7 @@ __gn_le_1m__
         <<- /gn/ __also__ -2>> les                                                                  && Accord de nombre erroné : « \3 » est au pluriel.
 
     <start>  le  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|Y)") -2>> =suggLesLa(\3)                     && Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ morph(\3, ":[NA].*:f", ":[emPGWMY]") -2>> =suggLesLa(\3)                           && Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            && Accord de genre erroné : « \2 » est un déterminant masculin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggMasSing(\3)               && Accord de nombre erroné : « \3 » devrait être au singulier.
         <<- /gn/ __also__ -2>> les                                                                  && Accord de nombre erroné : « \3 » est au pluriel.
@@ -23054,6 +23066,7 @@ TEST: {{Le}} {{pendue}}                                                         
 TEST: {{Le}} personne répond.                                                           ->> La
 TEST: {{le}} {{quotients}}                                                              ->> les|||quotient
 TEST: Comme avec l’Hyperloop, le bus chinois conçu pour passer au-dessus des voitures
+TEST: Je le levai, le brandis et frappai de taille.
 
 
 __gn_le_2m__
@@ -23113,9 +23126,10 @@ TEST: le prétentieux et sot {{hommes}} que voilà                              
 
 __gn_la_1m__
     ,  la  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|M|[1-3][sp]|Y)") -2>> le             && Accord de genre erroné : « \3 » est masculin.
-        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    && Accord de genre erroné : « \2 » est un déterminant féminin.
-        <<- /gn/ __else__ and morph(\3, ":[NA].*:p") -3>> =suggFemSing(\3)                  && Accord de nombre erroné : « \3 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":D") >>>
+        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|M|[1-3][sp]|Y)") -2>> le                         && Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                                && Accord de genre erroné : « \2 » est un déterminant féminin.
+        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":(?:[siPGWY]|[123][sp])") -3>> =suggFemSing(\3)   && Accord de nombre erroné : « \3 » devrait être au singulier.
 
     *WORD  la  *WORD
         <<- /gn/ morph(\2, ":D") >>>
@@ -23150,6 +23164,7 @@ TEST: la force de la {{formes}} parfaite                        ->> forme|formé
 TEST: à la Richard Nixon Foundation
 TEST: à ne plus se laisser faire la fois d’après
 TEST: il pense à la fois où nous avons eu cet accident idiot.
+TEST: Je la levai, la brandis et frappai de taille.
 
 
 __gn_la_2m__
@@ -24627,8 +24642,8 @@ __gn_start_3m_et__
 
     <start> *WORD et *WORD  @:N.*:e:s¬*
         <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
-        <<- /gn/ morph(\2, ":A", ":(?:A.*:[si]|G|W)|;C") -2>> =suggSing(\2, True)                  && Cet adjectif n’est pas accordé avec le nom “\-1”.
-        <<- /gn/ morph(\4, ":A", ":(?:A.*:[si]|G|W)|;C") -4>> =suggSing(\4, True)                  && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\2, ":A", ":(?:A.*:[si]|G|W)|;C") -2>> =suggSing(\2, True)                   && Cet adjectif n’est pas accordé avec le nom “\-1”.
+        <<- /gn/ morph(\4, ":A", ":(?:A.*:[si]|G|W)|;C") -4>> =suggSing(\4, True)                   && Cet adjectif n’est pas accordé avec le nom “\-1”.
 
     <start> *WORD et *WORD  @:N.*:m:p¬*
         <<- /gn/ morph(\2, ":A", ":G") and morph(\4, ":A", ":G") >>>
@@ -25795,6 +25810,7 @@ TEST: {{quand}} les croissants {{arrivés}}, on se jetait dessus
 TEST: {{lorsque}} certains idiots {{oubliés}}, on riait aux éclats
 TEST: {{lorsque}} ton code {{grossi}}, il faut le factoriser
 TEST: quand le jour venu, il fallut se battre, nous étions prêts.
+TEST: quand ce fut fait, il lui manqua la force de répliquer.
 
 
 __conf_qui_pronom_verbe__
@@ -26418,14 +26434,14 @@ __infi_pouvoir!5__
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|puis|pouvoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     >pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ not value(\1, "|puis|pouvoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tagbefore(\1, "_ceque_")
+        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":M") and not tagbefore(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     [de|d’]  pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
@@ -26441,6 +26457,7 @@ TEST: Il doit pouvoir {{détectez}} ces erreurs.                                
 TEST: elle rêve de pouvoir les {{brisés}} à mains nues                                  ->> briser
 TEST: un homme de pouvoir débordé par ses obligations.
 TEST: faire seulement ce que tu pouvais ne satisfaisait pas tes patrons.
+TEST: un immense pouvoir l’animait.
 
 
 __infi_savoir!5__
@@ -29139,9 +29156,9 @@ __ppas_nom_propre_être_accord__
     [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:[GMW]
     [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:[GMW]
         <<- /ppas/ not tag(\1, "_enum_") and not value(\-1, "|légion|pléthore|néant|réalité|") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P"))) >>>
-        <<- /ppas/ morph(\1, ":M.*:f", ":[me]") and morph(\-1, ":[AQ].*:m", ":[fe]") --1>> =suggFemSing(\-1)                && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin pluriel.
-        <<- /ppas/ __else__ and morph(\1, ":M.*:m", ":[fe]") and morph(\-1, ":[AQ].*:f", ":[me]") --1>> =suggMasSing(\-1)   && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
-        <<- /ppas/ __else__ and morph(\-1, ":p", ":[AQ].*:[si]") --1>> =suggSing(\-1)                                       && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au pluriel.
+        <<- /ppas/ morph(\1, ":M.*:f", ":[me]") and morph(\-1, ":[AQ].*:m", ":[fe]") --1>> =suggFemSing(\-1)                && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin singulier.
+        <<- /ppas/ __else__ and morph(\1, ":M.*:m", ":[fe]") and morph(\-1, ":[AQ].*:f", ":[me]") --1>> =suggMasSing(\-1)   && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin singulier.
+        <<- /ppas/ __else__ and morph(\-1, ":p", ":[AQ].*:[si]") --1>> =suggSing(\-1)                                       && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au singulier.
 
 TEST: Marianne semble devenue {{colériques}}
 TEST: Pauline n’affirme pas avoir été {{vaincu}} pour autant
