@@ -357,7 +357,7 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isMasForm(sStem)) {
-                    aSugg.add(suggPlur(sStem));
+                    aSugg.add(suggPlur(sStem, null, true));
                 }
             }
         } else {

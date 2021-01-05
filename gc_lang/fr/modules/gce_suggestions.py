@@ -272,7 +272,7 @@ def suggMasPlur (sFlex, bSuggSimil=False):
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
                 if mfsp.isMasForm(sStem):
-                    aSugg.add(suggPlur(sStem))
+                    aSugg.add(suggPlur(sStem, None, True))
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
