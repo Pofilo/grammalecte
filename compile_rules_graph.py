@@ -48,10 +48,10 @@ def rewriteCode (sCode):
     sCode = re.sub(r"\bspace[(][\\]-(\d+)", 'g_space(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
     sCode = re.sub(r"\bmorph2[(][\\](\d+)", 'g_morph2(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
     sCode = re.sub(r"\bmorph2[(][\\]-(\d+)", 'g_morph2(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
-    sCode = re.sub(r"\b(morph0?|tag|meta|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                      # next token
-    sCode = re.sub(r"\b(morph0?|tag|meta|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                      # previous token
-    sCode = re.sub(r"\b(morph0?|tag|meta|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)       # next token
-    sCode = re.sub(r"\b(morph0?|tag|meta|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)   # previous token
+    sCode = re.sub(r"\b(morph0?|tag|meta|value|info)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                      # next token
+    sCode = re.sub(r"\b(morph0?|tag|meta|value|info)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                      # previous token
+    sCode = re.sub(r"\b(morph0?|tag|meta|value|info)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)       # next token
+    sCode = re.sub(r"\b(morph0?|tag|meta|value|info)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)   # previous token
     sCode = re.sub(r"\bspace[(](>1)", 'g_space(lToken[nLastToken+1], g_token(lToken, nLastToken+2)', sCode)     # next token
     sCode = re.sub(r"\bspace[(](<1)", 'g_space(lToken[nTokenOffset], lToken[nTokenOffset+1]', sCode)            # previous token
     sCode = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', sCode)

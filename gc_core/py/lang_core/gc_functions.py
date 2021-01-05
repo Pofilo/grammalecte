@@ -152,6 +152,20 @@ def analyse (sWord, sPattern, sNegPattern=""):
 
 #### Analyse tokens for graph rules
 
+def g_info (dToken):
+    "for debugging: retrieve info of word"
+    if not dToken:
+        echo("> no token")
+        return True
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    if not lMorph:
+        echo("> not in dictionary: " + dToken["sValue"])
+        return True
+    for sKey, val in dToken.items():
+        echo(sKey + ":" + str(val))
+    return True
+
+
 def g_value (dToken, sValues, nLeft=None, nRight=None):
     "test if <dToken['sValue']> is in sValues (each value should be separated with |)"
     sValue = "|"+dToken["sValue"]+"|"  if nLeft is None  else "|"+dToken["sValue"][slice(nLeft, nRight)]+"|"
