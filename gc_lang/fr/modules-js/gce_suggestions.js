@@ -455,8 +455,8 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
     return "";
 }
 
-function g_suggAgree (dTokenDst, dTokenSrc) {
-    // returns suggestions for <dTokenDst> that matches agreement with <dTokenSrc>
+function g_suggAgree (oTokenDst, oTokenSrc) {
+    // returns suggestions for <oTokenDst> that matches agreement with <oTokenSrc>
     let lMorphSrc = oTokenSrc.hasOwnProperty("lMorph") ? oTokenSrc["lMorph"] : gc_engine.oSpellChecker.getMorph(oTokenSrc["sValue"]);
     if (lMorphSrc.length === 0) {
         return "";
@@ -464,30 +464,30 @@ function g_suggAgree (dTokenDst, dTokenSrc) {
     let [sGender, sNumber] = cregex.getGenderNumber(lMorphSrc);
     if (sGender == ":m") {
         if (sNumber == ":s") {
-            return suggMasSing(dTokenDst["sValue"]);
+            return suggMasSing(oTokenDst["sValue"]);
         }
         else if (sNumber == ":p") {
-            return suggMasPlur(dTokenDst["sValue"]);
+            return suggMasPlur(oTokenDst["sValue"]);
         }
-        return suggMasSing(dTokenDst["sValue"]);
+        return suggMasSing(oTokenDst["sValue"]);
     }
     else if (sGender == ":f") {
         if (sNumber == ":s") {
-            return suggFemSing(dTokenDst["sValue"]);
+            return suggFemSing(oTokenDst["sValue"]);
         }
         else if (sNumber == ":p") {
-            return suggFemPlur(dTokenDst["sValue"]);
+            return suggFemPlur(oTokenDst["sValue"]);
         }
-        return suggFemSing(dTokenDst["sValue"]);
+        return suggFemSing(oTokenDst["sValue"]);
     }
     else if (sGender == ":e") {
         if (sNumber == ":s") {
-            return suggSing(dTokenDst["sValue"]);
+            return suggSing(oTokenDst["sValue"]);
         }
         else if (sNumber == ":p") {
-            return suggPlur(dTokenDst["sValue"]);
+            return suggPlur(oTokenDst["sValue"]);
         }
-        return dTokenDst["sValue"];
+        return oTokenDst["sValue"];
     }
     return "";
 }
