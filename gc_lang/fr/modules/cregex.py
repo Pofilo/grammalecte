@@ -10,6 +10,7 @@ Lemma = re.compile(r"^>(\w[\w-]*)")
 #### Analyses
 Gender = re.compile(":[mfe]")
 Number = re.compile(":[spi]")
+GenderNumber = re.compile(":[mfe]:[spi]")
 
 #### Nom et adjectif
 NA = re.compile(":[NA]")
@@ -129,6 +130,26 @@ def getNumber (lMorph):
             elif sNumber != m.group(0):
                 return ":i"
     return sNumber
+
+def getGenderNumber (lMorph):
+    "returns tuple (gender, number) of word: (':m', ':f', ':e' or empty string) and (':s', ':p', ':i' or empty string)"
+    sGender = ""
+    sNumber = ""
+    for sMorph in lMorph:
+        m = GenderNumber.search(sMorph)
+        if m:
+            sGenderx = m.group(0)[0:2]
+            sNumberx = m.group(0)[2:4]
+            if not sGender:
+                sGender = sGenderx
+            elif sGender != sGenderx:
+                sGender = ":e"
+            if not sNumber:
+                sNumber = sNumberx
+            elif sNumber != sNumberx:
+                sNumber = ":i"
+    return sGender, sNumber
+
 
 # NOTE :  isWhat (lMorph)    returns True   if lMorph contains nothing else than What
 #         mbWhat (lMorph)    returns True   if lMorph contains What at least once

@@ -7968,9 +7968,10 @@ TEST: Il reste de nombreux militants sincères à la FI.
 __conf_de_vconj__
     [de|d’]  @:[123][sp]¬:[GNA]
         <<- /conf/ not \2.istitle() and not \2.isupper() and not value(\2, "|jure|") and not tag(\2, "eg1mot")
-        -2>> =suggSimil(\2, ":[NA]", True)                                                          && Incohérence avec « \1 » : “\2” est une forme verbale conjuguée.
+        -2>> =suggSimil(\2, ":[NA]", True)+"|"+suggVerbInfi(\2)                                     && Incohérence avec « \1 » : “\2” est une forme verbale conjuguée.
 
 TEST: il s’agit de {{mette}} en évidence.
+TEST: sa façon de {{nettoyez}} était inefficace.                                            ->> nettoyer|nettoyant
 
 
     [de|d’]  [l’|leur]  @:[123][sp]¬:[GNAQ]
@@ -10065,7 +10066,7 @@ __conf_coup_cout_cou1__
         <<- /conf/ --1>> cou            && Confusion probable. Le coût est le prix d’une chose. Le coup est ce qui frappe. Le cou est la partie joignant le tronc à la tête.|https://fr.wiktionary.org/wiki/cou
 
     [>cou|>coût|>cout] [au-dessous|en-dessous] [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hachette|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hachette|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|monté+s|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>arrêt|>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur+s]
@@ -16294,6 +16295,7 @@ __purge_locutions__
     comme bon [me|te|lui|leur|nous|vous] semble
     comme ci ?,¿ comme ça
     comme cul et chemise
+    comme des fétus [de|d’] paille
     comme [frappé+ses] par la foudre
     comme gage [de|d’] bonne foi
     comme n’importe où ?ailleurs¿
@@ -16307,6 +16309,7 @@ __purge_locutions__
     comme si [de|d’] rien n’ était
     comme sur des roulettes
     comme un lion en cage
+    comme un fétu [de|d’] paille
     comme une lettre à la poste
     contrairement aux apparences
     contre mauvaise fortune ?,¿ bon cœur
@@ -16839,14 +16842,23 @@ __purge_locutions__
     quand bien même
     quand bon [me|te|lui|nous|vous|leur] [semble|semblera|semblait]
     quant à [ça|cela|ceci]
+    qu’ à cela ne tienne
     [que|qu’] [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
+    ##
     [que|qu’] je [le|l’] veuille ou non
     [que|qu’] tu [le|l’] veuilles ou non
     qu’ [il|elle|on|iel] [le|l’] veuille ou non
     [que|qu’] vous [le|l’] vouliez ou non
     [que|qu’] nous [le|l’] voulions ou non
     qu’ [ils|elles|iels] [le|l’] veuillent ou non
-    qu’ à cela ne tienne
+    ##
+    [que|qu’] [je|j’] m’ en réjouisse ou que [je|j’] le déplore
+    [que|qu’] tu t’ en réjouisses ou que tu le déplores
+    qu’ [il|elle|iel|on] s’ en réjouisse ou qu’ [il|elle|iel|on] le déplore
+    [que|qu’] nous nous en réjouissions ou que nous le déplorions
+    [que|qu’] vous vous en réjouissez ou que vous le déploriez
+    qu’ [ils|elles|iels] s’ en réjouissent ou qu’ [ils|elles|iels] le déplorent
+    ##
     quel qu’ en soit [le|l’] [moyen|prix|danger]
     quel qu’ en soit [le|l’] risque ?[économique|financier|légal|juridique|militaire]¿
     quelle qu’ en soit la [cause|raison]
@@ -18246,6 +18258,7 @@ __substantifs_multi_mots__
     >retour à la normale
     >retour [de|d’] [bâton|flamme]
     >retour en arrière
+    revers [de|d’] fortune
     >revue [de|d’] presse
     >rivière à sec
     >robe [de|d’] [chambre|soirée]
@@ -18978,6 +18991,8 @@ __purge_adverbes__
     ~.ment$  ?[parlant|pas]¿
         <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
 
+    , *WORD et $:W¬* ,
+        <<- morph(\2, ":W", "*") ~>> *
 
 
 @@@@
@@ -24855,7 +24870,22 @@ TEST: seul la matinée du 13 à l’école, il ne pouvait être à l’autre bou
 !!
 !!
 
-## Sans article
+
+__gn_start_prn_1m__
+    <start>  $:M1 ?,¿  @:[NA]¬:([ISKYPEGW]|e:[si])
+        <<- /gn/ morph(\2, ":M1.*:m", ":[fe]") and morph(\-1, ":[NA]", ":[me]:[si]")
+        --1>> =suggMasSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec le prénom masculin “\2”.
+        <<- /gn/ __else__ and morph(\2, ":M1.*:f", ":[me]") and morph(\-1, ":[NA]", ":[fe]:[si]")
+        --1>> =suggFemSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec le prénom féminin “\2”.
+
+TEST: Patrick {{partie}} à la boulangerie depuis une heure.                         ->> parti
+TEST: Antonina, {{oublié}} par ses parents chez leur grand-mère                     ->> oubliée
+TEST: Pauline, {{surnuméraires}} parmi les employés de cette boîte                  ->> surnuméraire
+TEST: Ahmed, {{psychologues}} à l’hôpital de Strasbourg                             ->> psychologue
+TEST: il fronça les sourcils, inquiet pour son avenir
+TEST: elles préservaient ce secret, conscientes du danger.
+
+
 __gn_start_2m__
     <start>  @:[NA]¬*  @:[NA]¬*
         <<- /gn/ ((morph(\2, ":m", "*") and morph(\3, ":f", "*")) or (morph(\2, ":f", "*") and morph(\3, ":m", "*"))) and not apposition(\2, \3)
@@ -24865,10 +24895,10 @@ __gn_start_2m__
         -3>> =switchPlural(\3)                                                                      && Accord de nombre erroné avec « \2 ».
         <<- /gn/ __also__ -2>> =switchPlural(\2)                                                    && Accord de nombre erroné avec « \3 ».
 
-TEST: {{serrurière}} {{intelligent}}.
-TEST: {{serrurier}} {{intelligente}}.
-TEST: {{Femmes}} {{mariée}}
-TEST: {{hommes}} {{marié}}
+TEST: {{serrurière}} {{intelligent}}.                                               ->> serrurier|||intelligente
+TEST: {{serrurier}} {{intelligente}}.                                               ->> serrurière|||intelligent
+TEST: {{Femmes}} {{mariée}}                                                         ->> Femme|||mariées
+TEST: {{hommes}} {{marié}}                                                          ->> homme|||mariés
 
 
 __gn_start_3m__
@@ -24928,6 +24958,19 @@ TEST: {{stupides}} et {{intellectuels}} psychologue             ->> stupide|||in
 TEST: {{petite}} et {{grande}} hommes                           ->> petits|||grands
 TEST: {{bel}} et {{grand}} nations                              ->> belles|||grandes
 TEST: {{stupide}} et {{intellectuel}} psychologues              ->> stupides|||intellectuels
+
+
+__gn_2m_et__
+    [<start>|,|(]  *WORD  et  @:A¬:[ISKYPEGW]|;C  [<end>|,|)]
+        <<- /gn/ morph(\2, ":A", ":[ISKYPEGW]|;C") and not agreement(\2, \4, False) -2>> =suggAgree(\2, \4)     && Cet adjectif n’est pas accordé avec l’adjectif “\4”.
+        <<- /gn/ __also__ -4>> =suggAgree(\4, \2)                                                               && Cet adjectif n’est pas accordé avec l’adjectif “\4”.
+
+TEST: cette femme, {{grande}} et {{intelligent}}                ->> grand|||intelligente
+TEST: cet homme, {{curieuse}} et {{affligé}}                    ->> curieux|||affligée
+TEST: ces personnes, {{étrangères}} et {{passionnée}}           ->> étrangère|||passionnées
+TEST: des portes, {{grands}} et {{folles}}                      ->> grandes|||fous
+TEST: ils marchaient ensemble, ingénieurs et patron, vers leur dernière heure, ignorants du danger.
+TEST: nous roulions lentement vers cette maison, inquiets et apeurés.
 
 
 ## Prépositions
@@ -26265,8 +26308,8 @@ __infi_commencer_finir_par__
     [>commencer|>finir]  par  [nous|vous|lui]        @:V¬:[GMY]
         <<- /infi/ not \-1[0:1].isupper() --1>> =suggVerbInfi(\3)                       && Après « commencer/finir par », le verbe devrait être à l’infinitif.
 
-TEST: commence par {{mangé}} le poulet.
-TEST: enfin la petite finit par {{pleuré}} à chaudes larmes.
+TEST: commence par {{mangé}} le poulet.                                         ->> manger
+TEST: enfin la petite finit par {{pleuré}} à chaudes larmes.                    ->> pleurer
 TEST: sa tournée, elle la finit par Rodez.
 
 
@@ -26298,7 +26341,7 @@ __infi_de_verbe__
     [de|d’] lui                  en                                              @:V¬:[YP]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             && Après “de”, le verbe devrait être à l’infinitif.
 
-    [de|d’]  @:V1.*:(?:Q|Ip.*:2p)¬:N
+    [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/") and not morph(\2, ">(?:fieffer|sacrer)/") and not tag(<1, "_rien_")
             and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tagbefore(\1, "_ceque_")
@@ -26315,7 +26358,6 @@ TEST: suffit de {{la}} {{finit}}                                                
 TEST: Il s’agit de me {{donnait}} tout ça.                                                  ->> donner
 TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.                         ->> orienter
 TEST: ils étaient susceptibles de m’y {{trouvaient}}                                        ->> trouver
-TEST: sa façon de {{nettoyez}} était inefficace.                                            ->> nettoyer
 TEST: elle a délibérément omis de les {{inclurent}}.                                        ->> inclure
 TEST: d’{{mangé}} je ne suis pas capable                                                    ->> manger
 TEST: elles n’ont rien touché de souillé
@@ -26623,7 +26665,7 @@ __infi_que_faire_sinon__
     que faire ?,¿ sinon  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
     que faire ?,¿ sinon  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
     que faire ?,¿ sinon  ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                      && Après “que faire”, mettez le verbe à l’infinitif.
+        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                                  && Après “que faire”, mettez le verbe à l’infinitif.
 
 TEST: que faire, sinon s’{{adonnait}} à sa passion                                          ->> adonner
 TEST: que croire sinon la pensée qu’il y a toujours une solution
@@ -26638,7 +26680,7 @@ __infi_rien_à_faire_que_sinon__
     rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~..(?:ée?s?|ez|ai[ts]?)$
     rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]            ~..(?:ée?s?|ez|ai[ts]?)$
     rien d’ autre à faire [que|qu’|sinon] ?[ne|n’]¿  [lui|leur|y]                    en                         ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                      && Après “rien à faire que”, mettez le verbe à l’infinitif.
+        <<- /infi/ morph(\-1, ":V", ":M") --1>> =suggVerbInfi(\-1)                                  && Après “rien à faire que”, mettez le verbe à l’infinitif.
 
 TEST: rien à faire sinon {{expliqué}} ce qu’il faisait là           ->> expliquer
 TEST: rien d’autre à faire que lui {{donnait}} à manger             ->> donner
@@ -26647,11 +26689,11 @@ TEST: rien d’autre à faire que lui {{donnait}} à manger             ->> donn
 __infi_nous_vous_verbe!3__
     nous  ~ée?s?$
         <<- /infi/ space(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*:1p")
-        -2>> =suggVerbInfi(\2)                                                          && Après “\1”, le verbe ne devrait pas être un participe passé.
+        -2>> =suggVerbInfi(\2)                                                                      && Après “\1”, le verbe ne devrait pas être un participe passé.
 
     vous  ~ée?s?$
         <<- /infi/ space(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*:2p")
-        -2>> =suggVerbInfi(\2)+"|"+suggVerbTense(\2, ":Ip", ":2p")                      && Après “\1”, le verbe ne devrait pas être un participe passé.
+        -2>> =suggVerbInfi(\2)+"|"+suggVerbTense(\2, ":Ip", ":2p")                                  && Après “\1”, le verbe ne devrait pas être un participe passé.
 
 TEST: oui, pourquoi pas, puisque nous {{intéressé}} à la question ne suffit pas à faire de nous des experts.   ->> intéresser
 TEST: il faut croire que vous {{mangé}} ne nous nourrirait guère                                               ->> manger|mangez
@@ -26661,9 +26703,9 @@ TEST: Vous d’habitude si réservée.
 
 __infi_y_verbe!3__
     y ~ée?s?$
-        <<- /infi/ morph(\2, ":V", ":[123][sp]") -2>> _                                 && Le verbe ne devrait pas être un participe passé.
+        <<- /infi/ \1.islower() and morph(\2, ":V", ":[123][sp]") -2>> =suggVerbInfi(\2)            && Le verbe ne devrait pas être un participe passé.
 
-TEST: y {{mangée}} était un supplice
+TEST: y {{mangée}} était un supplice                                ->> manger
 TEST: j’y crée une nouvelle maison.
 
 
@@ -27955,7 +27997,7 @@ TEST: Le mieux serait de le faire glisser
 __tag_locutions_verbales_d_état__
     ## verbes d’état
 
-    [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]
+    [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre|>apparaître|>apparaitre]
         <<- /1>> _VE_
 
     /_VCint_
@@ -27965,40 +28007,40 @@ __tag_locutions_verbales_d_état__
     ## locutions verbales d’état
 
     >avoir [été|semblé|paru]
-    >avoir [cru|imaginé|pensé|pu|su|voulu]                      [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir [besoin|crainte|envie|horreur|peur]                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    >avoir la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    [>être|>sembler|>demeurer|>paraître|>paraitre] [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    >avoir [cru|imaginé|pensé|pu|su|voulu]                      [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
+    >avoir [besoin|crainte|envie|horreur|peur]                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
+    >avoir l’ [envie|exigence|illusion|impression|intention]    [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
+    >avoir le [désir|sentiment]                                 [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
+    >avoir la ?ferme¿ [intention|volonté]                       [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
+    [>être|>sembler|>demeurer|>paraître|>apparaître|>apparaitre] [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|apparaître|apparaitre]
     [>être|>sembler] [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
     [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+        || ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
     [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || ?[en|y]¿ être [devenu+ses|redevenu+ses|resté+ses|demeuré+ses]
+        || ?[en|y]¿ être [devenu+ses|redevenu+ses|resté+ses|demeuré+ses|apparu+ses]
     [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || ?[en|y]¿ avoir [été|semblé|paru]
-    [>arriver|>continuer|>commencer|>parvenir|>renoncer|>réussir|>travailler]                       à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
-    [>cesser|>continuer|>craindre|>demander|>exiger|>redouter|>rêver|>refuser|>risquer|>venir]      [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
-    [>être|>sembler|>paraître|>paraitre|>devenir|>redevenir|>rester|>demeurer]  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible]
-        || [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    [>arriver|>continuer|>commencer|>parvenir|>renoncer|>réussir|>travailler]                   à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
+    [>cesser|>continuer|>craindre|>demander|>exiger|>redouter|>rêver|>refuser|>risquer|>venir]  [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
+    [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre|>apparaître|>apparaitre]  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible]
+        || [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
         <<- /1>> _LVED_
         <<- />> _LVE_
         <<- /-1>> _LVEF_
 
     /_VCint_  [été|semblé|paru]
-    /_VCint_  [cru|imaginé|pensé|pu|su|voulu]                       [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  [besoin|crainte|envie|horreur|peur]                   [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  l’ [envie|exigence|illusion|impression|intention]     [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  le [désir|sentiment]                                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-    /_VCint_  la ?ferme¿ [intention|volonté]                        [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
+    /_VCint_  [cru|imaginé|pensé|pu|su|voulu]                       [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
+    /_VCint_  [besoin|crainte|envie|horreur|peur]                   [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
+    /_VCint_  l’ [envie|exigence|illusion|impression|intention]     [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
+    /_VCint_  le [désir|sentiment]                                  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
+    /_VCint_  la ?ferme¿ [intention|volonté]                        [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
         <<- morphVC(\1, ">avoir/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
 
-    /_VCint_  [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre]
-        <<- morphVC(\1, ">(?:être|sembler|demeurer|para[îi]tre)/") >>>
+    /_VCint_  [loin|près]  [de|d’] [être|sembler|devenir|rester|demeurer|redevenir|paraître|paraitre|apparaître|apparaitre]
+        <<- morphVC(\1, ">(?:être|sembler|demeurer|para[îi]tre|appara[îi]tre)/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
@@ -28009,7 +28051,7 @@ __tag_locutions_verbales_d_état__
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
 
-    /_VCint_  ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    /_VCint_  ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
         <<- morphVC(\1, ">(?:aller|adorer|affirmer|aimer|croire|déclarer|désirer|détester|devoir|dire|estimer|imaginer|para[îi]tre|penser|pouvoir|préférer|risquer|savoir|sembler|souhaiter|vouloir)/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
@@ -28022,19 +28064,19 @@ __tag_locutions_verbales_d_état__
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
 
-    /_VCint_  à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    /_VCint_  à ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
         <<- morphVC(\1, ">(?:arriver|commencer|continuer|parvenir|renoncer|réussir|travailler)/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
 
-    /_VCint_  [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    /_VCint_  [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
         <<- morphVC(\1, ">(?:cesser|continuer|craindre|demander|exiger|redouter|rêver|refuser|risquer|venir)/") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
         <<- /-1>> _LVEIF_
 
-    /_VCint_  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible] [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre]
+    /_VCint_  [>content|>conscient|>heureux|>inquiet|>malheureux|>susceptible] [de|d’] ?[ne|n’]¿ ?[en|y]¿ [être|sembler|devenir|redevenir|rester|demeurer|paraître|paraitre|apparaître|apparaitre]
         <<- morphVC(\1, ":V[0-3]e") >>>
         <<- /1>> _LVEID_
         <<- />> _LVEI_
@@ -29712,6 +29754,21 @@ TEST: nous préférions être restés {{chagrinait}} par cette perte
 TEST: on déclare avoir été {{choque}} par ces nouvelles
 TEST: ils semblent être redevenus {{élut}}
 TEST: elles aiment avoir paru {{murent}}
+
+
+__ppas_fin_loc_verb_état_adj_et_adj__
+    [/_VE_|/_VEI_|/_LVEF_|/_LVEIF_|/_VEP_|/_LVEPF_|/_LVEPIF_] *WORD et @:A¬:[ISKYPEGW]|;C
+        <<- /ppas/ morph(\2, ":[AQ]", ":G|;C") and not agreement(\2, \-1, False)
+        --1>> =suggAgree(\-1, \2)                                                                   && Cet adjectif n’est pas accordé avec l’adjectif “\2”.
+
+TEST: il est furieux et {{curieuse}}                                                    ->> curieux
+TEST: tu es sot et {{ignorants}}                                                        ->> ignorant
+TEST: elle est belle et {{intelligent}}                                                 ->> intelligente
+TEST: elle sut apparaître grande et {{humbles}} à la fois                               ->> humble
+TEST: ils devenaient forts et {{humble}}                                                ->> humbles
+TEST: ils crurent avoir été trompés et {{volé}}                                         ->> volés
+TEST: elles déclareront être restées calmes et {{attentive}}                            ->> attentives
+TEST: nous imaginons devenir riches et {{connu}}                                        ->> connus
 
 
 __ppas_être_confusion__

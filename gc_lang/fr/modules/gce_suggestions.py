@@ -344,6 +344,33 @@ def suggFemPlur (sFlex, bSuggSimil=False):
     return ""
 
 
+def g_suggAgree (dTokenDst, dTokenSrc):
+    "returns suggestions for <dTokenDst> that matches agreement with <dTokenSrc>"
+    lMorphSrc = dTokenSrc["lMorph"]  if "lMorph" in dTokenSrc  else  _oSpellChecker.getMorph(dTokenSrc["sValue"])
+    if not lMorphSrc:
+        return ""
+    sGender, sNumber = cr.getGenderNumber(lMorphSrc)
+    if sGender == ":m":
+        if sNumber == ":s":
+            return suggMasSing(dTokenDst["sValue"])
+        elif sNumber == ":p":
+            return suggMasPlur(dTokenDst["sValue"])
+        return suggMasSing(dTokenDst["sValue"])
+    elif sGender == ":f":
+        if sNumber == ":s":
+            return suggFemSing(dTokenDst["sValue"])
+        elif sNumber == ":p":
+            return suggFemPlur(dTokenDst["sValue"])
+        return suggFemSing(dTokenDst["sValue"])
+    elif sGender == ":e":
+        if sNumber == ":s":
+            return suggSing(dTokenDst["sValue"])
+        elif sNumber == ":p":
+            return suggPlur(dTokenDst["sValue"])
+        return dTokenDst["sValue"]
+    return ""
+
+
 def hasFemForm (sFlex):
     "return True if there is a feminine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):

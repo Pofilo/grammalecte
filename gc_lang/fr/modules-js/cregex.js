@@ -11,6 +11,7 @@ var cregex = {
     ///// Masculin / féminin / singulier / pluriel
     _zGender: new RegExp(":[mfe]"),
     _zNumber: new RegExp(":[spi]"),
+    _zGenderNumber: new RegExp(":[mfe]:[spi]"),
 
     ///// Nom et adjectif
     _zNA: new RegExp(":[NA]"),
@@ -133,7 +134,7 @@ var cregex = {
         // returns number of word (':s', ':p', ':i' or empty string).
         let sNumber = "";
         for (let sMorph of lMorph) {
-            let m = this._zNumber.exec(sWord);
+            let m = this._zNumber.exec(sMorph);
             if (m) {
                 if (!sNumber) {
                     sNumber = m[0];
@@ -144,6 +145,33 @@ var cregex = {
         }
         return sNumber;
     },
+
+    getGenderNumber: function (lMorph) {
+        // returns tuple (gender, number) of word: (':m', ':f', ':e' or empty string) and (':s', ':p', ':i' or empty string)
+        let sGender = "";
+        let sNumber = "";
+        for (let sMorph of lMorph) {
+            let m = this._zGenderNumber.exec(sMorph);
+            if (m) {
+                let sGenderx = m[0].slice(0,2);
+                let sNumberx = m[0].slice(2,4);
+                if (!sGender) {
+                    sGender = sGenderx;
+                }
+                else if (sGender != sGenderx) {
+                    sGenderx = ":e";
+                }
+                if (!sNumber) {
+                    sNumber = sNumberx;
+                }
+                else if (sNumber != sNumberx) {
+                    sNumberx = ":i";
+                }
+            }
+        }
+        return [sGender, sNumber];
+    },
+
 
     // NOTE :  isWhat (lMorph)    returns true   if lMorph contains nothing else than What
     //         mbWhat (lMorph)    returns true   if lMorph contains What at least once

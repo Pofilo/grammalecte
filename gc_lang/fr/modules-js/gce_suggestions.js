@@ -455,6 +455,43 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
     return "";
 }
 
+function g_suggAgree (dTokenDst, dTokenSrc) {
+    // returns suggestions for <dTokenDst> that matches agreement with <dTokenSrc>
+    let lMorphSrc = oTokenSrc.hasOwnProperty("lMorph") ? oTokenSrc["lMorph"] : gc_engine.oSpellChecker.getMorph(oTokenSrc["sValue"]);
+    if (lMorphSrc.length === 0) {
+        return "";
+    }
+    let [sGender, sNumber] = cregex.getGenderNumber(lMorphSrc);
+    if (sGender == ":m") {
+        if (sNumber == ":s") {
+            return suggMasSing(dTokenDst["sValue"]);
+        }
+        else if (sNumber == ":p") {
+            return suggMasPlur(dTokenDst["sValue"]);
+        }
+        return suggMasSing(dTokenDst["sValue"]);
+    }
+    else if (sGender == ":f") {
+        if (sNumber == ":s") {
+            return suggFemSing(dTokenDst["sValue"]);
+        }
+        else if (sNumber == ":p") {
+            return suggFemPlur(dTokenDst["sValue"]);
+        }
+        return suggFemSing(dTokenDst["sValue"]);
+    }
+    else if (sGender == ":e") {
+        if (sNumber == ":s") {
+            return suggSing(dTokenDst["sValue"]);
+        }
+        else if (sNumber == ":p") {
+            return suggPlur(dTokenDst["sValue"]);
+        }
+        return dTokenDst["sValue"];
+    }
+    return "";
+}
+
 function hasFemForm (sFlex) {
     for (let sStem of gc_engine.oSpellChecker.getLemma(sFlex)) {
         if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q3")) {
