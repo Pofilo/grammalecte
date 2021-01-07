@@ -363,6 +363,10 @@ def main ():
                                             echo("                {0:40}  {1}".format(sMorph, sLabel))
                         #echo(txt.getReadableErrors(dSentence["lGrammarErrors"], xArgs.width))
             else:
+                if sText.startswith("TEST: "):
+                    sText = sText[6:]
+                    sText = sText.replace("{{", "").replace("}}", "")
+                    sText = re.sub(" ->> .*$", "", sText).rstrip()
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
                         sParagraph = oTextFormatter.formatText(sParagraph)
