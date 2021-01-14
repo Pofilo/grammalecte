@@ -12,7 +12,7 @@ def splitVerb (sVerb):
     iRight = sVerb.rfind("-")
     sSuffix = sVerb[iRight:]
     sVerb = sVerb[:iRight]
-    if sVerb.endswith(("-t", "-le", "-la", "-les")):
+    if sVerb.endswith(("-t", "-le", "-la", "-les", "-nous", "-vous", "-leur", "-lui")):
         iRight = sVerb.rfind("-")
         sSuffix = sVerb[iRight:] + sSuffix
         sVerb = sVerb[:iRight]
@@ -112,6 +112,25 @@ def suggVerbTense (sFlex, sTense, sWho):
     return ""
 
 
+def suggVerbFrom (sStem, sFlex, sWho=""):
+    "conjugate <sStem> according to <sFlex> (and eventually <sWho>)"
+    aSugg = set()
+    for sMorph in _oSpellChecker.getMorph(sFlex):
+        lTenses = [ m.group(0)  for m in re.finditer(":(?:Y|I[pqsf]|S[pq]|K|P|Q)", sMorph) ]
+        if sWho:
+            for sTense in lTenses:
+                if conj.hasConj(sStem, sTense, sWho):
+                    aSugg.add(conj.getConj(sStem, sTense, sWho))
+        else:
+            for sTense in lTenses:
+                for sWho in [ m.group(0)  for m in re.finditer(":[123][sp]", sMorph) ]:
+                    if conj.hasConj(sStem, sTense, sWho):
+                        aSugg.add(conj.getConj(sStem, sTense, sWho))
+    if aSugg:
+        return "|".join(aSugg)
+    return ""
+
+
 def suggVerbImpe (sFlex, bVC=False):
     "change <sFlex> to a verb at imperative form"
     if bVC:
@@ -128,7 +147,7 @@ def suggVerbImpe (sFlex, bVC=False):
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":E", ":2p"))
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if sSfx.endswith(("-en", "-y")) and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
+            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if (sSfx == "-en" or sSfx == "-y") and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 
@@ -456,7 +475,7 @@ def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
             break
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
+            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if (sSfx == "-en" or sSfx == "-y") and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 

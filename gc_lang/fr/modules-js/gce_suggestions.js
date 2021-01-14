@@ -18,7 +18,7 @@ function splitVerb (sVerb) {
     let iRight = sVerb.lastIndexOf("-");
     let sSuffix = sVerb.slice(iRight);
     sVerb = sVerb.slice(0, iRight);
-    if (sVerb.endsWith("-t") || sVerb.endsWith("-le") || sVerb.endsWith("-la") || sVerb.endsWith("-les")) {
+    if (sVerb.endsWith("-t") || sVerb.endsWith("-le") || sVerb.endsWith("-la") || sVerb.endsWith("-les") || sVerb.endsWith("-nous") || sVerb.endsWith("-vous") || sVerb.endsWith("-leur") || sVerb.endsWith("-lui")) {
         iRight = sVerb.lastIndexOf("-");
         sSuffix = sVerb.slice(iRight) + sSuffix;
         sVerb = sVerb.slice(0, iRight);
@@ -143,6 +143,35 @@ function suggVerbTense (sFlex, sTense, sWho) {
     return "";
 }
 
+function suggVerbFrom (sStem, sFlex, sWho="") {
+    "conjugate <sStem> according to <sFlex> (and eventually <sWho>)"
+    let aSugg = new Set();
+    for (let sMorph of gc_engine.oSpellChecker.getMorph(sFlex)) {
+        let lTenses = [ ...sMorph.matchAll(/:(?:Y|I[pqsf]|S[pq]|K|P|Q)/g) ];
+        if (sWho) {
+            for (let sTense of lTenses) {
+                if (conj.hasConj(sStem, sTense, sWho)) {
+                    aSugg.add(conj.getConj(sStem, sTense, sWho));
+                }
+            }
+        }
+        else {
+            for (let sTense of lTenses) {
+                for (let sWho of [ ...sMorph.matchAll(/:[123][sp]/g) ]) {
+                    if (conj.hasConj(sStem, sTense, sWho)) {
+                        aSugg.add(conj.getConj(sStem, sTense, sWho));
+                    }
+                }
+            }
+        }
+    }
+    if (aSugg.size > 0) {
+        return Array.from(aSugg).join("|");
+    }
+    return "";
+}
+
+
 function suggVerbImpe (sFlex, bVC=false) {
     let sSfx;
     if (bVC) {
@@ -165,7 +194,7 @@ function suggVerbImpe (sFlex, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx.endsWith("-en") || sSfx.endsWith("-y"))) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx == "-en" || sSfx == "-y")) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
         }
         return Array.from(aSugg).join("|");
     }
@@ -592,7 +621,7 @@ function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx == "-en" || sSfx == "-y")) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
         }
         return Array.from(aSugg).join("|");
     }
