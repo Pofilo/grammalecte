@@ -123,7 +123,7 @@ class TestGrammarChecking (unittest.TestCase):
                 aUntestedRules.add(f"{sLineId}/{sRuleId}")
         if aUntestedRules:
             print()
-            for sRule in aUntestedRules:
+            for sRule in sorted(aUntestedRules):
                 echo(sRule)
             echo("  [{} untested rules]".format(len(aUntestedRules)))
 
