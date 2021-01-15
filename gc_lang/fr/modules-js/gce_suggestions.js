@@ -73,11 +73,26 @@ function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => joinVerbAndSuffix(sSugg, sSfx)).join("|");
         }
         return Array.from(aSugg).join("|");
     }
     return "";
+}
+
+function joinVerbAndSuffix (sFlex, sSfx) {
+    if (/^-[tT]-/.test(sSfx) && /[tdTD]$/.test(sFlex)) {
+        return sFlex + sSfx.slice(2);
+    }
+    if (/[eacEAC]$/.test(sFlex)) {
+        if (/-(?:en|y)$/i.test(sSfx)) {
+            return sFlex + "s" + sSfx;
+        }
+        if (/-(?:ie?l|elle|on)$/i.test(sSfx)) {
+            return sFlex + "-t" + sSfx;
+        }
+    }
+    return sFlex + sSfx;
 }
 
 function suggVerbPpas (sFlex, sWhat=null) {
@@ -194,7 +209,7 @@ function suggVerbImpe (sFlex, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx == "-en" || sSfx == "-y")) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => joinVerbAndSuffix(sSugg, sSfx)).join("|");
         }
         return Array.from(aSugg).join("|");
     }
@@ -621,7 +636,7 @@ function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
     }
     if (aSugg.size > 0) {
         if (bVC) {
-            return Array.from(aSugg).map((sSugg) => { return ((sSugg.endsWith("e") || sSugg.endsWith("a")) && (sSfx == "-en" || sSfx == "-y")) ? sSugg + "s" +  sSfx : sSugg + sSfx; }).join("|");
+            return Array.from(aSugg).map((sSugg) => joinVerbAndSuffix(sSugg, sSfx)).join("|");
         }
         return Array.from(aSugg).join("|");
     }

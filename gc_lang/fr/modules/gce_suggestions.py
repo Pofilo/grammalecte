@@ -52,9 +52,20 @@ def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
             aSugg.add(aSugg2)
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
+            aSugg = [ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in aSugg ]
         return "|".join(aSugg)
     return ""
+
+
+def joinVerbAndSuffix (sFlex, sSfx):
+    if sSfx.startswith(("-t-", "-T-")) and sFlex.endswith(("t", "d", "T", "D")):
+        return sFlex + sSfx[2:]
+    if sFlex.endswith(("e", "a", "c", "E", "A", "C")):
+        if re.match("(?i)-(?:en|y)$", sSfx):
+            return sFlex + "s" + sSfx
+        if re.match("(?i)-(?:ie?l|elle|on)$", sSfx):
+            return sFlex + "-t" + sSfx
+    return sFlex + sSfx
 
 
 def suggVerbPpas (sFlex, sPattern=None):
@@ -147,7 +158,7 @@ def suggVerbImpe (sFlex, bVC=False):
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":E", ":2p"))
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if (sSfx == "-en" or sSfx == "-y") and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
+            aSugg = [ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in aSugg ]
         return "|".join(aSugg)
     return ""
 
@@ -475,7 +486,7 @@ def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
             break
     if aSugg:
         if bVC:
-            aSugg = list(map(lambda sSug: sSug + "s" + sSfx  if (sSfx == "-en" or sSfx == "-y") and sSug.endswith(("e", "a"))  else sSug + sSfx, aSugg))
+            aSugg = [ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in aSugg ]
         return "|".join(aSugg)
     return ""
 
