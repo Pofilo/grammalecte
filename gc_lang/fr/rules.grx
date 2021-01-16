@@ -376,8 +376,8 @@ TEST: Espaces{{                 }}surnuméraires.                        ->> " "
 __<s>/esp(esp_mélangés1)__              (?:  |  ) <<- ->> " | "                                     && Incohérence : l’espace insécable à côté de l’espace sécable n’a pas d’effet.
 __<s>/esp(esp_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |	"                   && Incohérence : espace et tabulation.
 
-TEST: J’espère que ça ne va pas durer trop longtemps avec Mr{{  }}Paul.
-TEST: J’espère que ça{{ 	}}va pas durer. (Ici, espace suivi d’une tabulation)      ->>  " |	"
+TEST: J’espère que ça ne va pas durer trop longtemps avec Mr{{  }}Paul.                 ->> " | "
+TEST: J’espère que ça{{ 	}}va pas durer. (Ici, espace suivi d’une tabulation)       ->> " |	"
 
 
 # Espaces insécables multiples
@@ -414,7 +414,7 @@ TEST: L’exposant −127, code 0000 0000, est réservé pour zéro
 __<s>/typo(typo_espace_après_signe_ouvrant)__    "([\[(]) "  @@0 <<- ->> \1                         && Pas d’espace après ce signe.
 __<s>/typo(typo_espace_avant_signe_fermant)__    " ([\])])"  <js> ([\]\)])</js>  @@1  <<- ->> \1    && Pas d’espace avant ce signe.
 
-TEST: c’est pas trop tôt {{( }}on a failli attendre).
+TEST: c’est pas trop tôt {{( }}on a failli attendre).                       ->> (
 TEST: blabla… {{[ }}crochets]                                               ->> [
 TEST: {{( }}parenthèses)                                                    ->> (
 TEST: c’est (enfin{{ )}} parti.                                             ->> )
@@ -678,7 +678,7 @@ __[s>/typo(typo_apostrophe_manquante_audace1)!8__
         -1>> =\1[:-1]+"’"                                                                           && Il manque peut-être une apostrophe.
 # Note : pour les majuscules, la règle se situe lors de la passe suivante.
 
-TEST: __mapos__ {{n }}arrive pas à sa cheville
+TEST: __mapos__ {{n }}arrive pas à sa cheville                                  ->> n’
 TEST: le coup {{qu }}avait donné                                                ->> qu’
 TEST: pendant {{qu }}il avançait d’un pas indolent                              ->> qu’
 TEST: {{jusqu }}à plus soif                                                     ->> jusqu’
@@ -731,7 +731,7 @@ TEST: {{'}}Ça’ recommence.                                                  -
 TEST: Le {{'}}grand’ homme.                                                 ->> “|‘|‹
 TEST: Le ‘grand{{'}} homme.                                                 ->> ”|’|›
 TEST: Le grand ‘homme{{'}}                                                  ->> ”|’|›
-TEST: dans les {{’}}beaux quartiers{{’}}
+TEST: dans les {{’}}beaux quartiers{{’}}                                    ->> “|‘|‹|||
 TEST: J’en ai '''marre''' (syntaxe wiki).
 
 
@@ -869,20 +869,19 @@ __[i](eepi_écriture_épicène_pluriel_e)__
         <<- \1.endswith("s") or \1.endswith("S") ->> \1·\2·s|\1 et \1\2s|\1\2s et \1                && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
         <<- __else__ ->> \1·\2·s|\1s et \1\2s|\1\2s et \1s                                          && Écriture épicène. Utilisez les points médians ou écrivez en toutes lettres.
 
-TEST: nous sommes {{déconsidéré-e-s}}.
-TEST: serons-nous toujours {{perdu.e.s}}.
-TEST: les illustres {{inconnu(e)s}}.
-TEST: la situation des {{salarié/e/s}}.
+TEST: nous sommes {{déconsidéré-e-s}}.                                  ->> déconsidéré·e·s|déconsidérés et déconsidérées|déconsidérées et déconsidérés
+TEST: serons-nous toujours {{perdu.e.s}}.                               ->> perdu·e·s|perdus et perdues|perdues et perdus
+TEST: les illustres {{inconnu(e)s}}.                                    ->> inconnu·e·s|inconnus et inconnues|inconnues et inconnus
+TEST: la situation des {{salarié/e/s}}.                                 ->> salarié·e·s|salariés et salariées|salariées et salariés
 TEST: des {{Iranien-ne-s}} sont venues                                  ->> Iranien·ne·s|Iraniens et Iraniennes|Iraniennes et Iraniens
 TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> écrivain·e·s|écrivains et écrivaines|écrivaines et écrivains
 TEST: Avec les {{Berlinois.e.s}}                                        ->> Berlinois·e·s|Berlinois et Berlinoises|Berlinoises et Berlinois
-TEST: la graphie “{{militant(e)s}}”.
-TEST: ces militant·e·s {{acharné}}.
-TEST: chez les {{immortel.le.s}}
-TEST: Nous sommes {{tombé.es}} par hasard
-TEST: Nous avons été {{révolté.es}} de cette novlangue politique
-TEST: Pour survivre, nous sommes {{devenu.es}} des archéologues.
-TEST: {{enthousiasmé.es}} par un tri collectif de noix
+TEST: la graphie “{{militant(e)s}}”.                                    ->> militant·e·s|militants et militantes|militantes et militants
+TEST: chez les {{immortel.le.s}}                                        ->> immortel·le·s|immortels et immortelles|immortelles et immortels
+TEST: Nous sommes {{tombé.es}} par hasard                               ->> tombé·e·s|tombés et tombées|tombées et tombés
+TEST: Nous avons été {{révolté.es}} de cette novlangue politique        ->> révolté·e·s|révoltés et révoltées|révoltées et révoltés
+TEST: Pour survivre, nous sommes {{devenu.es}} des archéologues.        ->> devenu·e·s|devenus et devenues|devenues et devenus
+TEST: {{enthousiasmé.es}} par un tri collectif de noix                  ->> enthousiasmé·e·s|enthousiasmés et enthousiasmées|enthousiasmées et enthousiasmés
 TEST: {{Quel.le.s}}                                                     ->> Quel·le·s|Quels et Quelles|Quelles et Quels
 TEST: LES IMMORTEL·LE·S
 TEST: les mortel·le·s
@@ -936,8 +935,8 @@ __[s]/maj(majuscule_après_point)__
             and morph(\1, ":") and morph(\2, ":")
         -2>> =\2.capitalize()                                                                       && Après un point, une majuscule est généralement requise.
 
-TEST: Je suis là. {{viens}}.                                              ->> Viens
-TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
+TEST: Je suis là. {{viens}}.                                            ->> Viens
+TEST: Ils sont devenus idiots. {{c}}’est peine perdue.                  ->> C
 
 __<s>/maj(majuscule_début_paragraphe)__
     ^ *([a-zàâéèêîôç](?:[\w-]+[’'`‘]?|[’'`‘]))  @@$
@@ -3788,7 +3787,7 @@ __typo_presque__
     presqu’  *WORD
         <<- /typo/ not morph(\2, ">[iî]le/") -1>> "presque "            && Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
 
-TEST: {{Presqu’}}exclusivement bâtie en pierre.
+TEST: {{Presqu’}}exclusivement bâtie en pierre.                 ->> "Presque "
 TEST: C’est une presqu’île.
 TEST: Cette presqu’ile est particulièrement venteuse.
 
@@ -3798,7 +3797,7 @@ __typo_quelque__
     quelqu’  *WORD
         <<- /typo/ not value(\2, "|un|une|") -1>> "quelque "            && Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
 
-TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
+TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.          ->> "Quelque "
 TEST: quelqu’un vient.
 TEST: elle s’en est allée avec quelqu’une…
 
@@ -3848,7 +3847,7 @@ __ocr_lettres_isolées__
     [n|m|t|s|j|l|c|ç|d]  *WORD
         <<- /ocr/ re.search("^[aâeéèêiîouyh]", \2) -1:.2>> \1’                                      && Lettre isolée. Erreur de numérisation ?
 
-TEST: __ocr__ {{J }}arrive demain
+TEST: __ocr__ {{J }}arrive demain                                               ->> J’
 
 
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
@@ -3905,7 +3904,7 @@ __ocr_virgules__
     [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
         <<- /ocr/ space(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             && Erreur de numérisation ? Virgule superflue ?
 
-TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
+TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L                         ->> se
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
 
 
@@ -3914,7 +3913,7 @@ __ocr_A__
     À
         <<- /ocr/ not value(<1, "|<start>|—|–|") ->> A                                              && Erreur de numérisation ?
 
-TEST: __ocr__ Va jusqu’au point {{À}}
+TEST: __ocr__ Va jusqu’au point {{À}}                                           ->> A
 
 
 # âge / age
@@ -3922,7 +3921,7 @@ __ocr_âge__
     >age
         <<- /ocr/ ->> =\1.replace("a", "â").replace("A", "Â")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ l’{{age}}
+TEST: __ocr__ l’{{age}}                                                         ->> âge
 
 
 # autre / antre
@@ -3930,7 +3929,7 @@ __ocr_autre__
     >antre
         <<- /ocr/ ->> =\1.replace("n", "u")                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.
+TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.                      ->> autre
 
 
 # avec / aven / arec
@@ -3938,7 +3937,7 @@ __ocr_avec__
     [arec|aven]
         <<- /ocr/ ->> avec                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.
+TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.            ->> avec
 
 
 # avaient / avalent
@@ -3946,7 +3945,7 @@ __ocr_avaient__
     avalent
         <<- /ocr/ ->> avaient                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ Ils {{avalent}} très faim.
+TEST: __ocr__ Ils {{avalent}} très faim.                                        ->> avaient
 
 
 # avais / avals / axais
@@ -3954,7 +3953,7 @@ __ocr_avis__
     [avals|axais]
         <<- /ocr/ ->> avais                                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point
+TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point     ->> avais
 
 
 # brait / bruit
@@ -3962,7 +3961,7 @@ __ocr_bruit__
     brait
         <<- /ocr/ not value(<1, "|il|ne|n’|âne|ânesse|") ->> bruit                                  && Erreur de numérisation ?
 
-TEST: __ocr__ tout ce qui {{brait}} dans la nuit
+TEST: __ocr__ tout ce qui {{brait}} dans la nuit                                ->> bruit
 
 
 # car dans / cardans
@@ -3970,7 +3969,7 @@ __ocr_car_dans__
     cardans
         <<- /ocr/ ->> car dans                                                                      && Erreur de numérisation ?
 
-TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
+TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.      ->> car dans
 
 
 # cela
@@ -3978,7 +3977,7 @@ __ocr_cela__
     Gela
         <<- /ocr/ not value(<1, "|il|ne|elle|") ->> Cela                                            && Erreur de numérisation ?
 
-TEST: __ocr__ {{Gela}}, on n’en veut plus.
+TEST: __ocr__ {{Gela}}, on n’en veut plus.                                      ->> Cela
 
 
 # celui / celai
@@ -3986,7 +3985,7 @@ __ocr_celui__
     celai
         <<- /ocr/ not value(<1, "|je|ne|le|la|les|") ->> celui                                      && Erreur de numérisation ?
 
-TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.
+TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.                ->> celui
 
 
 # ces / cos
@@ -3994,7 +3993,7 @@ __ocr_ces__
     cos
         <<- /ocr/ ->> ces                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ {{cos}} problèmes sont insolubles.
+TEST: __ocr__ {{cos}} problèmes sont insolubles.                                ->> ces
 
 
 # C’était / Celait
@@ -4002,20 +4001,20 @@ __ocr_c_était__
     celait
         <<- /ocr/ ->> c’était                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ {{celait}} perdu d’avance.
+TEST: __ocr__ {{celait}} perdu d’avance.                                        ->> c’était
 
 
 # cette / celte / cotte
 __ocr_cette__
-    [celte|celle]  @:N.*:f:s
+    [celte|celle]  @:[NA].*:f:s
         <<- /ocr/ -1>> cette                                                                        && Erreur de numérisation ?
 
     cotte
         <<- /ocr/ not morph(<1, ":D.*:f:[si]") ->> cette                                            && Erreur de numérisation ?
 
-TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.
-TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.
-TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.
+TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.          ->> cette
+TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.    ->> cette
+TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.      ->> cette
 
 
 # chère / obère
@@ -4023,7 +4022,7 @@ __ocr_chère__
     obère
         <<- /ocr/ not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère            && Erreur de numérisation ?
 
-TEST: __ocr__ cette femme {{obère}} à notre cœur.
+TEST: __ocr__ cette femme {{obère}} à notre cœur.                               ->> chère
 
 
 # Comme / Gomme
@@ -4031,7 +4030,7 @@ __ocr_comme__
     Gomme
         <<- /ocr/ not value(<1, "|et|ou|où|") ->> Comme                                             && Erreur de numérisation ?
 
-TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !
+TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !                       ->> Comme
 
 
 # Comment / Gomment
@@ -4039,7 +4038,7 @@ __ocr_comment__
     Gomment
         <<- /ocr/ ->> Comment                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent ?
+TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent ?  ->> Comment
 
 
 # contre / coutre / contra
@@ -4047,7 +4046,7 @@ __ocr_contre__
     [contra|coutre|coutra]
         <<- /ocr/ ->> contre                                                                        && Erreur de numérisation ?
 
-TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
+TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.           ->> contre
 
 
 # dans / bans / clans
@@ -4061,9 +4060,9 @@ __ocr_dans__
     dam
         <<- /ocr/ not (value(<1, "|grand|") and value(<2, "|au|")) ->> dans                         && Erreur de numérisation ?
 
-TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.
-TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
-TEST: __ocr__ renvoyons ces chiens {{dam}} leur niche
+TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.              ->> dans
+TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.          ->> dans
+TEST: __ocr__ renvoyons ces chiens {{dam}} leur niche                           ->> dans
 TEST: __ocr__ nous avons vaincu, au grand dam de tous ces grands messieurs
 
 
@@ -4072,8 +4071,8 @@ __ocr_dame__
     [>darne|>daine]
         <<- /ocr/ ->> =\1.replace("rn", "m").replace("in", "m").replace("RN", "M").replace("IN", "M")   && Erreur de numérisation ?
 
-TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
-TEST: __ocr__ cette {{daine}} élégamment vêtue.
+TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.              ->> dames
+TEST: __ocr__ cette {{daine}} élégamment vêtue.                                 ->> dame
 
 
 # de / dé / da / dés / des / dès / dos / das
@@ -4096,12 +4095,12 @@ __ocr_de_des__
     dos
         <<- /ocr/ not morph(<1, ":D.*:[me]") ->> des|dès                                            && Erreur de numérisation ?
 
-TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
-TEST: __ocr__ le nombre {{das}} ennemis semblait croître chaque minute
-TEST: __ocr__ {{dé}} gros camions circulaient toute la journée
-TEST: __ocr__ {{dés}} fois, ça ne passe pas
-TEST: __ocr__ {{do}} bon matin.
-TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir
+TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.         ->> de
+TEST: __ocr__ le nombre {{das}} ennemis semblait croître chaque minute          ->> des
+TEST: __ocr__ {{dé}} gros camions circulaient toute la journée                  ->> de
+TEST: __ocr__ {{dés}} fois, ça ne passe pas                                     ->> des|dès
+TEST: __ocr__ {{do}} bon matin.                                                 ->> de
+TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir                        ->> des|dès
 
 
 # de la / delà
@@ -4109,7 +4108,7 @@ __ocr_de_la__
     delà
         <<- /ocr/ not value(<1, "|au|de|en|par|") ->> de la|de là                                   && Erreur de numérisation ?
 
-TEST: __ocr__ la peinture {{delà}} maison s’écaillait
+TEST: __ocr__ la peinture {{delà}} maison s’écaillait                           ->> de la|de là
 
 
 # doute / cloute
@@ -4117,7 +4116,7 @@ __ocr_doute__
     cloute
         <<- /ocr/ ->> doute                                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ Sans aucun {{cloute}}.
+TEST: __ocr__ Sans aucun {{cloute}}.                                            ->> doute
 
 
 # du / dû
@@ -4125,7 +4124,7 @@ __ocr_du__
     dû  @:[NA]:[me]:[si]¬:(?:Y|Ov)
         <<- /ocr/ -1>> du                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ prendre {{dû}} bon temps
+TEST: __ocr__ prendre {{dû}} bon temps                                          ->> du
 TEST: __ocr__ il aurait dû la trouver
 TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
 
@@ -4138,8 +4137,8 @@ __ocr_elle__
     elfes
         <<- /ocr/ morph(<1, ":R|<start>|>,") or isNextVerb() ->> elles                              && Erreur de numérisation ?
 
-TEST: __ocr__ {{elfe}} viendra bientôt
-TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.
+TEST: __ocr__ {{elfe}} viendra bientôt                                          ->> elle
+TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.                                  ->> Elles
 
 
 # est / ost
@@ -4147,7 +4146,7 @@ __ocr_est__
     ost
         <<- /ocr/ ->> est                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ Le cheval {{ost}} attaché.
+TEST: __ocr__ Le cheval {{ost}} attaché.                                        ->> est
 
 
 # et / cl
@@ -4155,8 +4154,8 @@ __ocr_et__
     [cl|c1|e1|el]
         <<- /ocr/ not before("[0-9] +$") ->> et                                                     && Erreur de numérisation ?
 
-TEST: __ocr__ elle {{cl}} lui, c’était pour la vie.
-TEST: __ocr__ {{El}} il faisait froid là-haut
+TEST: __ocr__ elle {{cl}} lui, c’était pour la vie.                             ->> et
+TEST: __ocr__ {{El}} il faisait froid là-haut                                   ->> Et
 
 
 # état / étal
@@ -4170,9 +4169,9 @@ __ocr_état_étais_étaient__
     étalent
         <<- /ocr/ ->> étaient                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ l’{{étal}} des finances ne le permet pas
-TEST: __ocr__ Quels {{étals}} sont venus ?
-TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
+TEST: __ocr__ l’{{étal}} des finances ne le permet pas                          ->> état
+TEST: __ocr__ Quels {{étals}} sont venus ?                                      ->> états|étais
+TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.                 ->> étaient
 
 
 # êtes
@@ -4180,7 +4179,7 @@ __ocr_êtes!6__
     ôtes
         <<- /ocr/ not value(<1, "|tu|") ->> êtes|ôtez                                               && Erreur de numérisation ?
 
-TEST: __ocr__ vous {{ôtes}} devenus fous.
+TEST: __ocr__ vous {{ôtes}} devenus fous.                                       ->> êtes|ôtez
 
 
 # fasse
@@ -4189,8 +4188,8 @@ __ocr_fasse__
     fessent
         <<- /ocr/ ->> =\1.replace("ess", "ass").replace("ESS", "ASS")                               && Erreur de numérisation ?
 
-TEST: __ocr__ Quoiqu’ils {{fessent}} ça donne de la merde
-TEST: __ocr__ {{fesse}} que Dieu nous entende
+TEST: __ocr__ Quoiqu’ils {{fessent}} ça donne de la merde                       ->> fassent
+TEST: __ocr__ {{fesse}} que Dieu nous entende                                   ->> fasse
 
 
 # fille / tille
@@ -4198,7 +4197,7 @@ __ocr_fille__
     tille
         <<- /ocr/ ->> fille                                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
+TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.                          ->> fille
 
 
 # fol·s / foi·s
@@ -4206,7 +4205,7 @@ __ocr_foi__
     [fol|fols]
         <<- /ocr/ ->> =\1.replace("l", "i").replace("L", "I")                                       && Erreur de numérisation ?
 
-TEST: __ocr__  ils sont quelques {{fols}} battus$
+TEST: __ocr__  ils sont quelques {{fols}} battus                                ->> fois
 
 
 # faire
@@ -4214,7 +4213,7 @@ __ocr_faire__
     foire
         <<- /ocr/ ->> faire                                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ j’en vois une {{foire}} l’imbécile.
+TEST: __ocr__ j’en vois une {{foire}} l’imbécile.                               ->> faire
 
 
 # fout / font
@@ -4223,8 +4222,8 @@ __ocr_font__
         <<- /ocr/ not value(<1, "|il|elle|on|") and not value(<2, "|il|elle|on|") ->> font          && Erreur de numérisation ?
         <<- /ocr/ __else__ and morph(>1, ":(?:Ov|Y|W)") ->> faut                                    && Erreur de numérisation ?
 
-TEST: __ocr__ qui ne {{fout}} rien de leur journée
-TEST: __ocr__ il {{fout}} entendre cette voix
+TEST: __ocr__ qui ne {{fout}} rien de leur journée                              ->> font
+TEST: __ocr__ il {{fout}} entendre cette voix                                   ->> faut
 
 
 # fut / rut
@@ -4232,7 +4231,7 @@ __ocr_fut__
     rut
         <<- /ocr/ ->> fut                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ ce petit {{rut}} traité comme un chien
+TEST: __ocr__ ce petit {{rut}} traité comme un chien                            ->> fut
 
 
 # il / n / ils / U / Us / i1 / if / 11
@@ -4241,19 +4240,19 @@ __ocr_il__
         <<- /ocr/ morph(\3, ":(?:O[on]|3s)") -2>> il                                                && Erreur de numérisation ?
 
     [U|if|i1]
-        <<- /ocr/ ->> Il|il                                                                         && Erreur de numérisation ?
+        <<- /ocr/ -:>> Il|il                                                                        && Erreur de numérisation ?
 
     [Us|ifs|i1s]
-        <<- /ocr/ ->> Ils|ils                                                                       && Erreur de numérisation ?
+        <<- /ocr/ -:>> Ils|ils                                                                      && Erreur de numérisation ?
 
     11
-        <<- /ocr/ not morph(>1, ":N", "*") ->> Il|il                                                && Erreur de numérisation ?
+        <<- /ocr/ not morph(>1, ":N", "*") -:>> Il|il                                               && Erreur de numérisation ?
 
-TEST: __ocr__ {{n}} contient trop de soufre.
-TEST: __ocr__ {{U}} arrive
-TEST: __ocr__ {{Us}} arrive demain.
-TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
-TEST: __ocr__ {{11}} n’en sait rien
+TEST: __ocr__ {{n}} contient trop de soufre.                                    ->> il
+TEST: __ocr__ {{U}} arrive                                                      ->> Il|il
+TEST: __ocr__ {{Us}} arrive demain.                                             ->> Ils|ils
+TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.            ->> Ils|ils
+TEST: __ocr__ {{11}} n’en sait rien                                             ->> Il|il
 TEST: __ocr__ elle a 11 ans.
 TEST: __ocr__ 11 jours de souffrance
 TEST: __ocr__ nous sommes le 11 septembre
@@ -4264,7 +4263,7 @@ __ocr_la__
     fa
         <<- /ocr/ ->> la                                                                            && Erreur de numérisation ?
 
-TEST: __ocr__ dans {{fa}} demeure
+TEST: __ocr__ dans {{fa}} demeure                                               ->> la
 
 
 # large / largo
@@ -4272,46 +4271,50 @@ __ocr_large__
     >largo
         <<- /ocr/ ->> =\1.replace("o", "e")                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ elle pense {{largo}}
+TEST: __ocr__ elle pense {{largo}}                                              ->> large
 
 
 # l’ / j’ / Y / I
 __ocr_lj1__
-    ~^Y’[aâeéèêëiîïoôuyh]
-        <<- /ocr/ ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                     && Erreur de numérisation ?
+    ~^[YIi]’[aâeéèêëiîïoôuyh]
+        <<- /ocr/ -:>> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                    && Erreur de numérisation ?
 
-    Y  ~^[aâeéèêëiîïoôuyh]
-        <<- /ocr/ before("\\w") and not morph(\2, ":Y") ->> l’\2|j’\2                               && Erreur de numérisation ?
+    Y  ~^[aâeéèêëiîïoôuyh].
+        <<- /ocr/ before("\\w") and not morph(\2, ":Y") -:>> l’\2|L’\2|j’\2|J’\2                    && Erreur de numérisation ?
 
-    ~^[Ii]’[aâeéèêëiîïoôuyh]
-        <<- /ocr/ ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                     && Erreur de numérisation ?
 
-    [I|i|1]  ~^[aâeéèêëiîïoôuy]
-        <<- /ocr/ ->> l’\2|L’\2|j’\2|J’\2                                                           && Erreur de numérisation ?
+    [I|i|1]  ~^[aâeéèêëiîïoôuyh].
+        <<- /ocr/ -:>> l’\2|L’\2|j’\2|J’\2                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ {{Y’arrive}} demain.
-TEST: __ocr__ et {{Y acte}}
-TEST: __ocr__ {{I’arrive}} demain.
-TEST: __ocr__ {{1 entente}} cordiale
+TEST: __ocr__ {{Y’arrive}} demain.                                              ->> l’arrive|L’arrive|J’arrive|j’arrive
+TEST: __ocr__ et {{Y acte}}                                                     ->> l’acte|L’acte|j’acte|J’acte
+TEST: __ocr__ {{1 entente}} cordiale                                            ->> l’entente|L’entente|j’entente|J’entente
+TEST: __ocr__ Y a des cons partout.
 
 
 # l’ / V / P
 __ocr_l__
     ~^V.
-        <<- /ocr/ \1.istitle() and before("\\w") and morph(\1, ":", ":M") >>>
-        <<- /ocr/ spell(\1[1:]) -:>> ="v"+\1[1:] + "|l’"+\1[1:]                                     && Erreur de numérisation ?
-        <<- /ocr/ __else__ -:>> ="v"+\1[1:]                                                         && Erreur de numérisation ?
+        <<- /ocr/ \1.istitle() and before("\\w") and not morph(\1, ">V") >>>
+        <<- /ocr/ spell(\1) and spell(\1[1:]) -:>> ="v"+\1[1:] + "|l’"+\1[1:]                       && Erreur de numérisation ?
+        <<- /ocr/ __else__ and spell(\1[1:]) -:>> ="l’"+\1[1:]                                      && Erreur de numérisation ?
+        <<- /ocr/ __else__ and spell(\1) -:>> =\1.lower()                                           && Erreur de numérisation ?
 
-    ~^P[aâeéêèiîïoôuy]
-        <<- /ocr/ before("\\w") and morph(\1, ":", ":M") and spell(\1[1:])
-        -:>> ="l’"+\1[1:] + "|p"+\1[1:]                                                             && Erreur de numérisation ?
+    ~^P[aâeéêèiîïoôuyh]
+        <<- /ocr/ before("\\w") and not morph(\1, ">P") >>>
+        <<- /ocr/ spell(\1) and spell(\1[1:]) -:>> ="l’"+\1[1:] + "|p"+\1[1:]                       && Erreur de numérisation ?
+        <<- /ocr/ __else__ and spell(\1[1:]) -:>> ="l’"+\1[1:]                                      && Erreur de numérisation ?
+        <<- /ocr/ __else__ and spell(\1) -:>> =\1.lower()                                           && Erreur de numérisation ?
 
-TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
-TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.
+TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.                                       ->> vélos
+TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.        ->> vagile|l’agile
+TEST: __ocr__ Mais {{Varme}} était déréglée                                             ->> l’arme
+TEST: __ocr__ Il scrute Pierre, {{Pair}} maussade.                                      ->> l’air|pair
+TEST: __ocr__ Une grosse vague arrivait et {{Peau}} remplit.                            ->> l’eau|peau
+TEST: __ocr__ c’est {{Phomme}}.                                                         ->> l’homme
+TEST: __ocr__ Une grande {{Perte}} pour l’humanité.                                     ->> perte
 TEST: __ocr__ Viens demain.
 TEST: __ocr__ Ce jour où Valérie eut sa licence de droit.
-TEST: __ocr__ Il scrute Pierre, {{Pair}} maussade.
-TEST: __ocr__ Une grosse vague arrivait et {{Peau}} remplit.
 TEST: __ocr__ selon toute logique, Paris sera épargné.
 TEST: __ocr__ À l’orée de la semaine de Pâques, l’incendie de la cathédrale Notre-Dame
 
@@ -4321,7 +4324,7 @@ __ocr_l_avoir_la_voir__
     lavoir
         <<- /ocr/ not morph(<1, ":D.*:[me]:[si]") ->> l’avoir|la voir                               && Erreur de numérisation ?
 
-TEST: __ocr__ il faut {{lavoir}} pour le croire.
+TEST: __ocr__ il faut {{lavoir}} pour le croire.                                        ->> l’avoir|la voir
 
 
 # l’était / Tétait
@@ -4329,7 +4332,7 @@ __ocr_l_était__
     Tétait
         <<- /ocr/ -:>> l’était|t’était|T’était                                                      && Erreur de numérisation ?
 
-TEST: __ocr__ perdu, cet homme {{Tétait}}
+TEST: __ocr__ perdu, cet homme {{Tétait}}                                               ->> l’était|t’était|T’était
 
 
 # le / les / lé / lés / lui / lai / lei / la / tu / lu
@@ -4346,22 +4349,22 @@ __ocr_le_la_les__
     lu
         <<- /ocr/ not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                  && Erreur de numérisation ?
 
-TEST: __ocr__ il s’agit de {{lés}} observer.
-TEST: __ocr__ {{lai}} gros sont mal vus.
-TEST: __ocr__ {{lu}} as si bien réussi
-TEST: __ocr__ contre {{los}} impies
+TEST: __ocr__ il s’agit de {{lés}} observer.                                            ->> les
+TEST: __ocr__ {{lai}} gros sont mal vus.                                                ->> lui|les
+TEST: __ocr__ {{lu}} as si bien réussi                                                  ->> tu|le|la
+TEST: __ocr__ contre {{los}} impies                                                     ->> les
 
 
 # M. / Mr / M
 __ocr_mr__
     M ,  /_Tit_
-        <<- /ocr/ space(\1, 0, 1) -1:2>> "Mr |M. "                                                                  && Erreur de numérisation ?
+        <<- /ocr/ space(\1, 0, 1) -1:.3:>> "Mr |M. "                                                && Erreur de numérisation ?
 
     M  /_Tit_
-        <<- /ocr/ -1>> "Mr |M. "                                                                    && Erreur de numérisation ?
+        <<- /ocr/ -1:.2:>> "Mr |M. "                                                                && Erreur de numérisation ?
 
-TEST: __ocr__ {{M,}} Patrick nous a oubliés.
-TEST: __ocr__ Rencontre avec {{M}} Black.
+TEST: __ocr__ {{M, }}Patrick nous a oubliés.                                            ->> "Mr |M. "
+TEST: __ocr__ Rencontre avec {{M }}Black.                                               ->> "Mr |M. "
 
 
 # Mais / Hais / Mats / niais
@@ -4378,10 +4381,10 @@ __ocr_mais__
     niais
         <<- /ocr/ not morph(<1, ">(?:homme|ce|quel|être)/") ->> mais                                && Erreur de numérisation ?
 
-TEST: __ocr__ {{Hais}} il en sait trop.
-TEST: __ocr__ c’était bien, {{mats}} quelle journée
-TEST: __ocr__ c’est bien, {{niais}} trop subtil.
-TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.
+TEST: __ocr__ {{Hais}} il en sait trop.                                                 ->> Mais
+TEST: __ocr__ c’était bien, {{mats}} quelle journée                                     ->> mais
+TEST: __ocr__ c’est bien, {{niais}} trop subtil.                                        ->> mais
+TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.                                      ->> mais
 
 
 # matin
@@ -4389,7 +4392,7 @@ __ocr_matin__
     [mâtin|mâtins]
         <<- /ocr/ ->> =\1.replace("â", "a").replace("Â", "A")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ ce {{mâtin}}, il y eut une tempête.
+TEST: __ocr__ ce {{mâtin}}, il y eut une tempête.                                       ->> matin
 
 
 # même / même / mème / mémo / môme
@@ -4403,9 +4406,9 @@ __ocr_même__
     >mémo
         <<- /ocr/ ->> =\1.replace("é", "ê").replace("É", "Ê").replace("o", "e").replace("O", "E")   && Erreur de numérisation ?
 
-TEST: __ocr__ J’en ai assez {{môme}} si ça ne se voit pas.
-TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
-TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
+TEST: __ocr__ J’en ai assez {{môme}} si ça ne se voit pas.                              ->> même
+TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment                   ->> mêmes
+TEST: __ocr__ C’est l’incessant retour du {{mémo}}.                                     ->> même
 
 
 # mes
@@ -4416,8 +4419,8 @@ __ocr_mes_m_as__
     nies
         <<- /ocr/ not value(<1, "|tu|ne|n’|") ->> mes                                               && Erreur de numérisation ?
 
-TEST: __ocr__ elle est fière de {{mas}} succès
-TEST: __ocr__ Est-ce que tu vas nier {{nies}} réussites
+TEST: __ocr__ elle est fière de {{mas}} succès                                          ->> mes|m’as
+TEST: __ocr__ Est-ce que tu vas nier {{nies}} réussites                                 ->> mes
 
 
 # mon / won
@@ -4425,7 +4428,7 @@ __ocr_mon__
     won
         <<- /ocr/ ->> mon                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ c’est {{won}} ami
+TEST: __ocr__ c’est {{won}} ami                                                         ->> mon
 
 
 # mot / mol / moi
@@ -4433,15 +4436,15 @@ __ocr_mot__
     [mol|mols]
         <<- /ocr/ ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  && Erreur de numérisation ?
 
-TEST: __ocr__ c’est un {{mol}} très dur.
+TEST: __ocr__ c’est un {{mol}} très dur.                                                ->> moi|mot
 
 
 # moyen
 __ocr_moyen__
     >moyeu
-        <<- /ocr/ ->> moyen|moyens                                                                  && Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("u", "n").replace("U", "N")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ quel {{moyeu}} employer ?
+TEST: __ocr__ quel {{moyeu}} employer ?                                                 ->> moyen
 
 
 # ne / na / no / rie
@@ -4449,8 +4452,8 @@ __ocr_ne__
     [no|na|rie]
         <<- /ocr/ ->> ne                                                                            && Erreur de numérisation ?
 
-TEST: __ocr__ {{no}} fais rien que tu pourrais regretter
-TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.
+TEST: __ocr__ {{no}} fais rien que tu pourrais regretter                                ->> ne
+TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.             ->> ne
 
 
 # nous / noue / noua
@@ -4461,9 +4464,9 @@ __ocr_nous__
     mous
         <<- /ocr/ morph(<1, "<start>|>,|:(?:R|Os|X)") ->> nous                                      && Erreur de numérisation ?
 
-TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
-TEST: __ocr__ il finit par {{mous}} énerver avec ces histoires sans fin
-TEST: __ocr__ {{mous}} croire invincibles
+TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.                            ->> nous
+TEST: __ocr__ il finit par {{mous}} énerver avec ces histoires sans fin                 ->> nous
+TEST: __ocr__ {{mous}} croire invincibles                                               ->> nous
 
 
 # par / paf / pan / pat
@@ -4477,9 +4480,9 @@ __ocr_par__
     pur @:[DMT]
         <<- /ocr/ -1>> par                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ Une seule action {{paf}} jour
-TEST: __ocr__ {{Pur}} la déesse !
-TEST: __ocr__ attaqué {{pan}} deux fois
+TEST: __ocr__ Une seule action {{paf}} jour                                             ->> par
+TEST: __ocr__ {{Pur}} la déesse !                                                       ->> Par
+TEST: __ocr__ attaqué {{pan}} deux fois                                                 ->> par|peu
 
 
 # par le / par la / par les / parle / parla / parles
@@ -4493,9 +4496,9 @@ __ocr_par_le_la_les__
     parles  @:[NA].*:[pi]
         <<- /ocr/ not value(<1, "|ne|tu|") -1>> par les                                             && Erreur de numérisation ?
 
-TEST: __ocr__ {{parle}} glaive et le mensonge, l’Église s’imposa.
-TEST: __ocr__ {{parla}} force, on peut réussir
-TEST: __ocr__ tu fus trompée {{parles}} mensonges permanents de son beau-père.
+TEST: __ocr__ {{parle}} glaive et le mensonge, l’Église s’imposa.                       ->> par le
+TEST: __ocr__ {{parla}} force, on peut réussir                                          ->> par la
+TEST: __ocr__ tu fus trompée {{parles}} mensonges permanents de son beau-père.          ->> par les
 
 
 # pendant / pondant
@@ -4503,7 +4506,7 @@ __ocr_pendant__
     pondant
         <<- /ocr/ ->> pendant                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.
+TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.                            ->> pendant
 
 
 # peu / peut / peux / pou
@@ -4514,8 +4517,8 @@ __ocr_peu_peux_peut__
     poux
         <<- /ocr/ not morph(<1, ":D.*:m:p") ->> peux|peut|pour                                      && Erreur de numérisation ?
 
-TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.
-TEST: __ocr__ elles sont venues {{poux}} voir de leurs propres yeux.
+TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.                                ->> peu
+TEST: __ocr__ elles sont venues {{poux}} voir de leurs propres yeux.                    ->> peux|peut|pour
 
 
 # plus / pins
@@ -4523,7 +4526,7 @@ __ocr_plus__
     pins
         <<- /ocr/ ->> plus                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.
+TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.                             ->> plus
 
 
 # puis / pois
@@ -4531,7 +4534,7 @@ __ocr_puis__
     pois
         <<- /ocr/ not morph(<1, ":D.*:m:p") ->> puis                                                && Erreur de numérisation ?
 
-TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.
+TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.                           ->> puis
 
 
 # pour / pouf
@@ -4539,7 +4542,7 @@ __ocr_pour__
     pouf
         <<- /ocr/ not morph(<1, ":D.*:f:s") ->> pour                                                && Erreur de numérisation ?
 
-TEST: __ocr__ {{pouf}} elle, il était prêt à tout.
+TEST: __ocr__ {{pouf}} elle, il était prêt à tout.                                      ->> pour
 
 
 # près / prés
@@ -4547,7 +4550,7 @@ __ocr_près__
     prés
         <<- /ocr/ not morph(<1, ":D.*:[me]:p") ->> près                                             && Erreur de numérisation ?
 
-TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.
+TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.                                    ->> près
 
 
 # que / quo
@@ -4558,8 +4561,8 @@ __ocr_que__
     quo
         <<- /ocr/ not value(<1, "|statu|") ->> que                                                  && Erreur de numérisation ?
 
-TEST: __ocr__ elles ne savent pas {{qua}} faire
-TEST: __ocr__ {{Quo}} penser de tout ceci ?
+TEST: __ocr__ elles ne savent pas {{qua}} faire                                         ->> que
+TEST: __ocr__ {{Quo}} penser de tout ceci ?                                             ->> Que
 TEST: __ocr__ pour elle, c’est une condition sine qua non.
 
 
@@ -4568,17 +4571,19 @@ __ocr_qu_importe__
     qu’ [importé|importa]
         <<- /ocr/ -2>> importe                                                                      && Erreur de numérisation ?
 
-TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
+TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.                     ->> importe
 
 
 # reine / ruine
 __ocr_reine_ruine__
     >rainer
-        <<- /ocr/ value(\1, "|raine|raines|") ->> reine|reines|ruine|ruines                         && Erreur de numérisation ?
+        <<- /ocr/ value(\1, "|raine|raines|")
+        ->> =\1.replace("a", "u").replace("A", "U")+"|"+\1.replace("a", "e").replace("A", "E")      && Erreur de numérisation ?
         <<- /ocr/ __else__ ->> =\1.replace("ain", "uin").replace("AIN", "UIN")                      && Erreur de numérisation ?
 
-TEST: __ocr__ tu vas {{rainer}} notre réputation.
-TEST: __ocr__ des {{raines}} mal aimées.
+TEST: __ocr__ tu vas {{rainer}} notre réputation.                                       ->> ruiner
+TEST: __ocr__ des {{raines}} mal aimées.                                                ->> reines|ruines
+TEST: __ocr__ il {{rainait}} ses dernières forces pour rien                             ->> ruinait
 
 
 # qu’étant
@@ -4586,7 +4591,7 @@ __ocr_qu_étant__
     quêtant
         <<- /ocr/ ->> qu’étant                                                                      && Erreur de numérisation ?
 
-TEST: __ocr__ {{Quêtant}} la fille d’une déesse, elle n’avait pas à se justifier.
+TEST: __ocr__ {{Quêtant}} la fille d’une déesse, elle n’avait pas à se justifier.       ->> Qu’étant
 
 
 # qui / gui
@@ -4594,7 +4599,7 @@ __ocr_qui__
     gui
         <<- /ocr/ not morph(<1, ":D.*:m:s") ->> qui                                                 && Erreur de numérisation ?
 
-TEST: __ocr__ avec {{gui}} faire alliance ?
+TEST: __ocr__ avec {{gui}} faire alliance ?                                             ->> qui
 
 
 # s’il / sil
@@ -4605,8 +4610,8 @@ __ocr_s_il__
     sils
         <<- /ocr/ ->> s’ils                                                                         && Erreur de numérisation ?
 
-TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
-TEST: __ocr__ {{sils}} étaient venus, on l’aurait vu.
+TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.               ->> s’il
+TEST: __ocr__ {{sils}} étaient venus, on l’aurait vu.                                   ->> s’ils
 
 
 # son / sou
@@ -4614,7 +4619,7 @@ __ocr_son__
     sou
         <<- /ocr/ ->> son                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ ça vient de {{sou}} ami
+TEST: __ocr__ ça vient de {{sou}} ami                                                   ->> son
 
 
 # sur / sar
@@ -4625,8 +4630,8 @@ __ocr_sur__
     sui
         <<- /ocr/ not value(>1, "|generis|") ->> sur                                                && Erreur de numérisation ?
 
-TEST: __ocr__ il ne savait rien {{sar}} eux.
-TEST: __ocr__ il en est {{sui}}
+TEST: __ocr__ il ne savait rien {{sar}} eux.                                            ->> sur
+TEST: __ocr__ il en est {{sui}}                                                         ->> sur
 
 
 # tard / lard
@@ -4634,7 +4639,7 @@ __ocr_tard__
     lard
         <<- /ocr/ not value(<1, "|le|ce|mon|ton|son|du|un|") ->> tard                               && Erreur de numérisation ?
 
-TEST: __ocr__ elles seront là tôt ou {{lard}}.
+TEST: __ocr__ elles seront là tôt ou {{lard}}.                                          ->> tard
 
 
 # tandis que / taudis
@@ -4642,15 +4647,15 @@ __ocr_tandis__
     taudis [que|qu’]
         <<- /ocr/ -1>> tandis                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.
+TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.  ->> tandis
 
 
 # l’est / Test
 __ocr_l_est__
     Test
-        <<- /ocr/ before("\\w") ->> l’est                                                           && Erreur de numérisation ?
+        <<- /ocr/ before("\\w") -:>> l’est                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ ça {{Test}} à leurs yeux.
+TEST: __ocr__ ça {{Test}} à leurs yeux.                                                 ->> l’est
 
 
 # tête / tète
@@ -4658,7 +4663,7 @@ __ocr_tête__
     tète
         <<- /ocr/ not value(<1, "|je|il|elle|on|ne|ça|") ->> =\1.replace("è", "ê").replace("È", "Ê")    && Erreur de numérisation ?
 
-TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.
+TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.                            ->> tête
 
 
 # tin / fin / un
@@ -4666,7 +4671,7 @@ __ocr_fin_un__
     tin
         <<- /ocr/ ->> fin|un                                                                        && Erreur de numérisation ?
 
-TEST: __ocr__ c’était {{tin}} marchand vaniteux.
+TEST: __ocr__ c’était {{tin}} marchand vaniteux.                                        ->> fin|un
 
 
 # ton / tan
@@ -4674,7 +4679,7 @@ __ocr_ton__
     >tan
         <<- /ocr/ ->> =\1.replace("a", "o").replace("A", "O")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ pour {{tan}} propre bien.
+TEST: __ocr__ pour {{tan}} propre bien.                                                 ->> ton
 
 
 # toute / tonte
@@ -4682,7 +4687,7 @@ __ocr_toute__
     >tonte
         <<- /ocr/ ->> =\1.replace("n", "u").replace("N", "U")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ à {{tonte}} fin utile
+TEST: __ocr__ à {{tonte}} fin utile                                                     ->> toute
 
 
 # tu es / tues
@@ -4690,7 +4695,7 @@ __ocr_tu_es__
     tues
         <<- /ocr/ not morph(<1, ":(?:N.*:f:p|V0e.*:3p)|>(?:tu|ne)/") ->> tu es                      && Erreur de numérisation ?
 
-TEST: __ocr__ dans tous les cas, {{tues}} foutue.
+TEST: __ocr__ dans tous les cas, {{tues}} foutue.                                       ->> tu es
 TEST: __ocr__ ses actions tues.
 
 
@@ -4699,7 +4704,7 @@ __ocr_un__
     vin
         <<- /ocr/ not value(<1, "|ce|de|du|un|quel|leur|le|") ->> un                                && Erreur de numérisation ?
 
-TEST: __ocr__ {{vin}} mathématicien hors du commun.
+TEST: __ocr__ {{vin}} mathématicien hors du commun.                                     ->> un
 
 
 # une / ure / vine
@@ -4710,8 +4715,8 @@ __ocr_une__
     vine
         <<- /ocr/ ->> une                                                                           && Erreur de numérisation ?
 
-TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse
-TEST: __ocr__ c’est pour {{vine}} amie
+TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse                            ->> une
+TEST: __ocr__ c’est pour {{vine}} amie                                                  ->> une
 
 
 # vêtement / vêlement
@@ -4719,7 +4724,7 @@ __ocr_vêtement__
     >vêlement
         <<- /ocr/ ->> =\1.replace("l", "t").replace("L", "T")                                       && Erreur de numérisation ?
 
-TEST: __ocr__ il enfila ses {{vêlements}} en hâte.
+TEST: __ocr__ il enfila ses {{vêlements}} en hâte.                                      ->> vêtements
 
 
 # vite
@@ -4727,7 +4732,7 @@ __ocr_vite__
     vile
         <<- /ocr/ ->> vite                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.
+TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.                     ->> vite
 
 
 # voilà
@@ -4735,7 +4740,7 @@ __ocr_voilà__
     [<start>|,|(]  ?[me|te|le|la|nous|vous|les]¿  voila
         <<- /ocr/ --1>> voilà                                                                       && Erreur de numérisation ?
 
-TEST: __ocr__ nous {{voila}}
+TEST: __ocr__ nous {{voila}}                                                            ->> voilà
 
 
 # voit / volt
@@ -4743,7 +4748,7 @@ __ocr_voit__
     volt
         <<- /ocr/ ->> voit                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ La femme {{volt}} plus loin
+TEST: __ocr__ La femme {{volt}} plus loin                                               ->> voit
 
 
 # vous / voua / voue
@@ -4751,7 +4756,7 @@ __ocr_vous__
     [voue|voua]
         <<- /ocr/ ->> vous                                                                          && Erreur de numérisation ?
 
-TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
+TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.                                     ->> vous
 
 
 
@@ -4777,7 +4782,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 #        and not (\2 == "mieux" and value(<1, "|qui|"))
 #    ->> \1                                                                                          && Doublon.
 #
-#TEST: Il y a un {{doublon doublon}}.
+#TEST: Il y a un {{doublon doublon}}.                                                                ->> doublon
 
 
 !!
@@ -4907,7 +4912,7 @@ __eleu_vieil_vieux_euphonie__
         <<- /eleu/ morph(\2, ":[NA].*:[me]:s", ":[123][sp]")
         -1>> vieil                                              && Euphonie. Écrivez “vieil” s’il précède un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-TEST: c’est un {{vieux}} imbécile.
+TEST: c’est un {{vieux}} imbécile.                                                  ->> vieil
 TEST: Le {{vieux}} homme était parti.                                               ->> vieil
 TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 
@@ -5267,17 +5272,21 @@ __fusion_date__
 
 __date_jour_mois_année__
     31 [avril|juin|septembre|novembre]
-        <<- /date/ space(\1, 1, 1) ->> 30 \2                                                  && Cette date est invalide. Il n’y a que 30 jours en \2.
+        <<- /date/ space(\1, 1, 1) ->> 30 \2                                                        && Cette date est invalide. Il n’y a que 30 jours en \2.
 
     [30|31] février
-        <<- /date/ space(\1, 1, 1) ->> 28 février|29 février                                  && Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
+        <<- /date/ space(\1, 1, 1) ->> 28 février|29 février                                        && Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
+
+    29 février ~^\d{2,5}$
+        <<- /date/ not checkDate(\1, \2, \3) ->> 28 février \3                                      && En l’année “\3”, il n’y a que 28 jours en février.
 
     ~^\d\d?$  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~^\d{2,5}$
-        <<- /date/ not checkDate(\1, \2, \3) ->> _                                                  && Cette date est invalide.
+        <<- /date/ not (\1 == "29" and value(\2, "|février|")) and not checkDate(\1, \2, \3) ->> _  && Cette date est invalide.
 
-TEST: le {{31 avril}}
-TEST: le {{30 février}}
-TEST: {{29 février 2011}}
+TEST: le {{31 avril}}                                                       ->> 30 avril
+TEST: le {{30 février}}                                                     ->> 28 février|29 février
+TEST: {{29 février 2011}}                                                   ->> 28 février 2011
+TEST: {{32 mars 2020}}                                                      ->>
 
 
 __date_journée_jour_mois_année__
@@ -5287,16 +5296,16 @@ __date_journée_jour_mois_année__
         -1>> =getDay(\2, \3, \4)
         && Le jour de la date suivante est incorrect (selon le calendrier grégorien).|https://fr.wikipedia.org/wiki/Passage_du_calendrier_julien_au_calendrier_gr%C3%A9gorien
 
-TEST: {{samedi}}, le 10-06-2014                                           ->> mardi
-TEST: {{lundi}} le 23-07-2019
-TEST: {{mardi}} 24-07-2019
-TEST: {{mercredi}}, 20-07-2019
-TEST: {{mercredi}} le 10 juin 2014                                        ->> mardi
-TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
-TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
-TEST: {{jeudi}} 17 aout 1912                                              ->> samedi
+TEST: {{samedi}}, le 10-06-2014                                             ->> mardi
+TEST: {{lundi}} le 23-07-2019                                               ->>
+TEST: {{mardi}} 24-07-2019                                                  ->>
+TEST: {{mercredi}}, 20-07-2019                                              ->>
+TEST: {{mercredi}} le 10 juin 2014                                          ->> mardi
+TEST: {{mercredi}}, le 10 juin 2014                                         ->> mardi
+TEST: {{lundi}}, 18 août 1912                                               ->> dimanche
+TEST: {{jeudi}} 17 aout 1912                                                ->> samedi
+TEST: {{jeudi}}, 18 août 1563 : mort de La Boétie (calendrier julien)       ->> mercredi
 TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
-TEST: {{jeudi}}, 18 août 1563 : mort de La Boétie (calendrier julien)     ->> mercredi
 TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
 
 
@@ -21102,10 +21111,10 @@ __conf_coup_cout_cou2__
     >encaisser [les|des|ces|mes|tes|ses|nos|vos|leurs] [cous|coûts|couts]
         <<- /conf/ --1>> coups                  && Confusion. Le cou est la partie séparant la tête du corps. Le coût indique ce que ça coûte. Pour ce qui frappe, écrivez “coup”.
 
-TEST: il a été roué de {{cou}}
-TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
-TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
-TEST: j’avais prévu le {{cou}}
+TEST: il a été roué de {{cou}}                                                          ->> coups
+TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.              ->> cou
+TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.        ->> coup pour coup
+TEST: j’avais prévu le {{cou}}                                                          ->> coup|coût|cout
 TEST: il a pris ses jambes à son {{coup}}                                               ->> cou
 TEST: elles ont pris leurs jambes à leur {{cout}}                                       ->> cou
 TEST: il a pris {{ces}} jambes à son cou                                                ->> ses
@@ -24203,6 +24212,7 @@ TEST: ces {{beaux}} {{institutions}}                                            
 TEST: nos petites {{fille}}                                                     ->> filles
 TEST: de plusieurs {{grands}} {{avocates}}                                      ->> grandes|||avocats
 TEST: de vos défauts {{terrible}}, je connais presque tout.                     ->> terribles
+TEST: ces militant·e·s {{acharné}}.                                             ->> acharnés
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
 TEST: Pour maintenir le potentiel de membrane qui lui permet de communiquer avec ses voisins sous forme d’influx nerveux, un neurone a besoin d’énergie.
@@ -24534,10 +24544,10 @@ __gn_quel_1m__
         <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":(?:V0|Oo|[NA].*:[me]:[si])")     -1>> quelle                     && Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasSing(\2, True)     && Accord de genre erroné : le déterminant « \1 » est au masculin singulier.
 
-TEST: {{Quel}} femme.                                         ->> Quelle
-TEST: {{Quel}} {{partie}}
-TEST: {{Quel}} {{paris}}
-TEST: {{Quel}} {{parties}}
+TEST: {{Quel}} femme.                                           ->> Quelle
+TEST: {{Quel}} {{partie}}                                       ->> Quelle|||parti
+TEST: {{Quel}} {{paris}}                                        ->> Quels|||pari
+TEST: {{Quel}} {{parties}}                                      ->> Quelles|||parti
 TEST: Quel emmerdeur
 
 __gn_quels_1m__
@@ -24549,10 +24559,10 @@ __gn_quels_1m__
         <<- /gn/ morph(\2, ":[NA].*:f:[pi]", ":(?:V0|Oo|[NA].*:[me]:[pi])")     -1>> quelles                    && Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasPlur(\2, True)     && Accord de genre erroné : le déterminant « \1 » est au masculin pluriel.
 
-TEST: {{Quels}} chanson.                                      ->> Quelle
-TEST: {{Quels}} {{chant}}
-TEST: {{Quels}} {{idiotes}}
-TEST: {{Quels}} {{avocate}}
+TEST: {{Quels}} chanson.                                        ->> Quelle
+TEST: {{Quels}} {{chant}}                                       ->> Quel|||chants
+TEST: {{Quels}} {{idiotes}}                                     ->> Quelles|||idiots
+TEST: {{Quels}} {{avocate}}                                     ->> Quelle|||avocats
 TEST: Quels idiots
 
 __gn_quelle_1m__
@@ -24564,10 +24574,10 @@ __gn_quelle_1m__
         <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":(?:V0|Oo|[NA].*:[fe]:[si])")     -1>> quel                       && Accord de genre erroné : « \2 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemSing(\2, True)     && Accord de genre erroné : le déterminant « \1 » est au féminin singulier.
 
-TEST: {{Quelle}} homme.                                       ->> Quel
-TEST: {{Quelle}} {{folles}}
-TEST: {{Quelle}} {{chien}}
-TEST: {{Quelle}} {{chats}}
+TEST: {{Quelle}} homme.                                         ->> Quel
+TEST: {{Quelle}} {{folles}}                                     ->> Quelles|||folle
+TEST: {{Quelle}} {{chien}}                                      ->> Quel|||chienne
+TEST: {{Quelle}} {{chats}}                                      ->> Quels|||chatte
 TEST: Quelle sale journée…
 TEST: On pourrait également rappeler à quel point l’Église catholique fut hostile à la laïcité et la combattit violemment.
 
@@ -24580,10 +24590,10 @@ __gn_quelles_1m!8__
         <<- /gn/ morph(\2, ":[NA].*:m:[pi]", ":(?:V0|Oo|[NA].*:[fe]:[pi])")     -1>> quels                      && Accord de genre erroné : « \2 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemPlur(\2, True)     && Accord de genre erroné : le déterminant « \1 » est au féminin pluriel.
 
-TEST: {{Quelles}} hommes
-TEST: {{Quelles}} {{tarés}}.
-TEST: {{Quelles}} {{cinglé}}.
-TEST: {{Quelles}} {{idiote}}.
+TEST: {{Quelles}} hommes                                        ->> Quels
+TEST: {{Quelles}} {{tarés}}.                                    ->> Quels|||tarées
+TEST: {{Quelles}} {{cinglé}}.                                   ->> Quel|||cinglées
+TEST: {{Quelles}} {{idiote}}.                                   ->> Quelle|||idiotes
 TEST: Quelles grandes tours
 TEST: Quelles drôles de prunes
 
@@ -24927,7 +24937,7 @@ TEST: {{seule}} notre ordinateur serait assez puissant pour ça                 
 TEST: {{seuls}} vos forces suffirent                                                                ->> seules
 TEST: {{seules}} nos tests réussirent à la convaincre.                                              ->> seuls
 TEST: {{seules}} des hommes et des ados costauds peuvent y parvenir                                 ->> seuls
-TEST: Jusqu’ici, {{seuls}} des informations industrielles ou commerciales avaient fuité
+TEST: Jusqu’ici, {{seuls}} des informations industrielles ou commerciales avaient fuité             ->> seules
 TEST: seules des jours entiers, elles n’en pouvaient plus
 TEST: seule du matin au soir
 TEST: seuls le jour de Noël, c’est difficile
@@ -25402,14 +25412,14 @@ __gn_prépositions__
     [<start>|,|(]  [vus|vue|vues]  [que|qu’]
         <<- /gn/ -2>> vu                                                                    && “Vu que”. Considéré comme préposition, invariable.
 
-TEST: {{comprises}} mes prestations sur place
-TEST: {{non-comprises}} les boissons
-TEST: non {{comprise}} la remise en état
-TEST: {{Exceptés}} les petits, tous sont tombes malades.
-TEST: {{Attendues}} qu’on n’en sait rien, impossible de tirer des conclusions définitives.
-TEST: Il viendra, étant {{donnée}} son addiction…
-TEST: {{Vues}} les idioties qu’on entend, normal qu’on perde la tête.
-TEST: {{Passées}} les premières heures du jour…
+TEST: {{comprises}} mes prestations sur place                                                       ->> compris
+TEST: {{non-comprises}} les boissons                                                                ->> non compris
+TEST: non {{comprise}} la remise en état                                                            ->> compris
+TEST: {{Exceptés}} les petits, tous sont tombes malades.                                            ->> Excepté
+TEST: {{Attendues}} qu’on n’en sait rien, impossible de tirer des conclusions définitives.          ->> Attendu
+TEST: Il viendra, étant {{donnée}} son addiction…                                                   ->> donné
+TEST: {{Vues}} les idioties qu’on entend, normal qu’on perde la tête.                               ->> Vu
+TEST: {{Passées}} les premières heures du jour…                                                     ->> Passé
 TEST: Il faut même être indulgent pour accorder une place à cette dernière, vu qu’elle a pour condition le mensonge des instincts
 TEST: Vu la dureté extrême des conditions de survie…
 TEST: vu les circonstances
@@ -26146,51 +26156,51 @@ __conf_qui_adj_det_subst__
     [ceux|celles]  qui  $:Q¬:G   @:(?:[123][sp]|P)
         <<- /conf/ not morph(\3, ":3[sp]") -3>> =suggVerb(\3, ":3p")                                && Confusion probable entre participe passé et forme verbale conjuguée.
 
-TEST: qu’est-ce qui {{défini}} un attentat ?
-TEST: Qui {{voulu}} la paix ?
-TEST: le prix sera pour celui qui {{réussi}}
-TEST: celui qui {{réussi}} aura la vie éternelle
-TEST: celles qui {{demandées}} viendront demain.
+TEST: qu’est-ce qui {{défini}} un attentat ?                        ->> définit|définissait
+TEST: Qui {{voulu}} la paix ?                                       ->> veut|voulut|voulait
+TEST: le prix sera pour celui qui {{réussi}}                        ->> réussit|réussissait
+TEST: celui qui {{réussi}} aura la vie éternelle                    ->> réussit|réussissait
+TEST: celles qui {{demandées}} viendront demain.                    ->> demandent|demandaient|demandèrent
 
 
 __conf_conj_suj_verbe_adj__
     [quand|lorsque|puisque]  [le|cet|du]                                    *WORD  ~..[éeiut]s?$  ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[me]:[si]") and  morph(\4, ":Q.*:[me]:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  ce                                             *WORD  ~..[éeiut]s?$  ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[me]:[si]", ">être/") and  morph(\4, ":Q.*:[me]:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [la|cette|ma|ta|sa]                            *WORD  ~..[éeiut]e$   ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[fe]:[si]") and  morph(\4, ":Q.*:[fe]:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [l’|mon|ton|ton|notre|votre|leur]              *WORD  ~..[éeiut]e?$  ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[si]") and  morph(\4, ":Q.*:[si]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [les|cet|mes|tes|ses|nos|vos|leurs|quelques]   *WORD  ~..[éeiut]e?s$ ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[pi]") and  morph(\4, ":Q.*:[pi]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
     [quand|lorsque|puisque]  [plusieurs|certains|certaines|maints|maintes]  *WORD  ~..[éeiut]e?s$ ,  $:Os
         <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3p") and  morph(\4, ":Q.*:[pi]", ":3s")
-        -4>> =suggSimil(\4, ":3s")          && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
+        -4>> =suggVerb(\4, ":3s")           && Confusion probable. La proposition « \1 \2 \3 \4 » ne contient apparemment aucun verbe. Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de mettre une virgule avant (mise en incise).
         <<- /conf/ __also__ -1>> \1,        && Si le syntagme « \2 \3 \4 » est un complément circonstanciel ou une locution adverbiale, il serait préférable de le placer en incise.
 
-TEST: {{quand}} le facteur {{arrivé}}, il se précipitait à la fenêtre.
-TEST: {{puisque}} la fête {{finie}}, je vais partir.
-TEST: {{lorsque}} l’horloge {{sonnée}}, nous nous levions à la hâte
-TEST: {{quand}} les croissants {{arrivés}}, on se jetait dessus
-TEST: {{lorsque}} certains idiots {{oubliés}}, on riait aux éclats
-TEST: {{lorsque}} ton code {{grossi}}, il faut le factoriser
-TEST: {{quand}} ce chien {{parti}}, je fus surpris
+TEST: {{quand}} le facteur {{arrivé}}, il se précipitait à la fenêtre.          ->> quand,|||arrive|arrivait|arriva
+TEST: {{puisque}} la fête {{finie}}, je vais partir.                            ->> puisque,|||finit|finissait
+TEST: {{lorsque}} l’horloge {{sonnée}}, nous nous levions à la hâte             ->> lorsque,|||sonne|sonnait|sonna
+TEST: {{quand}} les croissants {{arrivés}}, on se jetait dessus                 ->> quand,|||arrive|arrivait|arriva
+TEST: {{lorsque}} certains idiots {{oubliés}}, on riait aux éclats              ->> lorsque,|||oublie|oubliait|oublia
+TEST: {{lorsque}} ton code {{grossi}}, il faut le factoriser                    ->> lorsque,|||grossit|grossissait
+TEST: {{quand}} ce chien {{parti}}, je fus surpris                              ->> quand,|||part|partit|partait
 TEST: quand le jour venu, il fallut se battre, nous étions prêts.
 TEST: quand ce fut fait, il lui manqua la force de répliquer.
 
@@ -27326,7 +27336,7 @@ __conf_adj_de_voir_que__
     [<start>|,|(]  *WORD  de  [voir|constater]  [que|qu’]
         <<- /conf/ morph(\2, ":V1.*:Y") -2>> =suggVerbPpas(\2)                          && Confusion probable. Si vous décrivez un état de fait (et non une action), il faut un participe passé.
 
-TEST: {{tétaniser}} de voir que leurs théories grandioses ne valent rien
+TEST: {{tétaniser}} de voir que leurs théories grandioses ne valent rien        ->> tétanisé|tétanisée|tétanisés|tétanisées
 
 
 !!!! Il reste                                                                                     !!
@@ -28446,16 +28456,16 @@ TEST: Cela s’est entre autres traduit par l’absence de grandes controverses 
 
 
 __ppas_pron_pluriel_se_être_ppas__
-    <start>  nous            ?[ne|n’]¿  nous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
-    <start>  vous            ?[ne|n’]¿  vous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
-    <start>  [on|ils|elles]  ?[ne|n’]¿  [se|s’]  >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
+    <start>  nous                   ?[ne|n’]¿  nous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
+    <start>  vous                   ?[ne|n’]¿  vous     >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
+    <start>  [on|ils|elles|iels]    ?[ne|n’]¿  [se|s’]  >être  @q.*:Q.*:p  @:[DB]  @:[NA]  [<end>|,|)]
         <<- /ppas/ not morph(\-2, ">(?:matin|soir|soirée|nuit|après-midi|jour|année|semaine|mois|seconde|minute|heure|siècle|millénaire|fois)/") --4>> =suggVerbPpas(\-4, ":m:s")
         && Usage pronominal. Si le syntagme “\-3 \-2” est le COD du participe passé “\-4”, alors ce participe passé devrait être au masculin singulier. (Il ne s’accorde avec le sujet “\2” que si l’action agit sur “\2”.)
 
 TEST: Ils se sont {{échangés}} leurs vœux.                          ->> échangé
 TEST: elles s’étaient {{données}} le mot                            ->> donné
 TEST: on se serait {{donnés}} la main, si on avait su.              ->> donné
-TEST: elles se seraient {{prises}} la tête
+TEST: elles se seraient {{prises}} la tête                          ->> pris|prisé
 TEST: on s’est comportés comme des porcs.
 TEST: nous ne nous sommes pas compris un seul moment
 TEST: vous vous êtes compromis plusieurs fois
@@ -31279,8 +31289,8 @@ __conf_vc_int_imp_verbe!3__
         <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") and not morphVC(\1, ":V0")
         -2>> _                                                                  && Incohérence probable. Après une forme verbale comme “\1”, il ne faut pas une forme verbale comme “\2”.
 
-TEST: Annonce-le {{dépare}}.
-TEST: prends-la {{tète}}.
+TEST: Annonce-le {{dépare}}.                                    ->>
+TEST: prends-la {{tète}}.                                       ->>
 TEST: Fait-il envie ?
 TEST: alors rappelons-nous Marie
 
@@ -33257,10 +33267,10 @@ __conj_que_où_comment_verbe_sans_sujet!3__
         <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
         <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
-TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
-TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
-TEST: nous savons comment {{arriverons}} ces problèmes…
-TEST: nous le pensons puisque {{paraitrons}} folles ces augmentations
+TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?       ->> devient
+TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…                                                       ->> abandonnerait
+TEST: nous savons comment {{arriverons}} ces problèmes…                                                                             ->> arriveront
+TEST: nous le pensons puisque {{paraitrons}} folles ces augmentations                                                               ->> paraitront
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
 TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
 TEST: à des règles aussi absurdes que précises
@@ -33283,7 +33293,7 @@ __conj_quel_quelle_que_3sg__
         -3>> =suggVerb(\3, ":3s")                                                           && Conjugaison erronée. Accord avec “\4 \5”. Mettez “être” à la 3ᵉ personne du singulier.
         <<- /conj/ __also__ -1>> =\1[:-1]                                                   && Accord avec “\4 \5”. Utilisez le singulier.
 
-TEST: Quel que {{soient}} son passe-temps, il y consacre trop de temps.
+TEST: Quel que {{soient}} son passe-temps, il y consacre trop de temps.                             ->> soit
 TEST: {{Quels}} que {{soient}} le feu utilisé.
 TEST: {{Quels}} que {{soit}} leur problème, ça n’en finit jamais.
 TEST: {{Quelles}} que {{soit}} leur voiture, elle tombe constamment en panne.
