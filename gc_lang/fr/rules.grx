@@ -6811,15 +6811,12 @@ TEST: ce {{code legacy}} est un cauchemar                                   ->> 
 !!
 !!
 
-__pleo_pléonasmes_divers__
-    >abolir [absolument|entièrement|complétement|complètement|totalement]
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+__pleo_locutions__
+    à [partir|compter] de dorénavant
+        <<- /pleo/ ->> dorénavant|à \2 de maintenant                                        && Pléonasme.
 
-    >acculer [au|aux] >pied du mur
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >achever [absolument|entièrement|complétement|complètement|totalement]
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    à [plusieurs|$:B] reprises différentes
+        <<- /pleo/ ->> \1 \2 \3                                                             && Pléonasme.
 
     actuellement en cours
         <<- /pleo/ not value(>1, "|de|d’|") ->> en cours                                    && Pléonasme.
@@ -6827,171 +6824,69 @@ __pleo_pléonasmes_divers__
     actuellement en train [de|d’]
         <<- /pleo/ not value(>1, "|nuit|") -1:3>> en train                                  && Pléonasme.
 
-    [>ajouter|>rajouter] [de|en] plus
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    [ainsi|donc] c’ est pourquoi
+        <<- /pleo/ ->> ainsi|donc|c’est pourquoi                                            && Pléonasme.
 
-    >apanage >exclusif
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    [>applaudir|>applaudissement] des deux mains
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >archipel d’ [iles|îles]
-        <<- /pleo/ not morph(>1, ":(?:A.*:[fe]:[pi]|W)") ->> archipel                       && Pléonasme.
+    [ainsi|donc] par [conséquent|exemple]
+        <<- /pleo/ ->> ainsi|donc|par \3|c’est pourquoi                                     && Pléonasme.
 
     au jour d’ aujourd’hui
     à l’ heure d’ aujourd’hui
         <<- /pleo/ ->> aujourd’hui                                                          && Pléonasme.
 
-    >avancer en avant
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >avérer >vrai
-        <<- /pleo/ -2>> =\2.replace("vrai", "exact")                                        && Pléonasme.
-
-    avenir devant [moi|toi|soi|lui|elle|nous|vous|eux|elles]
-        <<- /pleo/ morph(<1, ":A|>un") ->> avenir                                           && Pléonasme.
-
-    >bourrasque de vent
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
     car en effet
         <<- /pleo/ ->> car|en effet                                                         && Pléonasme.
-
-    >cirrhose du foie
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >collaborer ensemble
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    [petite+s|légère+s] >collation
-        <<- /pleo/ ->> \2                                                                   && Pléonasme.|https://fr.wiktionary.org/wiki/collation
-
-    >coup [de|d’] foudre [immédiat+s|instantané+ses|soudain]
-        <<- /pleo/ ->> \1 de foudre                                                         && Pléonasme.
 
     comme par exemple
         <<- /pleo/ ->> comme|par exemple                                                    && Pléonasme.
 
-    >comparer entre [eux|elles]
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >contraindre malgré [moi|toi|soi|lui|elle|nous|vous|eux|elles]
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >descendre en bas
-        <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1                                   && Pléonasme.
-
-    >dessiner un dessin
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    à [partir|compter] de dorénavant
-        <<- /pleo/ ->> dorénavant|à \2 de maintenant                                        && Pléonasme.
-
-    donc par conséquent
-        <<- /pleo/ ->> donc|par conséquent|c’est pourquoi                                   && Pléonasme.
-
-    >enchevêtrer les uns dans les autres
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >entraider mutuellement
-    >entraider les uns les autres
-        <<- /pleo/  ->> \1                                                                  && Pléonasme.
-
-    >entraide >mutuel
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >erreur >involontaire
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >étape >intermédiaire
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >hasard >imprévu
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >hémorragie de sang
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >joindre ensemble
-        <<- /pleo/ ->> \1|mettre ensemble                                                   && Pléonasme.
-
-    >lever debout
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    enfin pour [conclure|finir|terminer]
+        <<- /pleo/ ->> pour \3                                                              && Pléonasme.
 
     mais [cependant|pourtant|toutefois]
         <<- /pleo/ ->> mais|cependant|pourtant|toutefois                                    && Pléonasme.
 
-    >marche à >pied
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >méandre sinueux
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    [>média|media] d’ >information
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >monopole >exclusif
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >monter en haut
-        <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1                                   && Pléonasme.
-
-    >opportunité à saisir
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >orage >électrique
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >oubli >involontaire
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >pair de >jumeau
-        <<- /pleo/ ->> =suggPlur(\3, "", True)                                              && Pléonasme.
-
-    >panacée >universel
-        <<- /pleo/ ->> \1|remède universel                                                  && Pléonasme.
-
-    >perspective d’ avenir
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    [premier|premiers] >balbutiement
-        <<- /pleo/ ->> \2                                                                   && Pléonasme.
-
-    [première|premières] >priorité
-        <<- /pleo/ ->> \2                                                                   && Pléonasme.
-
-    >projet >futur
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >futur >projet
-        <<- /pleo/ ->> \2                                                                   && Pléonasme.
-
-    >prévenir d’ avance
-    >prévenir à l’ avance
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >prototype >expérimental
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
     puis [après|ensuite|alors]
         <<- /pleo/ ->> puis|après|ensuite|alors                                             && Pléonasme.
 
-    >rédiger par écrit
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    [et|ou] voire
+        <<- /pleo/ not morph(>1, ":D") ->> voire|et|\1 voir                                 && Pléonasme ou confusion.
 
-    [>rénover|>rénovation] à neuf
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    voire même
+        <<- /pleo/ ->> voire|même                                                           && Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
 
-    >réunir ensemble
-        <<- /pleo/  ->> \1                                                                  && Pléonasme.
+TEST: Car {{à partir de dorénavant}}, ce sera…                  ->> dorénavant|à partir de maintenant
+TEST: {{à deux reprises différentes}}                           ->> à deux reprises
+TEST: {{ainsi c’est pourquoi}}                                  ->> ainsi|donc|c’est pourquoi
+TEST: {{ainsi par conséquent}}                                  ->> ainsi|donc|par conséquent|c’est pourquoi
+TEST: {{au jour d’aujourd’hui}}                                 ->> aujourd’hui
+TEST: {{actuellement en cours}}                                 ->> en cours
+TEST: ils sont {{actuellement en train}} de manger              ->> en train
+TEST: {{comme par exemple}}                                     ->> comme|par exemple
+TEST: {{donc par conséquent}}                                   ->> ainsi|donc|par conséquent|c’est pourquoi
+TEST: {{enfin pour conclure}}                                   ->> pour conclure
+TEST: {{puis après}}                                            ->> puis|après|ensuite|alors
+TEST: {{mais pourtant}}                                         ->> mais|cependant|pourtant|toutefois
+TEST: {{car en effet}}                                          ->> car|en effet
+TEST: délirant {{et voire}} ridicule                            ->> voire|et|et voir
+TEST: {{voire même}}                                            ->> voire|même
 
-    [>reculer|>recul] en arrière
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
-    >risque >potentiel
-    >risque de >menace
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+__pleo_substantifs__
+    >archipel d’ [iles|îles]
+        <<- /pleo/ not morph(>1, ":(?:A.*:[fe]:[pi]|W)") ->> archipel                       && Pléonasme.
+
+    avenir devant [moi|toi|soi|lui|elle|nous|vous|eux|elles]
+        <<- /pleo/ morph(<1, ":A.*:[me]:[si]") ->> avenir                                   && Pléonasme.
+
+    >coup de foudre [immédiat+s|instantané+ses|soudain]
+        <<- /pleo/ ->> \1 \2 \3                                                             && Pléonasme.
+
+    [paire+s] de >jumeau
+        <<- /pleo/ ->> =suggPlur(\-1, "", True)                                             && Pléonasme.
+
+    >panacée >universel
+        <<- /pleo/ ->> \1|remède universel                                                  && Pléonasme.
 
     >secousse [>séismique|>sismique]
         <<- /pleo/ ->> secousse tellurique|secousses telluriques|tremblement de terre       && Pléonasme.
@@ -7000,121 +6895,170 @@ __pleo_pléonasmes_divers__
     >solidaire les uns avec les autres
         <<- /pleo/ ->> \1                                                                   && Pléonasme.
 
-    >suffire simplement
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
-    >talonner de près
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
-
     taux d’ >alcoolémie
         <<- /pleo/ ->> taux d’alcool|alcoolémie                                             && Pléonasme. L’alcoolémie est le taux d’alcool dans le sang.
 
+    >apanage >exclusif
+    >applaudissement des deux mains
+    >apparence >extérieure
+    >bénévole >volontaire
+    [bonne+s] >aubaine
+    >bourrasque de vent
+    >cirrhose du foie
+    conjoncture actuelle
+    consensus [commun+s]
+    >entraide >mutuel
+    >erreur >involontaire
+    >étape >intermédiaire
+    >hasard >imprévu
+    >hémorragie de sang
+    >illusion [trompeuse+s]
+    >marche à >pied
+    >méandre sinueux
+    >monopole >exclusif
+    [>média|media] d’ >information
+    >orage >électrique
+    >oubli >involontaire
+    >opportunité à saisir
+    >perspective d’ avenir
+    >projet >futur
+    >prototype >expérimental
+    >rénovation à neuf
+    >recul en arrière
+    >risque >potentiel
+    >risque de >menace
     >tunnel >souterrain
-        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+    unanimité [totale|complète|absolue]
+        <<- /pleo/ ->> \1                                           && Pléonasme.
 
+    >futur >projet
+    [petite+s|légère+s] >collation
+    [petite+s] [>camionnette|>fillette|>maisonnette]
+    [premier+s] >balbutiement
+    [première+s] >priorité
     vieilles hardes
-        <<- /pleo/ ->> hardes                                                               && Pléonasme.
+        <<- /pleo/ ->> \2                                           && Pléonasme.
 
-    [et|ou] voire
-        <<- /pleo/ not morph(>1, ":D") ->> voire|et|\1 voir                                 && Pléonasme ou confusion.
-
-    voire même
-        <<- /pleo/ ->> voire|même                                                           && Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
-
-TEST: il faut {{abolir totalement}} ces pratiques   ->> abolir
-TEST: il faut {{achever complètement}} ce projet    ->> achever
-TEST: {{au jour d’aujourd’hui}}                     ->> aujourd’hui
-TEST: {{actuellement en cours}}                     ->> en cours
-TEST: ils sont {{actuellement en train}} de manger  ->> en train
-TEST: avoir un grand {{avenir devant soi}}          ->> avenir
-TEST: {{acculé au pied du mur}}                     ->> acculé
-TEST: cet {{archipel d’îles}} m’ennuyait            ->> archipel
-TEST: {{Avancer en avant}}, pas le choix            ->> Avancer
-TEST: prenons une {{légère collation}}              ->> collation
-TEST: {{dessiner un dessin}}                        ->> dessiner
-TEST: {{joindre ensemble}}                          ->> joindre|mettre ensemble
-TEST: {{collaborer ensemble}}                       ->> collaborer
-TEST: {{comparer entre eux}}                        ->> comparer
-TEST: un {{coup de foudre soudain}}                 ->> coup de foudre
-TEST: {{monter en haut}}                            ->> monter
-TEST: {{descendre en bas}}                          ->> descendre
-TEST: {{enchevêtrer les uns dans les autres}}       ->> enchevêtrer
-TEST: rien ne vaut l’{{entraide mutuelle}}          ->> entraide
-TEST: s’{{entraider mutuellement}}                  ->> entraider
-TEST: s’{{entraident les uns les autres}}           ->> entraident
-TEST: {{comme par exemple}}                         ->> comme|par exemple
-TEST: {{médias d’informations}}                     ->> médias
-TEST: {{lever debout}}                              ->> lever
-TEST: {{cirrhose du foie}}                          ->> cirrhose
-TEST: s’avérer {{vrai}}                             ->> exact
-TEST: {{bourrasques de vent}}                       ->> bourrasques
-TEST: {{contraint malgré lui}}                      ->> contraint
-TEST: {{contraindre malgré eux}}                    ->> contraindre
-TEST: {{applaudir des deux mains}}                  ->> applaudir
-TEST: Car {{à partir de dorénavant}}, ce sera…      ->> dorénavant|à partir de maintenant
-TEST: {{erreurs involontaires}}                     ->> erreurs
-TEST: {{hasards imprévus}}                          ->> hasards
-TEST: {{méandres sinueux}}                          ->> méandres
-TEST: {{hémorragies de sang}}                       ->> hémorragies
-TEST: des {{orages électriques}}                    ->> orages
-TEST: {{perspectives d’avenir}}                     ->> perspectives
-TEST: {{marche à pied}}                             ->> marche
-TEST: {{paires de jumelles}}                        ->> jumelles
-TEST: {{puis après}}                                ->> puis|après|ensuite|alors
-TEST: {{mais pourtant}}                             ->> mais|cependant|pourtant|toutefois
-TEST: {{donc par conséquent}}                       ->> donc|par conséquent|c’est pourquoi
-TEST: {{car en effet}}                              ->> car|en effet
-TEST: {{opportunités à saisir}}                     ->> opportunités
-TEST: {{apanages exclusifs}}                        ->> apanages
-TEST: {{monopole exclusif}}                         ->> monopole
-TEST: {{étapes intermédiaires}}                     ->> étapes
-TEST: {{ajouter en plus}}                           ->> ajouter
-TEST: c’est un {{oubli involontaire}} de sa part    ->> oubli
-TEST: la {{panacée universelle}}                    ->> panacée|remède universel
-TEST: ce sont leurs {{premiers balbutiements}}      ->> balbutiements
-TEST: la {{première priorité}}, c’est…              ->> priorité
-TEST: Un {{futur projet}}                           ->> projet
-TEST: il faut {{prévenir d’avance}} ces gens-là     ->> prévenir
-TEST: ce sont des {{projets futurs}}                ->> projets
-TEST: {{prototypes expérimentaux}}                  ->> prototypes
-TEST: Nous avons {{rénové à neuf}} l’ensemble       ->> rénové
-TEST: Nous voilà {{réunis ensemble}}                ->> réunis
-TEST: {{Recule en arrière}}                         ->> Recule
-TEST: {{Rédigez par écrit}} une notice.             ->> Rédigez
-TEST: {{risques de menaces}}                        ->> risques
-TEST: {{secousses sismiques}}                       ->> secousse tellurique|secousses telluriques|tremblement de terre
-TEST: {{solidaires les uns des autres}}             ->> solidaires
-TEST: Il {{suffisait simplement}} d’y penser.       ->> suffisait
-TEST: Il la {{talonnait de près}}                   ->> talonnait
-TEST: ce {{taux d’alcoolémie}} est très élevé       ->> taux d’alcool|alcoolémie
-TEST: {{tunnels souterrains}}                       ->> tunnels
-TEST: {{vieilles hardes}}                           ->> hardes
-TEST: délirant {{et voire}} ridicule                ->> voire|et|et voir
-TEST: {{voire même}}                                ->> voire|même
+TEST: avoir un grand {{avenir devant soi}}                      ->> avenir
+TEST: cet {{archipel d’îles}} m’ennuyait                        ->> archipel
+TEST: prenons une {{légère collation}}                          ->> collation
+TEST: un {{coup de foudre soudain}}                             ->> coup de foudre
+TEST: rien ne vaut l’{{entraide mutuelle}}                      ->> entraide
+TEST: {{médias d’informations}}                                 ->> médias
+TEST: {{cirrhose du foie}}                                      ->> cirrhose
+TEST: {{bourrasques de vent}}                                   ->> bourrasques
+TEST: {{erreurs involontaires}}                                 ->> erreurs
+TEST: {{hasards imprévus}}                                      ->> hasards
+TEST: {{méandres sinueux}}                                      ->> méandres
+TEST: {{hémorragies de sang}}                                   ->> hémorragies
+TEST: des {{orages électriques}}                                ->> orages
+TEST: {{perspectives d’avenir}}                                 ->> perspectives
+TEST: {{marche à pied}}                                         ->> marche
+TEST: {{paires de jumelles}}                                    ->> jumelles
+TEST: {{opportunités à saisir}}                                 ->> opportunités
+TEST: {{apanages exclusifs}}                                    ->> apanages
+TEST: {{monopole exclusif}}                                     ->> monopole
+TEST: {{étapes intermédiaires}}                                 ->> étapes
+TEST: c’est un {{oubli involontaire}} de sa part                ->> oubli
+TEST: la {{panacée universelle}}                                ->> panacée|remède universel
+TEST: ce sont leurs {{premiers balbutiements}}                  ->> balbutiements
+TEST: la {{première priorité}}, c’est…                          ->> priorité
+TEST: Un {{futur projet}}                                       ->> projet
+TEST: ce sont des {{projets futurs}}                            ->> projets
+TEST: {{prototypes expérimentaux}}                              ->> prototypes
+TEST: {{risques de menaces}}                                    ->> risques
+TEST: {{secousses sismiques}}                                   ->> secousse tellurique|secousses telluriques|tremblement de terre
+TEST: {{solidaires les uns des autres}}                         ->> solidaires
+TEST: ce {{taux d’alcoolémie}} est très élevé                   ->> taux d’alcool|alcoolémie
+TEST: {{tunnels souterrains}}                                   ->> tunnels
+TEST: {{vieilles hardes}}                                       ->> hardes
 TEST: un archipel d’îles déchiquetées
 
 
-# d’avance / à l’avance
-__pleo_verbe_à_l_avance__
-    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer|>avertir|>devancer|>deviner|>réserver] à l’ avance
-    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer|>avertir|>devancer|>deviner|>réserver] d’ avance
-        <<- /pleo/ ->> \1                                                                           && Pléonasme.
+__pleo_verbes__
+    [>ajouter|>rajouter] [de|en] plus
+    >applaudir des deux mains
+    >avertir à l’ avance
+    >avertir d’ avance
+    >abolir [absolument|entièrement|complétement|complètement|totalement]
+    >acculer [au|aux] >pied du mur
+    >achever [absolument|entièrement|complétement|complètement|totalement]
+    >avancer en avant
+    >collaborer ensemble
+    >comparer entre [eux|elles]
+    >contraindre malgré [moi|toi|soi|lui|elle|nous|vous|eux|elles]
+    >dessiner un dessin
+    [>devancer|>deviner] à l’ avance
+    [>devancer|>deviner] d’ avance
+    >devenir par la suite
+    >enchevêtrer les uns dans les autres
+    >entraider mutuellement
+    >entraider les uns les autres
+    >joindre ensemble
+    >lever debout
+    [>neiger|>pleuvoir] dehors
+    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer] à l’ avance
+    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer] d’ avance
+    >reculer en arrière
+    >rédiger par écrit
+    >rénover à neuf
+    >réserver à l’ avance
+    >réserver d’ avance
+    >réunir ensemble
+    >suffire simplement
+    >surprendre à l’ improviste
+    >talonner de près
+        <<- /pleo/ ->> \1                                           && Pléonasme.
 
-TEST: {{prédire à l’avance}}                    ->> prédire
-TEST: {{pronostiquer d’avance}}                 ->> pronostiquer
-TEST: {{réserver d’avance}}                     ->> réserver
+    >avérer >vrai
+        <<- /pleo/ -2>> =\2.replace("vrai", "exact")                && Pléonasme.
+
+    >descendre en bas
+        <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
+
+    >monter en haut
+        <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
+
+TEST: il faut {{abolir totalement}} ces pratiques               ->> abolir
+TEST: il faut {{achever complètement}} ce projet                ->> achever
+TEST: {{acculé au pied du mur}}                                 ->> acculé
+TEST: {{ajouter en plus}}                                       ->> ajouter
+TEST: s’avérer {{vrai}}                                         ->> exact
+TEST: {{contraint malgré lui}}                                  ->> contraint
+TEST: {{contraindre malgré eux}}                                ->> contraindre
+TEST: {{applaudir des deux mains}}                              ->> applaudir
+TEST: {{Avancer en avant}}, pas le choix                        ->> Avancer
+TEST: {{dessiner un dessin}}                                    ->> dessiner
+TEST: nous {{joignons ensemble}}                                ->> joignons
+TEST: {{collaborer ensemble}}                                   ->> collaborer
+TEST: {{comparer entre eux}}                                    ->> comparer
+TEST: {{monter en haut}}                                        ->> monter
+TEST: {{descendre en bas}}                                      ->> descendre
+TEST: {{enchevêtrer les uns dans les autres}}                   ->> enchevêtrer
+TEST: s’{{entraider mutuellement}}                              ->> entraider
+TEST: s’{{entraident les uns les autres}}                       ->> entraident
+TEST: {{lever debout}}                                          ->> lever
+TEST: il faut {{prévenir d’avance}} ces gens-là                 ->> prévenir
+TEST: {{prédire à l’avance}}                                    ->> prédire
+TEST: {{pronostiquer d’avance}}                                 ->> pronostiquer
+TEST: {{réserver d’avance}}                                     ->> réserver
+TEST: {{Recule en arrière}}                                     ->> Recule
+TEST: {{Rédigez par écrit}} une notice.                         ->> Rédigez
+TEST: Nous avons {{rénové à neuf}} l’ensemble                   ->> rénové
+TEST: Nous voilà {{réunis ensemble}}                            ->> réunis
+TEST: Il {{suffisait simplement}} d’y penser.                   ->> suffisait
+TEST: Il la {{talonnait de près}}                               ->> talonnait
 
 
 # plus tard / à une date ultérieure
 __pleo_différer_ajourner_reporter__
     [>ajourner|>différer|>reporter] à plus tard
-    [>ajourner|>différer|>reporter] à date ultérieure
-    [>ajourner|>différer|>reporter] à une date ultérieure
-        <<- /pleo/ ->> \1                                                                           && Pléonasme.
+    [>ajourner|>différer|>reporter] à ?une¿ date ultérieure
+        <<- /pleo/ ->> \1                                           && Pléonasme.
 
-TEST: {{Ajourner à une date ultérieure}}        ->> Ajourner
-TEST: {{différer à une date ultérieure}}        ->> différer
-TEST: {{reporter à plus tard}}                  ->> reporter
+TEST: {{Ajourner à une date ultérieure}}                        ->> Ajourner
+TEST: {{différer à une date ultérieure}}                        ->> différer
+TEST: {{reporter à plus tard}}                                  ->> reporter
 
 
 
@@ -7341,12 +7285,12 @@ __conf_ont_on!6__
         <<- /conf/ not morph(<1, ":[VR]|<start>") and not morph(>1, ":(?:3s|Ov)")
         -2>> ont                                                    && Confusion probable. Exemples : « on y va », « ils ont faim ».
 
-TEST: ces gens {{on}} {{souvent}} tort.                                     ->> ont|||
-TEST: celles-là {{on}} {{vraiment}} un problème avec la religion.           ->> ont|||
-TEST: {{on}} {{des}} drôles de manières                                     ->> ont|||
-TEST: n’y {{on}} jamais lieu de telles abominations !                       ->> ont
-TEST: ces chiens te l’{{on}} donné                                          ->> ont
-TEST: Qui {{on}} {{tant}} de malheurs !                                     ->> ont|||tend
+TEST: ces gens {{on}} {{souvent}} tort.                     ->> ont|||est souvent|était souvent|fut souvent|sera souvent|serait souvent|a souvent|avait souvent|eut souvent|aura souvent|aurait souvent
+TEST: celles-là {{on}} {{vraiment}} un problème.            ->> ont|||est vraiment|était vraiment|fut vraiment|sera vraiment|serait vraiment|a vraiment|avait vraiment|eut vraiment|aura vraiment|aurait vraiment
+TEST: {{on}} {{des}} drôles de manières                     ->> ont|||
+TEST: n’y {{on}} jamais lieu de telles abominations !       ->> ont
+TEST: ces chiens te l’{{on}} donné                          ->> ont
+TEST: Qui {{on}} {{tant}} de malheurs !                     ->> ont|||tend
 TEST: Je voulais qu’on soit ensemble.
 TEST: qui on blâme, ce soir ?
 TEST: La peur irraisonnée de l’autre est le plus grave danger qu’ont à affronter les civilisations.
@@ -8323,7 +8267,7 @@ __conf_chez_vconj__
     chez  @:(?:[123][sp]|P)¬:[GNAQM]
         <<- /conf/ not tag(\2, "_Maj_") -2>> _                                                      && Incohérence avec “chez” : “\2” est une forme verbale.
 
-TEST: Tout ce qu’on fera chez {{sera}} enregistré.
+TEST: Tout ce qu’on fera chez {{sera}} enregistré.                          ->>
 TEST: chez ACTIONS, rien ne va plus
 TEST: chez Terra, tout va bien
 
@@ -8334,8 +8278,8 @@ __conf_de_plus_en_plus_verbe!2__
         -5>> =suggVerbPpas(\5)
         && Incohérence probable avec « de plus en plus » : « \5 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
-TEST: de plus en plus {{gagnait}} par la folie.
-TEST: de plus en plus {{concerner}} par ce problème
+TEST: de plus en plus {{gagnait}} par la folie.                             ->> gagné|gagnée|gagnés|gagnées
+TEST: de plus en plus {{concerner}} par ce problème                         ->> concerné|concernée|concernés|concernées
 TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus deviennent enseignant·e·s, infirmier·e·s ou s’engagent dans l’armée, etc.).
 TEST: il faut de plus en plus aider ces gens.
 TEST: nous leur faisons de plus en plus confiance.
@@ -8345,13 +8289,13 @@ TEST: elles ont de plus en plus recours à des intermédiaires.
 #### Participes présents
 __conf_participes_présents__
     [ne|n’|me|m’|te|t’|se|s’]  ~\want$
-        <<- /conf/ morph(\2, ":[NA]", ":P") -2>> _                                                  && Incohérence : le mot « \2 » n’est pas un participe présent.
+        <<- /conf/ morph(\2, ":[NA]", ":P") -2>> _                                                  && Incohérence : le mot “\2” n’est pas un participe présent.
 
     [nous|vous|lui]  ~\want$
-        <<- /conf/ not morph(<1, ":R") and morph(\2, ":[NA]", ":[PG]") -2>> _                       && Incohérence : le mot « \2 » n’est pas un participe présent.
+        <<- /conf/ not morph(<1, ":R") and morph(\2, ":[NA]", ":[PG]") -2>> _                       && Incohérence : le mot “\2” n’est pas un participe présent.
 
-TEST: ne {{convaincant}} que les convaincus.
-TEST: une tension lui {{provocant}} un ulcère
+TEST: ne {{convaincant}} que les convaincus.                                ->>
+TEST: une tension lui {{provocant}} un ulcère                               ->>
 TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 TEST: ces hommes qui avaient abusé de lui enfant.
 
@@ -8391,8 +8335,8 @@ __ppas_lui_verbe__
         <<- /ppas/ morph(\-1, ":Q") and not morph(<1, ":(?:V0a|R)") --1>> =suggVerbPpas(\-1, ":m:s")+"|"+suggVerbInfi(\-1)+"|"+suggVerbTense(\-1, ":Iq", ":3s")
         && Incohérence probable. Après “lui”, il faut un participe passé masculin singulier, l’infinitif ou une forme verbale (3ᵉ personne du singulier).
 
-TEST: lui {{mangée}} beaucoup.
-TEST: lui aussi {{mangés}} beaucoup.
+TEST: lui {{mangée}} beaucoup.                                              ->> mangé|manger|mangeait
+TEST: lui aussi {{mangés}} beaucoup.                                        ->> mangé|manger|mangeait
 TEST: L’homme qui s’approchait de lui voulait le surprendre.
 TEST: avec Paul, lui aussi éliminé.
 TEST: les études qu’il a lui terminées avec bien du mal.
@@ -8404,8 +8348,8 @@ __ppas_elle_verbe__
         <<- /ppas/ morph(\-1, ":Q") and not morph(<1, ":(?:V0a|R)") --1>> =suggVerbPpas(\-1, ":f:s")+"|"+suggVerbTense(\-1, ":Iq", ":3s")
         && Incohérence probable. Après “elle”, il faut un participe passé féminin singulier ou une forme verbale (3ᵉ personne du singulier).
 
-TEST: elle {{mangé}}.
-TEST: elle aussi {{mangées}}.
+TEST: et avec ça elle aussi {{avancés}}.                                    ->> avancée|avançait
+TEST: et avec ça seulement elle aussi {{mangées}}.                          ->> mangée|mangeait
 
 
 __conf_en_tant_que_subst__
@@ -8413,15 +8357,15 @@ __conf_en_tant_que_subst__
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA]")
         && Confusion probable. Après « en tant que », il faut un substantif, pas un verbe. Exemples : en tant que femme, en tant que patron, en tant que trentenaire…
 
-TEST: en tant qu’{{abaisse}}
+TEST: en tant qu’{{abaisse}}                                                ->>
 TEST: en tant que tel
 
 
 __conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
-        <<- /conf/ not tagbefore(\1, "_ceque_") and not value(<1, "|ou|") -2>> _                    && Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+        <<- /conf/ not tagbefore(\1, "_ceque_") and not value(<1, "|ou|") -2>> =suggVerbPpas(\2)    && Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
-TEST: presque {{délaissait}} par tout le monde.
+TEST: presque {{délaissait}} par tout le monde.                             ->> délaissé|délaissée|délaissés|délaissées
 TEST: Tout le monde ou presque déteste ces gens-là.
 
 
@@ -8429,68 +8373,71 @@ __conf_sur_vconj__
     sur  @:(?:[123][sp]|P)¬:[GNAQM]
         <<- /conf/ not \2.istitle() and not morph(<1, ":[NA]:[me]:si") -2>> _                       && Incohérence avec “sur” : “\2” est une forme verbale.
 
-TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !
+TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !     ->>
 TEST: Elles se querellent sans cesse sur presque tout.
 
 
-__conf_si_x_être__
-    [aussi|si]  *WORD  [/-je|/-tu|/-il|/-elle|/-on|/-nous|/-vous|/-ils|/-elles|/-iel|/-iels]
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":(?:Y|[123][sp])", ":[AQ]")
-        -2>> =suggVerbPpas(\2)                                                                      && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
-
-TEST: si {{frapper}} fussent-ils, rien ne put les mouvoir.
-TEST: si détruit soit-il, on pourra le remettre sur ses pieds.
-
-
-__conj_si_x_être__
+__ppas_si_x_être__
     [aussi|si]  *WORD  [/-je|/-tu|/-iel]
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:p", ":[si]")
-        -2>> =suggSing(\2)                                                                          && Accord avec “\3” : l’adjectif doit être au singulier.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:p", ":[si]") -2>> =suggSing(\2)                                  && Accord avec “\3” : l’adjectif doit être au singulier.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":s")              && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
     [aussi|si]  *WORD  /-il
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:[fp]", ":[me]:[si]")
-        -2>> =suggMasSing(\2)                                                                       && Accord avec “\3” : l’adjectif doit être au masculin singulier.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":[me]:[si]") -2>> =suggMasSing(\2)                       && Accord avec “\3” : l’adjectif doit être au masculin singulier.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":m:s")            && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
     [aussi|si]  *WORD  /-elle
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:[mp]", ":[fe]:[si]")
-        -2>> =suggFemSing(\2)                                                                       && Accord avec “\3” : l’adjectif doit être au féminin singulier.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:[mp]", ":[fe]:[si]") -2>> =suggFemSing(\2)                       && Accord avec “\3” : l’adjectif doit être au féminin singulier.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":f:s")            && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
     [aussi|si]  *WORD  [/-nous|/-iels]
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:s", ":[pi]")
-        -2>> =suggPlur(\2)                                                                          && Accord avec “\3” : l’adjectif doit être au pluriel.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:s", ":[pi]") -2>> =suggPlur(\2)                                  && Accord avec “\3” : l’adjectif doit être au pluriel.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":p")              && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
     [aussi|si]  *WORD  /-ils
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:[sf]", ":[me]:[pi]")
-        -2>> =suggMasPlur(\2)                                                                       && Accord avec “\3” : l’adjectif doit être au masculin pluriel.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:[sf]", ":[me]:[pi]") -2>> =suggMasPlur(\2)                       && Accord avec “\3” : l’adjectif doit être au masculin pluriel.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":m:p")            && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
     [aussi|si]  *WORD  /-elles
-        <<- /conf/ morphVC(\3, ":V.e") and morph(\2, ":A.*:[sm]", ":[fe]:[pi]")
-        -2>> =suggFemPlur(\2)                                                                       && Accord avec “\3” : l’adjectif doit être au féminin pluriel.
+        <<- /ppas/ morphVC(\3, ":V.e") >>>
+        <<- /ppas/ morph(\2, ":A.*:[sm]", ":[fe]:[pi]") -2>> =suggFemPlur(\2)                       && Accord avec “\3” : l’adjectif doit être au féminin pluriel.
+        <<- /conf/ morph(\2, ":(?:Y|[123][sp])", ":[AQ]") -2>> =suggVerbPpas(\2, ":f:p")            && Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
 TEST: si {{clairvoyants}} deviendrais-je                                                    ->> clairvoyant
-TEST: si {{fragiles}} sois-tu                                                               ->> fragile
-TEST: si {{idiote}} semble-t-il                                                             ->> idiot
-TEST: si {{riches}} soit-elle                                                               ->> riche
-TEST: si {{grand}} paraissons-nous                                                          ->> grands
-TEST: si {{frappé}} fussent-ils, rien ne put les mouvoir.                                   ->> frappés
-TEST: si {{étonnés}} demeurent-elles                                                        ->> étonnées
+TEST: aussi {{glorifier}} deviendrais-je                                                    ->> glorifié|glorifiée
 TEST: si {{malins}} suis-je que je vis le torrent de merde arriver avant tout le monde      ->> malin
+TEST: si {{fragiles}} sois-tu                                                               ->> fragile
 TEST: si {{habiles}} fusses-tu, tu perdis la bataille.                                      ->> habile
+TEST: si {{idiote}} semble-t-il                                                             ->> idiot
+TEST: si {{presser}} semble-t-il                                                            ->> pressé
 TEST: aussi {{fous}} fût-il, il ne fit point illusion.                                      ->> fou|foutu
+TEST: si {{riches}} soit-elle                                                               ->> riche
 TEST: si {{belles}} était-elle qu’elle fut enlevée                                          ->> belle
+TEST: si {{étonner}} était-elle                                                             ->> étonnée
+TEST: si {{grand}} paraissons-nous                                                          ->> grands
 TEST: aussi {{pressé}} soyons-nous, ça ne viendra pas plus vite                             ->> pressés
+TEST: aussi {{pressait}} soyons-nous, ça ne viendra pas plus vite                           ->> pressés|pressées
+TEST: si {{frappé}} fussent-ils, rien ne put les mouvoir.                                   ->> frappés
 TEST: si {{avare}} sont-ils qu’ils ont refusé de payer                                      ->> avares|avars
+TEST: si {{frapper}} fussent-ils, rien ne put les mouvoir.                                  ->> frappés
+TEST: si {{étonnés}} demeurent-elles                                                        ->> étonnées
+TEST: aussi {{étonner}} demeurent-elles                                                     ->> étonnées
 TEST: aussi {{calme}} fussent-elles, elles furent blâmées.                                  ->> calmes|calmées
-
+TEST: si détruit soit-il, on pourra le remettre sur ses pieds.
 # pour justifiée qu’elle fût
 # [aussi|si] habile qu’il soit
 
 
 __conf_trop_vconj__
     trop  @:[123][sp]¬:(?:[GNAQWM]|3p)
-        <<- /conf/ not tagbefore(\1, "_ceque_") -2>> _                                              && Incohérence probable avec “trop” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
+        <<- /conf/ not tagbefore(\1, "_ceque_") -2>> =suggVerbPpas(\2)+"|"+suggVerbInfi(\2)         && Incohérence probable avec “trop” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
-TEST: J’ai trop {{mangeais}}.
+TEST: J’ai trop {{mangeais}}.                                                       ->> mangé|mangée|mangés|mangées|manger
 TEST: Ce que nous réussissons presque sera considéré comme un échec.
 
 
@@ -8562,8 +8509,8 @@ __conf_a_à_incohérences__
     à [au|aux]
         <<- /conf/ not tag(\1, "eg1mot") and not value(>1, "|moins|plus|mieux|") -1>> a   && Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
 
-TEST: ce que cet homme, dans son garage, {{à}} alors une importance.
-TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.
+TEST: ce que cet homme, dans son garage, {{à}} alors une importance.                                            ->> a
+TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.    ->> a
 
 
 __conf_a_à_verbe!6__
@@ -9411,7 +9358,6 @@ TEST: le vol {{a}} l’étalage est un fléau.                                  
 TEST: Marre de cette pâte {{a}} pain.                                           ->> à
 TEST: c’est une putain d’usine {{a}} gaz.                                       ->> à
 TEST: ce produit est notre vache {{a}} lait                                     ->> à
-TEST: Nous irons {{tours à tours}} chercher du bois.
 
 
 __conf_mettre_a_profit_plat__
@@ -10020,7 +9966,7 @@ TEST: il ne {{ce}} compte pas parmi eux                                         
 TEST: il ne {{ç’}}avançait jamais sans avoir pesé toutes les conséquences               ->> s’
 TEST: qui {{ce}} donne en spectacle.                                                    ->> se
 TEST: ça finira par {{ce}} savoir                                                       ->> se
-TEST: cela finit toujours tôt ou tard par {{ce}} savoir
+TEST: cela finit toujours tôt ou tard par {{ce}} savoir                                 ->> se
 TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, éteindre par la moindre goutte de sang qui sorte de leurs plaies.
 TEST: à qui ce texte doit tant, à qui ce texte est dédié
 TEST: il y aurait, ce faisant, des complications interminables.
@@ -10634,7 +10580,7 @@ TEST: Viens {{des}} 9 heures                                                ->>
 TEST: {{Des}} l’arrivée, ça a commencé à dégénérer                          ->> Dès
 TEST: c’était {{dés}} trois heures.                                         ->> dès
 TEST: {{dés}} que nous sommes partis, il a piqué une crise                  ->> dès
-TEST: {{des}} {{les}} premiers symptômes, appelez-moi
+TEST: {{des}} {{les}} premiers symptômes, appelez-moi                       ->> dès|de|||laits|laids|lés|laies
 TEST: Les dés sont jetés.
 TEST: C’est un des leurs.
 TEST: Plusieurs dès qu’on en saura plus.
@@ -11288,7 +11234,7 @@ __conf_héros__
     [le|quel|ce|cet|un|du|au]  héro
         <<- /conf/ -2>> héros                               && Confusion. L’héro est l’abréviation de “héroïne” (la drogue). L’homme héroïque s’écrit “héros”.
 
-TEST: Mon frère, {{ce}} {{héro}} !
+TEST: Mon frère, {{ce}} {{héro}} !                          ->> cette|||héros
 
 
 # heure / heur
@@ -11406,11 +11352,11 @@ __conf_il_elle_on_la_l_a_vconj__
     ne l’ a [lui|leur]
         <<- /conf/ -2:3>> la                                                    && Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 
-TEST: on {{l’a}} {{prit}} pour une idiote.
-TEST: elle se {{l’a}} {{réserve}} pour elle-même.
-TEST: il ne {{l’a}} {{connaît}} pas.
-TEST: elle ne nous {{l’a}} {{donne}} pas.
-TEST: elle ne {{l’a}} leur donne pas sans condition.
+TEST: on {{l’a}} {{prit}} pour une idiote.                                          ->> la|||pris
+TEST: elle se {{l’a}} {{réserve}} pour elle-même.                                   ->> la|||réservé
+TEST: il ne {{l’a}} {{connaît}} pas.                                                ->> la|||connu
+TEST: elle ne nous {{l’a}} {{donne}} pas.                                           ->> la|||donné
+TEST: elle ne {{l’a}} leur donne pas sans condition.                                ->> la
 
 
 __conf_il_elle_on_l_a_la_vconj__
@@ -11426,11 +11372,11 @@ __conf_il_elle_on_l_a_la_vconj__
     ne  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
         <<- /conf/ -3>> l’a                                                     && Confusion probable : “\4” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 
-TEST: il {{la}} {{donnée}}.
-TEST: elle {{la}} vendue.
-TEST: ne {{la}} {{donné}} que contraint et forcé…
-TEST: celle-là, il me {{la}} {{commandée}} ?
-TEST: ne nous {{la}} {{donnée}} pas
+TEST: il {{la}} {{trouvée}}.                                                        ->> l’a|||trouve|trouvait|trouva
+TEST: elle {{la}} vendue.                                                           ->> l’a
+TEST: ne {{la}} {{donné}} que contraint et forcé…                                   ->> l’a|||donne|donnait|donna
+TEST: celle-là, il me {{la}} {{commandée}} ?                                        ->> l’a|||commande|commandait|commanda
+TEST: ne nous {{la}} {{donnée}} pas                                                 ->> l’a|||donne|donnait|donna
 TEST: au fur et à mesure que les molécules du nuage se dirigent vers le centre, sa densité augmente et avec elle la gravité qu’il génère.
 
 
@@ -11746,15 +11692,15 @@ TEST: elles reviendront, {{n’est ce pas}} ?                     ->> n’est-c
 __conf_nez_né__
     !! à plein nez ¡¡
     [à|a] [plain+s|plein+s] [né+ses|nez]
-        <<- /conf/ ->> à plein nez                          && Confusion. Locution “à plein nez”.|https://fr.wiktionary.org/wiki/%C3%A0_plein_nez
+        <<- /loc/ ->> à plein nez                           && Confusion. Locution “à plein nez”.|https://fr.wiktionary.org/wiki/%C3%A0_plein_nez
 
     !! à vue [de|d’] nez ¡¡
     [à|a] [vu+ses|vut] [de|d’] [né+ses|nais|nait|nez]
-        <<- /conf/ ->> à vue de nez                         && Confusion. Locution “à vue de nez”.|https://fr.wiktionary.org/wiki/%C3%A0_vue_de_nez
+        <<- /loc/ ->> à vue de nez                          && Confusion. Locution “à vue de nez”.|https://fr.wiktionary.org/wiki/%C3%A0_vue_de_nez
 
     !! nez à nez ¡¡
     [né+ses|ne|nez|nait|nais] [à|a] [né+ses|ne|nez|nait|nais]
-        <<- /conf/ ->> nez à nez                            && Confusion. Locution “nez à nez”.|https://fr.wiktionary.org/wiki/nez_%C3%A0_nez
+        <<- /loc/ ->> nez à nez                             && Confusion. Locution “nez à nez”.|https://fr.wiktionary.org/wiki/nez_%C3%A0_nez
 
     [à|a] [mon|ton|son|notre|votre|leur] né
     au [né+ses]
@@ -11829,7 +11775,7 @@ __conf_nulle_part__
     nul part
         <<- /conf/ not morph(<1, ":D.*:m:[si]") ->> nulle part      && Confusion : pour dire “en aucun lieu”, écrivez “nulle part”.
 
-TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration
+TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration     ->> nulle part
 
 
 # oc / hoc
@@ -13417,7 +13363,7 @@ TEST: chez {{sont}} amis                                                        
 TEST: il a perdu {{sont}} {{ami}}                                                           ->> son|||amis
 TEST: ces gens {{son}} ceux qui nous mettent constamment dans la merde                      ->> sont
 TEST: à {{sont}} précis de mathématiques                                                    ->> son
-TEST: {{elles}} {{son}} là
+TEST: {{elles}} {{son}} là                                                                  ->> elles,|||sont
 TEST: elles s’en sont mal portées
 TEST: ils en sont reconnaissants
 TEST: sont loin, ces gens…
@@ -13717,6 +13663,7 @@ __conf_tour_à_tour__
         <<- /loc/ ->> tour à tour                   && Locution adverbiale invariable. Écrivez “tour à tour”.|https://fr.wiktionary.org/wiki/tour_%C3%A0_tour
 
 TEST: ils sont {{tours à tours}} fâchés.                                            ->> tour à tour
+TEST: Nous irons {{tours à tours}} chercher du bois.                                ->> tour à tour
 
 
 # tout à coup
@@ -20142,7 +20089,7 @@ __[i]/redon2(redondances_phrase)__
         <<- not morph(\1, ":(?:G|V0)|>même/") -2>> _                                                && Dans cette phrase, répétition de “\1” (à gauche).
         <<- __also__ -1>> _                                                                         && Dans cette phrase, répétition de “\1” (à droite).
 
-TEST: __redon2__ Quelle {{imposture}}, c’est d’un ennui, c’est une {{imposture}}.
+TEST: __redon2__ Quelle {{imposture}}, c’est d’un ennui, c’est une {{imposture}}.                   ->> |||
 TEST: __redon2__ ils sont là côte à côte.
 TEST: __redon2__ Tu avances petit à petit, et tu réussis.
 TEST: __redon2__ De loin en loin, elle passe.
@@ -20153,15 +20100,17 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 
 __[i]/mc(mc_mot_composé)__
     ({w2})-({w2})  @@0,$
-        <<- not \1.isdigit() and not \2.isdigit()
-            and not morph(\0, ":") and not morph(\2, ":G") and spell(\1+\2)
-        ->> \1\2                                                                                    && Vous pouvez ôter le trait d’union.
-        <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
-            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G")
-            and not morph(\0, ":") and not spell(\1+\2)
-        ->> _                                                                                       && Mot inconnu du dictionnaire.|https://grammalecte.net/dictionary.php?prj=fr&unknownword=on
+        <<- not \1.isdigit() and not \2.isdigit() and not morph(\2, ">là|:G") and not morph(\0, ":") >>>
+        <<- spell(\1+\2) ->> \1\2                                                                   && Vous pouvez ôter le trait d’union.
+        <<- __else__ and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
+        ->> _                                                                                       && Mot inconnu du dictionnaire.
 
-TEST: __mc__ des {{portes-avions}}.
+TEST: __mc__ des {{portes-avions}}.                                         ->>
+TEST: __mc__ donne-la, donne-le, donne-les, attends-nous
+TEST: __mc__ attends-toi à des problèmes
+TEST: __mc__ demande-nous comment faire
+TEST: __mc__ demande-moi comment faire
+TEST: __mc__ demandez-leur comment faire
 
 
 
@@ -20261,8 +20210,8 @@ __conf_à_a_après_verbes__
         <<- /conf/ --1>> à
         && Locution : « n’avoir qu’à faire quelque chose ». Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
-TEST: ils n’ont qu’{{a}} cherché.
-TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit ?
+TEST: ils n’ont qu’{{a}} cherché.                                                           ->> à
+TEST: n’ont-elles plus réellement qu’{{a}} travaillé la texture du produit ?                ->> à
 
 
     >appeler a l’ aide
@@ -22392,7 +22341,7 @@ TEST: elle va montrer {{pâte blanche}} et tout ira bien.                ->> pat
 __conf_péché_pêcher2__
     >pêcher par excès [de|d’]
     >pêcher par [insuffisance|omission|orgueil]
-        <<- /conf/ -1>> pécher                                  && Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
+        <<- /conf/ -1>> =suggVerbFrom("pécher", \1)             && Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
     [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] $:D [pécher|pêcher+s|pêché+ses]
     >repentir de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] [pécher|pêcher+s|pêché+ses]
@@ -22404,7 +22353,7 @@ __conf_péché_pêcher2__
         <<- /conf/ -1>> =\1.replace("éch", "êch").replace("èch", "êch").replace("ÉCH", "ÊCH").replace("ÈCH", "ÊCH")
         && Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
-TEST: Il {{pêche}} par excès de confiance.
+TEST: Il {{pêche}} par excès de confiance.                                  ->> pèche
 TEST: commettre un {{pêcher}}.                                              ->> péché
 TEST: Elle voulut expier ses {{pêchés}}.                                    ->> péchés
 TEST: il {{péchait}} à la ligne                                             ->> pêchait
@@ -22483,9 +22432,9 @@ TEST: un grand homme {{peu}} aller et venir ici comme bon lui semble            
 TEST: ma petite amie {{peu}} sembler distante, mais elle nous a toujours soutenus       ->> peut
 TEST: la petite anecdote {{peu}} nous nuire.                                            ->> peut
 TEST: l’école primaire {{peu}} espérer recevoir de nouveaux moyens cette année          ->> peut
-TEST: un sale voyou {{peu}} {{marquer}}
-TEST: une petite personne {{peu}} {{inspirer}}
-TEST: mon meilleur ami {{peu}} {{remarquer}} par les profs
+TEST: un sale voyou {{peu}} {{marquer}}                                                 ->> peut|||marqué
+TEST: une petite personne {{peu}} {{inspirer}}                                          ->> peut|||inspirée
+TEST: mon meilleur ami {{peu}} {{remarquer}} par les profs                              ->> peut|||remarqué|remarquée
 TEST: L’ouvrage décrit très peu les divers modes d’actions.
 
 
@@ -22783,8 +22732,8 @@ __conf_sceptique_septique__
         <<- /conf/ not morph(<1, ">plaie/")
         -2>> =\2.replace("sep", "scep").replace("SEP", "SCEP")                  && Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.|https://fr.wiktionary.org/wiki/sceptique
 
-TEST: cette fosse {{sceptique}} est pleine.                     ->> septique
-TEST: Je suis {{septique}} !                                    ->> sceptique
+TEST: cette fosse {{sceptique}} est pleine.                         ->> septique
+TEST: Je suis {{septique}} !                                        ->> sceptique
 
 
 ## se / ce
@@ -22800,7 +22749,7 @@ __conf_ce_se_nom__
     <start>  se  *WORD  @:(?:[123][sp]|P)¬:G
         <<- /conf/ morph0(\3, ":[NA]", ":Y") -2>> ce                            && Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
 
-TEST: que sais-tu de {{se}} {{type}}
+TEST: que sais-tu de {{se}} {{type}}                                    ->> ce|||typer
 TEST: {{se}} type nous emmerde.                                         ->> ce
 TEST: se doit d’être fort, ce con, sinon c’est la fin pour lui.
 
@@ -22856,8 +22805,8 @@ __conf_suer_savoir__
     [su|sus|sut]  comme une [baleine|vache]
         <<- /conf/ -1>> sue                                 && Confusion. Si vous voulez dire « transpirer abondamment », écrivez « sue » du verbe « suer ».|https://fr.wiktionary.org/wiki/tache
 
-TEST: il {{sut}} comme un goret                             ->> sue
-TEST: je {{sus}} à grosses gouttes chaque été               ->> sue
+TEST: il {{sut}} comme un goret                                         ->> sue
+TEST: je {{sus}} à grosses gouttes chaque été                           ->> sue
 
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
@@ -33601,16 +33550,16 @@ __vmode_quand_lorsque_indicatif__
     [quand|lorsque|lorsqu’|puisque|puisqu’]  $:D¬:R $:N  @:S¬:[GIA]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « quand » ou « lorsque » ou « puisque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
-TEST: quand elle {{rencontrât}} son créateur
-TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
+TEST: quand elle {{rencontrât}} son créateur                                        ->> rencontre|rencontrait|rencontra|rencontrera
+TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.               ->> a|avait|eut|aura
 
     [<start>|,|(]  pourquoi  @:(?:Os|M)  @:V.*:S¬:[GI]
     [<start>|,|(]  pourquoi  $:D¬:R $:N  @:V.*:S¬:[GIA]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Après « pourquoi », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
-TEST: quand elle {{rencontrât}} son créateur
-TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
-TEST: pourquoi Mélanie {{vienne}} à cette réception
+TEST: quand elle {{rencontrât}} son créateur                                        ->> rencontre|rencontrait|rencontra|rencontrera
+TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.               ->> a|avait|eut|aura
+TEST: pourquoi Mélanie {{vienne}} à cette réception                                 ->> vient|venait|vint|viendra
 TEST: quel homme eût abandonné un empire pour une promesse ?
 TEST: qui eût abandonné un empire pour une promesse ?
 TEST: quels amis ils eussent trompés pour si peu ?
@@ -33624,8 +33573,8 @@ __vmode_dès_que__
 #        <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    && Ce verbe ne devrait pas être au conditionnel.
 
 #TEST: dès que je le {{verrais}}
-TEST: dès qu’il le {{voie}}
-TEST: dès que l’homme le {{voie}}
+TEST: dès que je le {{voie}}                                                        ->> vois|voyais|vis|verrai
+TEST: dès que l’homme le {{voie}}                                                   ->> voit|voyait|vit|verra
 TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’il en aurait l’occasion
 
 
@@ -33634,11 +33583,11 @@ __vmode_sujet_indicatif__
     <start>  [je|j’|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Ce verbe ne devrait pas être au subjonctif.
 
-TEST: Il {{ait}} parti.
-TEST: Il en {{conclue}} qu’il a eu raison.
-TEST: j’en {{aie}} marre
-TEST: j’{{aie}} faim
-TEST: Je ne l’y {{aie}} pas vu.
+TEST: Il {{ait}} demandé.                                                           ->> a|avait|eut|aura
+TEST: Il en {{conclue}} qu’il a eu raison.                                          ->> conclut|concluait|conclura
+TEST: j’en {{aie}} marre                                                            ->> ai|avais|eus|aurai
+TEST: j’{{aie}} faim                                                                ->> ai|avais|eus|aurai
+TEST: Tu ne l’y {{aies}} pas vu.                                                    ->> as|avais|eus|auras
 
 
 # Après/dès que + indicatif
@@ -33651,11 +33600,11 @@ __vmode_que_indicatif__
     à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
         <<- /vmode/ -5>> =suggVerbMode(\5, ":I", \4)                    && Après « à mesure que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
-TEST: Après qu’il {{ait}} allé
-TEST: Après que Paul {{ait}} mangé son repas.
-TEST: Après qu’il {{soit}} parti, il plut.
-TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.
-TEST: à mesure qu’il {{devienne}} fort
+TEST: Après qu’il {{ait}} pris la tangeante                                             ->> a|avait|eut|aura
+TEST: Après que nous {{ayons}} mangé son repas.                                         ->> avons|avions|eûmes|aurons
+TEST: Après que tu {{sois}} parti, il plut.                                             ->> es|étais|fus|seras
+TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.     ->> a|avait|eut|aura
+TEST: à mesure qu’elle {{devienne}} forte                                               ->> devient|devenait|devint|deviendra
 
 
 # verbe que + subjonctif
@@ -33713,27 +33662,27 @@ __vmode_verbe_que_subjonctif__
     mieux >valoir                                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/  --1>> =suggVerbMode(\-1, ":S", \-2)                                            && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
 
-TEST: Il suffit qu’il {{court}} plus
-TEST: j’attends que tu {{viens}}.
-TEST: Je veux qu’il {{finit}} son repas.
-TEST: Je ne veux pas que tu {{es}} des ennuis
-TEST: je doute qu’il {{vient}} demain.
-TEST: il se peut que nous {{avons}} tort.
-TEST: j’ai bon espoir qu’il {{vient}} vite.
-TEST: peu s’en est fallu qu’il {{devient}} estropié.
-TEST: je m’étonne qu’il {{est}} aussi fragile
-TEST: elle a envie qu’il {{est}} intelligent.
-TEST: il importera que nous {{devenons}} prêts.
-TEST: prends garde que vous {{revenez}} en un seul morceau.
-TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.
-TEST: faites attention à ce qu’elle ne {{devient}} pas timorée.
-TEST: je tiens à ce que vous {{devenez}} grands.
-TEST: Veille à ce qu’il y {{est}} des gâteaux.
-TEST: il arrive qu’il {{vient}}, mais rarement
-TEST: Vaudrait mieux qu’elle {{meurt}}
-TEST: il aurait mieux valu qu’elle {{meurt}}
-TEST: il est possible qu’il {{est}} parti
-TEST: se peut-il que je {{viens}}
+TEST: Il suffit qu’il {{court}} plus                                                ->> coure|courût
+TEST: j’attends que tu {{viens}}.                                                   ->> viennes|vinsses
+TEST: Je veux qu’il {{finit}} son repas.                                            ->> finisse|finît
+TEST: Je ne veux pas que tu {{es}} des ennuis                                       ->> sois|fusses
+TEST: je doute qu’il {{vient}} demain.                                              ->> vienne|vînt
+TEST: il se peut que nous {{avons}} tort.                                           ->> ayons|eussions
+TEST: j’ai bon espoir qu’il {{vient}} vite.                                         ->> vienne|vînt
+TEST: peu s’en est fallu qu’il {{devient}} estropié.                                ->> devienne|devînt
+TEST: je m’étonne qu’il {{est}} aussi fragile                                       ->> soit|fût
+TEST: elle a envie qu’il {{est}} intelligent.                                       ->> soit|fût
+TEST: il importera que nous {{devenons}} prêts.                                     ->> devenions|devinssions
+TEST: prends garde que vous {{revenez}} en un seul morceau.                         ->> reveniez|revinssiez
+TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.                    ->> comprenne|comprît
+TEST: faites attention à ce qu’elle ne {{devient}} pas timorée.                     ->> devienne|devînt
+TEST: je tiens à ce que vous {{devenez}} grands.                                    ->> deveniez|devinssiez
+TEST: Veille à ce qu’il y {{est}} des gâteaux.                                      ->> soit|fût
+TEST: il arrive qu’il {{vient}}, mais rarement                                      ->> vienne|vînt
+TEST: Vaudrait mieux qu’elle {{meurt}}                                              ->> meure|mourût
+TEST: il aurait mieux valu qu’elle {{meurt}}                                        ->> meure|mourût
+TEST: il est possible qu’il {{est}} parti                                           ->> soit|fût
+TEST: se peut-il que je {{viens}}                                                   ->> vienne|vinsse
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
 TEST: Je me doutais bien qu’elle me détestait
