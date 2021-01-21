@@ -81,14 +81,14 @@ function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
 }
 
 function joinVerbAndSuffix (sFlex, sSfx) {
-    if (/^-[tT]-/.test(sSfx) && /[tdTD]$/.test(sFlex)) {
+    if (/^-t-/i.test(sSfx) && /[td]$/i.test(sFlex)) {
         return sFlex + sSfx.slice(2);
     }
-    if (/[eacEAC]$/.test(sFlex)) {
-        if (/-(?:en|y)$/i.test(sSfx)) {
+    if (/[eac]$/i.test(sFlex)) {
+        if (/^-(?:en|y)$/i.test(sSfx)) {
             return sFlex + "s" + sSfx;
         }
-        if (/-(?:ie?l|elle|on)$/i.test(sSfx)) {
+        if (/^-(?:ie?l|elle|on)$/i.test(sSfx)) {
             return sFlex + "-t" + sSfx;
         }
     }
@@ -164,14 +164,14 @@ function suggVerbFrom (sStem, sFlex, sWho="") {
     for (let sMorph of gc_engine.oSpellChecker.getMorph(sFlex)) {
         let lTenses = [ ...sMorph.matchAll(/:(?:Y|I[pqsf]|S[pq]|K|P|Q)/g) ];
         if (sWho) {
-            for (let sTense of lTenses) {
+            for (let [sTense, ] of lTenses) {
                 if (conj.hasConj(sStem, sTense, sWho)) {
                     aSugg.add(conj.getConj(sStem, sTense, sWho));
                 }
             }
         }
         else {
-            for (let sTense of lTenses) {
+            for (let [sTense, ] of lTenses) {
                 for (let sWho of [ ...sMorph.matchAll(/:[123][sp]/g) ]) {
                     if (conj.hasConj(sStem, sTense, sWho)) {
                         aSugg.add(conj.getConj(sStem, sTense, sWho));
@@ -225,15 +225,13 @@ const _dQuiEst = new Map ([
     ["je", ":1s"], ["j’", ":1s"], ["tu", ":2s"], ["il", ":3s"], ["on", ":3s"], ["elle", ":3s"], ["iel", ":3s"],
     ["nous", ":1p"], ["vous", ":2p"], ["ils", ":3p"], ["elles", ":3p"], ["iels", ":3p"]
 ]);
-const _lIndicatif = [":Ip", ":Iq", ":Is", ":If"];
-const _lSubjonctif = [":Sp", ":Sq"];
 
 function suggVerbMode (sFlex, cMode, sSuj) {
     let lMode;
     if (cMode == ":I") {
-        lMode = _lIndicatif;
+        lMode = [":Ip", ":Iq", ":Is", ":If"];
     } else if (cMode == ":S") {
-        lMode = _lSubjonctif;
+        lMode = [":Sp", ":Sq"];
     } else if (cMode.startsWith(":I") || cMode.startsWith(":S")) {
         lMode = [cMode];
     } else {
@@ -259,20 +257,8 @@ function suggVerbMode (sFlex, cMode, sSuj) {
 
 //// Nouns and adjectives
 
-function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
+function suggPlur (sFlex, bSelfSugg=false) {
     // returns plural forms assuming sFlex is singular
-    if (sWordToAgree) {
-        let lMorph = gc_engine.oSpellChecker.getMorph(sWordToAgree);
-        if (lMorph.length === 0) {
-            return "";
-        }
-        let sGender = cregex.getGender(lMorph);
-        if (sGender == ":m") {
-            return suggMasPlur(sFlex);
-        } else if (sGender == ":f") {
-            return suggFemPlur(sFlex);
-        }
-    }
     let aSugg = new Set();
     if (sFlex.endsWith("l")) {
         if (sFlex.endsWith("al") && sFlex.length > 2 && gc_engine.oSpellChecker.isValid(sFlex.slice(0,-1)+"ux")) {
@@ -299,10 +285,10 @@ function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
         }
     } else {
         if (gc_engine.oSpellChecker.isValid(sFlex+"S")) {
-            aSugg.add(sFlex+"s");
+            aSugg.add(sFlex+"S");
         }
         if (gc_engine.oSpellChecker.isValid(sFlex+"X")) {
-            aSugg.add(sFlex+"x");
+            aSugg.add(sFlex+"X");
         }
     }
     if (mfsp.hasMiscPlural(sFlex)) {
@@ -318,7 +304,7 @@ function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
     return "";
 }
 
-function suggSing (sFlex, bSelfSugg=false) {
+function suggSing (sFlex, bSelfSugg=true) {
     // returns singular forms assuming sFlex is plural
     let aSugg = new Set();
     if (sFlex.endsWith("ux")) {
@@ -397,7 +383,7 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isMasForm(sStem)) {
-                    aSugg.add(suggPlur(sStem, null, true));
+                    aSugg.add(suggPlur(sStem, true));
                 }
             }
         } else {

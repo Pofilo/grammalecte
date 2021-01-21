@@ -170,15 +170,13 @@ def suggVerbInfi (sFlex):
 
 _dQuiEst = { "je": ":1s", "j’": ":1s", "tu": ":2s", "il": ":3s", "on": ":3s", "elle": ":3s", "iel": ":3s", \
              "nous": ":1p", "vous": ":2p", "ils": ":3p", "elles": ":3p", "iels": ":3p" }
-_lIndicatif = [":Ip", ":Iq", ":Is", ":If"]
-_lSubjonctif = [":Sp", ":Sq"]
 
 def suggVerbMode (sFlex, cMode, sSuj):
     "returns other conjugations of <sFlex> acconding to <cMode> and <sSuj>"
     if cMode == ":I":
-        lMode = _lIndicatif
+        lMode = [":Ip", ":Iq", ":Is", ":If"]
     elif cMode == ":S":
-        lMode = _lSubjonctif
+        lMode = [":Sp", ":Sq"]
     elif cMode.startswith((":I", ":S")):
         lMode = [cMode]
     else:
@@ -198,17 +196,8 @@ def suggVerbMode (sFlex, cMode, sSuj):
 
 ## Nouns and adjectives
 
-def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
+def suggPlur (sFlex, bSelfSugg=False):
     "returns plural forms assuming sFlex is singular"
-    if sWordToAgree:
-        lMorph = _oSpellChecker.getMorph(sFlex)
-        if not lMorph:
-            return ""
-        sGender = cr.getGender(lMorph)
-        if sGender == ":m":
-            return suggMasPlur(sFlex)
-        if sGender == ":f":
-            return suggFemPlur(sFlex)
     aSugg = set()
     if sFlex.endswith("l"):
         if sFlex.endswith("al") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"ux"):
@@ -227,9 +216,9 @@ def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
             aSugg.add(sFlex+"x")
     else:
         if _oSpellChecker.isValid(sFlex+"S"):
-            aSugg.add(sFlex+"s")
+            aSugg.add(sFlex+"S")
         if _oSpellChecker.isValid(sFlex+"X"):
-            aSugg.add(sFlex+"x")
+            aSugg.add(sFlex+"X")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
     if not aSugg and bSelfSugg and sFlex.endswith(("s", "x", "S", "X")):
@@ -302,7 +291,7 @@ def suggMasPlur (sFlex, bSuggSimil=False):
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
                 if mfsp.isMasForm(sStem):
-                    aSugg.add(suggPlur(sStem, None, True))
+                    aSugg.add(suggPlur(sStem, True))
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)

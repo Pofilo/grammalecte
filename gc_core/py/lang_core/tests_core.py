@@ -112,10 +112,12 @@ class TestGrammarChecking (unittest.TestCase):
                               "\n  found:    " + sFoundSuggs + \
                               "\n  errors:   \n" + sListErr)
                         nUnexpectedErrors += 1
-            print("Tests with expected errors:", nTestWithExpectedError, " and suggestions:", nTestWithExpectedErrorAndSugg, ":{:.4}%".format(nTestWithExpectedErrorAndSugg/nTestWithExpectedError*100))
+            print("Tests with expected errors:", nTestWithExpectedError, " and suggestions:", nTestWithExpectedErrorAndSugg, "> {:.4} %".format(nTestWithExpectedErrorAndSugg/nTestWithExpectedError*100))
             if nUnexpectedErrors:
                 print("Unexpected errors:", nUnexpectedErrors)
-        # untested rules
+            self._showUntestedRules()
+
+    def _showUntestedRules (self):
         aUntestedRules = set()
         for _, sOpt, sLineId, sRuleId in gc_engine.listRules():
             sRuleId = sRuleId.rstrip("0123456789")
@@ -169,9 +171,9 @@ class TestGrammarChecking (unittest.TestCase):
             sRes = sRes[:nStart] + "~" * (nEnd - nStart) + sRes[nEnd:-4]
         return sRes
 
-    def _checkSuggestions (self, sExceptedSuggs, sFoundSuggs):
-        lAllExpectedSuggs = sExceptedSuggs.split("|||")
-        lAllFoundSuggs = sFoundSuggs.split("|||")
+    def _checkSuggestions (self, sAllExceptedSuggs, sAllFoundSuggs):
+        lAllExpectedSuggs = sAllExceptedSuggs.split("|||")
+        lAllFoundSuggs = sAllFoundSuggs.split("|||")
         if len(lAllExpectedSuggs) != len(lAllFoundSuggs):
             return False
         for sExceptedSuggs, sFoundSuggs in zip(lAllExpectedSuggs, lAllFoundSuggs):
