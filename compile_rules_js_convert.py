@@ -10,6 +10,7 @@ import json
 def py2js (sCode):
     "convert Python code to JavaScript code"
     # Python strings
+    sCode = sCode.replace(' ', ' ')
     sCode = sCode.replace('(r"', '("')
     sCode = sCode.replace("(r'", "('")
     sCode = sCode.replace(' r"', ' "')
