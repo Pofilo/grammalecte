@@ -6834,6 +6834,9 @@ __pleo_locutions__
     à l’ heure d’ aujourd’hui
         <<- /pleo/ ->> aujourd’hui                                                          && Pléonasme.
 
+    au maximum de [mon|ton|son|notre|votre|leur] apogée
+        <<- /pleo/ ->> au maximum|à \-2 apogée|à \-2 maximum                                && Pléonasme.
+
     car en effet
         <<- /pleo/ ->> car|en effet                                                         && Pléonasme.
 
@@ -6860,6 +6863,7 @@ TEST: {{à deux reprises différentes}}                           ->> à deux re
 TEST: {{ainsi c’est pourquoi}}                                  ->> ainsi|donc|c’est pourquoi
 TEST: {{ainsi par conséquent}}                                  ->> ainsi|donc|par conséquent|c’est pourquoi
 TEST: {{au jour d’aujourd’hui}}                                 ->> aujourd’hui
+TEST: {{au maximum de notre apogée}}                            ->> au maximum|à notre apogée|à notre maximum
 TEST: {{actuellement en cours}}                                 ->> en cours
 TEST: ils sont {{actuellement en train}} de manger              ->> en train
 TEST: {{comme par exemple}}                                     ->> comme|par exemple
@@ -6909,10 +6913,11 @@ __pleo_substantifs__
     consensus [commun+s]
     >entraide >mutuel
     >erreur >involontaire
-    >étape >intermédiaire
+    >étape [>intermédiaire|successive+s]
     >hasard >imprévu
     >hémorragie de sang
     >illusion [trompeuse+s]
+    index >alphabétique
     >marche à >pied
     >méandre sinueux
     >monopole >exclusif
@@ -6932,6 +6937,7 @@ __pleo_substantifs__
         <<- /pleo/ ->> \1                                           && Pléonasme.
 
     >futur >projet
+    >jeune >fillette
     [petite+s|légère+s] >collation
     [petite+s] [>camionnette|>fillette|>maisonnette]
     [premier+s] >balbutiement
@@ -6973,17 +6979,19 @@ TEST: ce {{taux d’alcoolémie}} est très élevé                   ->> taux d
 TEST: {{tunnels souterrains}}                                   ->> tunnels
 TEST: {{vieilles hardes}}                                       ->> hardes
 TEST: un archipel d’îles déchiquetées
+TEST: Très rares en France, les « orages sans pluie » ou « heat burst » sont des orages secs qui provoquent une montée de température
+TEST: des hommes généralement quelconques
 
 
 __pleo_verbes__
-    [>ajouter|>rajouter] [de|en] plus
-    >applaudir des deux mains
-    >avertir à l’ avance
-    >avertir d’ avance
     >abolir [absolument|entièrement|complétement|complètement|totalement]
     >acculer [au|aux] >pied du mur
     >achever [absolument|entièrement|complétement|complètement|totalement]
+    [>ajouter|>rajouter] [de|en] plus
+    >applaudir des deux mains
     >avancer en avant
+    >avertir à l’ avance
+    >avertir d’ avance
     >collaborer ensemble
     >comparer entre [eux|elles]
     >contraindre malgré [moi|toi|soi|lui|elle|nous|vous|eux|elles]
@@ -6994,6 +7002,8 @@ __pleo_verbes__
     >enchevêtrer les uns dans les autres
     >entraider mutuellement
     >entraider les uns les autres
+    >exporter à l’ étranger
+    >importer de l’ étranger
     >joindre ensemble
     >lever debout
     [>neiger|>pleuvoir] dehors
@@ -7002,8 +7012,8 @@ __pleo_verbes__
     >reculer en arrière
     >rédiger par écrit
     >rénover à neuf
-    >réserver à l’ avance
-    >réserver d’ avance
+    [>réserver|>retenir] à l’ avance
+    [>réserver|>retenir] d’ avance
     >réunir ensemble
     >suffire simplement
     >surprendre à l’ improviste
@@ -7018,6 +7028,9 @@ __pleo_verbes__
 
     >monter en haut
         <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
+
+    >tâcher de faire en sorte [de|d’]
+        <<- /pleo/ ->> \1 \-1                                       && Pléonasme.
 
 TEST: il faut {{abolir totalement}} ces pratiques               ->> abolir
 TEST: il faut {{achever complètement}} ce projet                ->> achever
@@ -7047,6 +7060,7 @@ TEST: {{Rédigez par écrit}} une notice.                         ->> Rédigez
 TEST: Nous avons {{rénové à neuf}} l’ensemble                   ->> rénové
 TEST: Nous voilà {{réunis ensemble}}                            ->> réunis
 TEST: Il {{suffisait simplement}} d’y penser.                   ->> suffisait
+TEST: je {{tâchais de faire en sorte de}} réussir               ->> tâchais de
 TEST: Il la {{talonnait de près}}                               ->> talonnait
 
 
@@ -8137,7 +8151,7 @@ TEST: sa façon de {{nettoyez}} était inefficace.                              
     [de|d’]  [l’|leur]  @:[123][sp]¬:[GNAQ]
         <<- /conf/ not \3.istitle() and not \3.isupper() -3>> =suggSimil(\3, ":[NA].*:[si]", True)  && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
 
-TEST: de l’{{arrivait}}
+TEST: de l’{{arrivait}}                                                                     ->> arrivée|arrivées|arrivant
 TEST: la production d’électricité par des énergies renouvelables aurait encore augmenté de 7 %, selon les calculs de l’AIE
 
 
@@ -8310,7 +8324,7 @@ __conf_en_participes_présents__
     en   se  @:[123][sp]¬:[PY]
         <<- /conf/ not \1.isupper() >>>
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":PQ", ":P")                            && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-        <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en "                                            && Incohérence : vouliez-vous écrire « s’en » ?
+        <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en"                                             && Incohérence : vouliez-vous écrire « s’en » ?
 
     en   n’  @:[123][sp]¬:[PY]
         <<- /conf/ not \1.isupper() and not value(\3, "|importe|") >>>
@@ -8321,10 +8335,10 @@ __conf_en_participes_présents__
 TEST: {{en t’}}ait donné tant.                                              ->> "t’en "
 TEST: il {{en me}} donne beaucoup.                                          ->> m’en
 TEST: elle n’{{en n’}}avait plus pour longtemps.                            ->> "en "
-TEST: {{en m’}}{{apportent}} des gâteaux
-TEST: {{en se}} {{contentent}}
-TEST: {{en n’}}{{abordent}} la côte, nous vîmes le désastre.
-TEST: {{en n’}}{{envoient}} que peu.
+TEST: {{en m’}}{{apportent}} des gâteaux                                    ->> m’en |||apportant
+TEST: {{en se}} {{contentent}}                                              ->> s’en|||contentant
+TEST: {{en n’}}{{abordent}} la côte, nous vîmes le désastre.                ->> n’en |||abordant
+TEST: {{en n’}}{{envoient}} que peu.                                        ->> n’en |||envoyant
 TEST: en ne prenant que des talents réputés,
 TEST: toute chose pourrait finalement advenir indifféremment en n’importe quel point du globe
 
@@ -33750,30 +33764,30 @@ __vmode_qqch_que_subjonctif__
     jusqu’      à           [ce|tant]               [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
 
-TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
-TEST: quoi qu’il en {{conclut}}
-TEST: Avant que tu {{pars}}, je voudrais qu’on discute.
-TEST: Sans qu’elle {{prend}} le temps d’analyser le problème.
-TEST: il est possible qu’il {{vient}} demain.
-TEST: à condition que tu {{réussis}}
-TEST: Pourvu qu’elle {{réussit}}.
-TEST: en admettant que tu {{deviens}} plus talentueuse qu’elle, qu’est-ce que tu feras ?
-TEST: afin que je {{prends}} des mesures
-TEST: à condition qu’il {{finit}} son boulot.
-TEST: pour peu qu’il {{prend}} son devoir sérieux…
-TEST: Fais en sorte qu’elle {{court}} à sa perte
-TEST: Nous œuvrons silencieusement de crainte qu’il nous {{entend}}.
-TEST: En admettant qu’il {{devient}} juste.
-TEST: à condition qu’elle l’{{est}} jamais été
-TEST: non qu’il {{prend}} son temps
-TEST: si tant est que nous {{prenons}} notre temps
-TEST: moyennant qu’elle {{vient}} demain
-TEST: en attendant qu’il {{devient}} plus raisonnable
-TEST: {{où}} qu’il {{est}}, on le trouvera
-TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
-TEST: Bien que je {{prends}} mon mal en patience.
-TEST: encore qu’il {{sait}} s’y prendre
-TEST: jusqu’à ce qu’elle {{vient}} avec nous
+TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.                     ->> soit|fût
+TEST: quoi qu’il en {{conclut}}                                                                     ->> conclue|conclût
+TEST: Avant que tu {{pars}}, je voudrais qu’on discute.                                             ->> partes|partisses
+TEST: Sans qu’elle {{prend}} le temps d’analyser le problème.                                       ->> prenne|prît
+TEST: il est possible qu’il {{vient}} demain.                                                       ->> vienne|vînt
+TEST: à condition que tu {{réussis}}                                                                ->> réussisses
+TEST: Pourvu qu’elle {{réussit}}.                                                                   ->> réussisse|réussît
+TEST: en admettant que tu {{deviens}} plus talentueuse qu’elle, qu’est-ce que tu feras ?            ->> deviennes|devinsses
+TEST: afin que je {{prends}} des mesures                                                            ->> prenne|prisse
+TEST: à condition qu’il {{finit}} son boulot.                                                       ->> finisse|finît
+TEST: pour peu qu’il {{prend}} son devoir sérieux…                                                  ->> prenne|prît
+TEST: Fais en sorte qu’elle {{court}} à sa perte                                                    ->> coure|courût
+TEST: Nous œuvrons silencieusement de crainte qu’il nous {{entend}}.                                ->> entende|entendît
+TEST: En admettant qu’il {{devient}} juste.                                                         ->> devienne|devînt
+TEST: à condition qu’elle le {{pensa}}                                                              ->> pense|pensât
+TEST: non qu’il {{prend}} son temps                                                                 ->> prenne|prît
+TEST: si tant est que nous {{prenons}} notre temps                                                  ->> prenions|prissions
+TEST: moyennant qu’elle {{vient}} demain                                                            ->> vienne|vînt
+TEST: en attendant qu’il {{devient}} plus raisonnable                                               ->> devienne|devînt
+TEST: {{où}} qu’il {{est}}, on le trouvera                                                          ->> ou|||soit|fût
+TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.                                  ->> ait|eût
+TEST: Bien que je {{prends}} mon mal en patience.                                                   ->> prenne|prisse
+TEST: encore qu’il {{sait}} s’y prendre                                                             ->> sache|sût
+TEST: jusqu’à ce qu’elle {{vient}} avec nous                                                        ->> vienne|vînt
 TEST: C’est un joli bien. Bien qu’il a hérité de son oncle, notez bien.
 TEST: Bien qu’il avait donné à ses enfants.
 TEST: si bien que je me suis toujours demandée si cela ne m’avait pas un peu bousillé les yeux
