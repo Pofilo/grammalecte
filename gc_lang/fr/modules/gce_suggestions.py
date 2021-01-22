@@ -47,9 +47,9 @@ def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
                 if conj._hasConjWithTags(tTags, sTense, sWho):
                     aSugg.add(conj._getConjWithTags(sStem, tTags, sTense, sWho))
     if funcSugg2:
-        aSugg2 = funcSugg2(sFlex)
-        if aSugg2:
-            aSugg.add(aSugg2)
+        sSugg2 = funcSugg2(sFlex)
+        if sSugg2:
+            aSugg.add(sSugg2)
     if aSugg:
         if bVC:
             aSugg = [ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in aSugg ]

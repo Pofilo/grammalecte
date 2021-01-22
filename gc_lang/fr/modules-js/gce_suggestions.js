@@ -66,9 +66,9 @@ function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
         }
     }
     if (funcSugg2) {
-        let aSugg2 = funcSugg2(sFlex);
-        if (aSugg2.size > 0) {
-            aSugg.add(aSugg2);
+        let sSugg2 = funcSugg2(sFlex);
+        if (sSugg2.length > 0) {
+            aSugg.add(sSugg2);
         }
     }
     if (aSugg.size > 0) {
@@ -172,7 +172,7 @@ function suggVerbFrom (sStem, sFlex, sWho="") {
         }
         else {
             for (let [sTense, ] of lTenses) {
-                for (let sWho of [ ...sMorph.matchAll(/:[123][sp]/g) ]) {
+                for (let [sWho, ] of [ ...sMorph.matchAll(/:[123][sp]/g) ]) {
                     if (conj.hasConj(sStem, sTense, sWho)) {
                         aSugg.add(conj.getConj(sStem, sTense, sWho));
                     }
