@@ -159,13 +159,13 @@ var cregex = {
                     sGender = sGenderx;
                 }
                 else if (sGender != sGenderx) {
-                    sGenderx = ":e";
+                    sGender = ":e";
                 }
                 if (!sNumber) {
                     sNumber = sNumberx;
                 }
                 else if (sNumber != sNumberx) {
-                    sNumberx = ":i";
+                    sNumber = ":i";
                 }
             }
         }
