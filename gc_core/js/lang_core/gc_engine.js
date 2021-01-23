@@ -305,7 +305,6 @@ class TextParser {
                                 // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
                                     bCondMemo = (!sFuncCond || gc_functions[sFuncCond](sText, sText0, m, this.dTokenPos, sCountry, bCondMemo));
-                                    //bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](sText, sText0, m, this.dTokenPos, sCountry, bCondMemo));
                                     if (bCondMemo) {
                                         switch (cActionType) {
                                             case "-":
@@ -331,7 +330,6 @@ class TextParser {
                                                 // disambiguation
                                                 //console.log("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 gc_functions[sWhat](sText, m, this.dTokenPos);
-                                                //oEvalFunc[sWhat](sText, m, this.dTokenPos);
                                                 if (bDebug) {
                                                     console.log("= " + m[0] + "  # " + sLineId, "\nDA:", this.dTokenPos);
                                                 }
@@ -664,7 +662,6 @@ class TextParser {
                     // Test          [ option, condition, ">", "" ]
                     if (!sOption || dOptions.gl_get(sOption, false)) {
                         bCondMemo = !sFuncCond || gc_functions[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
-                        //bCondMemo = !sFuncCond || oEvalFunc[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
                         if (bCondMemo) {
                             if (cActionType == "-") {
                                 // grammar error
@@ -698,7 +695,6 @@ class TextParser {
                             else if (cActionType == "=") {
                                 // disambiguation
                                 gc_functions[sWhat](this.lTokens, nTokenOffset, nLastToken);
-                                //oEvalFunc[sWhat](this.lTokens, nTokenOffset, nLastToken);
                                 if (bDebug) {
                                     console.log(`    DISAMBIGUATOR: (${sWhat})  [${this.lTokens[nTokenOffset+1]["sValue"]}:${this.lTokens[nLastToken]["sValue"]}]`);
                                 }
@@ -782,19 +778,17 @@ class TextParser {
         let lSugg = [];
         if (sSugg.startsWith("=")) {
             sSugg = gc_functions[sSugg.slice(1)](sText, m);
-            //sSugg = oEvalFunc[sSugg.slice(1)](sText, m);
-            lSugg = (sSugg) ? sSugg.split("|") : [];
+            lSugg = (sSugg) ? sSugg.replace(/ /g, " ").split("|") : [];
         } else if (sSugg == "_") {
             lSugg = [];
         } else {
-            lSugg = sSugg.gl_expand(m).split("|");
+            lSugg = sSugg.gl_expand(m).replace(/ /g, " ").split("|");
         }
         if (bCaseSvty && lSugg.length > 0 && m[iGroup].slice(0,1).gl_isUpperCase()) {
             lSugg = (m[iGroup].gl_isUpperCase()) ? lSugg.map((s) => s.toUpperCase()) : capitalizeArray(lSugg);
         }
         // Message
         let sMessage = (sMsg.startsWith("=")) ? gc_functions[sMsg.slice(1)](sText, m) : sMsg.gl_expand(m);
-        //let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](sText, m) : sMsg.gl_expand(m);
         if (bShowRuleId) {
             sMessage += "  #" + sLineId + " / " + sRuleId;
         }
@@ -807,19 +801,17 @@ class TextParser {
         let lSugg = [];
         if (sSugg.startsWith("=")) {
             sSugg = gc_functions[sSugg.slice(1)](this.lTokens, nTokenOffset, nLastToken);
-            //sSugg = oEvalFunc[sSugg.slice(1)](this.lTokens, nTokenOffset, nLastToken);
-            lSugg = (sSugg) ? sSugg.split("|") : [];
+            lSugg = (sSugg) ? sSugg.replace(/ /g, " ").split("|") : [];
         } else if (sSugg == "_") {
             lSugg = [];
         } else {
-            lSugg = this._expand(sSugg, nTokenOffset, nLastToken).split("|");
+            lSugg = this._expand(sSugg, nTokenOffset, nLastToken).replace(/ /g, " ").split("|");
         }
         if (bCaseSvty && lSugg.length > 0 && this.lTokens[iFirstToken]["sValue"].slice(0,1).gl_isUpperCase()) {
             lSugg = (this.sSentence.slice(nStart, nEnd).gl_isUpperCase()) ? lSugg.map((s) => s.toUpperCase()) : capitalizeArray(lSugg);
         }
         // Message
         let sMessage = (sMsg.startsWith("=")) ? gc_functions[sMsg.slice(1)](this.lTokens, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
-        //let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](this.lTokens, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
         if (bShowRuleId) {
             sMessage += "  #" + sLineId + " / " + sRuleId;
         }
@@ -874,7 +866,6 @@ class TextParser {
         }
         else if (sRepl.slice(0,1) === "=") {
             sNew = gc_functions[sRepl.slice(1)](sText, m);
-            //sNew = oEvalFunc[sRepl.slice(1)](sText, m);
             sNew = sNew + " ".repeat(ln-sNew.length);
             if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
                 sNew = sNew.gl_toCapitalize();
@@ -921,7 +912,6 @@ class TextParser {
         else {
             if (sWhat.startsWith("=")) {
                 sWhat = gc_functions[sWhat.slice(1)](this.lTokens, nTokenOffset, nLastToken);
-                //sWhat = oEvalFunc[sWhat.slice(1)](this.lTokens, nTokenOffset, nLastToken);
             } else {
                 sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
             }

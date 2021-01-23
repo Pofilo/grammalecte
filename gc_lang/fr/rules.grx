@@ -1307,8 +1307,8 @@ TEST: « J’en suis “malade”. »
 __[s]/num(num_grand_nombre_soudé)__
     \d\d\d\d+
         <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
-        <<- ((after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])") and not (re.search("^[01]+$", \0) and after("^,[01]+\\b")))
-            or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])"))
+        <<- (after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])") and not (re.search("^[01]+$", \0) and after("^,[01]+\\b")))
+            or after("^[    ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])")
         ->> =formatNumber(\0, True)                                                                 && Formatage des grands nombres.
         <<- __else__ and \0.__len__() > 4 ->> =formatNumber(\0)                                     && Formatage des grands nombres.
 
@@ -1326,8 +1326,13 @@ TEST: {{12345678901}}                           ->> 12 345 678 901
 TEST: {{112798931830912839}}                    ->> 112 798 931 830 912 839
 TEST: {{2308393909}}                            ->> 2 308 393 909|2308 393-909
 TEST: {{2024}},9                                ->> 2 024
-TEST: {{4000}} Å                                ->> 4 000
+TEST: {{4000}} Å                                ->> 4 000
 TEST: {{10010}} €                               ->> 10 010
+TEST: {{12010}} kg                              ->> 12 010
+TEST: {{12010}} m²                              ->> 12 010
+TEST: {{12010}} dB                              ->> 12 010
+TEST: {{12010}} %                               ->> 12 010
+TEST: {{11010}} min                             ->> 11 010
 TEST: {{3240}} µA                               ->> 3 240
 TEST: 1111 0011,01 (binaire)
 

@@ -10,7 +10,6 @@ import json
 def py2js (sCode):
     "convert Python code to JavaScript code"
     # Python strings
-    sCode = sCode.replace(' ', ' ')
     sCode = sCode.replace('(r"', '("')
     sCode = sCode.replace("(r'", "('")
     sCode = sCode.replace(' r"', ' "')
@@ -127,8 +126,8 @@ def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
     # error messages
     for aAction in lRuleJS[6]:
         if aAction[1] == "-":
-            aAction[2] = aAction[2].replace(" ", " ") # nbsp --> nnbsp
-            aAction[4] = aAction[4].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" :", " :")
+            aAction[4] = aAction[4].replace(" ", " ") # nbsp --> nnbsp
+            aAction[4] = aAction[4].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" ;", " ;").replace(" ?", " ?").replace(" !", " :")
     # js regexes
     lRuleJS[1], lNegLookBehindRegex = regex2js(dJSREGEXES.get(lRuleJS[3], lRuleJS[1]), sWORDLIMITLEFT)
     lRuleJS.append(lNegLookBehindRegex)
