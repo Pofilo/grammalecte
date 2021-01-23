@@ -61,68 +61,85 @@ def getVtyp (sVerb):
 
 
 def getSimil (sWord, sMorph, bSubst=False):
-    "returns a set of verbal forms similar to <sWord>, according to <sMorph>"
+    "returns a list of verbal forms similar to <sWord>, according to <sMorph>"
     if ":V" not in sMorph:
-        return set()
+        return []
     sInfi = sMorph[1:sMorph.find("/")]
-    aSugg = set()
+    aSugg = []
     tTags = _getTags(sInfi)
     if tTags:
         if not bSubst:
             # we suggest conjugated forms
             if ":V1" in sMorph:
-                aSugg.add(sInfi)
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":1s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
+                aSugg.append(sInfi)
+                if _hasConjWithTags(tTags, ":Ip", ":3s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
+                if _hasConjWithTags(tTags, ":Ip", ":2p"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
+                if _hasConjWithTags(tTags, ":Iq", ":1s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Iq", ":1s"))
+                if _hasConjWithTags(tTags, ":Iq", ":3s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
+                if _hasConjWithTags(tTags, ":Iq", ":3p"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
             elif ":V2" in sMorph:
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":1s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
+                if _hasConjWithTags(tTags, ":Ip", ":1s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":1s"))
+                if _hasConjWithTags(tTags, ":Ip", ":3s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
             elif ":V3" in sMorph:
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":1s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":3s"))
+                if _hasConjWithTags(tTags, ":Ip", ":1s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":1s"))
+                if _hasConjWithTags(tTags, ":Ip", ":3s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Ip", ":3s"))
+                if _hasConjWithTags(tTags, ":Is", ":1s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
+                if _hasConjWithTags(tTags, ":Is", ":3s"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":Is", ":3s"))
             elif ":V0a" in sMorph:
-                aSugg.add("eus")
-                aSugg.add("eut")
+                aSugg.append("eus")
+                aSugg.append("eut")
             else:
-                aSugg.add("étais")
-                aSugg.add("était")
-            aSugg.discard("")
+                aSugg.append("étais")
+                aSugg.append("était")
         else:
             if sInfi in _dVerbNames:
                 # there are names derivated from the verb
-                aSugg.update(_dVerbNames[sInfi])
+                aSugg.extend(_dVerbNames[sInfi])
             else:
                 # we suggest past participles
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q1"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q2"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q3"))
-                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q4"))
-                aSugg.discard("")
+                aSugg.append(_getConjWithTags(sInfi, tTags, ":PQ", ":Q1"))
+                if _hasConjWithTags(tTags, ":PQ", ":Q2"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":PQ", ":Q2"))
+                if _hasConjWithTags(tTags, ":PQ", ":Q3"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":PQ", ":Q3"))
+                if _hasConjWithTags(tTags, ":PQ", ":Q4"):
+                    aSugg.append(_getConjWithTags(sInfi, tTags, ":PQ", ":Q4"))
                 # if there is only one past participle (epi inv), unreliable.
                 if len(aSugg) == 1:
-                    aSugg.clear()
+                    return []
     return aSugg
 
 
 def getConjSimilInfiV1 (sInfi):
     "returns verbal forms phonetically similar to infinitive form (for verb in group 1)"
     if sInfi not in _dVerb:
-        return set()
-    aSugg = set()
+        return []
+    aSugg = []
     tTags = _getTags(sInfi)
     if tTags:
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2s"))
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
-        aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2p"))
-        aSugg.discard("")
+        if _hasConjWithTags(tTags, ":Iq", ":2s"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2s"))
+        if _hasConjWithTags(tTags, ":Iq", ":3s"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
+        if _hasConjWithTags(tTags, ":Iq", ":3p"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
+        if _hasConjWithTags(tTags, ":Is", ":1s"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
+        if _hasConjWithTags(tTags, ":Ip", ":2p"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
+        if _hasConjWithTags(tTags, ":Iq", ":2p"):
+            aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2p"))
     return aSugg
 
 

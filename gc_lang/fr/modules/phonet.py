@@ -42,14 +42,14 @@ def getSimil (sWord):
 
 
 def selectSimil (sWord, sPattern):
-    "return a set of words phonetically similar to <sWord> and whom POS is matching <sPattern>"
+    "return a list of words phonetically similar to <sWord> and whom POS is matching <sPattern>"
     if not sPattern:
-        return set(getSimil(sWord))
-    aSelect = set()
+        return getSimil(sWord)
+    aSelect = []
     for sSimil in getSimil(sWord):
         for sMorph in _dMorph.get(sSimil, []):
             if re.search(sPattern, sMorph):
-                aSelect.add(sSimil)
+                aSelect.append(sSimil)
     return aSelect
 
 
