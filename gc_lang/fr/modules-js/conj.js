@@ -89,58 +89,30 @@ var conj = {
         return this._lVtyp[this._dVerb[sVerb][0]];
     },
 
-    getSimil: function (sWord, sMorph, bSubst=false) {
-        if (!sMorph.includes(":V")) {
-            return new Set();
-        }
-        let sInfi = sMorph.slice(1, sMorph.indexOf("/"));
-        let aSugg = new Set();
-        let tTags = this._getTags(sInfi);
-        if (tTags) {
-            if (!bSubst) {
-                // we suggest conjugated forms
-                if (sMorph.includes(":V1")) {
-                    aSugg.add(sInfi);
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":2p"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":1s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3p"));
-                } else if (sMorph.includes(":V2")) {
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-                } else if (sMorph.includes(":V3")) {
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":1s"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":3s"));
-                } else if (sMorph.includes(":V0a")) {
-                    aSugg.add("eus");
-                    aSugg.add("eut");
-                } else {
-                    aSugg.add("étais");
-                    aSugg.add("était");
+    getNamesFrom: function (sVerb) {
+        // returns a list of names derivating from <sVerb>
+        if (this._dVerbNames.hasOwnProperty(sVerb)) {
+            // there are names derivated from the verb
+            return this._dVerbNames[sVerb];
+        } else {
+            // we suggest past participles
+            let tTags = this._getTags(sVerb);
+            if (tTags) {
+                let aSugg = [ this._getConjWithTags(sVerb, tTags, ":PQ", ":Q1") ];
+                if (this._hasConjWithTags(tTags, ":PQ", ":Q2")) {
+                    aSugg.push(this._getConjWithTags(sVerb, tTags, ":PQ", ":Q2"));
                 }
-                aSugg.delete("");
-            } else {
-                if (this._dVerbNames.hasOwnProperty(sInfi)) {
-                    // there are names derivated from the verb
-                    aSugg.gl_update(this._dVerbNames[sInfi]);
-                } else {
-                    // we suggest past participles
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q2"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q3"));
-                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q4"));
-                    aSugg.delete("");
-                    // if there is only one past participle (epi inv), unreliable.
-                    if (aSugg.size === 1) {
-                        aSugg.clear();
-                    }
+                if (this._hasConjWithTags(tTags, ":PQ", ":Q3")) {
+                    aSugg.push(this._getConjWithTags(sVerb, tTags, ":PQ", ":Q3"));
                 }
+                if (this._hasConjWithTags(tTags, ":PQ", ":Q4")) {
+                    aSugg.push(this._getConjWithTags(sVerb, tTags, ":PQ", ":Q4"));
+                }
+                // if there is only one past participle (epi inv), unreliable.
+                return (aSugg.length > 1) ? aSugg : [];
             }
+            return [];
         }
-        return aSugg;
     },
 
     _getTags: function (sVerb) {
@@ -638,7 +610,7 @@ if (typeof(exports) !== 'undefined') {
     exports.getConj = conj.getConj;
     exports.hasConj = conj.hasConj;
     exports.getVtyp = conj.getVtyp;
-    exports.getSimil = conj.getSimil;
+    exports.getNamesFrom = conj.getNamesFrom;
     exports._getTags = conj._getTags;
     exports._getConjWithTags = conj._getConjWithTags;
     exports._hasConjWithTags = conj._hasConjWithTags;

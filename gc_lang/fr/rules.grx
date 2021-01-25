@@ -7354,8 +7354,8 @@ TEST: {{Ont}} ne sait pas comment faire.                                        
 TEST: ce livre qu’{{ont}} t’apporte                                                                                 ->> on
 TEST: ouais, c’est ça, {{ont}} t’assure que c’est vrai                                                              ->> on
 TEST: {{Ont}} lui avait donné du temps                                                                              ->> On
-TEST: {{Ont}} leur {{prendra}} tout                                                                                 ->> On|||prise|prises
-TEST: Qu’importe, {{ont}} leur {{prend}} tout                                                                       ->> on|||prise|prises
+TEST: {{Ont}} leur {{prendra}} tout                                                                                 ->> On|||prise
+TEST: Qu’importe, {{ont}} leur {{prend}} tout                                                                       ->> on|||prise
 TEST: {{peut-ont}} y arriver avec si peu de moyens ?                                                                ->> peut-on
 TEST: {{peut ont}} y arriver ?                                                                                      ->> peut-on
 TEST: comme ce que l’{{ont}} {{voit}} dans le lien entre polygynie et guerre.                                       ->> on|||vu
@@ -8055,7 +8055,7 @@ TEST: {{ce}} {{rappelle}} n’en finit pas.                                     
 TEST: mon {{rackette}} n’a pas porté les fruits espérés.                            ->> racket
 TEST: mon {{impacte}}                                                               ->> impact
 TEST: ton {{recèle}} avait été dévoilé                                              ->> recel
-TEST: un verbe au {{passait}} simple                                                ->> passé|passés|passée|passées|passe|passes|passant|passions
+TEST: un verbe au {{passait}} simple                                                ->> passé|passe|passant
 TEST: quel {{impacte}} cela aura-t-il ?                                             ->> impact
 TEST: chaque {{désire}} importe.                                                    ->> désir
 TEST: l’attuque du {{briguant}}                                                     ->> brigand
@@ -8143,13 +8143,13 @@ __conf_à_vconj__
         <<- /conf/ not value(<1, "|une|") -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)            && Incohérence : après “\1 \2”, on devrait trouver un substantif féminin.
 
 TEST: à le {{poussait}}                                                                             ->> pousser
-TEST: à la {{finit}}                                                                                ->> finie|finir|finis|fini|finies
+TEST: à la {{finit}}                                                                                ->> finie|finir
 TEST: à l’{{imaginions}}                                                                            ->>
 TEST: à son {{impacte}}                                                                             ->> impact
 TEST: à leur {{profile}}                                                                            ->> profil|profiler
-TEST: à un {{employer}}                                                                             ->> employé|employée|employés|employées
-TEST: à une {{employer}}                                                                            ->> employée|employé|employés|employées
-TEST: à leurs {{finissions}}                                                                        ->> fini|finie|finis|finies
+TEST: à un {{employer}}                                                                             ->> employé
+TEST: à une {{employer}}                                                                            ->> employée
+TEST: à leurs {{finissions}}                                                                        ->> finis|finies
 TEST: on les voit un par un devenir prendre un chemin de predition
 TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
 TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
@@ -8168,7 +8168,7 @@ TEST: sa façon de {{nettoyez}} était inefficace.                              
     [de|d’]  [l’|leur]  @:[123][sp]¬:[GNAQ]
         <<- /conf/ not \3.istitle() and not \3.isupper() -3>> =suggSimil(\3, ":[NA].*:[si]", True)  && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
 
-TEST: de l’{{arrivait}}                                                                     ->> arrivée|arrivées|arrivant
+TEST: de l’{{arrivait}}                                                                     ->> arrivée|arrivant
 TEST: la production d’électricité par des énergies renouvelables aurait encore augmenté de 7 %, selon les calculs de l’AIE
 
 
@@ -8208,7 +8208,7 @@ TEST: de {{la}} venaient tous nos problèmes                     ->> là
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                                              && Incohérence avec “\1\2” : “\3” est une forme verbale.
 
 TEST: d’un {{œillait}}                                                  ->> œillet
-TEST: d’une {{habille}} de femme                                        ->> habillé|habillée|habillés|habillées
+TEST: d’une {{habille}} de femme                                        ->> habillée
 TEST: plus d’un ont été traumatisés
 TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
@@ -8226,9 +8226,9 @@ __conf_par_vconj__
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                                              && Incohérence avec “\1 \2” : “\3” est une forme verbale.
 
 TEST: par {{bloque}} de données                                         ->> bloc|blocs
-TEST: par une {{donnait}} sans importance                               ->> donne|donnes|donnée|données
+TEST: par une {{donnait}} sans importance                               ->> donne|donnée
 TEST: par un {{bloque}} de donnée                                       ->> bloc
-TEST: conçu par un {{employer}} très compétent                          ->> employé|employés|employée|employées
+TEST: conçu par un {{employer}} très compétent                          ->> employé
 TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
 TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
 
@@ -8246,7 +8246,7 @@ __conf_préposition_det_verbe__
     [malgré|dès] [les|leurs]  @:V¬:[GNAWMB]
         <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA].*:[pi]", True)              && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
-TEST: malgré un {{employer}} peu dévoué                                         ->> employé|employés|employée|employées
+TEST: malgré un {{employer}} peu dévoué                                         ->> employé
 TEST: dès le {{commencent}}, j’ai vu le problème.                               ->> commençant
 TEST: dès la {{posent}}                                                         ->> pause|pose
 TEST: malgré l’{{arrête}} qui interdisait le port                               ->> arête
@@ -8390,7 +8390,7 @@ TEST: et avec ça seulement elle aussi {{mangées}}.                          ->
 
 __conf_en_tant_que_subst__
     en  tant  [que|qu’]  @:V¬:[NAG]
-        <<- /conf/ --1>> =suggSimil(\-1, ":[NA]")
+        <<- /conf/ --1>> =suggSimil(\-1, ":[NA]", True)
         && Confusion probable. Après « en tant que », il faut un substantif, pas un verbe. Exemples : en tant que femme, en tant que patron, en tant que trentenaire…
 
 TEST: en tant qu’{{abaisse}}                                                ->>
@@ -11631,7 +11631,7 @@ TEST: cette femme ne {{ma}} prise que deux fois             ->> m’a
 TEST: {{on}} {{ma}} dézinguée                               ->> ont|||m’a
 TEST: ça {{ma}} {{foutu}} en l’air                          ->> m’a|||foutue
 TEST: cet homme {{ma}} succédé à ce poste                   ->> m’a
-TEST: {{ma}} {{donner}} la nausée, ce con                   ->> m’a|||donnée|données|donne|donnes
+TEST: {{ma}} {{donner}} la nausée, ce con                   ->> m’a|||donnée|donne
 TEST: c’est ça qui {{ma}} forcée à poursuivre               ->> m’a
 TEST: ça ma grande, c’est mon secret
 

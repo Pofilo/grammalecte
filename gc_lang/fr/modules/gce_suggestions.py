@@ -464,14 +464,21 @@ def hasSimil (sWord, sPattern=None):
 
 
 def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
-    "return list of words phonetically similar to sWord and whom POS is matching sPattern"
+    "return list of words phonetically similar to <sWord> and whom POS is matching <sPattern>"
     if bVC:
         sWord, sSfx = splitVerb(sWord)
     aSugg = phonet.selectSimil(sWord, sPattern)
-    if not aSugg or not bSubst:
+    if not aSugg and bSubst:
         for sMorph in _oSpellChecker.getMorph(sWord):
-            aSugg.extend(conj.getSimil(sWord, sMorph, bSubst))
-            break
+            if ":V" in sMorph:
+                sInfi = sMorph[1:sMorph.find("/")]
+                if sPattern:
+                    for sName in conj.getNamesFrom(sInfi):
+                        if any(re.search(sPattern, sMorph2)  for sMorph2 in _oSpellChecker.getMorph(sName)):
+                            aSugg.append(sName)
+                else:
+                    aSugg.extend(conj.getNamesFrom(sInfi))
+                break
     if aSugg:
         if bVC:
             aSugg = [ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in aSugg ]

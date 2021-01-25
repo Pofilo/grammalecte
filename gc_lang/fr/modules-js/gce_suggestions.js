@@ -607,16 +607,27 @@ function hasSimil (sWord, sPattern=null) {
 }
 
 function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
-    // return list of words phonetically similar to sWord and whom POS is matching sPattern
+    // return list of words phonetically similar to <sWord> and whom POS is matching <sPattern>
     let sSfx;
     if (bVC) {
         [sWord, sSfx] = splitVerb(sWord);
     }
     let aSugg = phonet.selectSimil(sWord, sPattern);
-    if (aSugg.size === 0 || !bSubst) {
+    if (aSugg.size === 0 && bSubst) {
         for (let sMorph of gc_engine.oSpellChecker.getMorph(sWord)) {
-            for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
-                aSugg.add(e);
+            if (sMorph.includes(":V")) {
+                let sInfi = sMorph.slice(1, sMorph.indexOf("/"));
+                if (sPattern) {
+                    for (let sName of conj.getNamesFrom(sInfi)) {
+                        if (_oSpellChecker.getMorph(sName).some(sMorph => (sMorph.search(sPattern) !== -1))) {
+                            aSugg.add(sName);
+                        }
+                    }
+                }
+                else {
+                    conj.getNamesFrom(sInfi).forEach(sName => aSugg.add(sName));
+                }
+                break;
             }
         }
     }
