@@ -132,8 +132,8 @@ def getCommand ():
 
 def main ():
     "launch the CLI (command line interface)"
-    if sys.version < "3.7":
-        print("Python 3.7+ required")
+    if sys.version < "3.5":
+        print("Python 3.5+ required")
         return
 
     xParser = argparse.ArgumentParser()
