@@ -2458,8 +2458,8 @@ TEST: Le moteur choisi convient-il ?
 __inte_verbes_composés_interrogatifs_impératifs__
     ~\w-[nN]ous$
         <<- /inte/ not re.search("-[lL](?:es?|a)-[nN]ous$", \1) >>>
-        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)                        && Forme interrogative ou impérative incorrecte.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:chez|malgré)/") ->> =suggSimil(\1, ":1p", False, True)     && Forme interrogative ou impérative incorrecte.
+        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)+"|"+suggVerbImpe(\1, True) && Forme interrogative ou impérative incorrecte.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:chez|malgré)/") ->> =suggSimil(\1, ":1p", False, True)         && Forme interrogative ou impérative incorrecte.
         <<- />> -nous|_VCint_
 
     ~\w-[vV]ous$
@@ -2468,8 +2468,8 @@ __inte_verbes_composés_interrogatifs_impératifs__
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":2p", False, True)  && Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
         <<- />> -vous|_VCint_
 
-TEST: {{Prendront-nous}}                                    ->> Prendrons-nous
-TEST: {{Attendront-nous}} le train                          ->> Attendrons-nous
+TEST: {{Prendront-nous}}                                    ->> Prendrons-nous|Prends-nous|Prenons-nous|Prenez-nous
+TEST: {{Attendront-nous}} le train                          ->> Attendrons-nous|Attends-nous|Attendons-nous|Attendez-nous
 TEST: {{action-nous}} !                                     ->> axions-nous|actions-nous
 TEST: {{santon-nous}} mauvais ?                             ->> sentons-nous|centons-nous
 TEST: {{Attaquait-vous}}                                    ->> Attaquiez-vous
