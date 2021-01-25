@@ -3113,8 +3113,11 @@ __da_pourvu__
         <<- not value(>1, "|que|qu’|") =>> select(\1, "", ":G")
 
 __da_pouvoir_savoir_vouloir__
-    [un|le|ce|du|quel|mon|ton|son|notre|votre|leur] [pouvoir|savoir|vouloir]
+    [un|ce|du|quel|mon|ton|son|notre|votre|leur] [pouvoir|savoir|vouloir]
         <<- =>> select(\-1, ":N")
+
+    le [pouvoir|savoir|vouloir]
+        <<- not morph(<1, ":R") =>> select(\-1, ":N")
 
     [un|le|ce|du|quel|mon|ton|son|notre|votre|leur] *WORD [pouvoir|savoir|vouloir]
         <<- morph(\2, ":A.*:[me]:[si]") =>> select(\-1, ":N")
@@ -8172,6 +8175,11 @@ TEST: la production d’électricité par des énergies renouvelables aurait enc
 TEST: {{de le}} vin                                             ->> du
 TEST: il n’est pas interdit de le {{pensait}}                   ->> penser
 TEST: que connais-tu de “Le Tambour” ?
+TEST: Impossible de le savoir.
+TEST: Impossible de le manger.
+TEST: Impossible de le voir.
+TEST: Impossible de le penser.
+TEST: Elle n’a pas besoin de le savoir
 
 
     [de|d’]  la  *WORD
@@ -18008,6 +18016,7 @@ __substantifs_multi_mots__
     >courant d’ air
     >coureur [de|d’] >jupon
     >courroie [de|d’] transmission
+    cours [de|d’] rattrapage
     >course contre la montre
     >cour d’ assises
     [>coût|>cout] [de|d’] revient
@@ -33985,6 +33994,7 @@ TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
 TEST: Du monde noir sortent les envahisseurs (accord avec ce qui suit).
 
 !!! Autres tests                                                                                  !!
+TEST: l’ambulance censée amener Cédric n’est jamais arrivée
 TEST: Chez les intellectuels, le mot utopie n’a jamais été synonyme de folie, mais il l’a été pour l’homme de la rue.
 TEST: Les États parties sont les pays qui ont ratifié la Convention du patrimoine mondial.
 TEST: Ça a l’air de t’aller.
