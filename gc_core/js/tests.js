@@ -195,8 +195,13 @@ class TestGrammarChecking {
             return false;
         }
         for (let i = 0;  i < lAllExpectedSuggs.length;  i++) {
-            let aExpectedSuggs = new Set(lAllExpectedSuggs[i].split("|"));
-            let aFoundSuggs = new Set(lAllFoundSuggs[i].split("|"));
+            let lExpectedSuggs = lAllExpectedSuggs[i].split("|");
+            let lFoundSuggs = lAllFoundSuggs[i].split("|");
+            if (lExpectedSuggs.length != lFoundSuggs.length) {
+                return false;
+            }
+            let aExpectedSuggs = new Set(lExpectedSuggs);
+            let aFoundSuggs = new Set(lFoundSuggs);
             if (aExpectedSuggs.size !== aFoundSuggs.size || ![...aExpectedSuggs].every(value => aFoundSuggs.has(value))) {
                 return false;
             }

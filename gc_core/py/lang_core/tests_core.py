@@ -177,7 +177,9 @@ class TestGrammarChecking (unittest.TestCase):
         if len(lAllExpectedSuggs) != len(lAllFoundSuggs):
             return False
         for sExceptedSuggs, sFoundSuggs in zip(lAllExpectedSuggs, lAllFoundSuggs):
-            if set(sExceptedSuggs.split("|")) != set(sFoundSuggs.split("|")):
+            lExpectedSuggs = sExceptedSuggs.split("|")
+            lFoundSuggs = sFoundSuggs.split("|")
+            if len(lExpectedSuggs) != len(lFoundSuggs) or set(lExpectedSuggs) != set(lFoundSuggs):
                 return False
         return True
 
