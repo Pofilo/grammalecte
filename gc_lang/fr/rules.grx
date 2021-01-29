@@ -956,9 +956,12 @@ TEST: {{qu’}}il est grand, ce batiment. Faut voir si on pourra la détruire av
 
 __[i>/poncfin(poncfin_règle1)__
     ({w_1}) *$  @@0
-        <<- before("\\w+(?:\\.|[   ][!?]) +(?:[A-ZÉÈÎ]\\w+|[ÀÔ])") -1>> \1.|\1 !|\1 ?               && Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
+        <<- before("\\w+(?:[.]|[   ][!?]) +(?:[A-ZÉÈÎ]\\w+|[ÀÔ])")
+            or (\1.istitle() and before("\\w+(?:[.]|[   ][!?]) +$"))
+        -1>> \1.|\1 !|\1 ?               && Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
 
-TEST: __poncfin__ Vraiment. Quel {{ennui}}                                  ->> ennui.|ennui !|ennui ?
+TEST: __poncfin__ Vraiment. Quel {{ennui}}                                          ->> ennui.|ennui !|ennui ?
+TEST: __poncfin__ Oui. Ça commence le vendredi et finit le dimanche. {{Les}}        ->> Les.|Les !|Les ?
 TEST: Internet : le nouvel eldorado
 TEST: OMC-FMI : Les nouveaux maîtres du monde
 
@@ -1140,6 +1143,7 @@ TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
 TEST: {{40 MHz}}                                        ->> 40 MHz
 TEST: {{100 Ah}}                                        ->> 100 Ah
 TEST: {{1001 ans}}                                      ->> 1 001 ans
+TEST: {{500000 euros}}                                  ->> 500 000 euros
 TEST: en l’an 2000 Urgondorletroll eut une idée
 TEST: 1998 s’annonce grandiose.
 TEST: il y en a 3,43 milliards.
@@ -1335,6 +1339,7 @@ TEST: {{12010}} %                               ->> 12 010
 TEST: {{11010}} min                             ->> 11 010
 TEST: {{3240}} µA                               ->> 3 240
 TEST: 1111 0011,01 (binaire)
+TEST: avec 500 000 euros
 
 
 __[s>(num_grand_nombre_avec_points)__
@@ -8699,10 +8704,15 @@ TEST: Les publicités sont peu à peu ouvertes et retirées de leur coffrage.
 
 
 __conf_à_a_infinitif__
-    a  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  $:Y
-    a  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         $:Y
-    a  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             $:Y
-    a  ?[ne|n’]¿  [lui|leur|y]                    en                          $:Y
+    a  le                                                               @:Y¬:N.*:[me]:[si]
+    a  la                                                               @:Y¬:N.*:[fe]:[si]
+    a  [l’|leur]                                                        @:Y¬:N.*:[si]
+    a  les                                                              @:Y¬:N.*:[pi]
+    a  [ne|n’]  [le|la|l’|les|leur]                                     $:Y
+    a  ?[ne|n’]¿  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|y]¿              $:Y
+    a  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]   $:Y
+    a  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]       $:Y
+    a  ?[ne|n’]¿  [lui|leur|y]                    en                    $:Y
         <<- /conf/ not value(<1, "|il|elle|iel|on|n’|m’|t’|l’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
         -1>> à                                                      && Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
@@ -8710,6 +8720,8 @@ TEST: scrupuleux {{a}} n’en toucher qu’une part infime.                     
 TEST: Ne pas hésiter {{a}} {{demander}} des conseils.                               ->> à|||demandé
 TEST: Sébastien {{a}} {{demander}} des conseils.                                    ->> à|||demandé
 TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires           ->> À
+TEST: Chacun de nous, a ajouté Biden, « a le devoir […] de défendre la vérité et de triompher des mensonges ».
+TEST: cet homme a le savoir pour seul but dans l’existence
 
 
 __conf_à_qui_infinitif__
@@ -11671,6 +11683,14 @@ TEST: {{mai}} Patrick vient demain.                             ->> mais
 TEST: Je viendrai, {{mai}} il faudra avoir tout prévu.          ->> mais
 TEST: {{mes}} que voulez-vous                                   ->> mais
 TEST: Mai pluvieux.
+
+
+__conf_marge_marche__
+    >marche de manœuvre
+        <<- /conf/ morph(<1, ":D.*:[fe]") -1>> =\1.replace("ch", "g").replace("CH", "G")    && Confusion. Locution “marge de manœuvre”.|https://fr.wiktionary.org/wiki/marge_de_man%C5%93uvre
+
+TEST: notre {{marche}} de manœuvre                              ->> marge
+TEST: une marge de manœuvre
 
 
 # mat / mât
@@ -18721,17 +18741,18 @@ __substantifs_multi_mots__
 
 
 __purge_syntagmes_nominaux_matière__
-    *WORD  en  acier  ?[galvanisé|inoxydable|trempé]¿
-    *WORD  en  chêne  ?massif¿
-    *WORD  en  bois   ?vernis¿
-    *WORD  en  [alu|aluminium|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]
-        || ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  acier  ?[galvanisé|inoxydable|trempé]¿       ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  chêne  ?massif¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  bois   ?vernis¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  or     ?massif¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  [alu|aluminium|argent|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox] ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    *WORD  en  [inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]             ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
         <<- morph(\1, ":N", ":G") and not morph(>1, ":A.*:[me]:[si]") ~2:0>> *
 
-    *WORD  en  pierre
-    *WORD  en  pierre de taille
-    *WORD  en  soie
-    *WORD  en  terre  ?[battue|cuite]¿
+    *WORD  en  pierre                       ?[claire|foncée|rouge|verte|brune|marron|jaune|orange|bleue|grise|rose|noire|blanche]¿
+    *WORD  en  pierre de taille             ?[claire|foncée|rouge|verte|brune|marron|jaune|orange|bleue|grise|rose|noire|blanche]¿
+    *WORD  en  soie                         ?[claire|foncée|rouge|verte|brune|marron|jaune|orange|bleue|grise|rose|noire|blanche]¿
+    *WORD  en  terre  ?[battue|cuite]¿      ?[claire|foncée|rouge|verte|brune|marron|jaune|orange|bleue|grise|rose|noire|blanche]¿
         <<- morph(\1, ":N", ":G") and not morph(>1, ":A.*:[fe]:[si]") ~2:0>> *
 
 TEST: deux câbles en acier situés de part et d’autre du chariot
@@ -25365,6 +25386,7 @@ __gn_pfx_en_2m__
 TEST: en homme {{courtoise}}                                    ->> courtois
 TEST: en {{grande}} {{avocat}}                                  ->> grand|||avocate
 TEST: en {{femme}} {{cultivées}}                                ->> femmes|||cultivée
+TEST: une bague ancienne en argent sertie d’une perle noire
 
 
 __gn_pfx_à_par_pour_sans_2m__
@@ -30138,6 +30160,7 @@ TEST: ils devenaient forts et {{humble}}                                        
 TEST: ils crurent avoir été trompés et {{volé}}                                                     ->> volés
 TEST: elles déclareront être restées calmes et {{attentive}}                                        ->> attentives
 TEST: nous imaginons devenir riches et {{connu}}                                                    ->> connus
+TEST: Les origines familiales sont plus incertaines que ce qui a été dit, selon ma mère, et difficiles à sonder.
 
 
 __ppas_être_confusion__
@@ -30639,7 +30662,7 @@ __ppas_det_sing_COD_que_avoir__
     [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
     [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/")
-            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|décidé|essayé|imaginé|ordonné|oublié|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
@@ -30679,7 +30702,7 @@ __ppas_det_plur_COD_que_avoir__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|décidé|essayé|imaginé|ordonné|oublié|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA]") >>>
         <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fs]", ":[me]:[pi]") --1>> =suggMasPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -30691,14 +30714,14 @@ __ppas_det_plur_COD_que_avoir__
     [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
     [certains|maints]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|décidé|essayé|imaginé|ordonné|oublié|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[me]:[pi]") --1>> =suggMasPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
     [certaines|maintes]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
     [certaines|maintes]  *WORD  [que|qu’]  $:D¬:R  @:[NA]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|décidé|essayé|imaginé|ordonné|oublié|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[fe]:[pi]") --1>> =suggFemPlur(\-1)
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
@@ -30718,6 +30741,7 @@ TEST: C’EST EN REGARDANT DES BALLETS QUE J’AI EU ENVIE DE CONCEVOIR DES SPEC
 TEST: les emmerdements sont pléthore.
 TEST: Marina m’explique dans ses lettres qu’elle a échoué à séduire le fils du duc.
 TEST: il m’explique dans ses lettres qu’il a réussi à vaincre son cancer.
+TEST: Certains se souvinrent des documents que Trump avait ordonné de déclassifier
 
 
 __ppas_ceque_pronom_avoir__
@@ -34146,6 +34170,7 @@ TEST: C’est toi qui voulais y aller.
 TEST: je ne suis qu’une joueuse en robe de soirée.
 TEST: Tu ne fais qu’aggraver les choses.
 TEST: Que veut-il ? Vous parler du boulot.
+TEST: Vous donner une chance est sa seule motivation.
 TEST: La question, c’est qui est au courant.
 TEST: Ce pourrait être la fin.
 TEST: Tu t’en es tiré.
