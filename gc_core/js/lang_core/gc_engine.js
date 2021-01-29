@@ -400,7 +400,7 @@ class TextParser {
                 yield [" ", oToken["sValue"], oNode[oToken["sValue"]]];
                 bTokenFound = true;
             }
-            if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+            if (oToken["sValue"].slice(0,2).gl_isTitle()) {
                 let sValue = oToken["sValue"].toLowerCase();
                 if (oNode.hasOwnProperty(sValue)) {
                     yield [" ", sValue, oNode[sValue]];

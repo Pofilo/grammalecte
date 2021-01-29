@@ -407,7 +407,7 @@ class TextParser:
         if dToken["sValue"] in dNode:
             yield (" ", dToken["sValue"], dNode[dToken["sValue"]])
             bTokenFound = True
-        if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+        if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to match words such as "Laissez-les", "Crève-cœur".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 yield (" ", sValue, dNode[sValue])

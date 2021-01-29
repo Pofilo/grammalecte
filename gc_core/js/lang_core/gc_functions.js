@@ -182,7 +182,7 @@ function g_value (oToken, sValues, nLeft=null, nRight=null) {
     if (sValues.includes(sValue)) {
         return true;
     }
-    if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+    if (oToken["sValue"].slice(0,2).gl_isTitle()) {
         if (sValues.includes(sValue.toLowerCase())) {
             return true;
         }
