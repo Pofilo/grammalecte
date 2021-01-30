@@ -377,10 +377,13 @@ def g_addmorph (dToken, sNewMorph):
     return True
 
 
-def g_rewrite (dToken, sToReplace, sReplace):
+def g_rewrite (dToken, sToReplace, sReplace, bRegEx=False):
     "Disambiguation: rewrite morphologies"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
-    dToken["lMorph"] = [ sMorph.replace(sToReplace, sReplace)  for sMorph in lMorph ]
+    if bRegEx:
+        dToken["lMorph"] = [ re.sub(sToReplace, sReplace, sMorph)  for sMorph in lMorph ]
+    else:
+        dToken["lMorph"] = [ sMorph.replace(sToReplace, sReplace)  for sMorph in lMorph ]
     return True
 
 

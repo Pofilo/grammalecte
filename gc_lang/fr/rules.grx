@@ -19188,6 +19188,7 @@ __purge_avant_adjectifs_adverbes__
 
     si  @:[AQW]¬:G
         <<- not (value(\2, "|bien|") and value(>1, "|que|qu’|")) and not value(\2, "|tant|") ~1>> *
+        <<- __also__ and morph(\2, ":Q:A") =>> rewrite(\2, ":V[^:]+:Q", "", True)
 
     un [chouia|chouïa|rien|tantinet]  ?[trop|plus|moins]¿
         <<- morph(>1, ":A", ":G") ~>> *
@@ -19210,7 +19211,7 @@ __purge_adverbes__
         <<- morph(\2, ":W", ":3p") ~>> *
 
     @:[NAQ]  [le|la]  [plus|moins]  ~.ment$  $:A
-        <<- morph(\4, ":W", ":A") ~2:4>> *
+        <<- morph(\-2, ":W", ":A") ~2:-2>> *
 
     complètement
         <<- not morph(<1, ":D.*:m") ~>> *
@@ -23540,6 +23541,7 @@ __gn_la_2m__
 
 TEST: La plus grande {{cinglé}}.                                                ->> cinglée
 TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.         ->> noire
+TEST: la place {{balayées}} par le vent                                         ->> balayée
 TEST: je voyais de la pluie {{noires}}                                          ->> noire
 TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
 TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
@@ -32885,7 +32887,7 @@ TEST: Mais migrer un site et ses contenus prend du temps…
 TEST: y être sans ma femme ni les enfants fait monter en moi une certaine nervosité.
 
 
-__conj_le_la_leur_nom__
+__conj_le_la_leur_nom!5__
     le  *WORD  @:V¬:(?:3s|P|Q|Y|3p!|G|M)
         <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
@@ -32919,33 +32921,33 @@ __conj_le_la_leur_nom__
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\4, ":3p") )
         -4>> =suggVerb(\4, ":3s")                                                                   && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-TEST: La {{N.S.A.}} {{espionneras}} toujours tout le monde                                          ->> NSA|||espionnera
-TEST: La suspicion envers les élus {{accroissaient}}…                                               ->> accroissait
 TEST: Le chien n’{{es}} pas mort.                                                                   ->> est
+TEST: le chat {{finissent}}                                                                         ->> finit
 TEST: Le damné {{donnes}}                                                                           ->> donne|donné
-TEST: La Corée {{peux}} gagner.                                                                     ->> peut
-TEST: La Corée ne {{pourras}} pas gagner.                                                           ->> pourra
-TEST: L’homme y {{donnes}}                                                                          ->> donne
-TEST: la femme {{donnes}}                                                                           ->> donne
-TEST: la petite {{arrives}}                                                                         ->> arrive
-TEST: leur petite {{donnes}}                                                                        ->> donne
-TEST: la femme {{pensent}} à ses filles                                                             ->> pense
 TEST: Le carré {{reviens}} à la mode                                                                ->> revient
 TEST: Le chien y {{viens}}                                                                          ->> vient
-TEST: L’homme le {{deviens}}                                                                        ->> devient
-TEST: La femme la {{prends}}                                                                        ->> prend
 TEST: Le feu nous {{donnes}} chaud.                                                                 ->> donne
 TEST: tout le monde {{prends}} ses aises                                                            ->> prend
+TEST: La Corée {{peux}} gagner.                                                                     ->> peut
+TEST: La Corée ne {{pourras}} pas gagner.                                                           ->> pourra
+TEST: la femme {{donnes}}                                                                           ->> donne
+TEST: la petite {{arrives}}                                                                         ->> arrive
 TEST: La proscription de nager {{pourraient}} nous porter préjudice à long terme                    ->> pourrait
-TEST: la marchande {{marchandes}}                                                                   ->> marchande|marchandée
-TEST: la chatte {{finis}}
-TEST: le chat {{finis}}
+TEST: la marchande {{marchandes}}                                                                   ->> marchande|marchande|marchandée
+TEST: la grande se {{pensaient}} invincible                                                         ->> pensait
+TEST: tu sais, la chatte {{passes}} par ce trou                                                     ->> passe
+TEST: la femme {{pensent}} à ses filles                                                             ->> pense
+TEST: La {{N.S.A.}} {{espionneras}} toujours tout le monde                                          ->> NSA|||espionnera
+TEST: La femme la {{prends}}                                                                        ->> prend
+TEST: La suspicion envers les élus {{accroissaient}}…                                               ->> accroissait
 TEST: leur chat qui {{torturent}} une souris                                                        ->> torture
 TEST: leur homme à tout faire {{oublient}} toujours tout                                            ->> oublie
 TEST: leur fils ne {{parlez}} jamais                                                                ->> parle
-TEST: la grande se {{pensaient}} invincible                                                         ->> pensait
+TEST: leur petite {{donnes}}                                                                        ->> donne
 TEST: tu vois, leur donne {{donnes}} du fil à retordre                                              ->> donne
-TEST: L’homme sur le bateau de Patrick {{viens}} de temps en temps {{mangé}} chez moi.              ->> vient|||manger
+TEST: L’homme sur le bateau de Patrick {{viens}} de temps en temps manger chez moi.                 ->> vient
+TEST: L’homme y {{donnes}}                                                                          ->> donne
+TEST: L’homme le {{deviens}}                                                                        ->> devient
 TEST: L’hypothétique nouveau président
 TEST: La moitié d’entre elles voient leurs loyers diminuer depuis le début de l’année
 TEST: le loquet d’une des petites portes.

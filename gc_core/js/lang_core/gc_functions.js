@@ -429,10 +429,15 @@ function g_addmorph (oToken, sNewMorph) {
     return true;
 }
 
-function g_rewrite (oToken, sToReplace, sReplace) {
+function g_rewrite (oToken, sToReplace, sReplace, bRegEx=false) {
     // Disambiguation: rewrite morphologies
     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
-    oToken["lMorph"] = lMorph.map(s => s.replace(sToReplace, sReplace));
+    if (bRegEx) {
+        oToken["lMorph"] = lMorph.map(sMorph => sMorph.replace(new RegExp(sToReplace), sReplace));
+    }
+    else {
+        oToken["lMorph"] = lMorph.map(sMorph => sMorph.replace(sToReplace, sReplace));
+    }
     return true;
 }
 
