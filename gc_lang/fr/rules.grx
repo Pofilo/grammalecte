@@ -7559,6 +7559,7 @@ TEST: vous {{aller}} donc être interdit bancaire et vous vous débrouillerez av
 TEST: j’irai là où vous {{allée}}                                                                   ->> allez
 TEST: vous la rendait avec bienveillance
 TEST: vous verrez, ça va vous aller comme un gant
+TEST: Je n’ai fait que vous aider à comprendre.
 
 
 ## 3pl
@@ -16253,6 +16254,7 @@ __purge_locutions__
     à heure fixe
     à hue et à dia
     à huis clos
+    à hurler [de|d’] rire
     à juste [raison|titre]
     à l’ [accoutumée|amiable|arrache|arraché|arrachée|avance|avenant|aveuglette|emporte-pièce|envi|évidence|étouffée|improviste|inverse|unanimité|unisson]
     à l’ air libre
@@ -16890,6 +16892,7 @@ __purge_locutions__
     face à face
     flanc contre flanc
     guère
+    ?d’¿ hors d’ ici
     ?d’¿ hors [de|d’] [contrôle|portée|atteinte]
     ?d’¿ hors d’ état [de|d’] [fonctionner|nuire]
     ?d’¿ hors [de|d’] [ma|ta|sa|notre|votre|leur] portée
@@ -16901,7 +16904,7 @@ __purge_locutions__
     ?d’¿ ici-bas
     illico ?presto¿
     ?d’¿ intra-muros
-    j’ en [passe|passais] et des [meilleurs|meilleures]
+    j’ en [passe|passai+s] et des [meilleurs|meilleures]
     jusqu’ au bout des ongles
     jusqu’ à bac
     jusqu’ à plus soif
@@ -18339,6 +18342,7 @@ __substantifs_multi_mots__
     >navire [de|d’] plaisance
     >nerf à vif
     >nettoyeur haute pression
+    >nid à merde
     >nid [de|d’] résistance
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
@@ -18557,7 +18561,7 @@ __substantifs_multi_mots__
     tenants et aboutissants
     >ténor du barreau
     >tentative [de|d’] suicide
-    >tenue [de|d’] rechange
+    >tenue [de|d’] [rechange|route]
     >terrain [de|d’] [atterrissage|chasse|entente|golf]
     >tête à claques
     >tête d’ enterrement
@@ -19337,15 +19341,19 @@ __purge_locutions_potentielles__
     que , ce [jour|matin|soir|mois|trimestre|semestre|siècle|millénaire]                                                                    , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
     que , cette [seconde|décennie|matinée|minute|heure|journée|nuit|semaine|soirée]                                                         , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
     que , ces [heures|matins|matinées|soirées|nuits|jours|journées|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] , [je|tu|il|on|elle|iel|nous|vous|ils|elles|iels]
-        <<- ~3:4>> *
+        <<- ~2:-2>> *
 
-    chaque [seconde|minute|heure|journée|semaine|année|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
+    chaque [seconde|minute|heure|journée|semaine|année|décennie]  @:¬:(?:A.*:[fe]:[si]|Ov|[123][sp])
     chaque [seconde|minute|heure|journée|semaine|année|décennie]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:2>> *
 
-    chaque [instant|moment|jour|mois|trimestre|semestres|an|siècle|millénaire]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
+    chaque [instant|moment|jour|mois|trimestre|semestres|an|siècle|millénaire]  @:¬:(?:A.*:[me]:[si]|Ov|[123][sp])
     chaque [instant|moment|jour|mois|trimestre|semestres|an|siècle|millénaire]  [<end>|,|)]
         <<- not morph(<1, ":R") ~1:2>> *
+
+    compte tenu des circonstances @:¬:A.*:[fe]:[pi]
+    compte tenu des circonstances [<end>|,|)]
+        <<- ~1:-2>> *
 
     d’ apparat
         <<- morph(<1, ":N", ":V") ~>> *
@@ -28524,6 +28532,66 @@ __tag_locutions_verbales_d_état__
 @@@@
 
 
+__pass_immunités2__
+    *WORD [que|qu’] ce [que|qu’] [je|j’]                                     ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [je|j’]                                     ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] tu                                          ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] tu                                          ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [il|elle|iel|on|tout|ça|cela|ceci]          ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [il|elle|iel|on|tout|ça|cela|ceci]          ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [celui-là|celui-ci|celle-là|celle-ci]       ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [celui-là|celui-ci|celle-là|celle-ci]       ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [aucun|aucune|chacun|chacune|quiconque]     ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [aucun|aucune|chacun|chacune|quiconque]     ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] nous                                        ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] nous                                        ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] vous                                        ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] vous                                        ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ils|elles|iels]                            ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ils|elles|iels]                            ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ceux-là|ceux-ci|celles-là|celles-ci]       ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ceux-là|ceux-ci|celles-là|celles-ci]       ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certains|quelques-uns|maints|tous]         ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certains|quelques-uns|maints|tous]         ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certaines|quelques-unes|maintes|toutes]    ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certaines|quelques-unes|maintes|toutes]    ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] plusieurs                                   ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] plusieurs                                   ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce qui                                                   ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce qui                                                   ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ] et @:[AQ]
+    ## usage pronominal
+    *WORD [que|qu’] ce [que|qu’] [je|j’]                                     ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [je|j’]                                     ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] tu                                          ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] tu                                          ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [il|elle|iel|on|tout|ça|cela|ceci]          ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [il|elle|iel|on|tout|ça|cela|ceci]          ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [celui-là|celui-ci|celle-là|celle-ci]       ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [celui-là|celui-ci|celle-là|celle-ci]       ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [aucun|aucune|chacun|chacune|quiconque]     ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [aucun|aucune|chacun|chacune|quiconque]     ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] nous                                        ?[ne|n’]¿ nous    ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] nous                                        ?[ne|n’]¿ nous    ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] vous                                        ?[ne|n’]¿ vous    ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] vous                                        ?[ne|n’]¿ vous    ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ils|elles|iels]                            ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ils|elles|iels]                            ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ceux-là|ceux-ci|celles-là|celles-ci]       ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [ceux-là|ceux-ci|celles-là|celles-ci]       ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certains|quelques-uns|maints|tous]         ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certains|quelques-uns|maints|tous]         ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certaines|quelques-unes|maintes|toutes]    ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] [certaines|quelques-unes|maintes|toutes]    ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] plusieurs                                   ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce [que|qu’] plusieurs                                   ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce qui                                                   ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                               @:[AQ] et @:[AQ]
+    *WORD [que|qu’] ce qui                                                   ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ] et @:[AQ]
+        <<- morph(\1, ":[QA]") and agreement(\1, \-1) !-1>> ppas
+
+TEST: Les origines familiales sont plus incertaines que ce qui a été dit, selon ma mère, et difficiles à sonder.
+TEST: moins faciles que ce qu’ils avaient cru être complexe et plus compliquées que ce qu’elles pensaient
+
+
 !!!! OCR                                                                                          !!
 
 # Participes passés
@@ -29412,10 +29480,10 @@ __ppas_3pl_mas_verbe_état__
         <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|pléthore|néant|réalité|")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “ils” : “\-1” devrait être au masculin pluriel.
 
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
@@ -29485,10 +29553,10 @@ TEST: ils ne peuvent pas faire ce qu’ils savent être efficace
 
 
 __ppas_3pl_fem_verbe_état__
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
@@ -30160,7 +30228,6 @@ TEST: ils devenaient forts et {{humble}}                                        
 TEST: ils crurent avoir été trompés et {{volé}}                                                     ->> volés
 TEST: elles déclareront être restées calmes et {{attentive}}                                        ->> attentives
 TEST: nous imaginons devenir riches et {{connu}}                                                    ->> connus
-TEST: Les origines familiales sont plus incertaines que ce qui a été dit, selon ma mère, et difficiles à sonder.
 
 
 __ppas_être_confusion__
@@ -32713,6 +32780,7 @@ TEST: Tout vous expliquer est difficile.
 TEST: J’essaie de bien tout vous expliquer.
 TEST: il faut de tout se méfier.
 TEST: Tout écrire ne suffira pas, il faudra témoigner.
+TEST: tout autour de lui était différent
 
 
 __conj_lequel_laquelle__
@@ -33295,6 +33363,7 @@ TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
 TEST: il les a sélectionnés, les a améliorées pour accroître leur rendement
 TEST: les femmes enceintes
 TEST: les souris enceintes
+TEST: au train où vont les choses, ce sera bientôt la fin.
 
 
 __conj_certains_certaines_plusieurs_nom__
@@ -33556,7 +33625,8 @@ TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.           
 !!
 
 __conj_que_où_comment_verbe_sans_sujet!3__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorsqu’|auquel|auxquels|auxquelles|duquel|desquels|desquelles|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|puisque|puisqu’|lorsque|lorsqu’|si]             @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
+    [auquel|auxquels|auxquelles|duquel|desquels|desquelles|lequel|laquelle|lesquels|lesquelles]     @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
         <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
         <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          && Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
