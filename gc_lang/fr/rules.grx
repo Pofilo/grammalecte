@@ -913,9 +913,8 @@ TEST: un·e idiot·e
 
 __[i](typo_écriture_invariable)__
     ({w_3})([-·–—.•⋅/]s|[(]s[)])  @@0,$
-        <<- ~>> =normalizeInclusiveWriting(\0)
-        <<- option("typo") and option("eepi") and not \0.endswith("·s") and not (\0.endswith("/s") and morph(\1, ";S"))
-        ->> \1·s                                                                                    && Écriture invariable. Utilisez un point médian.
+        <<- not (\0.endswith("/s") and morph(\1, ";S")) ~>> =normalizeInclusiveWriting(\0)
+        <<- __also__ and option("typo") and option("eepi") and not \0.endswith("·s") ->> \1·s       && Écriture invariable. Utilisez un point médian.
 
 TEST: la ou les {{fille(s)}}                                            ->> fille·s
 TEST: le ou les patron·s
@@ -1140,6 +1139,8 @@ TEST: une température de {{22,4 °C}}                    ->> 22,4 °C
 TEST: il en veut {{18kg}}                               ->> 18 kg
 TEST: il me le propose pour {{243 gCO2/kWh}}            ->> 243 gCO2/kWh
 TEST: il me le propose pour {{243,4 gCO2/kWh}}          ->> 243,4 gCO2/kWh
+TEST: {{140 rad/s}}                                     ->> 140 rad/s
+TEST: {{200 m}}/s                                       ->> 200 m
 TEST: {{40 MHz}}                                        ->> 40 MHz
 TEST: {{100 Ah}}                                        ->> 100 Ah
 TEST: {{1001 ans}}                                      ->> 1 001 ans
@@ -1148,6 +1149,8 @@ TEST: en l’an 2000 Urgondorletroll eut une idée
 TEST: 1998 s’annonce grandiose.
 TEST: il y en a 3,43 milliards.
 TEST: je veux 200 euros.
+TEST: 140 rad/s
+TEST: 140 rad/s
 
 
 __[s]/typo(typo_math)__
@@ -1248,16 +1251,16 @@ TEST: __nf__ Norme française : {{Nf-EN ISO 3892-23}}
 !!
 
 __<s>/typo(typo_cohérence_guillemets_chevrons_ouvrants)__
-    («)[^»“]+?(”)  @@0,$
+    («[  ])[^»“]+?(”)  @@0,$
         <<- not before("\\w$") -1>> “                                                               && Guillemet ouvrant différent du guillemet fermant (”).
         <<- not after("^\\w") -2>> " »"                                                             && Guillemet fermant différent du guillemet ouvrant («).
 __<s>/typo(typo_cohérence_guillemets_chevrons_fermants)__
-    (“)[^”«]+?(»)  @@0,$
+    (“)[^”«]+?([  ]»)  @@0,$
         <<- not before("\\w$") -1>> "« "                                                            && Guillemet ouvrant différent du guillemet fermant (»).
         <<- not after("^\\w") -2>> ”                                                                && Guillemet fermant différent du guillemet ouvrant (“).
 
-TEST: C’est {{«}}stupide{{”}}.
-TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
+TEST: C’est {{« }}stupide{{”}}.                                             ->> “||| »
+TEST: Quel {{“}}emmerdeur{{ »}}, ce gars-là.                                ->> « |||”
 
 
 __<s>/typo(typo_cohérence_guillemets_doubles_ouvrants)__
@@ -1270,8 +1273,8 @@ __<s>/typo(typo_cohérence_guillemets_doubles_fermants)__
         <<- not before("\\w$") -1>> "“"                                                             && Guillemet ouvrant différent du guillemet fermant (”).
         <<- not after("^\\w") -2>> ’                                                                && Guillemet fermant différent du guillemet ouvrant (‘).
 
-TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
-TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
+TEST: Tu sais, {{‘}}ton ami{{”}} est venu.                                  ->> “|||’
+TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.            ->> ‘|||”
 TEST: Après “n’”, il faut une forme verbale.
 TEST: il (n’)est (pas) là.
 
@@ -2357,7 +2360,7 @@ __tag_noms__
 
 __inte_verbes_composés_interrogatifs__
     ~\w-[jJ]e$
-        <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") ->> =suggVerb(\1, ":1ś", None, True)                && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") ->> =suggVerb(\1, ":1ś", True)                      && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":1[sśŝ]", False, True)    && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- />> -je|_VCint_
         <<- value(<1, "|me|m’|") />> _upron_
@@ -2366,41 +2369,41 @@ __inte_verbes_composés_interrogatifs__
         <<- /vmode/ ->> ai-je                                                                       && Forme interrogative. N’employez pas le subjonctif présent.
 
     ~\w-[tT]u$
-        <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", None, True)            && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", True)                  && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":2s", False, True)        && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- />> -tu|_VCint_
         <<- value(<1, "|te|t’|") />> _upron_
 
     ~\w-[iI]l$
-        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"              && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                 && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"                    && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)                       && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:t|voilà)/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -il|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[eE]lle$
-        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"    && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)       && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"          && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)             && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -elle|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]el$
-        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"    && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)       && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"          && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)             && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -iel|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[oO]n$
-        <<- /inte/ morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                    && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)                          && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -on|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[cCs]e$
         <<- /inte/ morphVC(\1, ":V", ":(?:3s|V0e.*:3p)")
-        ->> =suggVerb(\1, ":3s", None, True)                && Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+        ->> =suggVerb(\1, ":3s", True)                      && Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- /inte/ __else__ and morphVC(\1, ":", ":V")
         ->> =suggSimil(\1, ":3s", False, True)              && Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- /conf/ \1.endswith("se") ->> =\1[:-2]+"ce"      && Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
@@ -2408,19 +2411,19 @@ __inte_verbes_composés_interrogatifs__
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]ls$
-        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -ils|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[eE]lles$
-        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -elles|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
 
     ~\w-[iI]els$
-        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -iels|_VCint_
         <<- value(<1, "|se|s’|") />> _upron_
@@ -2463,13 +2466,13 @@ TEST: Le moteur choisi convient-il ?
 __inte_verbes_composés_interrogatifs_impératifs__
     ~\w-[nN]ous$
         <<- /inte/ not re.search("-[lL](?:es?|a)-[nN]ous$", \1) >>>
-        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)+"|"+suggVerbImpe(\1, True) && Forme interrogative ou impérative incorrecte.
+        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", True)+"|"+suggVerbImpe(\1, True)       && Forme interrogative ou impérative incorrecte.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:chez|malgré)/") ->> =suggSimil(\1, ":1p", False, True)         && Forme interrogative ou impérative incorrecte.
         <<- />> -nous|_VCint_
 
     ~\w-[vV]ous$
         <<- /inte/ not re.search("-[lL](?:es?|a)-[vV]ous$", \1) >>>
-        <<- /inte/ morphVC(\1, ":V", ":2p") ->> =suggVerb(\1, ":2p", None, True)                      && Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":2p") ->> =suggVerb(\1, ":2p", True)                            && Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":2p", False, True)  && Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
         <<- />> -vous|_VCint_
 
@@ -5514,8 +5517,11 @@ TEST: la {{pseudo taxe}} carbone                                ->> pseudo-taxe
 
 
 __tu_mots_composés_verbe_nom__
+    contre >productif
+        <<- /tu/ ->> \1-\2                                                                          && Il manque un trait d’union.
+
     [contre|entre]  *WORD
-        <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V0e)|<start>|>,") and morph2(\1, "-", ":N")
+        <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V.e)|<start>|>,") and morph2(\1, "-", ":N")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
     [m’|t’|s’] entre *WORD
@@ -5531,7 +5537,8 @@ __tu_mots_composés_verbe_nom__
         <<- /tu/ morph(<1, ":(?:D|V0e)|<start>|>,") and morph2(\1, "-", ":N")
         ->> \1-\2                                                                                   && Il manque probablement un trait d’union.
 
-TEST: c’est le {{contre exemple}} parfait                       ->> contre-exemple
+TEST: ça semble totalement {{contre productif}}                 ->> contre-productif
+TEST: c’est le {{contre exemple}} parfai                       ->> contre-exemple
 TEST: une {{entre voie}}                                        ->> entre-voie
 TEST: s’{{entre regarder}}                                      ->> entre-regarder
 TEST: ce sont des {{lève tard}}.                                ->> lève-tard
@@ -8167,14 +8174,14 @@ __conf_de_vconj__
         <<- /conf/ not \2.istitle() and not \2.isupper() and not value(\2, "|jure|") and not tag(\2, "eg1mot")
         -2>> =suggSimil(\2, ":[NA]", True)+"|"+suggVerbInfi(\2)                                     && Incohérence avec « \1 » : “\2” est une forme verbale conjuguée.
 
-TEST: il s’agit de {{mette}} en évidence.
-TEST: sa façon de {{nettoyez}} était inefficace.                                            ->> nettoyer|nettoyant
+TEST: il s’agit de {{mette}} en évidence.                                                           ->> mettre|mets|mise|mises|misses|missions
+TEST: sa façon de {{nettoyez}} était inefficace.                                                    ->> nettoyer|nettoyant
 
 
     [de|d’]  [l’|leur]  @:[123][sp]¬:[GNAQ]
         <<- /conf/ not \3.istitle() and not \3.isupper() -3>> =suggSimil(\3, ":[NA].*:[si]", True)  && Incohérence avec « \1 \2 » : “\3” est une forme verbale conjuguée.
 
-TEST: de l’{{arrivait}}                                                                     ->> arrivée|arrivant
+TEST: de l’{{arrivait}}                                                                             ->> arrivée|arrivant
 TEST: la production d’électricité par des énergies renouvelables aurait encore augmenté de 7 %, selon les calculs de l’AIE
 
 
@@ -17960,7 +17967,7 @@ __substantifs_multi_mots__
     >centre [de|d’] rétention ?[préventive|administrative]¿
     >certificat [de|d’] [conformité|virginité]
     >certificat [de|d’] bonne conduite
-    >certificat [de|d’] études [primaires|secondaires|supérieures|spécialisées|musicales|théâtrales|bibliques|théologiques]
+    >certificat d’ études ?[primaires|secondaires|supérieures|spécialisées|musicales|théâtrales|bibliques|théologiques]¿
     >certificat [de|d’] scolarité ?[maternelle|primaire|secondaire]¿
     >chair à [pâté|>canon]
     >chair [de|d’] poule
@@ -18076,7 +18083,7 @@ __substantifs_multi_mots__
     [>dîner|>diner] aux chandelles
     [>dîner|>diner] [de|d’] gala
     >discipline [de|d’] [acier|fer]
-    >doigt de fée
+    >doigt [de|d’] fée
     >don en nature
     >donneur [de|d’] >leçon
     >dossier d’ inscription ?[administrative|scolaire]¿
@@ -18100,7 +18107,7 @@ __substantifs_multi_mots__
     >employé [de|d’] maison
     >ennemi d’ État
     ennemi public numéro [un|$:B|*NUM]
-    ennemie publique numéro [un|$:B|*NUM]
+    ennemie publique numéro [un|une|$:B|*NUM]
     >ennui [de|d’] santé
     >enregistreur [de|d’] vol
     >enterrement [de|d’] vie [de|d’] garçon
@@ -18162,8 +18169,8 @@ __substantifs_multi_mots__
     >film X
     fils à [papa|maman]
     fils [de|d’] pute
-    >figure de proue
-    >fin [de] non-recevoir
+    >figure [de|d’] proue
+    >fin [de|d’] non-recevoir
     >fleuve à sec
     >flic en civil
     >flocon [de|d’] neige ?électronique¿
@@ -18319,8 +18326,8 @@ __substantifs_multi_mots__
     >mère au foyer
     >mesure >barrière
     >metteur en scène
-    >mineur [de|d’] moins [de|d’] *NUM ans
-    >mineur [de|d’] moins [de|d’] $:B:e:p ans
+    >mineur [de|d’] [moins|plus] [de|d’] *NUM ans
+    >mineur [de|d’] [moins|plus] [de|d’] $:B:e:p ans
     >minute d’ arc
     >miroir aux alouettes
     >mise en danger de la vie d’ autrui
@@ -18341,7 +18348,7 @@ __substantifs_multi_mots__
     [moyen+s] [de|d’] transport
     >navire [de|d’] plaisance
     >nerf à vif
-    >nettoyeur haute pression
+    >nettoyeur ?à¿ haute pression
     >nid à merde
     >nid [de|d’] résistance
     >niveau [de|d’] vie
@@ -18391,6 +18398,7 @@ __substantifs_multi_mots__
     perspectives d’ avenir
     >perte [de|d’] temps ?précieux¿
     >peur [de|d’] tous les diables
+    >phase [A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z]
     >phase [I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV|XV|XVI|XVII|XVIII|XIX|XX|XXI|XXII|XXIII|XXIV|XXV|XXVI|XXVII|XXVIII|XXIX|XXX]
     >piano à queue
     >pièce à conviction
@@ -18706,7 +18714,7 @@ __substantifs_multi_mots__
     >sujet à interprétations diverses
     [>sur|>sûr] de [mon|ton|son|notre|votre|leur] bon droit
     >têtu comme une [bourrique|mule]
-    >têtu comme un [âne|bourriquot|mulet]
+    >têtu comme un [âne|bourricot|mulet]
     [tiré+ses] à [quatre|4] épingles
     [vu+ses] d’ un ?très¿ [bon|mauvais] œil
         <<- ~2:0>> *
@@ -18733,14 +18741,15 @@ __substantifs_multi_mots__
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
 
-    une bonne chose de réglée
+    une bonne chose [de|d’] réglée
         <<- ~-2:0>> *
 
     [le|la|l’|les]  $:N  d’ alors
         <<- ~-2:0>> *
 
-    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette|>vieillard|>acteur|>architecte|>auteur|>artiste|>chef|>cinéaste|>cuisinier|>dessinateur|>écrivain|>graphiste|>ingénieur|>joueur|>musicien|>peintre|>photographe|>réalisateur]
-        || [de|d’] grand talent
+    [>homme|>femme|>garçon|>garçonnet|>fille|>fillette|>gonzesse|>mec|>meuf|>vieillard]                 [de|d’] grand talent
+    [>acteur|>architecte|>artiste|>auteur|>chef|>cinéaste|>cuisinier|>dessinateur|>écrivain|>graphiste] [de|d’] grand talent
+    [>ingénieur|>joueur|>musicien|>peintre|>photographe|>réalisateur]                                   [de|d’] grand talent
         <<- ~2:0>> *
 
 
@@ -32894,7 +32903,7 @@ __conj_le_la_leur_nom!5__
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3s", suggMasSing)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3s", False, suggMasSing)                                               && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     la  *WORD  @:V¬:(?:3s|P|Q|Y|3p!|G|M)
@@ -32903,7 +32912,7 @@ __conj_le_la_leur_nom!5__
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3s", suggFemSing)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3s", False, suggFemSing)                                               && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [l’|leur]  *WORD  @:V¬:(?:3s|P|Q|Y|3p!|G|M)
@@ -32912,7 +32921,7 @@ __conj_le_la_leur_nom!5__
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3s", False, suggSing)                                                  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [le|la|l’|leur]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
@@ -32965,7 +32974,7 @@ __conj_det_sing_nom__
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|nombre|")
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not agreement(\2, \3) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3s", False, suggSing)                                                  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [une|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD  @:[123][sp]¬:(?:3s|P|Y|3p!|G|M)
@@ -32973,7 +32982,7 @@ __conj_det_sing_nom__
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
                         or tagbefore(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) and not agreement(\2, \3) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:p") or (morph(\3, ":N.*:p") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3s", suggSing)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3s", False, suggSing)                                                  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3s")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
@@ -33292,7 +33301,7 @@ __conj_det_plur_nom__
         <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3p", False, suggAgree, \3, \2)                                         && Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]¬:V0  qui  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
@@ -33306,7 +33315,7 @@ TEST: vos filles {{passes}} ce matin                                            
 TEST: ces travaux qui {{demande}} tant d’efforts.                                                   ->> demandent
 TEST: vos questions ne {{réclame}} aucune réflexion.                                                ->> réclament
 TEST: Ces attaques à main armée {{donne}} la chair de poule.                                        ->> donnent
-TEST: Ces marchands {{passe}} leur temps à se quereller.
+TEST: Ces marchands {{passe}} leur temps à se quereller.                                            ->> passent|passes|passés
 TEST: maints hommes {{oublie}} leurs origines pour mieux se construire un passé glorieux            ->> oublient
 TEST: nos hommes qui {{repartirons}} demain                                                         ->> repartiront
 TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
@@ -33321,7 +33330,7 @@ __conj_les_nom__
             and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3p", False, suggAgree, \3, \2)                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     les  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
@@ -33339,15 +33348,15 @@ TEST: les récompenses distribuées à parts égales {{était}}…              
 TEST: Les États-Unis d’Amérique se {{compose}} de 50 états.                                         ->> composent
 TEST: Les enfants en {{manges}}.                                                                    ->> mangent
 TEST: Les ombres la {{donnes}}                                                                      ->> donnent
-TEST: les grands {{danse}}
+TEST: les grands {{danse}}                                                                          ->> dansent|dansés
 TEST: les filles {{passes}} ce matin                                                                ->> passent
-TEST: les marchands {{marche}}
-TEST: les marchands {{plie}}
+TEST: les marchands {{marche}}                                                                      ->> marchent
+TEST: les marchands {{plie}}                                                                        ->> plient|pliés
 TEST: il prétendait que les banques universelles « à la française » s’{{était}} bien comportées     ->> étaient
-TEST: les marchands {{paye}}
-TEST: les marchands {{marchande}}
-TEST: les marchandes {{paie}}
-TEST: les marchandes {{marchande}}                                                                  ->> marchandent|marchandes
+TEST: les marchands {{paye}}                                                                        ->> payent|payés
+TEST: les marchands {{marchande}}                                                                   ->> marchandent|marchands|marchandés
+TEST: les marchandes {{paie}}                                                                       ->> payent|paies|payées
+TEST: les marchandes {{marchande}}                                                                  ->> marchandent|marchandes|marchandées
 TEST: les chattes {{finis}}                                                                         ->> finissent|finirent|finissaient
 TEST: les chattes {{manges}}                                                                        ->> mangent
 TEST: les religieux qui n’en {{finisse}} pas de mentir.                                             ->> finissent
@@ -33375,7 +33384,7 @@ __conj_certains_certaines_plusieurs_nom__
             and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3p", suggMasPlur)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3p", False, suggMasPlur)                                               && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [certaines|maintes]  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
@@ -33384,7 +33393,7 @@ __conj_certains_certaines_plusieurs_nom__
             and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3p", suggFemPlur)                                                      && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3p", False, suggFemPlur)                                               && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     plusieurs  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M)
@@ -33393,7 +33402,7 @@ __conj_certains_certaines_plusieurs_nom__
             and not agreement(\2, \3)
             and not ( morph(\2, "(?:[123][sp]|P)") and not value(<1, "|<start>|,|") ) >>>
         <<- /conj/ not tag(\-1, "_ngn_") and (morph(\3, ":A.*:s") or (morph(\3, ":N.*:s") and morph(\2, ":A")))
-        -3>> =suggVerb(\3, ":3p", suggPlur)                                                         && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+        -3>> =suggVerb(\3, ":3p", False, suggPlur)                                                  && Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
         <<- /conj/ __else__ -3>> =suggVerb(\3, ":3p")                                               && Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [certains|certaines|plusieurs|maints|maintes]  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|Y|G|M)
@@ -33422,7 +33431,7 @@ __conj_des_nom__
     [<start>|,|(]  des  @:[NA].*:[pi]  @:V¬:(?:3p|P|G|Q|Y|A.*:[pi]|V[23].*:Y)
         <<- /conj/ morph(>1, ":(?:R|D.*:p)|>au/|<end>|>,") >>>
         <<- /conj/ not morph(\4, ":[NA]") -4>> =suggVerb(\4, ":3p")                                 && Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ __else__ and not agreement(\3, \4) -4>> =suggVerb(\4, ":3p", suggPlur)           && Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ __else__ and not agreement(\3, \4) -4>> =suggVerb(\4, ":3p", False, suggPlur)    && Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [<start>|,|(]  des  @:[NA].*:[pi]  qui  @:V¬:(?:3p|P|G)
         <<- /conj/ -5>> =suggVerb(\5, ":3p")                                                        && Conjugaison erronée. Accord avec “\2 \3 \4…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -33865,11 +33874,11 @@ __vmode_sujet_indicatif__
     <start>  [je|j’|tu|il|ils|elle|elles|on|nous|vous|iel|iels]  @:S¬:[GIK]|V0a.*:Sq
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":I", \-2)                                             && Ce verbe ne devrait pas être au subjonctif.
 
-TEST: Il {{ait}} demandé.                                                           ->> a|avait|eut|aura
+TEST: Il {{ait}} demandé.                                                           ->> a|avait|eut|aura|est
 TEST: Il en {{conclue}} qu’il a eu raison.                                          ->> conclut|concluait|conclura
 TEST: j’en {{aie}} marre                                                            ->> ai|avais|eus|aurai
 TEST: j’{{aie}} faim                                                                ->> ai|avais|eus|aurai
-TEST: Tu ne l’y {{aies}} pas vu.                                                    ->> as|avais|eus|auras
+TEST: Tu ne l’y {{aies}} pas vu.                                                    ->> as|avais|eus|auras|es
 
 
 # Après/dès que + indicatif
@@ -33882,7 +33891,7 @@ __vmode_que_indicatif__
     à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
         <<- /vmode/ -5>> =suggVerbMode(\5, ":I", \4)                    && Après « à mesure que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
-TEST: Après qu’il {{ait}} pris la tangeante                                             ->> a|avait|eut|aura
+TEST: Après qu’il {{ait}} pris la tangeante                                             ->> a|avait|eut|aura|est
 TEST: Après que nous {{ayons}} mangé son repas.                                         ->> avons|avions|eûmes|aurons
 TEST: Après que tu {{sois}} parti, il plut.                                             ->> es|étais|fus|seras
 TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.     ->> a|avait|eut|aura
@@ -33947,23 +33956,23 @@ __vmode_verbe_que_subjonctif__
 TEST: Il suffit qu’il {{court}} plus                                                ->> coure|courût
 TEST: j’attends que tu {{viens}}.                                                   ->> viennes|vinsses
 TEST: Je veux qu’il {{finit}} son repas.                                            ->> finisse|finît
-TEST: Je ne veux pas que tu {{es}} des ennuis                                       ->> sois|fusses
+TEST: Je ne veux pas que tu {{es}} des ennuis                                       ->> sois|fusses|aies
 TEST: je doute qu’il {{vient}} demain.                                              ->> vienne|vînt
 TEST: il se peut que nous {{avons}} tort.                                           ->> ayons|eussions
 TEST: j’ai bon espoir qu’il {{vient}} vite.                                         ->> vienne|vînt
 TEST: peu s’en est fallu qu’il {{devient}} estropié.                                ->> devienne|devînt
-TEST: je m’étonne qu’il {{est}} aussi fragile                                       ->> soit|fût
-TEST: elle a envie qu’il {{est}} intelligent.                                       ->> soit|fût
+TEST: je m’étonne qu’il {{est}} aussi fragile                                       ->> soit|fût|ait
+TEST: elle a envie qu’il {{est}} intelligent.                                       ->> soit|fût|ait
 TEST: il importera que nous {{devenons}} prêts.                                     ->> devenions|devinssions
 TEST: prends garde que vous {{revenez}} en un seul morceau.                         ->> reveniez|revinssiez
 TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.                    ->> comprenne|comprît
 TEST: faites attention à ce qu’elle ne {{devient}} pas timorée.                     ->> devienne|devînt
 TEST: je tiens à ce que vous {{devenez}} grands.                                    ->> deveniez|devinssiez
-TEST: Veille à ce qu’il y {{est}} des gâteaux.                                      ->> soit|fût
+TEST: Veille à ce qu’il y {{est}} des gâteaux.                                      ->> soit|fût|ait
 TEST: il arrive qu’il {{vient}}, mais rarement                                      ->> vienne|vînt
 TEST: Vaudrait mieux qu’elle {{meurt}}                                              ->> meure|mourût
 TEST: il aurait mieux valu qu’elle {{meurt}}                                        ->> meure|mourût
-TEST: il est possible qu’il {{est}} parti                                           ->> soit|fût
+TEST: il est possible qu’il {{est}} parti                                           ->> soit|fût|ait
 TEST: se peut-il que je {{viens}}                                                   ->> vienne|vinsse
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
@@ -34032,7 +34041,7 @@ __vmode_qqch_que_subjonctif__
     jusqu’      à           [ce|tant]               [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
 
-TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.                     ->> soit|fût
+TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.                     ->> soit|fût|ait
 TEST: quoi qu’il en {{conclut}}                                                                     ->> conclue|conclût
 TEST: Avant que tu {{pars}}, je voudrais qu’on discute.                                             ->> partes|partisses
 TEST: Sans qu’elle {{prend}} le temps d’analyser le problème.                                       ->> prenne|prît
@@ -34051,7 +34060,7 @@ TEST: non qu’il {{prend}} son temps                                           
 TEST: si tant est que nous {{prenons}} notre temps                                                  ->> prenions|prissions
 TEST: moyennant qu’elle {{vient}} demain                                                            ->> vienne|vînt
 TEST: en attendant qu’il {{devient}} plus raisonnable                                               ->> devienne|devînt
-TEST: {{où}} qu’il {{est}}, on le trouvera                                                          ->> ou|||soit|fût
+TEST: {{où}} qu’il {{est}}, on le trouvera                                                          ->> ou|||soit|fût|ait
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.                                  ->> ait|eût
 TEST: Bien que je {{prends}} mon mal en patience.                                                   ->> prenne|prisse
 TEST: encore qu’il {{sait}} s’y prendre                                                             ->> sache|sût
@@ -34232,6 +34241,7 @@ TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
 TEST: Du monde noir sortent les envahisseurs (accord avec ce qui suit).
 
 !!! Autres tests                                                                                  !!
+TEST: Mon père est contre et ma mère se dit pour mais a un discours très hypocrite quand on aborde le sujet.
 TEST: l’ambulance censée amener Cédric n’est jamais arrivée
 TEST: Chez les intellectuels, le mot utopie n’a jamais été synonyme de folie, mais il l’a été pour l’homme de la rue.
 TEST: Les États parties sont les pays qui ont ratifié la Convention du patrimoine mondial.

@@ -19,7 +19,7 @@ def splitVerb (sVerb):
     return sVerb, sSuffix
 
 
-def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
+def suggVerb (sFlex, sWho, bVC=False, funcSugg2=None, *args):
     "change <sFlex> conjugation according to <sWho>"
     if bVC:
         sFlex, sSfx = splitVerb(sFlex)
@@ -47,7 +47,7 @@ def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
                 if conj._hasConjWithTags(tTags, sTense, sWho):
                     dSugg[conj._getConjWithTags(sStem, tTags, sTense, sWho)] = ""
     if funcSugg2:
-        sSugg2 = funcSugg2(sFlex)
+        sSugg2 = funcSugg2(*args)  if args  else funcSugg2(sFlex)
         if sSugg2:
             dSugg[sSugg2] = ""
     if dSugg:
@@ -176,6 +176,8 @@ def suggVerbInfi (sFlex):
 _dQuiEst = { "je": ":1s", "j’": ":1s", "tu": ":2s", "il": ":3s", "on": ":3s", "elle": ":3s", "iel": ":3s", \
              "nous": ":1p", "vous": ":2p", "ils": ":3p", "elles": ":3p", "iels": ":3p" }
 
+_dModeSugg = { "es": "aies", "aies": "es", "est": "ait", "ait": "est" }
+
 def suggVerbMode (sFlex, cMode, sSuj):
     "returns other conjugations of <sFlex> acconding to <cMode> and <sSuj>"
     if cMode == ":I":
@@ -194,6 +196,8 @@ def suggVerbMode (sFlex, cMode, sSuj):
             for sTense in lMode:
                 if conj._hasConjWithTags(tTags, sTense, sWho):
                     dSugg[conj._getConjWithTags(sStem, tTags, sTense, sWho)] = ""
+    if sFlex in _dModeSugg:
+        dSugg[_dModeSugg[sFlex]] = ""
     if dSugg:
         return "|".join(dSugg.keys())
     return ""
@@ -359,6 +363,33 @@ def suggFemPlur (sFlex, bSuggSimil=False):
             dSugg[e] = ""
     if dSugg:
         return "|".join(dSugg)
+    return ""
+
+
+def suggAgree (sFlexDest, sFlexSrc):
+    "returns suggestions for <sFlexDest> that matches agreement with <sFlexSrc>"
+    lMorphSrc = _oSpellChecker.getMorph(sFlexSrc)
+    if not lMorphSrc:
+        return ""
+    sGender, sNumber = cr.getGenderNumber(lMorphSrc)
+    if sGender == ":m":
+        if sNumber == ":s":
+            return suggMasSing(sFlexDest)
+        elif sNumber == ":p":
+            return suggMasPlur(sFlexDest)
+        return suggMasSing(sFlexDest)
+    elif sGender == ":f":
+        if sNumber == ":s":
+            return suggFemSing(sFlexDest)
+        elif sNumber == ":p":
+            return suggFemPlur(sFlexDest)
+        return suggFemSing(sFlexDest)
+    elif sGender == ":e":
+        if sNumber == ":s":
+            return suggSing(sFlexDest)
+        elif sNumber == ":p":
+            return suggPlur(sFlexDest)
+        return sFlexDest
     return ""
 
 

@@ -26,7 +26,7 @@ function splitVerb (sVerb) {
     return [sVerb, sSuffix];
 }
 
-function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
+function suggVerb (sFlex, sWho, bVC=false, funcSugg2=null, ...args) {
     let sSfx;
     if (bVC) {
         [sFlex, sSfx] = splitVerb(sFlex);
@@ -66,7 +66,7 @@ function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
         }
     }
     if (funcSugg2) {
-        let sSugg2 = funcSugg2(sFlex);
+        let sSugg2 = (args.length > 0) ? funcSugg2(...args) : funcSugg2(sFlex);
         if (sSugg2.length > 0) {
             aSugg.add(sSugg2);
         }
@@ -226,6 +226,8 @@ const _dQuiEst = new Map ([
     ["nous", ":1p"], ["vous", ":2p"], ["ils", ":3p"], ["elles", ":3p"], ["iels", ":3p"]
 ]);
 
+const _dModeSugg = new Map([ ["es", "aies"], ["aies", "es"], ["est", "ait"], ["ait", "est"] ]);
+
 function suggVerbMode (sFlex, cMode, sSuj) {
     let lMode;
     if (cMode == ":I") {
@@ -248,6 +250,9 @@ function suggVerbMode (sFlex, cMode, sSuj) {
                 }
             }
         }
+    }
+    if (_dModeSugg.has(sFlex)) {
+        aSugg.add(_dModeSugg.get(sFlex));
     }
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
@@ -477,6 +482,43 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
     aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
+    }
+    return "";
+}
+
+function suggAgree (sFlexDst, sFlexSrc) {
+    // returns suggestions for <sFlexDst> that matches agreement with <sFlexSrc>
+    let lMorphSrc = gc_engine.oSpellChecker.getMorph(sFlexSrc);
+    if (lMorphSrc.length === 0) {
+        return "";
+    }
+    let [sGender, sNumber] = cregex.getGenderNumber(lMorphSrc);
+    if (sGender == ":m") {
+        if (sNumber == ":s") {
+            return suggMasSing(sFlexDst);
+        }
+        else if (sNumber == ":p") {
+            return suggMasPlur(sFlexDst);
+        }
+        return suggMasSing(sFlexDst);
+    }
+    else if (sGender == ":f") {
+        if (sNumber == ":s") {
+            return suggFemSing(sFlexDst);
+        }
+        else if (sNumber == ":p") {
+            return suggFemPlur(sFlexDst);
+        }
+        return suggFemSing(sFlexDst);
+    }
+    else if (sGender == ":e") {
+        if (sNumber == ":s") {
+            return suggSing(sFlexDst);
+        }
+        else if (sNumber == ":p") {
+            return suggPlur(sFlexDst);
+        }
+        return sFlexDst;
     }
     return "";
 }
