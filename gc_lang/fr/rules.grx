@@ -6879,6 +6879,9 @@ __pleo_locutions__
     [et|ou] voire
         <<- /pleo/ not morph(>1, ":D") ->> voire|et|\1 voir                                 && Pléonasme ou confusion.
 
+    séparément l’ un de l’ autre
+        <<- /pleo/ ->> \1                                                                   && Pléonasme.
+
     voire même
         <<- /pleo/ ->> voire|même                                                           && Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
 
@@ -6896,6 +6899,7 @@ TEST: {{enfin pour conclure}}                                   ->> pour conclur
 TEST: {{puis après}}                                            ->> puis|après|ensuite|alors
 TEST: {{mais pourtant}}                                         ->> mais|cependant|pourtant|toutefois
 TEST: {{car en effet}}                                          ->> car|en effet
+TEST: agissons {{séparément l’un de l’autre}}                   ->> séparément
 TEST: délirant {{et voire}} ridicule                            ->> voire|et|et voir
 TEST: {{voire même}}                                            ->> voire|même
 
@@ -6962,6 +6966,7 @@ __pleo_substantifs__
     unanimité [totale|complète|absolue]
         <<- /pleo/ ->> \1                                           && Pléonasme.
 
+    faux >prétexte
     >futur >projet
     >jeune >fillette
     [petite+s|légère+s] >collation
@@ -6988,6 +6993,7 @@ TEST: {{hémorragies de sang}}                                   ->> hémorragie
 TEST: des {{orages électriques}}                                ->> orages
 TEST: {{perspectives d’avenir}}                                 ->> perspectives
 TEST: {{marche à pied}}                                         ->> marche
+TEST: {{paires de jumelle}}                                     ->> jumelles
 TEST: {{paires de jumelles}}                                    ->> jumelles
 TEST: {{opportunités à saisir}}                                 ->> opportunités
 TEST: {{apanages exclusifs}}                                    ->> apanages
@@ -9449,12 +9455,12 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 __conf_à_bout__
     !! à bout ¡¡
     [à|a] [>boue|bous|bout+s]
-        <<- /conf/ morph(<1, ":V.e") ->> à bout                                                 && Confusion. Locution “à bout”.|https://fr.wiktionary.org/wiki/%C3%A0_bout
+        <<- /loc/ morph(<1, ":V.e") ->> à bout                                                      && Confusion. Locution “à bout”.|https://fr.wiktionary.org/wiki/%C3%A0_bout
 
     !! à bout portant ¡¡
     [à|a] [>boue|bous|bout+s] [>pore|>porc|>port|por|>porte] [tant|>tan|temps|>an|en]
     [à|a] [>boue|bous|bout+s] [portant+s]
-        <<- /conf/ ->> à bout portant                                                           && Confusion. Locution “à bout portant”.|https://fr.wiktionary.org/wiki/%C3%A0_bout_portant
+        <<- /loc/ ->> à bout portant                                                                && Confusion. Locution “à bout portant”.|https://fr.wiktionary.org/wiki/%C3%A0_bout_portant
 
 TEST: je suis {{à boue}}                                            ->> à bout
 TEST: il tire {{à boues portant}}                                   ->> à bout portant
@@ -9465,7 +9471,7 @@ TEST: oui, à bout portant, c’est comme ça qu’il l’a eue.
 __conf_à_en_juger_par__
     !! à en juger par ¡¡
     [à|a] [en|>an] [juger|jugé+ses|jugeait|jugeais] [par|pare+s|>part]
-        <<- /conf/ ->> à en juger par               && Confusion : “à en juger par” c’est-à-dire “selon le jugement qu’on se fait avec”.
+        <<- /loc/ ->> à en juger par                                                                && Confusion : “à en juger par” c’est-à-dire “selon le jugement qu’on se fait avec”.
 
 TEST: {{a en jugé part}} cet article, c’est bientôt la fin.                 ->> à en juger par
 TEST: ils sont à en juger par leurs résultats les prochains champions.
@@ -9474,7 +9480,7 @@ TEST: ils sont à en juger par leurs résultats les prochains champions.
 __conf_à_risques_et_périls__
     !! à [mes|tes|ses|nos|vos|leurs] risques et périls ¡¡
     [a|à] [mes|tes|ses|nos|vos|leur|leurs] [risque+s] [et|est|é|eh|hé|ai|aie+s|ait] [péril+s|>pérille]
-        <<- /conf/ ->> à \2 risques et périls       && Confusion. Locution “à ses risques et périls”.|https://fr.wiktionary.org/wiki/%C3%A0_ses_risques_et_p%C3%A9rils
+        <<- /loc/ ->> à \2 risques et périls                                            && Confusion. Locution “à ses risques et périls”.|https://fr.wiktionary.org/wiki/%C3%A0_ses_risques_et_p%C3%A9rils
 
 TEST: {{à leurs risques et périlles}}                               ->> à leurs risques et périls
 TEST: à nos risques et périls
@@ -9483,7 +9489,7 @@ TEST: à nos risques et périls
 __conf_à_prendre_ou_à_laisser__
     !! à prendre ou à laisser ¡¡
     [à|a] prendre [ou|où|houe|hou] [à|a] [laisser|laissé+ses]
-        <<- /conf/ ->> à prendre ou à laisser       && Confusion. Locution “à prendre ou à laisser”.|https://fr.wiktionary.org/wiki/%C3%A0_prendre_ou_%C3%A0_laisser
+        <<- /loc/ ->> à prendre ou à laisser                                            && Confusion. Locution “à prendre ou à laisser”.|https://fr.wiktionary.org/wiki/%C3%A0_prendre_ou_%C3%A0_laisser
 
 TEST: C’était {{à prendre où à laisser}}.                           ->> à prendre ou à laisser
 TEST: C’est à prendre ou à laisser : cent pour cent sur cinq ans ou rien du tout et faillite immédiate.
@@ -9492,10 +9498,24 @@ TEST: C’est à prendre ou à laisser : cent pour cent sur cinq ans ou rien du
 __conf_à_tout_bout_de_champ__
     !! à tout bout de champ ¡¡
     [à|a] [tout|tous] [bout|bous|>boue] [de|d’] [champ+s|>chant|chan]
-        <<- /conf/ ->> à tout bout de champ         && Confusion. Locution “à tout bout de champ”.|https://fr.wiktionary.org/wiki/%C3%A0_tout_bout_de_champ
+        <<- /loc/ ->> à tout bout de champ                                              && Confusion. Locution “à tout bout de champ”.|https://fr.wiktionary.org/wiki/%C3%A0_tout_bout_de_champ
 
 TEST: il râlait {{à tous bous de chant}}                            ->> à tout bout de champ
 TEST: elles chantaient à tout bout de champ.
+
+
+__conf_à_travers_au_travers__
+    à travers d’        [un|une]
+    à travers [de|d’]   [la|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|maints|maintes|plusieurs] @:[NA]
+        <<- /loc/ -1:3>> \1 \2|au \2 \3                                                 && Confusion probable. Locution “à travers quelque chose”, mais “au travers de quelque chose”.
+
+TEST: notamment {{à travers d’}}un réseau de garages solidaires.    ->> à travers|au travers d’
+TEST: {{à travers de}} la toile                                     ->> à travers|au travers de
+TEST: {{à travers d’}}un film épais                                 ->> à travers|au travers d’
+TEST: à travers la toile
+TEST: à travers le torse
+TEST: au travers du torse
+TEST: au travers des arbres
 
 
 __conf_celui_celle_à_qui__
@@ -14273,30 +14293,27 @@ __maj_Assemblée_nationale__
 TEST: l’{{assemblée}} nationale                                         ->> Assemblée
 
 
-# Ministères (idée de dominiko)
-__maj_ministères__
-    [>ministre|>ministère] des affaires [intérieures|étrangères]
-    [>ministre|>ministère] des anciens combattants
-    [>ministre|>ministère] des [armées|droits|finances|postes|solidarités|sports|sciences]
-    [>ministre|>ministère] du [bonheur|budget|commerce|logement|travail]
-        <<- /minis/ \3.islower() -3>> =\3.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+# Dieu
+__maj_Dieu__
+    dieu
+        <<- /maj/ \1.islower() and not morph(<1, ":[DA]") and not morph(>1, ":A|>(?:d[eu’]|des)/")
+        ->> Dieu                                                                                    && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
 
-    [>ministre|>ministère] de l’ action [publique|territoriale]
-    [>ministre|>ministère] de l’ aménagement territorial
-    [>ministre|>ministère] de l’ aménagement du territoire
-    [>ministre|>ministère] de l’ [agriculture|écologie|économie|éducation|emploi|énergie|enseignement|environnement|équipement|industrie|intérieur|outre-mer|urbanisme]
-    [>ministre|>ministère] de la cohésion [sociale|territoriale]
-    [>ministre|>ministère] de la cohésion des territoires
-    [>ministre|>ministère] de la coopération internationale
-    [>ministre|>ministère] de la transition écologique
-    [>ministre|>ministère] de la [culture|défense|guerre|jeunesse|justice|mer|propagande|recherche|santé|solidarité|ville]
-        <<- /minis/ \4.islower() -4>> =\4.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+    [amour|compassion|colère|esprit|fureur|jalousie|gloire|parole|toute-puissance|volonté] de dieu
+    [croyance|foi] en dieu
+        <<- /maj/ \-1.islower() --1>> Dieu                                                          && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
 
-TEST: Le ministre du {{commerce}}                                       ->> Commerce
-TEST: ministère de la {{culture}}                                       ->> Culture
-TEST: Il a réellement travaillé pendant deux ans au ministère des Affaires Étrangères
-TEST: Ministère des Anciens combattants
-TEST: Avez-vous parlé au ministre des affaires en cours.
+TEST: faire ça pour {{dieu}}                            ->> Dieu
+TEST: gloire de {{dieu}}                                ->> Dieu
+TEST: oublie {{dieu}} et les bondieuseries              ->> Dieu
+TEST: dieu colérique, dieu jaloux, dieu silencieux
+TEST: ne provoque par la colère des dieux !
+TEST: Apollon, dieu du Soleil ; Athéna, déesse de la Guerre
+TEST: quel dieu d’amour ferait une telle chose ?
+TEST: entendez-moi, dieu de la Terre, dieu des Ténèbres et dieu du Ciel.
+TEST: Le bon Dieu sait tout.
+TEST: Grand Dieu…
+TEST: Bon dieu !
 
 
 # Les États
@@ -14331,6 +14348,31 @@ TEST: Les {{états}} démocratiques ne sont gouvernés que par des hypocrites et
 TEST: C’est une affaire d’{{état}}.                                                                 ->> État
 TEST: la défense de l’{{état}}.                                                                     ->> État
 TEST: C’est une prérogative de l’{{état-nation}}                                                    ->> État-nation
+
+
+# Église
+__maj_Église__
+    l’ église [adventiste|anglicane|copte|catholique|calviniste|épiscopalienne|jacobite|luthérienne|lutherienne|méthodiste|mormone|néo-apostolique|néoapostolique|orthodoxe|pentecôtiste|presbytérienne|protestante|réformée]
+        <<- /maj/ \2.islower() -2>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    >homme d’ église
+        <<- /maj/ \3.islower() -3>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    [>chef|>rite|>sacrement] [de|d’] l’ église
+        <<- /maj/ \4.islower() -4>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    [Église+s] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
+        <<- /maj/ not value(<1, "|<start>|") -1:>> église           && Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
+
+TEST: L’{{église}} orthodoxe.                                           ->> Église
+TEST: un homme d’{{église}}                                             ->> Église
+TEST: les sacrements de l’{{église}}                                    ->> Église
+TEST: Une {{Église}} baroque.                                           ->> église
+TEST: L’{{Église}} Saint-Paul.                                          ->> église
+TEST: Un homme d’{{église}}.                                            ->> Église
+TEST: Église romane
+TEST: Églises gothiques
+TEST: Église baroque
 
 
 # gentilés / ethnonymes
@@ -14391,6 +14433,54 @@ TEST: ta traduction en {{Russe}} est superbe.           ->> russe
 TEST: COURS EN FRANÇAIS
 
 
+# Homo ...
+__maj_homo__
+    homo [antecessor|cepranensis|erectus|ergaster|floresiensis|gautengensis|habilis|heidelbergensis|naledi|neanderthalensis|rhodesiensis|rudolfensis|sp|spp|tsaichangensis]
+        <<- /maj/ not (\1.isupper() and \2.isupper()) and (\1.islower() or not \2.islower())
+        ->> ="Homo " + \2.lower()                                   && Taxonomie : première partie avec une majuscule, seconde partie en minuscules.
+
+    homo sapiens
+        <<- /maj/ not value(>1, "|idaltu|sapiens|") and not (\1.isupper() and \2.isupper()) and (\1.islower() or not \2.islower())
+        ->> ="Homo " + \2.lower()                                   && Taxonomie : première partie avec une majuscule, seconde partie en minuscules.
+
+    homo sapiens [sapiens|idaltu]
+        <<- /maj/ not (\1.isupper() and \2.isupper() and \3.isupper()) and (\1.islower() or not \2.islower() or not \3.islower())
+        ->> ="Homo " + \2.lower() + " " + \3.lower()                && Taxonomie : première partie avec une majuscule, seconde partie en minuscules.
+
+TEST: un {{homo sapiens}}                                               ->> Homo sapiens
+TEST: nous sommes tous des {{homo sapiens sapiens}}                     ->> Homo sapiens sapiens
+TEST: un {{homo sapiens idaltu}}                                        ->> Homo sapiens idaltu
+TEST: l’{{homo ergaster}}                                               ->> Homo ergaster
+TEST: Homo sapiens idaltu
+TEST: Homo ergaster
+
+
+# Ministères (idée de dominiko)
+__maj_ministères__
+    [>ministre|>ministère] des affaires [intérieures|étrangères]
+    [>ministre|>ministère] des anciens combattants
+    [>ministre|>ministère] des [armées|droits|finances|postes|solidarités|sports|sciences]
+    [>ministre|>ministère] du [bonheur|budget|commerce|logement|travail]
+        <<- /minis/ \3.islower() -3>> =\3.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+
+    [>ministre|>ministère] de l’ action [publique|territoriale]
+    [>ministre|>ministère] de l’ aménagement territorial
+    [>ministre|>ministère] de l’ aménagement du territoire
+    [>ministre|>ministère] de l’ [agriculture|écologie|économie|éducation|emploi|énergie|enseignement|environnement|équipement|industrie|intérieur|outre-mer|urbanisme]
+    [>ministre|>ministère] de la cohésion [sociale|territoriale]
+    [>ministre|>ministère] de la cohésion des territoires
+    [>ministre|>ministère] de la coopération internationale
+    [>ministre|>ministère] de la transition écologique
+    [>ministre|>ministère] de la [culture|défense|guerre|jeunesse|justice|mer|propagande|recherche|santé|solidarité|ville]
+        <<- /minis/ \4.islower() -4>> =\4.capitalize()                  && Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+
+TEST: Le ministre du {{commerce}}                                       ->> Commerce
+TEST: ministère de la {{culture}}                                       ->> Culture
+TEST: Il a réellement travaillé pendant deux ans au ministère des Affaires Étrangères
+TEST: Ministère des Anciens combattants
+TEST: Avez-vous parlé au ministre des affaires en cours.
+
+
 # Moyen Âge
 __maj_Moyen_Âge__
     [Moyen-Age|Moyen-Âge]
@@ -14401,56 +14491,8 @@ __maj_Moyen_Âge__
     moyen âge
         <<- /maj/ \1.islower() and \2.islower() ->> Moyen Âge                                       && Le “Moyen Âge”, l’époque médiévale.
 
-TEST: C’est le {{moyen age}}, chez ces ploucs.          ->> Moyen Âge
-TEST: au {{moyen âge}}                                  ->> Moyen Âge
-
-
-# Dieu
-__maj_Dieu__
-    dieu
-        <<- /maj/ \1.islower() and not morph(<1, ":[DA]") and not morph(>1, ":A|>(?:d[eu’]|des)/")
-        ->> Dieu                                                                                    && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
-
-    [amour|compassion|colère|esprit|fureur|jalousie|gloire|parole|toute-puissance|volonté] de dieu
-    [croyance|foi] en dieu
-        <<- /maj/ \-1.islower() --1>> Dieu                                                          && Si vous évoquez le seigneur de l’Univers, mettez une majuscule.
-
-TEST: faire ça pour {{dieu}}                            ->> Dieu
-TEST: gloire de {{dieu}}                                ->> Dieu
-TEST: oublie {{dieu}} et les bondieuseries              ->> Dieu
-TEST: dieu colérique, dieu jaloux, dieu silencieux
-TEST: ne provoque par la colère des dieux !
-TEST: Apollon, dieu du Soleil ; Athéna, déesse de la Guerre
-TEST: quel dieu d’amour ferait une telle chose ?
-TEST: entendez-moi, dieu de la Terre, dieu des Ténèbres et dieu du Ciel.
-TEST: Le bon Dieu sait tout.
-TEST: Grand Dieu…
-TEST: Bon dieu !
-
-
-# Église
-__maj_Église__
-    l’ église [adventiste|anglicane|copte|catholique|calviniste|épiscopalienne|jacobite|luthérienne|lutherienne|méthodiste|mormone|néo-apostolique|néoapostolique|orthodoxe|pentecôtiste|presbytérienne|protestante|réformée]
-        <<- /maj/ \2.islower() -2>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-
-    >homme d’ église
-        <<- /maj/ \3.islower() -3>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-
-    [>chef|>rite|>sacrement] [de|d’] l’ église
-        <<- /maj/ \4.islower() -4>> Église                          && Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-
-    [Église+s] [>baroque|>gothique|>roman|~^Sainte?-[A-ZÉÊ]]
-        <<- /maj/ not value(<1, "|<start>|") -1:>> église           && Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
-
-TEST: L’{{église}} orthodoxe.                                           ->> Église
-TEST: un homme d’{{église}}                                             ->> Église
-TEST: les sacrements de l’{{église}}                                    ->> Église
-TEST: Une {{Église}} baroque.                                           ->> église
-TEST: L’{{Église}} Saint-Paul.                                          ->> église
-TEST: Un homme d’{{église}}.                                            ->> Église
-TEST: Église romane
-TEST: Églises gothiques
-TEST: Église baroque
+TEST: C’est le {{moyen age}}, chez ces ploucs.              ->> Moyen Âge
+TEST: au {{moyen âge}}                                      ->> Moyen Âge
 
 
 # Points cardinaux
@@ -14480,10 +14522,18 @@ TEST: océan {{pacifique}}                                   ->> Pacifique
 __maj_unités__
     [*NUM|$:B]  [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
     [*NUM|$:B]  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
-        <<- /maj/ not \2.isupper() -2:>> =\2.lower()                && Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
+        <<- /maj/ not \2.isupper() -2:>> =\2.lower()                    && Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
 
-TEST: J’en veux 3 {{Mètres}}.                           ->> mètres
-TEST: Elle en prendra vingt {{Grammes}}.                ->> grammes
+TEST: J’en veux 3 {{Mètres}}.                               ->> mètres
+TEST: Elle en prendra vingt {{Grammes}}.                    ->> grammes
+
+
+# Voie lactée
+__maj_Voie_lactée__
+    voie lactée
+        <<- /maj/ \1.islower() -1:>> Voie                               && Mettez une majuscule pour le nom de notre galaxie : “Voie lactée”.
+
+TEST: rêver tous les soirs de l’immensité de la {{voie}} lactée             ->> Voie
 
 
 
@@ -14847,12 +14897,12 @@ __infi_ne_pas_jamais_etc!9__
     [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])
     [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])
     [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                               @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus            [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
+    [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [me|m’|te|t’|nous|vous] [le|la|les]                         @:[VNA]¬:(?:Y|W|X|O[vwn])
     [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿ [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])
     [ne|n’] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])
     [ne|n’] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])
@@ -14861,24 +14911,6 @@ __infi_ne_pas_jamais_etc!9__
     [ne|n’] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                      @:[VNA]¬:(?:Y|W|X|O[vwn])
         <<- /infi/ not value(\-1, "|guerre|guerres|") --1>> =suggVerbInfi(\-1)                      && Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus]¿ non plus                 @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
-    n’ [en|y] ?[presque|presqu’]¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] ?[trop|beaucoup]¿      @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?[presque|presqu’]¿ [pas|rien|guère|point] non plus               @:[VNA]¬:(?:Y|W|X|O[vwn])
     n’ [en|y] ?[presque|presqu’]¿ jamais ?[rien|plus|trop|beaucoup]¿            @:[VNA]¬:(?:Y|W|X|O[vwn])
@@ -29719,7 +29751,7 @@ __ppas_avoir_été__
         -3>> =suggVerbPpas(\3)                                                                  && Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
 
     >avoir étés
-        <<- not (value(>1, "|et|ou|") and value(>2, "|hivers|automnes|printemps|"))
+        <<- not (value(>1, "|et|ou|comme|") and value(>2, "|hivers|automnes|printemps|"))
         --1>> été                                                                               && Le participe passé du verbe “être” est invariable.
 
 TEST: j’ai été {{instruis}} par elle                                                                ->> instruit|instruite
@@ -30073,12 +30105,12 @@ TEST: la tenant {{prêt}} à bondir                                             
 
 __ppas_le_verbe_pensée__
     le [>faire|>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
-        <<- /ppas/ morph(\3, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|V0|P|[AQ].*:m:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        <<- /ppas/ morph(\3, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|V0|P|[AQ].*:m:[si])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggMasSing(\3)                                                       && Accord avec le COD “le” : « \3 » doit être au masculin singulier.
 
 __ppas_la_verbe_pensée__
     la [>faire|>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
-        <<- /ppas/ morph(\3, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|V0|P|[AQ]:f:[is])") and not (morph(\2, ":Y") and morph(\2, ":3s"))
+        <<- /ppas/ morph(\3, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|V0|P|[AQ].*:f:[si])") and not (morph(\2, ":Y") and morph(\2, ":3s"))
         -3>> =suggFemSing(\3)                                                       && Accord avec le COD “la” : « \2 » doit être au féminin singulier.
 
 __ppas_les_verbe_pensée__
@@ -30088,7 +30120,7 @@ __ppas_les_verbe_pensée__
 
 __ppas_me_te_verbe_pensée__
     [me|m’|te|t’|l’] [>faire|>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
-        <<- /ppas/ morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|P|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        <<- /ppas/ morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|P|[AQ].*:[si])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggSing(\3)                                                          && Accord avec le pronom “\1” : « \3 » doit être au singulier.
 
 __ppas_se_verbe_pensée__
