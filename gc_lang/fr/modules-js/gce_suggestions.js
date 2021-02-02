@@ -594,6 +594,9 @@ function switchGender (sFlex, bPlur=null) {
                     aSugg.add(suggMasSing(sFlex));
                 } else if (sMorph.includes(":p")) {
                     aSugg.add(suggMasPlur(sFlex));
+                } else {
+                    aSugg.add(suggMasSing(sFlex));
+                    aSugg.add(suggMasPlur(sFlex));
                 }
             } else if (sMorph.includes(":m")) {
                 if (sMorph.includes(":s")) {

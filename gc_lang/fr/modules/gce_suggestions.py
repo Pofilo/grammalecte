@@ -451,6 +451,9 @@ def switchGender (sFlex, bPlur=None):
                     dSugg[suggMasSing(sFlex)] = ""
                 elif ":p" in sMorph:
                     dSugg[suggMasPlur(sFlex)] = ""
+                else:
+                    dSugg[suggMasSing(sFlex)] = ""
+                    dSugg[suggMasPlur(sFlex)] = ""
             elif ":m" in sMorph:
                 if ":s" in sMorph:
                     dSugg[suggFemSing(sFlex)] = ""
