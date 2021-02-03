@@ -2891,19 +2891,19 @@ __da_certains_certaines__
     certaines  @:[NA].*:[fe]:[pi]¬:(?:G|3[sp])
         <<- =>> select(\1, "", ":O")
 
-    certains [ne|n’|me|m’|te|t’|se|s’]               @:3p
-    certains [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p
-    certains [nous|vous]     [le|la|l’|les|en|y]     @:3p
-    certains [le|la|l’|les]  [lui|leur|en|y]         @:3p
-    certains [lui|leur|y]    en                      @:3p
+    certains [ne|n’|me|m’|te|t’|se|s’]               $:3p
+    certains [le|la|l’|les|en|nous|vous|lui|leur|y]  $:3p
+    certains [nous|vous]     [le|la|l’|les|en|y]     $:3p
+    certains [le|la|l’|les]  [lui|leur|en|y]         $:3p
+    certains [lui|leur|y]    en                      $:3p
     certains @:3p¬:(?:G|[NA].*:[me]:[pi]|V.e)
         <<- not morph(<1, ":[NAD].*:[me]:[pi]") =>> select(\1, ":O")
 
-    certaines [ne|n’|me|m’|te|t’|se|s’]               @:3p
-    certaines [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p
-    certaines [nous|vous]     [le|la|l’|les|en|y]     @:3p
-    certaines [le|la|l’|les]  [lui|leur|en|y]         @:3p
-    certaines [lui|leur|y]    en                      @:3p
+    certaines [ne|n’|me|m’|te|t’|se|s’]               $:3p
+    certaines [le|la|l’|les|en|nous|vous|lui|leur|y]  $:3p
+    certaines [nous|vous]     [le|la|l’|les|en|y]     $:3p
+    certaines [le|la|l’|les]  [lui|leur|en|y]         $:3p
+    certaines [lui|leur|y]    en                      $:3p
     certaines @:3p¬:(?:G|[NA].*:[fe]:[pi]|V.e)
         <<- not morph(<1, ":[NAD].*:[fe]:[pi]") =>> select(\1, ":O")
 
@@ -13156,6 +13156,10 @@ TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.      ->> savoi
 
 # sens / cens / cent / sans / sang
 __conf_sens_sans_cent_cens__
+    !! non sans [mal|>mâle|>malle] ¡¡
+    non [sans|sens|cens|>cent|>sang] [mal|>mâle|>malle]
+        <<- /loc/ ->> non sans mal                                                                  && Locution “non sans mal”.
+
     [<start>|,|(]  [il|ils|on]            [sans|>sang|cens|>cent]  @:V
     [<start>|,|(]  [elle|elles|iel|iels]  [>sang|cens|>cent]       @:V
     [<start>|,|(]  [elle|elles|iel|iels]  sans                     @:V¬:(?:[NYDA]|Oo)|>(?:y|en)
@@ -13164,6 +13168,7 @@ __conf_sens_sans_cent_cens__
     >effusion [de|d’] [sans|cens|sens|>cent]
         <<- /conf/ --1>> sang                                                                       && Confusion. Effusion de sang. Pour le fluide sanguin, écrivez “sang”.
 
+TEST: {{non cens malle}}                                            ->> non sans mal
 TEST: elle {{sang}} était voulu                                     ->> s’en
 TEST: sans effusion de {{sans}}                                     ->> sang
 TEST: elle sans y penser
@@ -13171,6 +13176,7 @@ TEST: elle sans vergogne
 TEST: elle sans la condamner
 TEST: elles sans un sou en poche
 TEST: elles sans grandes convictions
+TEST: elles y parvinrent, non sans mal, mais avec brio.
 
 
 __conf_sensé_censé__
@@ -18270,7 +18276,7 @@ __substantifs_multi_mots__
     >homme à poigne
     >homme à tout faire
     >horaire à rallonge
-    >hôtel [de|d’] ville
+    >hôtel [de|d’] [luxe|ville]
     >hôtesse d’ accueil
     >infirmier [de|d’] garde
     >ingénieur du son
@@ -23917,10 +23923,20 @@ TEST: une femme, {{blessés}} par deux fois                                     
 
 
 __gn_du_1m__
-    du  *WORD
+    du  @>(?:[bcçdfgjklmnpqrstvwxzBCÇDFGJKLMNPQRSTVWXZ]|[hH].*;é)
         <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") -1>> de la                               && Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
+
+    du  @>(?:[aâeéèêiîoôuûyœæAÂEÉÈÊIÎOÔUÛYŒÆ]|[hH].*;É)
+        <<- /eleu/ morph(\2, ":[NA].*:s", ":[GWpi]") -1:.2>> de l’                          && Euphonie. Il faut élider.|https://fr.wikipedia.org/wiki/%C3%89lision
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: cette bouffe, c’est du {{chiens}}                                         ->> chien
+TEST: cette bouffe, c’est {{du}} {{chienne}}                                    ->> de la|||chien
+TEST: je parle {{du }}homme                                                     ->> de l’
+TEST: du {{amours}}                                                             ->> amour
+
 
 __gn_dudit_1m__
     dudit  *WORD
@@ -23928,8 +23944,6 @@ __gn_dudit_1m__
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: cette bouffe, c’est du {{chiens}}                                         ->> chien
-TEST: cette bouffe, c’est {{du}} {{chienne}}                                    ->> de la|||chien
 TEST: les consignes dudit {{présidents}} étaient contratritoires.               ->> président
 TEST: les consignes {{dudit}} {{présidente}} étaient contratritoires.           ->> de ladite|||président
 
@@ -23971,15 +23985,25 @@ TEST: cette {{illusions}} que nous voyons plus clair que quiconque              
 
 
 __gn_au_1m__
-    au  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:f:s", ":[GWme]") -1>> à la                              && Accord de genre erroné : « \2 » est féminin.
-        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : « \1 » est un déterminant masculin.
-        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
-        <<- /gn/ __also__ -1>> aux                                                          && Accord de nombre erroné : « \2 » est au pluriel.
+    au  @>(?:[bcçdfgjklmnpqrstvwxzBCÇDFGJKLMNPQRSTVWXZ]|[hH].*;é)
+        <<- /gn/ morph(\2, ":[NA].*:f:s", ":[GWme]") -1>> à la|aux
+        && Accord de genre erroné : “\2” est féminin. Si “\2” est bien censé être au singulier, écrivez “à la”. Sinon, écrivez “aux” et mettez “\2” au pluriel.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    && Accord de genre erroné : “\1” est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : “\2” devrait être au singulier.
+        <<- /gn/ __also__ -1>> aux                                                          && Accord de nombre erroné : “\2” est au pluriel.
 
-TEST: {{au}} {{États-Unis}}                                                     ->> aux|||États-Unis
-TEST: Téléphone {{au}} personne qui ont donné leur accord.                      ->> à la
-TEST: téléphone {{au}} {{boulangère}}                                           ->> à la|||boulanger
+    au  @>(?:[aâeéèêiîoôuûyœæAÂEÉÈÊIÎOÔUÛYŒÆ]|[hH].*;É)
+        <<- /eleu/ morph(\2, ":[NA].*:s", ":[GWpi]") -1:.2>> "à l’|aux "    && Euphonie. Si “\2” est bien censé être un singulier, il faut élider. Sinon, il faut écrire “aux” et mettre “\2” au pluriel.
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":[GWs]") -1>> aux                               && Accord de nombre erroné : “\2” est au pluriel.
+
+TEST: Téléphone {{au}} personne qui ont donné leur accord.                      ->> à la|aux
+TEST: téléphone {{au}} {{boulangère}}                                           ->> à la|aux|||boulanger
+TEST: donne {{au}} {{pères}} la parole                                          ->> aux|||père
+TEST: {{au}} États-Unis                                                         ->> aux
+TEST: {{au }}arbre                                                              ->> "à l’|aux "
+TEST: {{au }}homme                                                              ->> "à l’|aux "
+TEST: {{au}} émissions de gaz à effet de serre                                  ->> aux
+TEST: au iota de liberté que j’ai encore
 TEST: au chien, au chat, au poulet
 TEST: à partir de pièces détachées, au départ entièrement venues de l’étranger puis en partie fabriquées sur place
 
@@ -27227,6 +27251,7 @@ TEST: elle rêve de pouvoir les {{brisés}} à mains nues                       
 TEST: un homme de pouvoir débordé par ses obligations.
 TEST: faire seulement ce que tu pouvais ne satisfaisait pas tes patrons.
 TEST: un immense pouvoir l’animait.
+TEST: une antichambre du pouvoir décriée
 
 
 __infi_savoir!5__
@@ -34273,6 +34298,8 @@ TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
 TEST: Du monde noir sortent les envahisseurs (accord avec ce qui suit).
 
 !!! Autres tests                                                                                  !!
+TEST: le Onze de France, je compte de un à trois, numéro gagnant : le huit
+TEST: Échappe à la cage qu’est ta vie
 TEST: Mon père est contre et ma mère se dit pour mais a un discours très hypocrite quand on aborde le sujet.
 TEST: l’ambulance censée amener Cédric n’est jamais arrivée
 TEST: Chez les intellectuels, le mot utopie n’a jamais été synonyme de folie, mais il l’a été pour l’homme de la rue.
@@ -36953,7 +36980,7 @@ TEST: Il fait une séance de rencontres éclair.
 TEST: Il fait un logiciel gratuit.
 TEST: Il fait un logiciel publicitaire.
 TEST: Il fait du référencement abusif.
-TEST: Il fait du hameçonnage.
+TEST: Il fait de l’hameçonnage.
 TEST: Il fait du pollupostage.
 TEST: plutôt mourir
 TEST: logiciel malveillant
