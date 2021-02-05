@@ -7096,11 +7096,17 @@ __pleo_verbes__
     >descendre en bas
         <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
 
+    >choisir [le|un|ce|quel|mon|ton|son|notre|votre|leur] choix
+        <<- /pleo/ -1>> =suggVerbFrom(\1, "faire")                  && Pléonasme.
+
     [>efforcer|>essayer|>tâcher] de faire en sorte [de|d’]
         <<- /pleo/ ->> \1 \-1                                       && Pléonasme.
 
     >monter en haut
         <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
+
+    >opter pour [l’|une|cette|quelle] option
+        <<- /pleo/ -1:2>> =suggVerbFrom(\1, "choisir")              && Pléonasme.
 
     >sortir hors [de|d’]
         <<- /pleo/ -2:3>> \3                                        && Pléonasme. Exemple : « sortir de la maison », et non « sortir hors de la maison ».
@@ -7117,6 +7123,7 @@ TEST: {{contraint malgré lui}}                                  ->> contraint
 TEST: {{contraindre malgré eux}}                                ->> contraindre
 TEST: {{applaudir des deux mains}}                              ->> applaudir
 TEST: {{Avancer en avant}}, pas le choix                        ->> Avancer
+TEST: vas-y, {{choisis}} un choix                               ->> fais
 TEST: {{dessiner un dessin}}                                    ->> dessiner
 TEST: nous {{joignons ensemble}}                                ->> joignons
 TEST: {{collaborer ensemble}}                                   ->> collaborer
@@ -7127,6 +7134,7 @@ TEST: {{enchevêtrer les uns dans les autres}}                   ->> enchevêtre
 TEST: s’{{entraider mutuellement}}                              ->> entraider
 TEST: s’{{entraident les uns les autres}}                       ->> entraident
 TEST: {{lever debout}}                                          ->> lever
+TEST: je vais {{opter pour}} l’option deux.                     ->> choisir
 TEST: il faut {{prévenir d’avance}} ces gens-là                 ->> prévenir
 TEST: {{prédire à l’avance}}                                    ->> prédire
 TEST: {{pronostiquer d’avance}}                                 ->> pronostiquer
@@ -19893,6 +19901,24 @@ __da_substantifs__
         <<- __else__ and
             morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PGQ]|V[023])") and not morph(\5, ":A.*:[si]") =>> select(\4, "", ":V")
 
+    [<start>|,|(] $:D *WORD  [ne|n’]     ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  ?[ne|n’]¿   [lui|leur|y]                    en                           @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  [me|m’|te|t’|se|s’|nous|vous|lui|y]                                      @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  [le|la|l’|les|en|leur]                                                   @:(?:[123][sp]|P)¬:[NAG] ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD                                                                           @:(?:[123][sp]|P)¬*      ?$:Y¿  $:D  @:[NA]
+        <<- morph(\3, ":[NAY]") =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
+
+    [<start>|,|(] $:D *WORD  *WORD  [ne|n’]     ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD  ?[ne|n’]¿   [lui|leur|y]                    en                           @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD  [me|m’|te|t’|se|s’|nous|vous|lui|y]                                      @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD  [le|la|l’|les|en|leur]                                                   @:(?:[123][sp]|P)¬:[NAG] ?$:Y¿  $:D  @:[NA]
+    [<start>|,|(] $:D *WORD  *WORD                                                                           @:(?:[123][sp]|P)¬*      ?$:Y¿  $:D  @:[NA]
+        <<- morph(\3, ":[NA]") and morph(\4, ":[NA]") =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
+
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- =>> select(\3, "", ":V")
 
@@ -19907,7 +19933,7 @@ __da_substantifs__
 
 
 __da_locutions_verbales__
-    >avoir [cours|foule|lieu|recours|vent]
+    >avoir [cours|envie|foule|lieu|recours|tort|vent]
     >avoir ni queue ?,¿ ni tête
     >aller bon train
     >aller [de|d’] l’ avant
