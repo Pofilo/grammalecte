@@ -76,12 +76,9 @@ def suggVerbPpas (sFlex, sPattern=None):
         if tTags:
             if not sPattern:
                 dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q2"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q3"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q4"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
             elif sPattern == ":m:s":
                 dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
             elif sPattern == ":m:p":
@@ -101,30 +98,30 @@ def suggVerbPpas (sFlex, sPattern=None):
                     dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
             elif sPattern == ":s":
                 dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q3"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
             elif sPattern == ":p":
                 if conj._hasConjWithTags(tTags, ":PQ", ":Q2"):
                     dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
                 else:
                     dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q4"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
             else:
                 dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+    if "" in dSugg:
+        del dSugg[""]
     if dSugg:
-        return "|".join(dSugg)
+        return "|".join(dSugg.keys())
     return ""
 
 
 def suggVerbTense (sFlex, sTense, sWho):
     "change <sFlex> to a verb according to <sTense> and <sWho>"
-    aSugg = []
+    dSugg = {}
     for sStem in _oSpellChecker.getLemma(sFlex):
         if conj.hasConj(sStem, sTense, sWho):
-            aSugg.append(conj.getConj(sStem, sTense, sWho))
-    if aSugg:
-        return "|".join(aSugg)
+            dSugg[conj.getConj(sStem, sTense, sWho)] = ""
+    if dSugg:
+        return "|".join(dSugg.keys())
     return ""
 
 
