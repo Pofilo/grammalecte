@@ -10,13 +10,12 @@ import os
 import itertools
 import traceback
 import platform
+import importlib
 
 import graphspell.ibdawg as ibdawg
 from graphspell.echo import echo
 from graphspell.str_transform import defineSuffixCode
 import graphspell.tokenizer as tkz
-
-import gc_lang.fr.modules.conj as conj
 
 
 oDict = None
@@ -74,15 +73,15 @@ def makeConj (sp, bJS=False):
     dVerbNames = {}
 
     dPatternList = {
-        ":PQ": [], ":Ip": [], ":Iq": [], ":Is": [], ":If": [], ":K": [], ":Sp": [], ":Sq": [], ":E": []
+        ":P": [], ":Q": [], ":Ip": [], ":Iq": [], ":Is": [], ":If": [], ":K": [], ":Sp": [], ":Sq": [], ":E": []
     }
     dTrad = {
-        "infi": ":Y", "ppre": ":PQ", "ppas": ":PQ",
+        "infi": ":Y", "ppre": ":P", "ppas": ":Q",
         "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
         "spre": ":Sp", "simp": ":Sq",
         "cond": ":K", "impe": ":E",
         "1sg": ":1s", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "1isg": ":1ś",
-        "mas sg": ":Q1", "mas pl": ":Q2", "mas inv": ":Q1", "fem sg": ":Q3", "fem pl": ":Q4", "epi inv": ":Q1"
+        "mas sg": ":m:s", "mas pl": ":m:p", "mas inv": ":m:s", "fem sg": ":f:s", "fem pl": ":f:p", "epi inv": ":m:s"
     }
 
     loadDictionary()
@@ -94,7 +93,8 @@ def makeConj (sp, bJS=False):
         if nTab == 1:
             # new entry
             sLemma, sVinfo = sLine.split("\t")
-            dConj = {   ":PQ": { ":P": "", ":Q1": "", ":Q2": "", ":Q3": "", ":Q4": ""},
+            dConj = {   ":P": { ":P": "" },
+                        ":Q": { ":m:s": "", ":f:s": "", ":m:p": "", ":f:p": "" },
                         ":Ip": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
                         ":Iq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
                         ":Is": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
@@ -118,7 +118,7 @@ def makeConj (sp, bJS=False):
             _, sTag, sFlex = sLine.split("\t")
             if sTag.count(" ") == 0:
                 if sTag == "ppre":
-                    dConj[":PQ"][":P"] = defineSuffixCode(sLemma, sFlex)
+                    dConj[":P"][":P"] = defineSuffixCode(sLemma, sFlex)
             else:
                 try:
                     mode, g = sTag.split(maxsplit=1)
@@ -146,7 +146,7 @@ def makeConj (sp, bJS=False):
             elif sLemma == "pouvoir":
                 dConj[":Ip"][":1ś"] = "6uis"
             lConjTags = []
-            for sTense in [":PQ", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
+            for sTense in [":P", ":Q", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
                 bFound = False
                 for i, d in enumerate(dPatternList[sTense]):
                     if dConj[sTense] == d:
@@ -289,6 +289,8 @@ def makePhonetTable (sp, bJS=False):
 
     loadDictionary()
 
+    conj = importlib.import_module("gc_lang.fr.modules.conj")
+
     # set of homophonic words
     lSet = []
     for sLine in readFile(sp+"/data/phonet_simil.txt"):
@@ -380,6 +382,6 @@ def before (spLaunch, dVars, bJS=False):
 def after (spLaunch, dVars, bJS=False):
     print("========== Build French data ==========")
     makeMfsp(spLaunch, bJS)
-    makePhonetTable(spLaunch, bJS)
     makeConj(spLaunch, bJS)
+    makePhonetTable(spLaunch, bJS)
     #makeLocutions(spLaunch, bJS)

@@ -7123,7 +7123,7 @@ TEST: {{contraint malgré lui}}                                  ->> contraint
 TEST: {{contraindre malgré eux}}                                ->> contraindre
 TEST: {{applaudir des deux mains}}                              ->> applaudir
 TEST: {{Avancer en avant}}, pas le choix                        ->> Avancer
-TEST: vas-y, {{choisis}} un choix                               ->> fais
+TEST: vas-y, {{choisis}} un choix                               ->> fais|fis
 TEST: {{dessiner un dessin}}                                    ->> dessiner
 TEST: nous {{joignons ensemble}}                                ->> joignons
 TEST: {{collaborer ensemble}}                                   ->> collaborer
@@ -8409,18 +8409,18 @@ TEST: ces hommes qui avaient abusé de lui enfant.
 __conf_en_participes_présents__
     en   [ne|me|m’|te|t’|s’]  @:[123][sp]¬:[PY]
         <<- /conf/ not \1.isupper() >>>
-        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":PQ", ":P")                            && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":P", ":P")                             && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
         <<- /conf/ value(\2, "|m’|t’|s’|") -1:2>> "\2en "                                           && Incohérence : vouliez-vous écrire « \2en » ?
         <<- /conf/ __else__ -1:2>> =\2[0:1] + "’en"                                                 && Incohérence.
 
     en   se  @:[123][sp]¬:[PY]
         <<- /conf/ not \1.isupper() >>>
-        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":PQ", ":P")                            && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":P", ":P")                             && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
         <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en"                                             && Incohérence : vouliez-vous écrire « s’en » ?
 
     en   n’  @:[123][sp]¬:[PY]
         <<- /conf/ not \1.isupper() and not value(\3, "|importe|") >>>
-        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":PQ", ":P")                            && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerbTense(\3, ":P", ":P")                             && Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
         <<- /conf/ not value(<1, "|n’|") -1:2>> "n’en "                                             && Incohérence : vouliez-vous écrire « n’en » ?
         <<- /conf/ __else__ -1:2>> "en "                                                            && Double négation : “n’” est une graphie élidée de “ne”. Il est inutile de la mettre deux fois. L’accord euphonique se fait en prononçant le “n” de “en” avec la première voyelle de “\3”.
 

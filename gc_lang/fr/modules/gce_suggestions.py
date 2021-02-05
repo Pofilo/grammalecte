@@ -75,38 +75,38 @@ def suggVerbPpas (sFlex, sPattern=None):
         tTags = conj._getTags(sStem)
         if tTags:
             if not sPattern:
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:p")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:s")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:p")] = ""
             elif sPattern == ":m:s":
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
             elif sPattern == ":m:p":
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q2"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
+                if conj._hasConjWithTags(tTags, ":Q", ":m:p"):
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:p")] = ""
                 else:
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
             elif sPattern == ":f:s":
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q3"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
+                if conj._hasConjWithTags(tTags, ":Q", ":f:s"):
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:s")] = ""
                 else:
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
             elif sPattern == ":f:p":
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q4"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
+                if conj._hasConjWithTags(tTags, ":Q", ":f:p"):
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:p")] = ""
                 else:
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
             elif sPattern == ":s":
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:s")] = ""
             elif sPattern == ":p":
-                if conj._hasConjWithTags(tTags, ":PQ", ":Q2"):
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2")] = ""
+                if conj._hasConjWithTags(tTags, ":Q", ":m:p"):
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:p")] = ""
                 else:
-                    dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4")] = ""
+                    dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":f:p")] = ""
             else:
-                dSugg[conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1")] = ""
+                dSugg[conj._getConjWithTags(sStem, tTags, ":Q", ":m:s")] = ""
     if "" in dSugg:
         del dSugg[""]
     if dSugg:
@@ -136,7 +136,7 @@ def suggVerbFrom (sStem, sFlex, sWho=""):
                     dSugg[conj.getConj(sStem, sTense, sWho)] = ""
         else:
             for sTense in lTenses:
-                for sWho in [ m.group(0)  for m in re.finditer(":[123][sp]", sMorph) ]:
+                for sWho in [ m.group(0)  for m in re.finditer(":(?:[123][sp]|P|Y)", sMorph) ]:
                     if conj.hasConj(sStem, sTense, sWho):
                         dSugg[conj.getConj(sStem, sTense, sWho)] = ""
     if dSugg:
@@ -271,10 +271,10 @@ def suggMasSing (sFlex, bSuggSimil=False):
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
-            if conj.hasConj(sVerb, ":PQ", ":Q1") and conj.hasConj(sVerb, ":PQ", ":Q3"):
+            if conj.hasConj(sVerb, ":Q", ":m:s") and conj.hasConj(sVerb, ":Q", ":f:s"):
                 # We also check if the verb has a feminine form.
                 # If not, we consider it’s better to not suggest the masculine one, as it can be considered invariable.
-                dSugg[conj.getConj(sVerb, ":PQ", ":Q1")] = ""
+                dSugg[conj.getConj(sVerb, ":Q", ":m:s")] = ""
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":m:[si]"):
             dSugg[e] = ""
@@ -298,10 +298,10 @@ def suggMasPlur (sFlex, bSuggSimil=False):
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
-            if conj.hasConj(sVerb, ":PQ", ":Q2"):
-                dSugg[conj.getConj(sVerb, ":PQ", ":Q2")] = ""
-            elif conj.hasConj(sVerb, ":PQ", ":Q1"):
-                sSugg = conj.getConj(sVerb, ":PQ", ":Q1")
+            if conj.hasConj(sVerb, ":Q", ":m:p"):
+                dSugg[conj.getConj(sVerb, ":Q", ":m:p")] = ""
+            elif conj.hasConj(sVerb, ":Q", ":m:s"):
+                sSugg = conj.getConj(sVerb, ":Q", ":m:s")
                 # it is necessary to filter these flexions, like “succédé” or “agi” that are not masculine plural.
                 if sSugg.endswith("s"):
                     dSugg[sSugg] = ""
@@ -328,8 +328,8 @@ def suggFemSing (sFlex, bSuggSimil=False):
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
-            if conj.hasConj(sVerb, ":PQ", ":Q3"):
-                dSugg[conj.getConj(sVerb, ":PQ", ":Q3")] = ""
+            if conj.hasConj(sVerb, ":Q", ":f:s"):
+                dSugg[conj.getConj(sVerb, ":Q", ":f:s")] = ""
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":f:[si]"):
             dSugg[e] = ""
@@ -353,8 +353,8 @@ def suggFemPlur (sFlex, bSuggSimil=False):
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
-            if conj.hasConj(sVerb, ":PQ", ":Q4"):
-                dSugg[conj.getConj(sVerb, ":PQ", ":Q4")] = ""
+            if conj.hasConj(sVerb, ":Q", ":f:p"):
+                dSugg[conj.getConj(sVerb, ":Q", ":f:p")] = ""
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":f:[pi]"):
             dSugg[e] = ""
@@ -420,7 +420,7 @@ def g_suggAgree (dTokenDst, dTokenSrc):
 def hasFemForm (sFlex):
     "return True if there is a feminine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
-        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q3"):
+        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":Q", ":f:s"):
             return True
     if phonet.hasSimil(sFlex, ":f"):
         return True
@@ -430,7 +430,7 @@ def hasFemForm (sFlex):
 def hasMasForm (sFlex):
     "return True if there is a masculine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
-        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q1"):
+        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":Q", ":m:s"):
             # what has a feminine form also has a masculine form
             return True
     if phonet.hasSimil(sFlex, ":m"):

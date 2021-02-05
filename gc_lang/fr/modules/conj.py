@@ -28,7 +28,7 @@ _dImpeProNegEn = { ":2s": "ne t’en ", ":1p": "ne nous en ", ":2p": "ne vous en
 
 _dGroup = { "0": "auxiliaire", "1": "1ᵉʳ groupe", "2": "2ᵉ groupe", "3": "3ᵉ groupe" }
 
-_dTenseIdx = { ":PQ": 0, ":Ip": 1, ":Iq": 2, ":Is": 3, ":If": 4, ":K": 5, ":Sp": 6, ":Sq": 7, ":E": 8 }
+_dTenseIdx = { ":P": 0, ":Q": 1, ":Ip": 2, ":Iq": 3, ":Is": 4, ":If": 5, ":K": 6, ":Sp": 7, ":Sq": 8, ":E": 9 }
 
 
 
@@ -71,13 +71,13 @@ def getNamesFrom (sVerb):
         # we suggest past participles
         tTags = _getTags(sVerb)
         if tTags:
-            aSugg = [ _getConjWithTags(sVerb, tTags, ":PQ", ":Q1") ]
-            if _hasConjWithTags(tTags, ":PQ", ":Q2"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":PQ", ":Q2"))
-            if _hasConjWithTags(tTags, ":PQ", ":Q3"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":PQ", ":Q3"))
-            if _hasConjWithTags(tTags, ":PQ", ":Q4"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":PQ", ":Q4"))
+            aSugg = [ _getConjWithTags(sVerb, tTags, ":Q", ":m:s") ]
+            if _hasConjWithTags(tTags, ":Q", ":f:s"):
+                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:s"))
+            if _hasConjWithTags(tTags, ":Q", ":m:p"):
+                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":m:p"))
+            if _hasConjWithTags(tTags, ":Q", ":f:p"):
+                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:p"))
             # if there is only one past participle (epi inv), unreliable.
             return aSugg  if len(aSugg) > 1  else []
         return []
@@ -180,18 +180,18 @@ class Verb ():
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",
-                ":": sVerb,
+                ":Y": sVerb,
             },
             ":P": {
                 "label": "Participe présent",
-                ":": _getConjWithTags(sVerb, self._tTags, ":PQ", ":P"),
+                ":P": _getConjWithTags(sVerb, self._tTags, ":P", ":P"),
             },
             ":Q": {
                 "label": "Participes passés",
-                ":Q1": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q1"),
-                ":Q2": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q2"),
-                ":Q3": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q3"),
-                ":Q4": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q4"),
+                ":m:s": _getConjWithTags(sVerb, self._tTags, ":Q", ":m:s"),
+                ":f:s": _getConjWithTags(sVerb, self._tTags, ":Q", ":f:s"),
+                ":m:p": _getConjWithTags(sVerb, self._tTags, ":Q", ":m:p"),
+                ":f:p": _getConjWithTags(sVerb, self._tTags, ":Q", ":f:p"),
             },
             ":Ip": {
                 "label": "Présent",
@@ -333,12 +333,12 @@ class Verb ():
     def participePresent (self, bPro, bNeg, bTpsCo, bInt, bFem):
         "returns string (conjugaison du participe présent)"
         try:
-            if not self.dConj[":P"][":"]:
+            if not self.dConj[":P"][":P"]:
                 return ""
             if bTpsCo:
-                sPartPre = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":PQ", ":P")  if not bPro  else  getConj("être", ":PQ", ":P")
+                sPartPre = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":P", ":P")  if not bPro  else  getConj("être", ":P", ":P")
             else:
-                sPartPre = self.dConj[":P"][":"]
+                sPartPre = self.dConj[":P"][":P"]
             if not sPartPre:
                 return ""
             bEli = bool(_zStartVoy.search(sPartPre))
@@ -451,12 +451,12 @@ class Verb ():
     def _seekPpas (self, bPro, bFem, bPlur):
         try:
             if not bPro and self.sVerbAux == "avoir":
-                return self.dConj[":Q"][":Q1"]
+                return self.dConj[":Q"][":m:s"]
             if not bFem:
-                return self.dConj[":Q"][":Q2"]  if bPlur and self.dConj[":Q"][":Q2"]  else  self.dConj[":Q"][":Q1"]
+                return self.dConj[":Q"][":f:s"]  if bPlur and self.dConj[":Q"][":f:s"]  else  self.dConj[":Q"][":m:s"]
             if not bPlur:
-                return self.dConj[":Q"][":Q3"]  if self.dConj[":Q"][":Q3"]  else  self.dConj[":Q"][":Q1"]
-            return self.dConj[":Q"][":Q4"]  if self.dConj[":Q"][":Q4"]  else  self.dConj[":Q"][":Q1"]
+                return self.dConj[":Q"][":m:p"]  if self.dConj[":Q"][":m:p"]  else  self.dConj[":Q"][":m:s"]
+            return self.dConj[":Q"][":f:p"]  if self.dConj[":Q"][":f:p"]  else  self.dConj[":Q"][":m:s"]
         except KeyError:
             traceback.print_exc()
             return "# erreur"
@@ -469,10 +469,10 @@ class Verb ():
             "t_ppre":   "Participe présent",
             "ppre":     self.participePresent(bPro, bNeg, bTpsCo, bInt, bFem),
             "t_ppas":   "Participes passés",
-            "ppas1":    self.participePasse(":Q1"),
-            "ppas2":    self.participePasse(":Q2"),
-            "ppas3":    self.participePasse(":Q3"),
-            "ppas4":    self.participePasse(":Q4"),
+            "ppas1":    self.participePasse(":m:s"),
+            "ppas2":    self.participePasse(":f:s"),
+            "ppas3":    self.participePasse(":m:p"),
+            "ppas4":    self.participePasse(":f:p"),
             "t_imp":    "Impératif",
             "t_impe":   ""  if bInt  else "Présent"  if not bTpsCo  else "Passé",
             "impe1":    self.imperatif(":2s", bPro, bNeg, bTpsCo, bFem)  if not bInt  else "",

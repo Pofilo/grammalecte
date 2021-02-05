@@ -101,41 +101,41 @@ function suggVerbPpas (sFlex, sWhat=null) {
         let tTags = conj._getTags(sStem);
         if (tTags) {
             if (!sWhat) {
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"));
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"));
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:p"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:s"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:p"));
                 aSugg.delete("");
             } else if (sWhat === ":m:s") {
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
             } else if (sWhat === ":m:p") {
-                if (conj._hasConjWithTags(tTags, ":PQ", ":Q2")) {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"));
+                if (conj._hasConjWithTags(tTags, ":Q", ":m:p")) {
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:p"));
                 } else {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
                 }
             } else if (sWhat === ":f:s") {
-                if (conj._hasConjWithTags(tTags, ":PQ", ":Q3")) {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"));
+                if (conj._hasConjWithTags(tTags, ":Q", ":f:s")) {
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:s"));
                 } else {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
                 }
             } else if (sWhat === ":f:p") {
-                if (conj._hasConjWithTags(tTags, ":PQ", ":Q4")) {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"));
+                if (conj._hasConjWithTags(tTags, ":Q", ":f:p")) {
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:p"));
                 } else {
-                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
+                    aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
                 }
             } else if (sWhat === ":s") {
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:s"));
                 aSugg.delete("");
             } else if (sWhat === ":p") {
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"));
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:p"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":f:p"));
                 aSugg.delete("");
             } else {
-                aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"));
+                aSugg.add(conj._getConjWithTags(sStem, tTags, ":Q", ":m:s"));
             }
         }
     }
@@ -172,7 +172,7 @@ function suggVerbFrom (sStem, sFlex, sWho="") {
         }
         else {
             for (let [sTense, ] of lTenses) {
-                for (let [sWho, ] of [ ...sMorph.matchAll(/:[123][sp]/g) ]) {
+                for (let [sWho, ] of [ ...sMorph.matchAll(/:(?:[123][sp]|P|Y)/g) ]) {
                     if (conj.hasConj(sStem, sTense, sWho)) {
                         aSugg.add(conj.getConj(sStem, sTense, sWho));
                     }
@@ -358,10 +358,10 @@ function suggMasSing (sFlex, bSuggSimil=false) {
         } else {
             // a verb
             let sVerb = cregex.getLemmaOfMorph(sMorph);
-            if (conj.hasConj(sVerb, ":PQ", ":Q1") && conj.hasConj(sVerb, ":PQ", ":Q3")) {
+            if (conj.hasConj(sVerb, ":Q", ":m:s") && conj.hasConj(sVerb, ":Q", ":f:s")) {
                 // We also check if the verb has a feminine form.
                 // If not, we consider it’s better to not suggest the masculine one, as it can be considered invariable.
-                aSugg.add(conj.getConj(sVerb, ":PQ", ":Q1"));
+                aSugg.add(conj.getConj(sVerb, ":Q", ":m:s"));
             }
         }
     }
@@ -394,10 +394,10 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
         } else {
             // a verb
             let sVerb = cregex.getLemmaOfMorph(sMorph);
-            if (conj.hasConj(sVerb, ":PQ", ":Q2")) {
-                aSugg.add(conj.getConj(sVerb, ":PQ", ":Q2"));
-            } else if (conj.hasConj(sVerb, ":PQ", ":Q1")) {
-                let sSugg = conj.getConj(sVerb, ":PQ", ":Q1");
+            if (conj.hasConj(sVerb, ":Q", ":m:p")) {
+                aSugg.add(conj.getConj(sVerb, ":Q", ":m:p"));
+            } else if (conj.hasConj(sVerb, ":Q", ":m:s")) {
+                let sSugg = conj.getConj(sVerb, ":Q", ":m:s");
                 // it is necessary to filter these flexions, like “succédé” or “agi” that are not masculine plural
                 if (sSugg.endsWith("s")) {
                     aSugg.add(sSugg);
@@ -435,8 +435,8 @@ function suggFemSing (sFlex, bSuggSimil=false) {
         } else {
             // a verb
             let sVerb = cregex.getLemmaOfMorph(sMorph);
-            if (conj.hasConj(sVerb, ":PQ", ":Q3")) {
-                aSugg.add(conj.getConj(sVerb, ":PQ", ":Q3"));
+            if (conj.hasConj(sVerb, ":Q", ":f:s")) {
+                aSugg.add(conj.getConj(sVerb, ":Q", ":f:s"));
             }
         }
     }
@@ -469,8 +469,8 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
         } else {
             // a verb
             let sVerb = cregex.getLemmaOfMorph(sMorph);
-            if (conj.hasConj(sVerb, ":PQ", ":Q4")) {
-                aSugg.add(conj.getConj(sVerb, ":PQ", ":Q4"));
+            if (conj.hasConj(sVerb, ":Q", ":f:p")) {
+                aSugg.add(conj.getConj(sVerb, ":Q", ":f:p"));
             }
         }
     }
@@ -562,7 +562,7 @@ function g_suggAgree (oTokenDst, oTokenSrc) {
 
 function hasFemForm (sFlex) {
     for (let sStem of gc_engine.oSpellChecker.getLemma(sFlex)) {
-        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q3")) {
+        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":Q", ":f:s")) {
             return true;
         }
     }
@@ -574,7 +574,7 @@ function hasFemForm (sFlex) {
 
 function hasMasForm (sFlex) {
     for (let sStem of gc_engine.oSpellChecker.getLemma(sFlex)) {
-        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q1")) {
+        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":Q", ":m:s")) {
             // what has a feminine form also has a masculine form
             return true;
         }

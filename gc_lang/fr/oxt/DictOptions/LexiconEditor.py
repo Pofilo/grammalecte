@@ -560,16 +560,16 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                                                 self.lGeneratedFlex.append((sConj, ":V" + oVerb.cGroup + "_" + sVerbTag + sTag1 + sTag2))
                                     else:
                                         # participes passés
-                                        if dFlex[":Q3"]:
-                                            if dFlex[":Q2"]:
-                                                self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:s/*"))
-                                                self.lGeneratedFlex.append((dFlex[":Q2"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:p/*"))
+                                        if dFlex[":f:s"]:
+                                            if dFlex[":m:p"]:
+                                                self.lGeneratedFlex.append((dFlex[":m:s"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:s/*"))
+                                                self.lGeneratedFlex.append((dFlex[":m:p"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:p/*"))
                                             else:
-                                                self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:i/*"))
-                                            self.lGeneratedFlex.append((dFlex[":Q3"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:s/*"))
-                                            self.lGeneratedFlex.append((dFlex[":Q4"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:p/*"))
+                                                self.lGeneratedFlex.append((dFlex[":m:s"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:i/*"))
+                                            self.lGeneratedFlex.append((dFlex[":f:s"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:s/*"))
+                                            self.lGeneratedFlex.append((dFlex[":f:p"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:p/*"))
                                         else:
-                                            self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:e:i/*"))
+                                            self.lGeneratedFlex.append((dFlex[":m:s"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:e:i/*"))
             elif self.xW.State:
                 # Adverbe
                 self.sLemma = self.sLemma.lower();
