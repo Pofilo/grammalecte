@@ -41,6 +41,8 @@ def getConj (sVerb, sTense, sWho):
     "returns conjugation (can be an empty string)"
     if sVerb not in _dVerb:
         return None
+    if sTense == ":Y":
+        return sVerb
     return _modifyStringWithSuffixCode(sVerb, _dPatternConj[sTense][_lTags[_dVerb[sVerb][1]][_dTenseIdx[sTense]]].get(sWho, ""))
 
 
@@ -48,7 +50,7 @@ def hasConj (sVerb, sTense, sWho):
     "returns False if no conjugation (also if empty) else True"
     if sVerb not in _dVerb:
         return False
-    if _dPatternConj[sTense][_lTags[_dVerb[sVerb][1]][_dTenseIdx[sTense]]].get(sWho, False):
+    if sTense == ":Y" or _dPatternConj[sTense][_lTags[_dVerb[sVerb][1]][_dTenseIdx[sTense]]].get(sWho, False):
         return True
     return False
 
@@ -113,12 +115,14 @@ def _getTags (sVerb):
 
 def _getConjWithTags (sVerb, tTags, sTense, sWho):
     "returns conjugation (can be an empty string)"
+    if sTense == ":Y":
+        return sVerb
     return _modifyStringWithSuffixCode(sVerb, _dPatternConj[sTense][tTags[_dTenseIdx[sTense]]].get(sWho, ""))
 
 
 def _hasConjWithTags (tTags, sTense, sWho):
     "returns False if no conjugation (also if empty) else True"
-    if _dPatternConj[sTense][tTags[_dTenseIdx[sTense]]].get(sWho, False):
+    if sTense == ":Y" or _dPatternConj[sTense][tTags[_dTenseIdx[sTense]]].get(sWho, False):
         return True
     return False
 

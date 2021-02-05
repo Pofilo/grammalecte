@@ -129,7 +129,7 @@ def suggVerbFrom (sStem, sFlex, sWho=""):
     "conjugate <sStem> according to <sFlex> (and eventually <sWho>)"
     dSugg = {}
     for sMorph in _oSpellChecker.getMorph(sFlex):
-        lTenses = [ m.group(0)  for m in re.finditer(":(?:Y|I[pqsf]|S[pq]|K|P|Q)", sMorph) ]
+        lTenses = [ m.group(0)  for m in re.finditer(":(?:Y|I[pqsf]|S[pq]|K|P)", sMorph) ]
         if sWho:
             for sTense in lTenses:
                 if conj.hasConj(sStem, sTense, sWho):

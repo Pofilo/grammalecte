@@ -7097,7 +7097,7 @@ __pleo_verbes__
         <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
 
     >choisir [le|un|ce|quel|mon|ton|son|notre|votre|leur] choix
-        <<- /pleo/ -1>> =suggVerbFrom(\1, "faire")                  && Pléonasme.
+        <<- /pleo/ -1>> =suggVerbFrom("faire", \1)                  && Pléonasme.
 
     [>efforcer|>essayer|>tâcher] de faire en sorte [de|d’]
         <<- /pleo/ ->> \1 \-1                                       && Pléonasme.
@@ -7106,7 +7106,7 @@ __pleo_verbes__
         <<- /pleo/ not value(>1, "|de|des|du|d’|") ->> \1           && Pléonasme.
 
     >opter pour [l’|une|cette|quelle] option
-        <<- /pleo/ -1:2>> =suggVerbFrom(\1, "choisir")              && Pléonasme.
+        <<- /pleo/ -1:2>> =suggVerbFrom("choisir", \1)              && Pléonasme.
 
     >sortir hors [de|d’]
         <<- /pleo/ -2:3>> \3                                        && Pléonasme. Exemple : « sortir de la maison », et non « sortir hors de la maison ».

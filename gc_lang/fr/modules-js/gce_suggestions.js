@@ -162,7 +162,7 @@ function suggVerbFrom (sStem, sFlex, sWho="") {
     "conjugate <sStem> according to <sFlex> (and eventually <sWho>)"
     let aSugg = new Set();
     for (let sMorph of gc_engine.oSpellChecker.getMorph(sFlex)) {
-        let lTenses = [ ...sMorph.matchAll(/:(?:Y|I[pqsf]|S[pq]|K|P|Q)/g) ];
+        let lTenses = [ ...sMorph.matchAll(/:(?:Y|I[pqsf]|S[pq]|K|P)/g) ];
         if (sWho) {
             for (let [sTense, ] of lTenses) {
                 if (conj.hasConj(sStem, sTense, sWho)) {

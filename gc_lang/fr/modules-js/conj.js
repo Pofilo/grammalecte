@@ -63,6 +63,9 @@ var conj = {
         if (!this._dVerb.hasOwnProperty(sVerb)) {
             return null;
         }
+        if (sTense == ":Y") {
+            return sVerb;
+        }
         if (!this._dPatternConj[sTense][this._lTags[this._dVerb[sVerb][1]][this._dTenseIdx.get(sTense)]].hasOwnProperty(sWho)) {
             return "";
         }
@@ -73,6 +76,9 @@ var conj = {
         // returns false if no conjugation (also if empty) else true
         if (!this._dVerb.hasOwnProperty(sVerb)) {
             return false;
+        }
+        if (sTense == ":Y") {
+            return true;
         }
         if (this._dPatternConj[sTense][this._lTags[this._dVerb[sVerb][1]][this._dTenseIdx.get(sTense)]].hasOwnProperty(sWho)
                 && this._dPatternConj[sTense][this._lTags[this._dVerb[sVerb][1]][this._dTenseIdx.get(sTense)]][sWho]) {
@@ -125,6 +131,9 @@ var conj = {
 
     _getConjWithTags: function (sVerb, tTags, sTense, sWho) {
         // returns conjugation (can be an empty string)
+        if (sTense == ":Y") {
+            return sVerb;
+        }
         if (!this._dPatternConj[sTense][tTags[this._dTenseIdx.get(sTense)]].hasOwnProperty(sWho)) {
             return "";
         }
@@ -133,6 +142,9 @@ var conj = {
 
     _hasConjWithTags: function (tTags, sTense, sWho) {
         // returns false if no conjugation (also if empty) else true
+        if (sTense == ":Y") {
+            return true;
+        }
         if (this._dPatternConj[sTense][tTags[this._dTenseIdx.get(sTense)]].hasOwnProperty(sWho)
                 && this._dPatternConj[sTense][tTags[this._dTenseIdx.get(sTense)]][sWho]) {
             return true;
