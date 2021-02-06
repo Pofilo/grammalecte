@@ -2199,10 +2199,10 @@ __immunités_termes_grammaticaux__
     [le|du|au] syntagme  ?nominal¿  «          [*WORD|*WORDELD]  *WORD  ?*WORD¿  ?*WORD¿  »
     [le|du|au] syntagme  ?nominal¿  [‘|'|’|`]  [*WORD|*WORDELD]  *WORD  ?*WORD¿  ?*WORD¿  [‘|'|’|`]
     [le|du|au] syntagme  ?nominal¿  ‹          [*WORD|*WORDELD]  *WORD  ?*WORD¿  ?*WORD¿  ›
-    la proposition                  [“|”|"]    [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  [“|”|"]
-    la proposition                  «          [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  »
-    la proposition                  [‘|'|’|`]  [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  [‘|'|’|`]
-    la proposition                  ‹          [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ›
+    la proposition                  [“|”|"]    [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?*WORD¿  [“|”|"]
+    la proposition                  «          [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?*WORD¿  »
+    la proposition                  [‘|'|’|`]  [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?*WORD¿  [‘|'|’|`]
+    la proposition                  ‹          [*WORD|*WORDELD]  [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?*WORD¿  ›
     [<start>|la] locution  ?[nominale|adjectivale|adverbiale|verbale|pronominale]¿  [“|”|"]    [*WORD|*WORDELD] ?,¿ [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿ ?*WORD¿  [“|”|"]
     [<start>|la] locution  ?[nominale|adjectivale|adverbiale|verbale|pronominale]¿  «          [*WORD|*WORDELD] ?,¿ [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿ ?*WORD¿  »
     [<start>|la] locution  ?[nominale|adjectivale|adverbiale|verbale|pronominale]¿  [‘|'|’|`]  [*WORD|*WORDELD] ?,¿ [*WORD|*WORDELD]  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿  ?[*WORD|*WORDELD]¿ ?*WORD¿  [‘|'|’|`]
@@ -2290,7 +2290,7 @@ __immunités_termes_grammaticaux__
     [<start>|,]  [“|”|"]    *WORD       [“|”|"]    est masculin
     [<start>|,]  «          *WORD       »          est masculin
     [<start>|,]  [‘|'|’|`]  *WORD       [‘|'|’|`]  est masculin
-    [<start>|,]  ‹          $:N         ›          est masculin
+    [<start>|,]  ‹          *WORD       ›          est masculin
     [<start>|,]  [“|”|"]    $:Y         [“|”|"]    est [un|le]     verbe
     [<start>|,]  «          $:Y         »          est [un|le]     verbe
     [<start>|,]  [‘|'|’|`]  $:Y         [‘|'|’|`]  est [un|le]     verbe
@@ -3067,6 +3067,10 @@ __da_point__
 __da_nos__
     nos $¬:B
         <<- =>> select(\1, ":D")
+
+__da_parler__
+    [>aller|>entendre|>falloir|>faire|>pouvoir|>savoir|>vouloir] parler
+        <<- =>> select(\-1, ":Y")
 
 __da_parmi__
     parmi *WORD
@@ -9541,6 +9545,19 @@ TEST: {{a en jugé part}} cet article, c’est bientôt la fin.                 
 TEST: ils sont à en juger par leurs résultats les prochains champions.
 
 
+__conf_à_l_emporte_pièce__
+    !! à l’ emporte-pièce ¡¡
+    [à|a] l’ [emporte+s] [>pièce|>pisse]
+    [à|a] l’ [en|>an|>hanse] >porte [>pièce|>pisse]
+    [à|a] >lent >porte [>pièce|>pisse]
+    [à|a] l’ [emporte-pièce|emportes-pièce|emporte-pièces|emportes-pièces]
+        <<- /conf/ ->> à l’emporte-pièce                                                && Locution “à l’emporte-pièce”.|https://fr.wiktionary.org/wiki/%C3%A0_l%E2%80%99emporte-pi%C3%A8ce
+        <<- !3>>
+
+TEST: agir {{à l’emporte pièce}}                                    ->> à l’emporte-pièce
+TEST: réagir à l’emporte-pièce
+
+
 __conf_à_risques_et_périls__
     !! à [mes|tes|ses|nos|vos|leurs] risques et périls ¡¡
     [a|à] [mes|tes|ses|nos|vos|leur|leurs] [risque+s] [et|est|é|eh|hé|ai|aie+s|ait] [péril+s|>pérille]
@@ -11243,12 +11260,12 @@ __conf_fosse_fausse__
     [fausse+s] à [>compost|>déchet|>lisier|>fumier|>plongeon|>plongée|>purin|>merde|>ordure]
     [fausse+s] [au|aux|des] [>caïman|>crocodile|>charognard|>lion|>loup|>louve|ours|>serpent|>cobra|>diable]
     [fausse+s] [>abyssal|>canin|>béant|>commun|>océanique|sous-marine+s|>septique|>immense|>profond|>nasal|>iliaque|>temporal]
-        <<- /conf/ -1>> =\1.replace("au", "o").replace("AU", "O")           && Confusion probable : le mot “fausse” est l’adjectif féminin de “faux”. Pour évoquer une profondeur, écrivez “fosse”.
+        <<- /conf/ -1>> =\1.replace("au", "o").replace("AU", "O")  && Confusion probable : le mot “fausse” est l’adjectif féminin de “faux”. Pour évoquer une dépression ou une cavité dans le sol, écrivez “fosse”.
 
     au bord de la fausse
-        <<- /conf/ --1>> fosse                                              && Confusion probable : le mot “fausse” est l’adjectif féminin de “faux”. Pour évoquer une profondeur, écrivez “fosse”.
+        <<- /conf/ --1>> fosse                                     && Confusion probable : le mot “fausse” est l’adjectif féminin de “faux”. Pour évoquer une dépression ou une cavité dans le sol, écrivez “fosse”.
 
-    >fosse [>alerte|>déclaration]
+    >fosse [>alerte|>déclaration|>réponse]
         <<- /conf/ -1>> =\1.replace("o", "au").replace("O", "AU")
         && Confusion probable : une fosse est une dépression ou une cavité dans le sol. Pour évoquer une falsification ou une erreur, écrivez “fausse”.|https://fr.wiktionary.org/wiki/fausse
 
@@ -17013,6 +17030,7 @@ __purge_locutions__
     en roue libre
     en second lieu
     en sens inverse
+    en simultané
     en situation [irrégulière|régulière]
     en sous-main
     en sous-nombre ?[évident|flagrant]¿
@@ -18116,6 +18134,7 @@ __substantifs_multi_mots__
     [>boîte|>boite] [de|d’] nuit
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement|sous-munitions]
     >bombe à rayonnement renforcé
+    >bonimenteur [de|d’] foire
     >bonnet [de|d’] nuit
     [bonne+s|>bonniche] à tout faire
     >bordereau d’ expédition
@@ -21947,9 +21966,15 @@ TEST: faire faux bond
 __conf_fausse_fosse__
     >faire une fosse couche
     combien de >fosse [couche+s]
-        <<- /conf/ -3>> =\3.replace("o", "au").replace("O", "AU")           && Confusion. Une “fausse couche”.
+        <<- /conf/ -3>> =\3.replace("o", "au").replace("O", "AU")   && Confusion. Une “fausse couche”.
+
+    [>être|>demeurer|>paraître|>paraitre|>sembler|>rester|>apparaître|>apparaitre] >fosse
+        <<- /conf/ not morph(>1, ">septique/")
+        --1>> =\-1.replace("o", "au").replace("O", "AU")            && Confusion probable : une fosse est une profondeur, pour l’adjectif féminin de “faux” est “fausse”.|https://fr.wiktionary.org/wiki/fausse
 
 TEST: elle a fait une {{fosse}} couche.                                     ->> fausse
+TEST: cette réponse est {{fosse}}                                           ->> fausse
+TEST: la réponse à votre question, c’est fosse septique
 
 
 # filtre / philtre
@@ -23657,6 +23682,7 @@ __gn_le_2m__
         <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                                 && Accord de genre erroné : le syntagme « \1 \2 » est masculin, « \3 » est féminin.
+        <<- /gn/ __also__ and morph(\2, ":A.*:e:[si]") -1>> la                                      && Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
         -3>> =suggMasSing(\3)                                                                       && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
@@ -23664,6 +23690,7 @@ __gn_le_2m__
         <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                                 && Accord de genre erroné : le syntagme « \2 \3 » est masculin, « \4 » est féminin.
+        <<- /gn/ __also__ and morph(\3, ":A.*:e:[si]") -2>> la                                      && Accord de genre erroné : « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\4, \4)
         -4>> =suggMasSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
@@ -23672,6 +23699,8 @@ TEST: c’était le chien {{perdue}} des voisins.                               
 TEST: viens vite ou le pari {{imperdables}} sera moins facile…                          ->> imperdable
 TEST: connaître et le grand {{perdante}}                                                ->> perdant
 TEST: Le bruit {{perçus}} par les voisins.                                              ->> perçu
+TEST: {{le}} gigantesque {{explosion}}                                                  ->> la|||
+TEST: je ne sais jamais quoi faire et {{le}} gigantesque {{explosion}} n’a rien arrangé ->> la|||
 TEST: si le premier film est un triomphe, le deuxième est un demi-succès, et le troisième une déception.
 TEST: Cela aboutira sur une contractualisation coûteuse pour organiser cette divergence d’intérêts, et le gestionnaire aura le dernier mot.
 
@@ -23762,21 +23791,36 @@ __gn_la_2m__
     la  *WORD  *WORD
         <<- /gn/ morph(\1, ":D") and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
-        -3>> =suggFemSing(\3, True)                                                         && Accord de genre erroné : le syntagme « \1 \2 » est féminin, « \3 » est masculin.
+        -3>> =suggFemSing(\3, True)                                                                 && Accord de genre erroné : le syntagme « \1 \2 » est féminin, « \3 » est masculin.
+        <<- /gn/ __also__ and morph(\2, ":A.*:e:[si]") and not value(<1, "|à|") -1>> le             && Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
-        -3>> =suggFemSing(\3)                                                               && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
+        -3>> =suggFemSing(\3)                                                                       && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
-    [et|ou|de|d’]  la  *WORD  *WORD
+    [et|ou]  la  *WORD  *WORD
         <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
-        -4>> =suggFemSing(\4, True)                                                         && Accord de genre erroné : le syntagme « \2 \3 » est féminin, « \4 » est masculin.
+        -4>> =suggFemSing(\4, True)                                                                 && Accord de genre erroné : le syntagme « \2 \3 » est féminin, « \4 » est masculin.
+        <<- /gn/ __also__ and morph(\3, ":A.*:e:[si]") -2>> le                                      && Accord de genre erroné : « \4 » est masculin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
-        -4>> =suggFemSing(\4)                                                               && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        -4>> =suggFemSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+
+    [de|d’]  la  *WORD  *WORD
+        <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
+        <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
+        -4>> =suggFemSing(\4, True)                                                                 && Accord de genre erroné : le syntagme « \2 \3 » est féminin, « \4 » est masculin.
+        <<- /gn/ __also__ and morph(\3, ":A.*:e:[si]") and not hasFemForm(\4) -1:2>> du             && Accord de genre erroné : « \4 » est masculin.
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
+        -4>> =suggFemSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: La plus grande {{cinglé}}.                                                ->> cinglée
+TEST: {{la}} gigantesque {{monument}}                                           ->> le|||
 TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.         ->> noire
 TEST: la place {{balayées}} par le vent                                         ->> balayée
 TEST: je voyais de la pluie {{noires}}                                          ->> noire
+TEST: je le sus et {{la}} légitimiste {{intellect}}                             ->> le|||
+TEST: il en avait entendu parler et la belle {{explications}} ne tenait plus    ->> explication
+TEST: {{de la}} légitimiste {{intellectualisme}}                                ->> du|||
+TEST: de la légitimiste {{intellectuel}}                                        ->> intellectuelle
 TEST: Il faut donc examiner ensemble le panneau et la paroi latérale.
 TEST: Il faut donc examiner ensemble le panneau et la paroi latéraux.
 TEST: Il faut donc examiner ensemble les panneaux et la paroi latéraux.
@@ -24051,6 +24095,7 @@ __gn_un_2m__
         <<- /gn/ not value(<1, "|et|ou|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3, True)                                                                 && Accord de genre erroné : le syntagme « \1 \2 » est masculin, « \3 » est féminin.
+        <<- /gn/ __also__ and morph(\2, ":A.*:e:[si]") -1>> une                                     && Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", "*") and not apposition(\2, \3)
         -3>> =suggMasSing(\3)                                                                       && Accord de nombre erroné avec « \2 » : « \3 » devrait être au singulier.
 
@@ -24058,14 +24103,17 @@ __gn_un_2m__
         <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                                 && Accord de genre erroné : le syntagme « \2 \3 » est masculin, « \4 » est féminin.
+        <<- /gn/ __also__ and morph(\3, ":A.*:e:[si]") -2>> une                                     && Accord de genre erroné : « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
         -4>> =suggMasSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: un exercice pas très {{utiles}}.                                                      ->> utile
 TEST: un homme {{grands}}                                                                   ->> grand
 TEST: un homme {{futiles}}                                                                  ->> futile
+TEST: {{un}} gigantesque {{explosion}}                                                      ->> une|||
 TEST: que sais-tu d’un homme {{grande}} comme un arbre                                      ->> grand
 TEST: je me souviens d’un homme {{arrogants}}                                               ->> arrogant
+TEST: trois d’{{un}} quelconque {{élégance}}                                                ->> une|||
 TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{bancale}}.     ->> bancal
 
 
@@ -24082,6 +24130,7 @@ __gn_une_2m__
         <<- /gn/ not value(<1, "|et|ou|d’|") and not morph(\3, ">seul/") >>>
         <<- /gn/ morph(\2, ":[NA].*:[fe]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3, True)                                                                 && Accord de genre erroné : le syntagme « \1 \2 » est féminin, « \3 » est masculin.
+        <<- /gn/ __also__ and morph(\2, ":A.*:e:[si]") -1>> un                                      && Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ \2 != "fois" and morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", "*") and not apposition(\2, \3)
         -3>> =suggFemSing(\3)                                                                       && Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
 
@@ -24089,6 +24138,7 @@ __gn_une_2m__
         <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not morph(\4, ">seul/") >>>
         <<- /gn/ morph(\3, ":[NA].*:[fe]", ":(?:B|G|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4, True)                                                                 && Accord de genre erroné : le syntagme « \2 \3 » est féminin, « \4 » est masculin.
+        <<- /gn/ __also__ and morph(\3, ":A.*:e:[si]") -2>> un                                      && Accord de genre erroné : « \4 » est masculin.
         <<- /gn/ \3 != "fois" and morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", "*") and not apposition(\3, \4)
         -4>> =suggFemSing(\4)                                                                       && Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
@@ -24098,6 +24148,8 @@ TEST: une géologue {{intelligents}}                                            
 TEST: Et une femme {{déterminées}}                                              ->> déterminée
 TEST: on parle là d’une femme {{inconnu}}                                       ->> inconnue
 TEST: on parle d’une Église {{brûlées}}                                         ->> brûlée
+TEST: {{une}} gigantesque {{porte-avions}}                                      ->> un|||
+TEST: d’{{une}} titanesque {{opportunisme}}                                     ->> un|||
 TEST: L’or allume le feu d’une cupidité d’une couleur et d’une sorte différentes.
 
 
@@ -24845,6 +24897,7 @@ __gn_nombre_plur_2m__
 TEST: deux sombres {{idiot}}                                                                ->> idiots
 TEST: sept valeurs {{aléatoire}}                                                            ->> aléatoires
 TEST: huit {{grandes}} {{claviers}}                                                         ->> grands|||
+TEST: soixante-et-une femmes {{récompensée}}                                                ->> récompensées
 TEST: X a perdu mon estime et ma considération.
 TEST: vivre une situation hors du commun à deux a aussi pesé dans la balance.
 TEST: deux jours minimum
@@ -25351,11 +25404,25 @@ __gn_nombre_lettres_1m__
     [cent|mille]  ~[iI][èÈ][mM][eE]$  @:[NA].*:[si]
         <<- !2>>
 
-    @:B:.:p  *WORD
+    $:B:e:p  *WORD
         <<- /gn/ not value(\1, "|neuf|mille|") and morph(\2, ":[NA].*:s", "*") and not morph(<1, ":D.*:s")
             and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
             and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+
+    [vingt-et-un|trente-et-un|quarante-et-un|cinquante-et-un|soixante-et-un|septante-et-un|octante-et-un|huitante-et-un|nonante-et-un]  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:[fs]", "*") and not morph(<1, ":D.*:s")
+            and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+            and not re.search("^[IVXLDM]+$", \1)
+        -2>> =suggMasPlur(\2)                                                              && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+        <<- /gn/ __also__ and morph(\2, ":[NA].*:f", ":[me]") -1>> \1e                     && Accord de genre erroné : « \2 » est féminin.
+
+    [vingt-et-une|trente-et-une|quarante-et-une|cinquante-et-une|soixante-et-une|septante-et-une|octante-et-une|huitante-et-une|nonante-et-une]  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:[ms]", "*") and not morph(<1, ":D.*:s")
+            and not value(\2, "|maximum|minimum|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+            and not re.search("^[IVXLDM]+$", \1)
+        -2>> =suggFemPlur(\2)                                                               && Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+        <<- /gn/ __also__ and morph(\2, ":[NA].*:m", ":[fe]") -1>> =\1[:-1]                 && Accord de genre erroné : « \2 » est masculin.
 
     neuf  *WORD
         <<- /gn/ morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not morph(<1, ":D.*:s")
@@ -25374,6 +25441,10 @@ TEST: cent {{mot}}                                                              
 TEST: cinquante {{mot}}                                                             ->> mots
 TEST: mille cinquante {{mot}}                                                       ->> mots
 TEST: deux {{tête}}                                                                 ->> têtes
+TEST: soixante-et-une {{femme}}                                                     ->> femmes
+TEST: {{soixante-et-une}} {{hommes}}                                                ->> soixante-et-un|||
+TEST: soixante-et-un {{homme}}                                                      ->> hommes
+TEST: {{soixante-et-un}} {{femmes}}                                                 ->> soixante-et-une|||
 TEST: un logement neuf bâti par des professionnels.
 TEST: un mille marin.
 TEST: L’article VII mentionné dans la revue
@@ -25748,44 +25819,134 @@ TEST: Que sous couvert d’économie du partage, chacun puisse s’exploiter un 
 !!
 !!
 
-__gn_det_nom_de_det_nom_adj__
-    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]  *WORD  *WORD
-        <<- /gn/ morph(\6, ":[NA].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and morph(\5, ":[NA].*:[fe]") and not apposition(\5, \6)
-        -6>> =suggFemSing(\6, True)                                                         && Accord erroné : « \6 » devrait être au féminin singulier.
+__gn_det_nom_de_det_nom_adj_mas_sing__
+    [le|un|ce|cet]  *WORD  [de|d’]  [ce|cet|un]         *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+    [le|un|ce|cet]  *WORD  du                           *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, ":[NA].*:[me]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-    [le|un|ce|cet]  *WORD  [de|d’]  [ce|cet|un]  *WORD  *WORD
-    [le|un|ce|cet]  *WORD  du  *WORD  *WORD
-        <<- /gn/ morph(\-1, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and morph(\-2, ":[NA].*:[me]") and not apposition(\-2, \-1)
-        --1>> =suggMasSing(\-1, True)                                                       && Accord erroné : « \-1 » devrait être au masculin singulier.
+    [le|un|ce|cet]  *WORD  de  [mon|ton|son]            *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, "[NA].*:[me]", ":[NA].*:f|>[aâeéèêiîoôuh].*:e") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-    [le|un|ce|cet]  *WORD  de  [mon|ton|son]  *WORD  *WORD
-        <<- /gn/ morph(\5, ":", ":[NA].*:f|>[aâeéèêiîou].*:e") and morph(\6, ":[NA].*:(?:f|m:p)", ":(?:G|P|m:[is]|V0|3[sp])") and not apposition(\5, \6)
-        -6>> =suggMasSing(\6, True)                                                         && Accord erroné : « \6 » devrait être au masculin singulier.
+    [le|un|ce|cet]  *WORD  de  [l’|notre|votre|leur]    *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, "[NA].*:m:[si]", ":[NA].*:[fe]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-    [mon|ton|son]  *WORD  [de|d’]  [ce|cet|un]  *WORD  *WORD
-    [mon|ton|son]  *WORD  du  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:m", ":G|>[aâeéèêiîou].*:[ef]")
-            and morph(\-1, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\-2, \-1)
-        --1>> =suggMasSing(\-1, True)                                                       && Accord erroné : « \-1 » devrait être au masculin singulier.
+    [mon|ton|son]  *WORD  [de|d’]  [ce|cet|un]          *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+    [mon|ton|son]  *WORD  du                            *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":G|>[aâeéèêiîoôuh].*:[ef]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-    [mon|ton|son]  *WORD  de [mon|ton|son]  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:m", ":G|>[aâeéèêiîou].*:[ef]")
-            and not morph(\-2, ":[NA].*:f|>[aâeéèêiîou].*:e") and morph(\-1, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\-2, \-1)
-        --1>> =suggMasSing(\-1, True)                                                       && Accord erroné : « \-1 » devrait être au masculin singulier.
+    [mon|ton|son]  *WORD  de [mon|ton|son]              *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":G|>[aâeéèêiîoôuh].*:[ef]") and morph(\-2, ":[NA].*:[me]:[si]", ":[NA].*:f|>[aâeéèêiîoôuh].*:e") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs]  *WORD  *WORD
-    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des  *WORD  *WORD
-        <<- /gn/ morph(\-1, ":[NA].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and morph(\-2, ":[NA].*:[pi]") and not apposition(\-2, \-1)
-            and not (value(>1, "|et|ou|") and morph(>2, ":A.*:[si]"))
-        --1>> =suggPlur(\-1)                                                                && Accord erroné : « \-1 » devrait être au pluriel.
+    [mon|ton|son]  *WORD  de [l’|notre|votre|leur]      *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":G|>[aâeéèêiîoôuh].*:[ef]") and morph(\-2, ":[NA].*:m:[si]", ":[NA].*:[fe]:[si]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
 
-TEST: La fille de cette belle {{inconnu}}                       ->> inconnue
+    [l’|notre|votre|leur]  *WORD  [de|d’]  [ce|cet|un]  *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+    [l’|notre|votre|leur]  *WORD  du                    *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-2, ":[NA].*:[me]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
+
+    [l’|notre|votre|leur]  *WORD  de  [mon|ton|son]     *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-2, ":[NA].*:m:[si]", ":[NA].*:f|>[aâeéèêiîoôuh].*:e") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
+
+    [l’|notre|votre|leur]  *WORD  de  [l’|notre|votre|leur]  *WORD  @:[NA].*:(?:f|[me]:p)¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-2, "[NA].*:m:[si]", ":[NA].*:[fe]:[si]") and not apposition(\-2, \-1)
+        --1>> =suggMasSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au masculin singulier.
+
 TEST: Le chien du voisin {{mourante}}                           ->> mourant
 TEST: Un chien de ce voisin {{amicale}}                         ->> amical
+TEST: le chien de son voisin {{tuée}}                           ->> tué
+TEST: le chien de leur patron {{malades}}                       ->> malade
+TEST: Cet homme de mon groupe {{oubliés}}                       ->> oublié
 TEST: mon amour du chocolat {{immodérée}}                       ->> immodéré
 TEST: ton amour de son verbe {{enthousiasmante}}                ->> enthousiasmant
-TEST: Cet homme de mon groupe {{oubliés}}                       ->> oublié
-TEST: Les hommes des mines {{voisin}}                           ->> voisins
+TEST: son amour de notre travail {{ardus}}                      ->> ardu
+TEST: notre programme du mois {{disparus}}                      ->> disparu
+TEST: l’homme de mon parti {{oubliée}}                          ->> oublié
+TEST: l’ignorant de leur groupe {{rejetés}} par tous            ->> rejeté
+
+
+__gn_det_nom_de_det_nom_adj_fem_sing__
+    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]    *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, ":[NA].*:[fe]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [mon|ton|son]              *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [l’|notre|votre|leur]      *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, ":[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [mon|ton|son]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]              *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and morph(\-2, ":[NA].*:[fe]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [mon|ton|son]  *WORD  [de|d’]  [mon|ton|son]                        *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and morph(\-2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [mon|ton|son]  *WORD  [de|d’]  [l’|notre|votre|leur]                *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and morph(\-2, ":[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [l’|notre|votre|leur]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]      *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\-2, ":[NA].*:[fe]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [l’|notre|votre|leur]  *WORD  [de|d’]  [mon|ton|son]                *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\-2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+    [l’|notre|votre|leur]  *WORD  [de|d’]  [l’|notre|votre|leur]        *WORD  @:[NA].*:(?:m|[fe]:p)¬:(?:G|P|[fe]:[is]|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":[me]") and morph(\-2, ":[NA].*:f:[si]", ":[me]") and not apposition(\-2, \-1)
+        --1>> =suggFemSing(\-1, True)                                                               && Accord erroné : “\-1” devrait être au féminin singulier.
+
+TEST: La fille de cette belle {{inconnu}}                       ->> inconnue
+TEST: la fille de notre directrice {{enlevé}}                   ->> enlevée
+TEST: cette femme de mon école {{renvoyé}}                      ->> renvoyée
+TEST: mon école de ma ville {{rasé}}                            ->> rasée
+TEST: ton entreprise de ton institutrice {{racheté}}            ->> rachetée
+TEST: son entreprise de leur poche {{racheté}}                  ->> rachetée
+TEST: l’école de ma psychiatre {{brûlé}}                        ->> brûlée
+TEST: l’école de mon entreprise {{pillé}}                       ->> pillée
+TEST: l’école de notre cité {{reconstruites}}                   ->> reconstruite
+TEST: l’existence de la foi {{rejeté}}                          ->> rejetée
+TEST: son homologue de la ville écarté de l’ordre
+
+
+__gn_det_nom_de_det_nom_adj_sing!3__
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [de|d’]  [la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:[NA].*:p¬:(?:G|P|[me]:[is]|V0|3[sp])
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  du                                                                          *WORD  @:[NA].*:p¬:(?:G|P|[me]:[is]|V0|3[sp])
+        <<- /gn/ morph(\-2, ":[NA].*:[me]") and not apposition(\-2, \-1)
+        --1>> =suggSing(\-1, True)                                                                  && Accord erroné : “\-1” devrait être au masculin singulier.
+
+TEST: la femme de notre homme {{expulsés}}                      ->> expulsé
+
+
+__gn_det_nom_de_det_nom_adj_plur__
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  @:[NA].*:[pi]¬:(?:G|P|s|V0|3[sp])
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des                                          *WORD  @:[NA].*:[pi]¬:(?:G|P|s|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":s") and morph(\-2, ":[NA].*:[pi]") and not apposition(\-2, \-1)
+                and not agreement(\-2, \-1) and not agreement(\2, \-1)
+        --1>> =suggAgree(\-1, \-2)                                                                  && Accord erroné : “\-1” devrait être accordé avec “\2” ou “\-2”.
+
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  @:[NA].*:s¬:(?:G|P|i|p|V0|3[sp])
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des                                          *WORD  @:[NA].*:s¬:(?:G|P|i|p|V0|3[sp])
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":s") and morph(\-2, ":[NA].*:[pi]") and not apposition(\-2, \-1) and not (value(>1, "|et|ou|") and morph(>2, ":A.*:[si]"))
+        --1>> =suggPlur(\-1)                                                                        && Accord erroné : “\-1” devrait être au pluriel.
+
+TEST: ces femmes des mines {{voisins}}                              ->> voisines
+TEST: Les hommes des mines {{voisin}}                               ->> voisins
+TEST: Les psychologues des mines payés à coup de lance-pierre
+TEST: les hommes des mines voisines
 TEST: Lutter contre le chômage de masse avec les armes des travailleurs reste pour nous une priorité.
 TEST: le meurtre de son ex-petite amie
 TEST: à cette envie de la voir sourire tout le temps
@@ -34559,6 +34720,7 @@ TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
 TEST: Du monde noir sortent les envahisseurs (accord avec ce qui suit).
 
 !!! Autres tests                                                                                  !!
+TEST: Le président d’audience à un prévenu de cambriolage : « Vous aviez un papier avec des suites de quatre chiffres, on sait que ce sont des codes pour des clés. »
 TEST: l’une dit combien elle en a marre
 TEST: à travers le temps passent les existences oubliées
 TEST: autour de la parole s’adonnent à d’étonnantes pratiques les hommes perdus
