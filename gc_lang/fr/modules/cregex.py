@@ -8,8 +8,6 @@ import re
 Lemma = re.compile(r"^>(\w[\w-]*)")
 
 #### Analyses
-Gender = re.compile(":[mfe]")
-Number = re.compile(":[spi]")
 GenderNumber = re.compile(":[mfe]:[spi]")
 
 #### Nom et adjectif
@@ -88,48 +86,17 @@ def getLemmaOfMorph (s):
 
 def agreement (l1, l2):
     "returns True if agreement in gender and number is possible between morphologies <l1> and <l2>"
-    # check number agreement
-    if not mbInv(l1) and not mbInv(l2):
-        if mbSg(l1) and not mbSg(l2):
-            return False
-        if mbPl(l1) and not mbPl(l2):
-            return False
-    # check gender agreement
-    if mbEpi(l1) or mbEpi(l2):
-        return True
-    if isMas(l1) and not mbMas(l2):
+    sGender1, sNumber1 = getGenderNumber(l1)
+    sGender2, sNumber2 = getGenderNumber(l2)
+    if sNumber1 != ":i" and sNumber2 != ":i" and sNumber1 != sNumber2:
         return False
-    if isFem(l1) and not mbFem(l2):
+    if sGender1 != ":e" and sGender2 != ":e" and sGender1 != sGender2:
         return False
     return True
 
 def checkConjVerb (lMorph, sReqConj):
     "returns True if <sReqConj> in <lMorph>"
     return any(sReqConj in s  for s in lMorph)
-
-def getGender (lMorph):
-    "returns gender of word (':m', ':f', ':e' or empty string)."
-    sGender = ""
-    for sMorph in lMorph:
-        m = Gender.search(sMorph)
-        if m:
-            if not sGender:
-                sGender = m.group(0)
-            elif sGender != m.group(0):
-                return ":e"
-    return sGender
-
-def getNumber (lMorph):
-    "returns number of word (':s', ':p', ':i' or empty string)."
-    sNumber = ""
-    for sMorph in lMorph:
-        m = Number.search(sMorph)
-        if m:
-            if not sNumber:
-                sNumber = m.group(0)
-            elif sNumber != m.group(0):
-                return ":i"
-    return sNumber
 
 def getGenderNumber (lMorph):
     "returns tuple (gender, number) of word: (':m', ':f', ':e' or empty string) and (':s', ':p', ':i' or empty string)"

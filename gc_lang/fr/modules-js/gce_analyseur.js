@@ -53,8 +53,8 @@ function queryNamesPOS (sWord1, sWord2) {
     if (lMorph1.length == 0 || lMorph2.length == 0) {
         return ":N:e:p";
     }
-    let sGender1 = cregex.getGender(lMorph1);
-    let sGender2 = cregex.getGender(lMorph2);
+    let [sGender1, ] = cregex.getGenderNumber(lMorph1);
+    let [sGender2, ] = cregex.getGenderNumber(lMorph2);
     if (sGender1 == ":m" || sGender2 == ":m") {
         return ":N:m:p";
     }

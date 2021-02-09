@@ -43,13 +43,14 @@ def mbUnit (s):
         return True
     return False
 
-def queryNamesPOS(sWord1, sWord2):
+def queryNamesPOS (sWord1, sWord2):
+    "returns POS tag for <sWord1> and <sWord2> as a whole"
     lMorph1 = _oSpellChecker.getMorph(sWord1)
     lMorph2 = _oSpellChecker.getMorph(sWord2)
     if not lMorph1 or not lMorph2:
         return ":N:e:p"
-    sGender1 = cr.getGender(lMorph1)
-    sGender2 = cr.getGender(lMorph2)
+    sGender1, _ = cr.getGenderNumber(lMorph1)
+    sGender2, _ = cr.getGenderNumber(lMorph2)
     if sGender1 == ":m" or sGender2 == ":m":
         return ":N:m:p"
     if sGender1 == ":f" or sGender2 == ":f":

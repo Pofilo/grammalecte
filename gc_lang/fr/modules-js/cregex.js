@@ -9,8 +9,6 @@ var cregex = {
     _zLemma: new RegExp(">([a-zà-öø-ÿ0-9Ā-ʯ][a-zà-öø-ÿ0-9Ā-ʯ-]+)"),
 
     ///// Masculin / féminin / singulier / pluriel
-    _zGender: new RegExp(":[mfe]"),
-    _zNumber: new RegExp(":[spi]"),
     _zGenderNumber: new RegExp(":[mfe]:[spi]"),
 
     ///// Nom et adjectif
@@ -31,7 +29,7 @@ var cregex = {
     _zNAfe: new RegExp(":[NA].*:[fe]"),
 
     //// nombre et genre
-    // singuilier
+    // singulier
     _zNAms: new RegExp(":[NA].*:m.*:s"),
     _zNAfs: new RegExp(":[NA].*:f.*:s"),
     _zNAes: new RegExp(":[NA].*:e.*:s"),
@@ -88,23 +86,13 @@ var cregex = {
     },
 
     agreement: function (l1, l2) {
-        // check number agreement
-        if (!this.mbInv(l1) && !this.mbInv(l2)) {
-            if (this.mbSg(l1) && !this.mbSg(l2)) {
-                return false;
-            }
-            if (this.mbPl(l1) && !this.mbPl(l2)) {
-                return false;
-            }
-        }
-        // check gender agreement
-        if (this.mbEpi(l1) || this.mbEpi(l2)) {
-            return true;
-        }
-        if (this.isMas(l1) && !this.mbMas(l2)) {
+        // returns True if agreement in gender and number is possible between morphologies <l1> and <l2>
+        let [sGender1, sNumber1] = this.getGenderNumber(l1);
+        let [sGender2, sNumber2] = this.getGenderNumber(l2);
+        if (sNumber1 !== ":i" && sNumber2 !== ":i" && sNumber1 !== sNumber2) {
             return false;
         }
-        if (this.isFem(l1) && !this.mbFem(l2)) {
+        if (sGender1 !== ":e" && sGender2 !== ":e" && sGender1 !== sGender2) {
             return false;
         }
         return true;
@@ -112,38 +100,6 @@ var cregex = {
 
     checkConjVerb: function (lMorph, sReqConj) {
         return lMorph.some(s  =>  s.includes(sReqConj));
-    },
-
-    getGender: function (lMorph) {
-        // returns gender of word (':m', ':f', ':e' or empty string).
-        let sGender = "";
-        for (let sMorph of lMorph) {
-            let m = this._zGender.exec(sMorph);
-            if (m) {
-                if (!sGender) {
-                    sGender = m[0];
-                } else if (sGender != m[0]) {
-                    return ":e";
-                }
-            }
-        }
-        return sGender;
-    },
-
-    getNumber: function (lMorph) {
-        // returns number of word (':s', ':p', ':i' or empty string).
-        let sNumber = "";
-        for (let sMorph of lMorph) {
-            let m = this._zNumber.exec(sMorph);
-            if (m) {
-                if (!sNumber) {
-                    sNumber = m[0];
-                } else if (sNumber != m[0]) {
-                    return ":i";
-                }
-            }
-        }
-        return sNumber;
     },
 
     getGenderNumber: function (lMorph) {
@@ -299,8 +255,6 @@ var cregex = {
 
 if (typeof(exports) !== 'undefined') {
     exports._zLemma = cregex._zLemma;
-    exports._zGender = cregex._zGender;
-    exports._zNumber = cregex._zNumber;
     exports._zNA = cregex._zNA;
     exports._zNAs = cregex._zNAs;
     exports._zNAp = cregex._zNAp;
@@ -344,10 +298,9 @@ if (typeof(exports) !== 'undefined') {
     exports._zNPf = cregex._zNPf;
     exports._zNPe = cregex._zNPe;
     exports.getLemmaOfMorph = cregex.getLemmaOfMorph;
-    exports.checkAgreement = cregex.checkAgreement;
+    exports.agreement = cregex.agreement;
+    exports.getGenderNumber = cregex.getGenderNumber;
     exports.checkConjVerb = cregex.checkConjVerb;
-    exports.getGender = cregex.getGender;
-    exports.getNumber = cregex.getNumber;
     exports.isNom = cregex.isNom;
     exports.isNomNotAdj = cregex.isNomNotAdj;
     exports.isAdj = cregex.isAdj;
