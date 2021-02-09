@@ -53,17 +53,17 @@ class SuggResult:
         # Parameters
         self.nSuggLimit = nSuggLimit
         self.nSuggLimitExt = nSuggLimit + 2             # we add few entries in case suggestions merge after casing modifications
-        self.nBestSuggLimit = floor(nSuggLimit * 1.5)   # n times the requested limit
+        self.nBestSuggLimit = floor(nSuggLimit * 2)     # n times the requested limit
         self.nGoodSuggLimit = nSuggLimit * 15           # n times the requested limit
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
-        #logging.info((nDeep * "  ") + "__" + sSugg + "__")
         if sSugg in self.aAllSugg:
             return
         self.aAllSugg.add(sSugg)
         nDistJaro = 1 - st.distanceJaroWinkler(self.sSimplifiedWord, st.simplifyWord(sSugg))
         nDist = floor(nDistJaro * 10)
+        #logging.info((nDeep * "  ") + "__" + sSugg + "__ " + str(round(nDistJaro*1000)))
         if nDistJaro < .11:     # Best suggestions
             self.dBestSugg[sSugg] = round(nDistJaro*1000)
             if len(self.dBestSugg) > self.nBestSuggLimit:

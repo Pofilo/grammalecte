@@ -34,7 +34,7 @@ class SuggResult {
         // Parameters
         this.nSuggLimit = nSuggLimit;
         this.nSuggLimitExt = nSuggLimit + 2;                // we add few entries in case suggestions merge after casing modifications
-        this.nBestSuggLimit = Math.floor(nSuggLimit * 1.5); // n times the requested limit
+        this.nBestSuggLimit = Math.floor(nSuggLimit * 2);   // n times the requested limit
         this.nGoodSuggLimit = nSuggLimit * 15;              // n times the requested limit
     }
 
