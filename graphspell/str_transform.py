@@ -114,81 +114,81 @@ def distanceDamerauLevenshtein (s1, s2):
     return d[nLen1-1, nLen2-1]
 
 
-def distanceJaroWinkler (a, b, boost = .666):
+def distanceJaroWinkler (sWord1, sWord2, fBoost = .666):
     # https://github.com/thsig/jaro-winkler-JS
-    #if (a == b): return 1.0
-    a_len = len(a)
-    b_len = len(b)
-    nMax = max(a_len, b_len)
-    a_flag = [None for _ in range(nMax)]
-    b_flag = [None for _ in range(nMax)]
-    search_range = (max(a_len, b_len) // 2) - 1
-    minv = min(a_len, b_len)
+    #if (sWord1 == sWord2): return 1.0
+    nLen1 = len(sWord1)
+    nLen2 = len(sWord2)
+    nMax = max(nLen1, nLen2)
+    aFlags1 = [ None for _ in range(nMax) ]
+    aFlags2 = [ None for _ in range(nMax) ]
+    nSearchRange = (max(nLen1, nLen2) // 2) - 1
+    nMinLen = min(nLen1, nLen2)
 
     # Looking only within the search range, count and flag the matched pairs.
-    Num_com = 0
-    yl1 = b_len - 1
-    for i in range(a_len):
-        lowlim = i - search_range  if i >= search_range  else 0
-        hilim  = i + search_range  if (i + search_range) <= yl1  else yl1
-        for j in range(lowlim, hilim+1):
-            if b_flag[j] != 1 and a[j:j+1] == b[i:i+1]:
-                a_flag[j] = 1
-                b_flag[i] = 1
-                Num_com += 1
+    nCommon = 0
+    yl1 = nLen2 - 1
+    for i in range(nLen1):
+        nLowLim = i - nSearchRange  if i >= nSearchRange  else 0
+        nHiLim  = i + nSearchRange  if (i + nSearchRange) <= yl1  else yl1
+        for j in range(nLowLim, nHiLim+1):
+            if aFlags2[j] != 1 and sWord1[j:j+1] == sWord2[i:i+1]:
+                aFlags1[j] = 1
+                aFlags2[i] = 1
+                nCommon += 1
                 break
 
     # Return if no characters in common
-    if Num_com == 0:
+    if nCommon == 0:
         return 0.0
 
     # Count the number of transpositions
     k = 0
-    N_trans = 0
-    for i in range(a_len):
-        if a_flag[i] == 1:
-            for j in range(k, b_len):
-                if b_flag[j] == 1:
+    nTrans = 0
+    for i in range(nLen1):
+        if aFlags1[i] == 1:
+            for j in range(k, nLen2):
+                if aFlags2[j] == 1:
                     k = j + 1
                     break
-            if a[i] != b[j]:
-                N_trans += 1
-    N_trans = N_trans // 2
+            if sWord1[i] != sWord2[j]:
+                nTrans += 1
+    nTrans = nTrans // 2
 
     # Adjust for similarities in nonmatched characters
-    N_simi = 0
-    if minv > Num_com:
-        for i in range(a_len):
-            if not a_flag[i]:
-                for j in range(b_len):
-                    if not b_flag[j]:
-                        if a[i] in dDistanceBetweenChars and b[j] in dDistanceBetweenChars[a[i]]:
-                            N_simi += dDistanceBetweenChars[a[i]][b[j]]
-                            b_flag[j] = 2
+    nSimi = 0
+    if nMinLen > nCommon:
+        for i in range(nLen1):
+            if not aFlags1[i]:
+                for j in range(nLen2):
+                    if not aFlags2[j]:
+                        if sWord1[i] in dDistanceBetweenChars and sWord2[j] in dDistanceBetweenChars[sWord1[i]]:
+                            nSimi += dDistanceBetweenChars[sWord1[i]][sWord2[j]]
+                            aFlags2[j] = 2
                             break
 
-    Num_sim = (N_simi / 10.0) + Num_com
+    fSim = (nSimi / 10.0) + nCommon
 
     # Main weight computation
-    weight = Num_sim / a_len + Num_sim / b_len + (Num_com - N_trans) / Num_com
-    weight = weight / 3
+    fWeight = fSim / nLen1 + fSim / nLen2 + (nCommon - nTrans) / nCommon
+    fWeight = fWeight / 3
 
     # Continue to boost the weight if the strings are similar
-    if weight > boost:
+    if fWeight > fBoost:
         # Adjust for having up to the first 4 characters in common
-        j = 4  if minv >= 4  else minv
+        j = 4  if nMinLen >= 4  else nMinLen
         i = 0
-        while i < j  and a[i] == b[i]:
+        while i < j  and sWord1[i] == sWord2[i]:
             i += 1
         if i:
-            weight += i * 0.1 * (1.0 - weight)
+            fWeight += i * 0.1 * (1.0 - fWeight)
         # Adjust for long strings.
         # After agreeing beginning chars, at least two more must agree
         # and the agreeing characters must be more than half of the
         # remaining characters.
-        if minv > 4  and  Num_com > i + 1  and  2 * Num_com >= minv + i:
-            weight += (1 - weight) * ((Num_com - i - 1) / (a_len * b_len - i*2 + 2))
-    return weight
+        if nMinLen > 4  and  nCommon > i + 1  and  2 * nCommon >= nMinLen + i:
+            fWeight += (1 - fWeight) * ((nCommon - i - 1) / (nLen1 * nLen2 - i*2 + 2))
+    return fWeight
 
 
 def distanceSift4 (s1, s2, nMaxOffset=5):
