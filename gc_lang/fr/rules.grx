@@ -4214,11 +4214,13 @@ TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
 # elle / elfe
 __ocr_elle__
     elfe
-        <<- /ocr/ morph(<1, ":R|<start>|>,") or isNextVerb() ->> elle                               && Erreur de numérisation ?
+        <<- /ocr/ morph(<1, ":[RC]|<start>|>,") ->> elle                                            && Erreur de numérisation ?
 
     elfes
-        <<- /ocr/ morph(<1, ":R|<start>|>,") or isNextVerb() ->> elles                              && Erreur de numérisation ?
+        <<- /ocr/ morph(<1, ":[RC]|<start>|>,") ->> elles                                           && Erreur de numérisation ?
 
+TEST: __ocr__ une araignée grimpait sur {{elfe}}                                ->> elle
+TEST: __ocr__ elles parlaient entre {{elfes}}                                   ->> elles
 TEST: __ocr__ {{elfe}} viendra bientôt                                          ->> elle
 TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.                                  ->> Elles
 
@@ -18249,7 +18251,7 @@ __substantifs_multi_mots__
     >chèque en blanc
     >chèque sans provision
     >cheval [de|d’] [bataille|guerre|Troie]
-    >chien [de|d’] [garde|guerre]
+    >chien [de|d’] [garde|guerre|traîneau|traineau]
     >chili con carne
     >chômage [de|d’] masse
     >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
@@ -23678,6 +23680,10 @@ TEST: j’aide l’homme et par amour pour lui le laisse libre.
 
 
 __gn_le_1m__
+    comme le montre [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]
+    comme le montre $:M
+        <<- !2:3>>
+
     ,  le  *WORD
         <<- /gn/ morph(\2, ":D") >>>
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\3)           && Accord de genre erroné : « \3 » est féminin.
@@ -23713,6 +23719,9 @@ TEST: {{le}} {{publique}}                                                       
 TEST: {{Le}} {{pendue}}                                                                 ->> La|||pendu
 TEST: {{Le}} personne répond.                                                           ->> La
 TEST: {{le}} {{quotients}}                                                              ->> les|||quotient
+TEST: la description des faits comme le montre Claire Scodellaro dans le chapitre 12
+TEST: on peut croire n’importe quoi, comme le montre le pari de Pascal, puisque ça ne coûte jamais rien.
+TEST: comme le montre la police de New York
 TEST: Comme avec l’Hyperloop, le bus chinois conçu pour passer au-dessus des voitures
 TEST: Je le levai, le brandis et frappai de taille.
 
