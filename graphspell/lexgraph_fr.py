@@ -442,10 +442,11 @@ _zInterroVerb = re.compile("([\\w]+)(-(?:t-(?:ie?l|elle|on)|je|tu|ie?ls?|elles?|
 _zImperatifVerb = re.compile("([\\w]+)(-(?:l(?:es?|a)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts]['’ʼ‘‛´`′‵՚ꞌꞋ](?:y|en)|les?|la|[mt]oi|leur|lui))$")
 
 def setLabelsOnToken (dToken):
+    "create an attribute “alabels” on <dToken> as a list of readable meanings"
     # Token: .sType, .sValue, .nStart, .nEnd, .lMorph
     try:
         if dToken["sType"] == "PUNC" or dToken["sType"] == "SIGN":
-            dToken["aLabels"] = [_dValues.get(dToken["sValue"], "signe de ponctuation divers")]
+            dToken["aLabels"] = [ _dValues.get(dToken["sValue"], "signe de ponctuation divers") ]
         elif dToken["sType"] == 'SYMBOL':
             dToken["aLabels"] = ["symbole"]
         elif dToken["sType"] == 'EMOJI':
@@ -509,6 +510,7 @@ def setLabelsOnToken (dToken):
 
 # Other functions
 
-def filterSugg (aSugg):
+def filterSugg (aSuggs):
     "exclude suggestions"
-    return filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSugg)
+    return [ sSugg  for sSugg in aSuggs  if not sSugg.endswith(("è", "È")) ]
+    #return filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSuggs) # return an object filter

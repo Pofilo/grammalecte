@@ -67,20 +67,19 @@ def getNamesFrom (sVerb):
     if sVerb in _dVerbNames:
         # there are names derivated from the verb
         return list(_dVerbNames[sVerb])
-    else:
-        # we suggest past participles
-        tTags = _getTags(sVerb)
-        if tTags:
-            aSugg = [ _getConjWithTags(sVerb, tTags, ":Q", ":m:s") ]
-            if _hasConjWithTags(tTags, ":Q", ":f:s"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:s"))
-            if _hasConjWithTags(tTags, ":Q", ":m:p"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":m:p"))
-            if _hasConjWithTags(tTags, ":Q", ":f:p"):
-                aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:p"))
-            # if there is only one past participle (epi inv), unreliable.
-            return aSugg  if len(aSugg) > 1  else []
-        return []
+    # nothing found: we suggest past participles
+    tTags = _getTags(sVerb)
+    if tTags:
+        aSugg = [ _getConjWithTags(sVerb, tTags, ":Q", ":m:s") ]
+        if _hasConjWithTags(tTags, ":Q", ":f:s"):
+            aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:s"))
+        if _hasConjWithTags(tTags, ":Q", ":m:p"):
+            aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":m:p"))
+        if _hasConjWithTags(tTags, ":Q", ":f:p"):
+            aSugg.append(_getConjWithTags(sVerb, tTags, ":Q", ":f:p"))
+        # if there is only one past participle (epi inv), unreliable.
+        return aSugg  if len(aSugg) > 1  else []
+    return []
 
 
 def getConjSimilInfiV1 (sInfi):

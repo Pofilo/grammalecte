@@ -143,6 +143,10 @@ class DAWG {
             this.funcStemming = str_transform.noStemming;
         }
 
+        // binary dictionary
+        this.sByDic = "";
+        this.lByDic = [];
+
         // build
         lWord.sort();
         if (xProgressBarNode) {

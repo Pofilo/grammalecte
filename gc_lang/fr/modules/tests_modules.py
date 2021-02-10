@@ -57,16 +57,22 @@ class TestDictionary (unittest.TestCase):
     def test_suggest (self):
         for sWord in [
             "déelirranttesss", "vallidasion", "Emilie", "exibission", "ditirembique", "jai", "email",
-            "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "email", "Co2",
+            "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "Co2",
             "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
         ]:
-            aSugg = self.oSpellChecker.suggest(sWord)
+            for lSugg in self.oSpellChecker.suggest(sWord):
+                self.assertTrue(len(lSugg) > 0)
             #with timeblock(sWord):
             #    aSugg = self.oSpellChecker.suggest(sWord)
             #    print(sWord, "->", " ".join(aSugg))
 
     def test_lemmas (self):
         for sWord, sInfi in [
+            ("suis",        "suivre"),
+            ("suis",        "être"),
+            ("a",           "avoir"),
+            ("a",           "a"),
+            ("irai",        "aller"),
             ("jetez",       "jeter"),
             ("finit",       "finir"),
             ("mangé",       "manger"),

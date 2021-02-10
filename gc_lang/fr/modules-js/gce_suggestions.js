@@ -172,9 +172,9 @@ function suggVerbFrom (sStem, sFlex, sWho="") {
         }
         else {
             for (let [sTense, ] of lTenses) {
-                for (let [sWho, ] of [ ...sMorph.matchAll(/:(?:[123][sp]|P|Y)/g) ]) {
-                    if (conj.hasConj(sStem, sTense, sWho)) {
-                        aSugg.add(conj.getConj(sStem, sTense, sWho));
+                for (let [sWho2, ] of [ ...sMorph.matchAll(/:(?:[123][sp]|P|Y)/g) ]) {
+                    if (conj.hasConj(sStem, sTense, sWho2)) {
+                        aSugg.add(conj.getConj(sStem, sTense, sWho2));
                     }
                 }
             }

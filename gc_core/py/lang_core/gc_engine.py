@@ -237,6 +237,7 @@ class TextParser:
         self.sSentence0 = ""
         self.nOffsetWithinParagraph = 0
         self.lTokens = []
+        self.lTokens0 = []
         self.dTokenPos = {}         # {position: token}
         self.dTags = {}             # {position: tags}
         self.dError = {}            # {position: error}
@@ -268,8 +269,6 @@ class TextParser:
             self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         except:
             raise
-        self.lTokens = None
-        self.lTokens0 = None
         if bFullInfo:
             lParagraphErrors = list(self.dError.values())
             lSentences = []
@@ -303,9 +302,8 @@ class TextParser:
         if bFullInfo:
             # Grammar checking and sentence analysis
             return lParagraphErrors, lSentences
-        else:
-            # Grammar checking only
-            return self.dError.values() # this is a view (iterable)
+        # Grammar checking only
+        return self.dError.values() # this is a view (iterable)
 
     def _getCleanText (self):
         sText = self.sText
@@ -815,7 +813,7 @@ class TextParser:
                 # several tokens
                 lTokenValue = sWhat.split("|")
                 if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
-                    if (bDebug):
+                    if bDebug:
                         echo("Error. Text processor: number of replacements != number of tokens.")
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
@@ -831,7 +829,6 @@ class TextParser:
         if bDebug:
             echo("REWRITE")
         lNewTokens = []
-        lNewTokens0 = []
         nMergeUntil = 0
         dTokenMerger = {}
         for iToken, dToken in enumerate(self.lTokens):

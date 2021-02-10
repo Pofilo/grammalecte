@@ -115,6 +115,7 @@ def distanceDamerauLevenshtein (s1, s2):
 
 
 def distanceJaroWinkler (sWord1, sWord2, fBoost = .666):
+    "distance of Jaro-Winkler between <sWord1> and <sWord2>, returns a float"
     # https://github.com/thsig/jaro-winkler-JS
     #if (sWord1 == sWord2): return 1.0
     nLen1 = len(sWord1)
@@ -221,7 +222,7 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
                         t[2] = True
                         nTrans += 1
                     break
-                elif i1 > t[1] and i2 > t[0]:
+                if i1 > t[1] and i2 > t[0]:
                     del lOffset[i]
                 else:
                     i += 1
@@ -234,11 +235,11 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
             for i in range(nMaxOffset):
                 if i1 + i >= nLen1 and i2 + i >= nLen2:
                     break
-                elif i1 + i < nLen1 and s1[i1+i] == s2[i2]:
+                if i1 + i < nLen1 and s1[i1+i] == s2[i2]:
                     i1 += i - 1
                     i2 -= 1
                     break
-                elif i2 + i < nLen2 and s1[i1] == s2[i2+i]:
+                if i2 + i < nLen2 and s1[i1] == s2[i2+i]:
                     i2 += i - 1
                     i1 -= 1
                     break

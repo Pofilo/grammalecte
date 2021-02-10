@@ -41,7 +41,7 @@ def suggVerb (sFlex, sWho, bVC=False, funcSugg2=None, *args):
                             aTense[":Ip"] = ""
                         else:
                             aTense[m.group(1)] = ""
-            for sTense in aTense.keys():
+            for sTense in aTense:
                 if sWho == ":1ś" and not conj._hasConjWithTags(tTags, sTense, ":1ś"):
                     sWho = ":1s"
                 if conj._hasConjWithTags(tTags, sTense, sWho):
@@ -52,12 +52,13 @@ def suggVerb (sFlex, sWho, bVC=False, funcSugg2=None, *args):
             dSugg[sSugg2] = ""
     if dSugg:
         if bVC:
-            return "|".join([ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in dSugg.keys() ])
-        return "|".join(dSugg.keys())
+            return "|".join([ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in dSugg ])
+        return "|".join(dSugg)
     return ""
 
 
 def joinVerbAndSuffix (sFlex, sSfx):
+    "join <sFlex> verb with <sSfx> suffix, modifying <sFlex> to prevent irregular forms"
     if sSfx.startswith(("-t-", "-T-")) and sFlex.endswith(("t", "d", "T", "D")):
         return sFlex + sSfx[2:]
     if sFlex.endswith(("e", "a", "c", "E", "A", "C")):
@@ -110,7 +111,7 @@ def suggVerbPpas (sFlex, sPattern=None):
     if "" in dSugg:
         del dSugg[""]
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -121,7 +122,7 @@ def suggVerbTense (sFlex, sTense, sWho):
         if conj.hasConj(sStem, sTense, sWho):
             dSugg[conj.getConj(sStem, sTense, sWho)] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -136,11 +137,11 @@ def suggVerbFrom (sStem, sFlex, sWho=""):
                     dSugg[conj.getConj(sStem, sTense, sWho)] = ""
         else:
             for sTense in lTenses:
-                for sWho in [ m.group(0)  for m in re.finditer(":(?:[123][sp]|P|Y)", sMorph) ]:
-                    if conj.hasConj(sStem, sTense, sWho):
-                        dSugg[conj.getConj(sStem, sTense, sWho)] = ""
+                for sWho2 in [ m.group(0)  for m in re.finditer(":(?:[123][sp]|P|Y)", sMorph) ]:
+                    if conj.hasConj(sStem, sTense, sWho2):
+                        dSugg[conj.getConj(sStem, sTense, sWho2)] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -196,7 +197,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
     if sFlex in _dModeSugg:
         dSugg[_dModeSugg[sFlex]] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -279,7 +280,7 @@ def suggMasSing (sFlex, bSuggSimil=False):
         for e in phonet.selectSimil(sFlex, ":m:[si]"):
             dSugg[e] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -309,7 +310,7 @@ def suggMasPlur (sFlex, bSuggSimil=False):
         for e in phonet.selectSimil(sFlex, ":m:[pi]"):
             dSugg[e] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -334,7 +335,7 @@ def suggFemSing (sFlex, bSuggSimil=False):
         for e in phonet.selectSimil(sFlex, ":f:[si]"):
             dSugg[e] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -372,19 +373,19 @@ def suggAgree (sFlexDest, sFlexSrc):
     if sGender == ":m":
         if sNumber == ":s":
             return suggMasSing(sFlexDest)
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggMasPlur(sFlexDest)
         return suggMasSing(sFlexDest)
-    elif sGender == ":f":
+    if sGender == ":f":
         if sNumber == ":s":
             return suggFemSing(sFlexDest)
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggFemPlur(sFlexDest)
         return suggFemSing(sFlexDest)
-    elif sGender == ":e":
+    if sGender == ":e":
         if sNumber == ":s":
             return suggSing(sFlexDest)
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggPlur(sFlexDest)
         return sFlexDest
     return ""
@@ -399,19 +400,19 @@ def g_suggAgree (dTokenDst, dTokenSrc):
     if sGender == ":m":
         if sNumber == ":s":
             return suggMasSing(dTokenDst["sValue"])
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggMasPlur(dTokenDst["sValue"])
         return suggMasSing(dTokenDst["sValue"])
-    elif sGender == ":f":
+    if sGender == ":f":
         if sNumber == ":s":
             return suggFemSing(dTokenDst["sValue"])
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggFemPlur(dTokenDst["sValue"])
         return suggFemSing(dTokenDst["sValue"])
-    elif sGender == ":e":
+    if sGender == ":e":
         if sNumber == ":s":
             return suggSing(dTokenDst["sValue"])
-        elif sNumber == ":p":
+        if sNumber == ":p":
             return suggPlur(dTokenDst["sValue"])
         return dTokenDst["sValue"]
     return ""
@@ -472,7 +473,7 @@ def switchGender (sFlex, bPlur=None):
             elif ":m" in sMorph:
                 dSugg[suggFemSing(sFlex)] = ""
     if dSugg:
-        return "|".join(dSugg.keys())
+        return "|".join(dSugg)
     return ""
 
 
@@ -485,7 +486,7 @@ def switchPlural (sFlex):
         elif ":p" in sMorph:
             aSugg[suggSing(sFlex)] = ""
     if aSugg:
-        return "|".join(aSugg.keys())
+        return "|".join(aSugg)
     return ""
 
 
@@ -512,8 +513,8 @@ def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
                 break
     if dSugg:
         if bVC:
-            return "|".join([ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in dSugg.keys() ])
-        return "|".join(dSugg.keys())
+            return "|".join([ joinVerbAndSuffix(sSugg, sSfx)  for sSugg in dSugg ])
+        return "|".join(dSugg)
     return ""
 
 

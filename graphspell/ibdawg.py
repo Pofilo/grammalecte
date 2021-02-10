@@ -103,11 +103,6 @@ class SuggResult:
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))) # use dict, when Python 3.6+
         return lRes[:self.nSuggLimit]
 
-    def reset (self):
-        "clear data"
-        self.aSugg.clear()
-        self.dSugg.clear()
-
 
 class IBDAWG:
     """INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH"""

@@ -77,7 +77,7 @@ class TestGrammarChecking (unittest.TestCase):
             nUnexpectedErrors = 0
             nTestWithExpectedError = 0
             nTestWithExpectedErrorAndSugg = 0
-            for i, sLine in enumerate( s for s in hSrc if not s.startswith("#") and s.strip() ):
+            for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
                 sLineNum = sLine[:10].strip()
                 sLine = sLine[10:].strip()
                 sOption = None
@@ -185,6 +185,7 @@ class TestGrammarChecking (unittest.TestCase):
 
 
 def purgeMessage (sMessage):
+    "remove space after elided French words"
     for sToReplace, sReplacement in [
         ("l’ ", "l’"), ("d’ ", "d’"), ("n’ ", "n’"), ("j’ ", "j’"), ("m’ ", "m’"), ("t’ ", "t’"), ("s’ ", "s’"), ("qu’ ", "qu’"),
         ("L’ ", "L’"), ("D’ ", "D’"), ("N’ ", "N’"), ("J’ ", "J’"), ("M’ ", "M’"), ("T’ ", "T’"), ("S’ ", "S’"), ("QU’ ", "QU’")

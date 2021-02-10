@@ -110,12 +110,6 @@ class SuggResult {
         }
         return lRes.slice(0, this.nSuggLimit);
     }
-
-    reset () {
-        this.dSugg.clear();
-        this.dGoodSugg.clear();
-        this.dBestSugg.clear();
-    }
 }
 
 

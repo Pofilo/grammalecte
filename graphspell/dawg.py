@@ -165,6 +165,10 @@ class DAWG:
         self.nBytesOffset = 0
         self.nMaxOffset = 0
 
+        # binary dictionary
+        self.byDic = b""
+        self.lByDic = []
+
         # build
         lWord.sort()
         oProgBar = ProgressBar(0, len(lWord))
@@ -364,7 +368,6 @@ class DAWG:
         self.nBytesOffset = 0
         self._calcNumBytesNodeAddress()
         self._calcNodesAddress()
-        self.byDic = b""
         self.byDic = self.oRoot.convToBytes(self.nBytesArc, self.nBytesNodeAddress)
         for oNode in self.lMinimizedNodes:
             self.byDic += oNode.convToBytes(self.nBytesArc, self.nBytesNodeAddress)

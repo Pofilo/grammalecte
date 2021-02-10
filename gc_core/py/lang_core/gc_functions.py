@@ -8,6 +8,7 @@ Grammar checking functions
 
 
 import re
+import traceback
 
 from . import gc_options
 from ..graphspell.echo import echo
@@ -18,6 +19,7 @@ _oSpellChecker = None
 
 
 def load (sContext, oSpellChecker):
+    "mandatory first function to call: variables initialization"
     global _sAppContext
     global _oSpellChecker
     _sAppContext = sContext

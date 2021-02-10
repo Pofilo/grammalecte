@@ -16,6 +16,7 @@ _sAppContext = "Python"
 
 
 def load (sContext="Python"):
+    "mandatory first function to call: variables initialization"
     global dOptions
     global _sAppContext
     _sAppContext = sContext
