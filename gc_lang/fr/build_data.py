@@ -92,7 +92,7 @@ def makeConj (sp, bJS=False):
         nTab = sLine.count("\t")
         if nTab == 1:
             # new entry
-            sLemma, sVinfo = sLine.split("\t")
+            sInfi, sVinfo = sLine.split("\t")
             dConj = {   ":P": { ":P": "" },
                         ":Q": { ":m:s": "", ":f:s": "", ":m:p": "", ":f:p": "" },
                         ":Ip": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
@@ -109,41 +109,42 @@ def makeConj (sp, bJS=False):
                 lVinfo.append(sVinfo)
                 nVinfo += 1
             # looking for names derivating from verb
-            for sMorph in oDict.getMorph(sLemma):
+            for sMorph in oDict.getMorph(sInfi):
                 if ":N" in sMorph:
-                    dVerbNames[sLemma] = { sLemma }
+                    dVerbNames[sInfi] = { sInfi }
                     break
         elif nTab == 2:
             # flexion
             _, sTag, sFlex = sLine.split("\t")
             if sTag.count(" ") == 0:
                 if sTag == "ppre":
-                    dConj[":P"][":P"] = defineSuffixCode(sLemma, sFlex)
+                    dConj[":P"][":P"] = defineSuffixCode(sInfi, sFlex)
             else:
                 try:
                     mode, g = sTag.split(maxsplit=1)
                     mode = dTrad[mode]
                     g = dTrad[g]
                     if dConj[mode][g] == "":
-                        dConj[mode][g] = defineSuffixCode(sLemma, sFlex)
+                        dConj[mode][g] = defineSuffixCode(sInfi, sFlex)
                     else:
                         # comment gérer les autres graphies ?
                         pass
                 except:
-                    echo(sLemma, " - ", sTag, " - non géré: ", mode, " / ", g)
+                    echo(sInfi, " - ", sTag, " - non géré: ", mode, " / ", g)
             # looking for names derivating from verb
             for sMorph in oDict.getMorph(sFlex):
                 if ":N" in sMorph:
-                    if sLemma not in dVerbNames:
-                        dVerbNames[sLemma] = { sFlex }
-                    else:
-                        dVerbNames[sLemma].add(sFlex)
-                    break
+                    if sInfi not in dVerbNames:
+                        dVerbNames[sInfi] = set()
+                    dVerbNames[sInfi].add(sFlex)
+                    sLemma = sMorph[1:sMorph.find("/")]
+                    if sFlex != sLemma:
+                        dVerbNames[sInfi].add(sLemma)
         elif sLine == "$":
             # we store the dictionary of rules for this lemma
             if dConj[":Ip"][":1ś"] == "2è":
                 dConj[":Ip"][":1ś"] = "2é"
-            elif sLemma == "pouvoir":
+            elif sInfi == "pouvoir":
                 dConj[":Ip"][":1ś"] = "6uis"
             lConjTags = []
             for sTense in [":P", ":Q", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
@@ -161,12 +162,12 @@ def makeConj (sp, bJS=False):
                 dTags[tConjTags] = nTags
                 lTags.append(tConjTags)
                 nTags += 1
-            dVerb[sLemma] = (dVinfo[sVinfo], dTags[tConjTags])
+            dVerb[sInfi] = (dVinfo[sVinfo], dTags[tConjTags])
         else:
             print("# Error - unknown line", n)
 
-    for sLemma, aNames in dVerbNames.items():
-        dVerbNames[sLemma] = tuple(aNames)  # convert set to tuple
+    for sInfi, aNames in dVerbNames.items():
+        dVerbNames[sInfi] = tuple(aNames)  # convert set to tuple
 
     ## write file for Python
     sCode = "## generated data (do not edit)\n\n" + \
@@ -344,36 +345,6 @@ def makePhonetTable (sp, bJS=False):
         open(sp+"/modules-js/phonet_data.json", "w", encoding="utf-8", newline="\n").write(sCode)
 
 
-def makeLocutions (sp, bJS=False):
-    "compile list of locutions in JSON"
-    print("> Locutions ", end="")
-    print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    dLocGraph = {}
-    oTokenizer = tkz.Tokenizer("fr")
-    for sLine in itertools.chain(readFile(sp+"/data/locutions_adverbiales.txt"), \
-                                 readFile(sp+"/data/locutions_prépositives.txt"), \
-                                 readFile(sp+"/data/locutions_conjonctives.txt"), \
-                                 readFile(sp+"/data/locutions_pronominales.txt"), \
-                                 readFile(sp+"/data/locutions_adjectivales.txt"), \
-                                 readFile(sp+"/data/locutions_interjectives.txt"), \
-                                 readFile(sp+"/data/locutions_nominales.txt"), \
-                                 readFile(sp+"/data/locutions_verbales.txt")):
-        dCur = dLocGraph
-        sLoc, sTag = sLine.split("\t")
-        for oToken in oTokenizer.genTokens(sLoc.strip()):
-            sWord = oToken["sValue"]
-            if sWord not in dCur:
-                dCur[sWord] = {}
-            dCur = dCur[sWord]
-        dCur["_:_"] = sTag
-
-    sCode = "# generated data (do not edit)\n\n" + \
-            "dLocutions = " + str(dLocGraph) + "\n"
-    open(sp+"/modules/locutions_data.py", "w", encoding="utf-8", newline="\n").write(sCode)
-    if bJS:
-        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocGraph, ensure_ascii=False))
-
-
 def before (spLaunch, dVars, bJS=False):
     print("========== Build Hunspell dictionaries ==========")
     makeDictionaries(spLaunch, dVars['oxt_version'])
@@ -384,4 +355,3 @@ def after (spLaunch, dVars, bJS=False):
     makeMfsp(spLaunch, bJS)
     makeConj(spLaunch, bJS)
     makePhonetTable(spLaunch, bJS)
-    #makeLocutions(spLaunch, bJS)
