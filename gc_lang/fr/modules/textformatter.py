@@ -64,8 +64,8 @@ dReplTable = {
     ## erase
     "erase_non_breaking_hyphens":  [("­", "")],
     ## typographic signs
-    "ts_apostrophe":          [ ("(?i)\\b([ldnjmtscç])['´‘′`](?=\\w)", "\\1’"),
-                                ("(?i)(qu|jusqu|lorsqu|puisqu|quoiqu|quelqu|presqu|entr|aujourd|prud)['´‘′`]", "\\1’") ],
+    "ts_apostrophe":          [ ("(?i)\\b([ldnjmtscç])['´‘′`ʼ](?=\\w)", "\\1’"),
+                                ("(?i)(qu|jusqu|lorsqu|puisqu|quoiqu|quelqu|presqu|entr|aujourd|prud)['´‘′`ʼ]", "\\1’") ],
     "ts_ellipsis":            [ ("\\.\\.\\.", "…"),
                                 ("(?<=…)[.][.]", "…"),
                                 ("…[.](?![.])", "…") ],
