@@ -60,11 +60,11 @@ class TestDictionary (unittest.TestCase):
             "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "Co2",
             "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
         ]:
-            for lSugg in self.oSpellChecker.suggest(sWord):
-                self.assertTrue(len(lSugg) > 0)
             #with timeblock(sWord):
-            #    aSugg = self.oSpellChecker.suggest(sWord)
-            #    print(sWord, "->", " ".join(aSugg))
+            for lSugg in self.oSpellChecker.suggest(sWord):
+                #print(sWord, "->", " ".join(lSugg))
+                self.assertTrue(len(lSugg) > 0)
+
 
     def test_lemmas (self):
         for sWord, sInfi in [

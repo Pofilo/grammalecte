@@ -63,6 +63,8 @@ class SuggResult:
         self.aAllSugg.add(sSugg)
         nDistJaro = 1 - st.distanceJaroWinkler(self.sSimplifiedWord, st.simplifyWord(sSugg))
         nDist = floor(nDistJaro * 10)
+        if nDist < self.nMinDist:
+            self.nMinDist = nDist
         #logging.info((nDeep * "  ") + "__" + sSugg + "__ " + str(round(nDistJaro*1000)))
         if nDistJaro < .11:     # Best suggestions
             self.dBestSugg[sSugg] = round(nDistJaro*1000)
@@ -72,14 +74,7 @@ class SuggResult:
             self.dGoodSugg[sSugg] = round(nDistJaro*1000)
             if len(self.dGoodSugg) > self.nGoodSuggLimit:
                 self.nDistLimit = -1  # make suggest() to end search
-        else:
-            if nDist < self.nMinDist:
-                self.nMinDist = nDist
-            self.nDistLimit = min(self.nDistLimit, self.nMinDist)
-        if nDist <= self.nDistLimit:
-            if nDist < self.nMinDist:
-                self.nMinDist = nDist
-            self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
+        self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
 
     def getSuggestions (self):
         "return a list of suggestions"
@@ -246,6 +241,7 @@ class IBDAWG:
         if bSplitTrailingNumbers:
             self._splitTrailingNumbers(oSuggResult, sWord)
         self._splitSuggest(oSuggResult, sWord)
+        self._suggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions()
         if self.lexicographer:

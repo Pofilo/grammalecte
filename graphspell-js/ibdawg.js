@@ -47,6 +47,9 @@ class SuggResult {
         // jaro 0->1 1 les chaines sont égale
         let nDistJaro = 1 - str_transform.distanceJaroWinkler(this.sSimplifiedWord, str_transform.simplifyWord(sSugg));
         let nDist = Math.floor(nDistJaro * 10);
+        if (nDist < this.nMinDist) {
+            this.nMinDist = nDist;
+        }
         if (nDistJaro < .11) {        // Best suggestions
             this.dBestSugg.set(sSugg, Math.round(nDistJaro*1000));
             if (this.dBestSugg.size > this.nBestSuggLimit) {
@@ -57,18 +60,8 @@ class SuggResult {
             if (this.dGoodSugg.size > this.nGoodSuggLimit) {
                 this.nDistLimit = -1; // make suggest() to end search
             }
-        } else {
-            if (nDist < this.nMinDist) {
-                this.nMinDist = nDist;
-            }
-            this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist);
         }
-        if (nDist <= this.nDistLimit) {
-            if (nDist < this.nMinDist) {
-                this.nMinDist = nDist;
-            }
-            this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+1);
-        }
+        this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+1);
     }
 
     getSuggestions () {
@@ -344,6 +337,7 @@ class IBDAWG {
             this._splitTrailingNumbers(oSuggResult, sWord);
         }
         this._splitSuggest(oSuggResult, sWord);
+        this._suggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions();
         if (this.lexicographer) {
