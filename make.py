@@ -356,6 +356,32 @@ def buildDictionary (dVars, sType, bJavaScript=False):
         lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, sDescription, "", dVars['stemming_method'], int(dVars['fsa_method']))
 
 
+def extraTest (sLang):
+    "test grammar checker with files in <gc_lang/xx/tests>"
+    if os.path.isdir(f"gc_lang/{sLang}/tests"):
+        grammalecte = importlib.import_module("grammalecte")
+        oGrammarChecker = grammalecte.GrammarChecker(sLang)
+        for sf in os.listdir(f"gc_lang/{sLang}/tests"):
+            if sf.startswith("test_") and sf.endswith(".txt"):
+                spf = f"gc_lang/{sLang}/tests/" + sf
+                with open(spf, "r", encoding="utf-8") as hSrc:
+                    print(f"> Test text: {spf}", end="")
+                    nLine = sum(1 for _ in hSrc)
+                    nPercent = max(nLine // 100, 1)
+                    hSrc.seek(0) # rewind to start of file
+                    for i, sLine in enumerate(hSrc, 1):
+                        if (i % nPercent == 0):
+                            print(f"\r> Test text: {spf} ({i // nPercent} %)", end="")
+                        aGrammErrs, aSpellErrs = oGrammarChecker.getParagraphErrors(sLine)
+                        if aGrammErrs:
+                            sText, _ = grammalecte.text.generateParagraph(sLine, aGrammErrs, aSpellErrs, 160)
+                            print(f"\n# Line {i}")
+                            print(sText)
+                    print(f"\r> Test text: {spf} ({i // nPercent} %): {i} lines.")
+    else:
+        print(f"# Error. No folder <gc_lang/{sLang}/tests>. With option -tt, all texts named <test_*.txt> in this folder will be parsed by the grammar checker.")
+
+
 def main ():
     "build Grammalecte with requested options"
     print("Python: " + sys.version)
@@ -371,6 +397,7 @@ def main ():
     xParser.add_argument("-ba", "--build_data_after", help="launch build_data.py (only part 2: before dictionary building)", action="store_true")
     xParser.add_argument("-d", "--dict", help="generate FSA dictionary", action="store_true")
     xParser.add_argument("-t", "--tests", help="run unit tests", action="store_true")
+    xParser.add_argument("-tt", "--test_texts", help="perform gc tests on texts", action="store_true")
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
     xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
@@ -455,6 +482,9 @@ def main ():
                 else:
                     sResultFile = f"gc_lang/{sLang}/perf_memo.txt"  if xArgs.perf_memo  else ""
                     tests.perf(sVersion, sResultFile)
+
+            if xArgs.test_texts:
+                extraTest(sLang)
 
             # JavaScript linter
             if xArgs.lint_web_ext:
