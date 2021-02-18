@@ -55,15 +55,34 @@ class TestDictionary (unittest.TestCase):
             self.assertFalse(self.oSpellChecker.isValid(sWord), sWord)
 
     def test_suggest (self):
-        for sWord in [
-            "déelirranttesss", "vallidasion", "Emilie", "exibission", "ditirembique", "jai", "email",
-            "fatiqué", "coeur", "trèèèèèèèèès", "vraaaaiiiimeeeeennnt", "apele", "Co2",
-            "emmppâiiiller", "testt", "apelaion", "exsepttion", "sintaxik", "ebriete", "ennormmement"
+        for sWrong, sSugg in [
+            ("chassis", "châssis"),
+            ("francais", "français"),
+            ("déelirranttesss", "délirantes"),
+            ("vallidasion", "validation"),
+            ("Emilie", "Émilie"),
+            ("exibission", "exhibition"),
+            ("ditirembique", "dithyrambique"),
+            ("jai", "j’ai"),
+            ("email", "courriel"),
+            ("fatiqué", "fatigué"),
+            ("coeur", "cœur"),
+            ("trèèèèèèèèès", "très"),
+            ("vraaaaiiiimeeeeennnt", "vraiment"),
+            ("apele", "appel"),
+            ("Co2", "CO₂"),
+            ("emmppâiiiller", "empailler"),
+            ("testt", "test"),
+            ("apelaion", "appellation"),
+            ("exsepttion", "exception"),
+            ("sintaxik", "syntaxique"),
+            ("ebriete", "ébriété"),
+            ("ennormmement", "énormément")
         ]:
             #with timeblock(sWord):
-            for lSugg in self.oSpellChecker.suggest(sWord):
+            for lSugg in self.oSpellChecker.suggest(sWrong):
                 #print(sWord, "->", " ".join(lSugg))
-                self.assertTrue(len(lSugg) > 0)
+                self.assertIn(sSugg, lSugg)
 
 
     def test_lemmas (self):
