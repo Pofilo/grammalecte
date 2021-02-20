@@ -4896,7 +4896,12 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.                           
 
 # élisions
 __eleu_élisions_manquantes__
-    [le|la|de]  ~^[aâeéèêiîoôuûyœæhAÂEÉÈÊIÎOÔUÛYŒÆH].
+    [le|la]  ~^[aâeéèêiîoôuûyœæhAÂEÉÈÊIÎOÔUÛYŒÆH].
+        <<- /eleu/ space(\1, 1, 1) and not tag(\2, "_CAP_") and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2)
+            and (morph(\2, ">[aâeéèêiîoôuûyœæhAÂEÉÈÊIÎOÔUÛYŒÆ].*:[si]", ">une?/|:[Gp]|;é") or morph(\2, ">H.*;É")) and not re.search("^[hH]aute?", \2)
+        -1:.2>> =\1[0:1]+"’"                                                            && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
+
+    de  ~^[aâeéèêiîoôuûyœæhAÂEÉÈÊIÎOÔUÛYŒÆH].
         <<- /eleu/ space(\1, 1, 1) and not tag(\2, "_CAP_") and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2)
             and (morph(\2, ">[aâeéèêiîoôuûyœæhAÂEÉÈÊIÎOÔUÛYŒÆ]", ">une?/|:G|;é") or morph(\2, ">H.*;É")) and not re.search("^[hH]aute?", \2)
         -1:.2>> =\1[0:1]+"’"                                                            && Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
@@ -5533,7 +5538,7 @@ TEST: Dans ce drive in douze hommes mangent.
 
 __tu_préfixe_mi__
     mi  @:[NAQ]¬:G
-        <<- /tu/ not value(\2, "|a|") ->> mi-\2                             && S’il s’agit d’un seul mot, il manque un trait d’union.
+        <<- /tu/ not value(\2, "|a|dièse|") ->> mi-\2                       && S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: J’ai été engagé pour un {{mi temps}}.                                     ->> mi-temps
 
@@ -8193,6 +8198,9 @@ __conf_déterminant_mas_sing_verbe__
     quel  @:V[123].*:(?:Y|[123][sp])¬:[NAQ]|>(?:pouvoir|vouloir|aller|devoir)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
         -2>> =suggSimil(\2, ":[NA].*:[me]:[si]", True)                                              && Incohérence avec “\1” : “\2” est une forme verbale.
+
+    au fait et au prendre
+        <<- !-1>>
 
     au  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower() and not value(\2, "|sortir|")
@@ -13048,6 +13056,9 @@ __conf_quant_quand_qu_en__
         <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/") and not after("^ +([mts]on|[nv]otre|leur) tour[, ]")
         -1>> quant                                                          && Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
 
+    quand au bout de [*WORD|*NUM] [>seconde|>minute|>heure|>jour|>nuit|>journée|>semaine|mois|>trimestre|>semestre|>an|>année|>décennie|>siècle|>millénaire]
+        <<- !1>> conf
+
     quand [au|aux]
         <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/")
         -1>> quant                                                          && Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
@@ -13056,6 +13067,7 @@ TEST: {{Quand}} à ma santé, elle est défaillante.                           -
 TEST: {{quand}} aux ennemis de nos ennemis, nous nous en chargerons.        ->> quant
 TEST: être rassuré quant à l’avenir du continent européen
 TEST: Quant au chat, on verra plus tard.
+TEST: Quand au bout de huit jours, le repos terminé, On va reprendre les tranchées, Notre place est si utile Que sans nous on prend la pile.
 
 
 __conf_quand_quant_qu_en__
@@ -16937,6 +16949,7 @@ __purge_locutions__
     au doigt mouillé
     au doigt et à l’ [œil|oeil]
     au débotté
+    au fait et au prendre
     au fil [de|d’] l’ épée
     au grand [complet|jamais]
     au hasard
@@ -18898,6 +18911,7 @@ __substantifs_multi_mots__
     >officier [de|d’] liaison
     >oiseau [de|d’] [malheur|nuit|proie]
     >oiseau [de|d’] mauvais augure
+    >ombre à >paupière
     >ombre au tableau
     >onde [de|d’] choc
     >opération [de|d’] nuit
@@ -19294,6 +19308,14 @@ __substantifs_multi_mots__
     [>ingénieur|>joueur|>musicien|>peintre|>photographe|>réalisateur]                                   [de|d’] grand talent
         <<- ~2:0>> *
 
+    >désintégration  [α|β|>alpha|>bêta]
+    >particule       [α|β|>alpha|>bêta]
+    >radiation       [α|β|>alpha|>bêta]
+    >radioactivité   [α|β|>alpha|>bêta]
+    >rayon           [α|β|>alpha|>bêta]
+    >rayonnement     [α|β|>alpha|>bêta]
+        <<- ~2:0>> *
+
 
 __purge_référence__
     [ loi du ~^[0-9][0-9]?$ {_mois_} ~^[0-9]{2,5}$ ]
@@ -19306,8 +19328,8 @@ __purge_syntagmes_nominaux_matière__
     en  chêne  ?massif¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
     en  bois   ?vernis¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
     en  or     ?massif¿                              ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
-    en  [alu|aluminium|argent|béton|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox] ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
-    en  [inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]                   ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    en  [alu|aluminium|argent|béton|bois|chanvre|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment]   ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
+    en  [inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]                        ?[clair|foncé|rouge|vert|brun|marron|jaune|orange|bleu|gris|rose|noir|blanc]¿
         <<- morph(<1, ":[NA]", ":G") and not morph(>1, ":A.*:[me]:[si]") ~>> *
 
     en  pierre                       ?[claire|foncée|rouge|verte|brune|marron|jaune|orange|bleue|grise|rose|noire|blanche]¿
@@ -20122,8 +20144,10 @@ __purge_locutions_potentielles__
     tous les jours [<end>|,|)]
         <<- not morph(<1, ":R") ~1:3>> *
 
-    ?pour¿ toute [ma|ta|sa|notre|votre|leur] vie  @:¬:A.*:[fe]:[si]
-    ?pour¿ toute [ma|ta|sa|notre|votre|leur] vie  [<end>|,|)]
+    ?pour¿ toute [ma|ta|sa|notre|votre|leur]    vie         @:¬:A.*:[fe]:[si]
+    ?pour¿ toute [ma|ta|sa|notre|votre|leur]    vie         [<end>|,|)]
+    ?pour¿ toute [mon|ton|son|notre|votre|leur] existence   @:¬:A.*:[fe]:[si]
+    ?pour¿ toute [mon|ton|son|notre|votre|leur] existence   [<end>|,|)]
         <<- ~1:-2>> *
 
     ?à¿ un [instant|moment]  @¬>où/|:A.*:[me]:[si]
@@ -20737,6 +20761,34 @@ TEST: une bonne partie des ingénieurs en chef avaient comme elle commencé leur
 TEST: tout le monde peut le lire
 TEST: je veux le lire
 TEST: notre fils peut le lire
+TEST: Personnellement, jusqu’à il y a quelques minutes j’étais athée, mais après avoir lu une réponse de la première page, selon laquelle Dieu serait une force, je pense être moins intransigeant et agnostiser.
+TEST: Mars, identifié avec le dieu grec Ares, l’a été aussi avec le dieu gaulois Toutatis ; Minerve, confondue avec la déesse grecque Athêna, l’a été aussi avec la déesse gauloise Belisama, etc.
+TEST: Quand ce fut au fait et au prendre. – Quand on en vint au fait et au prendre.
+TEST: Si, d’aventure, il restait sur place, attendant une vacance à l’usine, il travaillait à la mine et était payé par pipe de minerai extraite.
+TEST: Au contraire de la désintégration bêta, la désintégration alpha est soumise à la force nucléaire forte et est caractéristique des noyaux lourds de masse atomique supérieure à 200).
+TEST: On emploie pour cette pêche les engins ordinaires, ceux que nous avons décrits ci-dessus, et des poches en chanvre diversement disposées et tissues, que le poisson remplit quelquefois entièrement.
+TEST: La Scolastique […] a accrédité une mentalité qui n’a pas prise sur le réel, qui tient pour légitimes certaines illusions structurales de notre esprit : notre tendance à réaliser nos concepts et à réifier toutes choses.
+TEST: Elle était comme d’habitude impitoyablement maquillée, presque peinte, le rouge à lèvres écarlate et l’ombre à paupières violine soulignaient son teint pâle, sa peau « de porcelaine » comme on dit dans les romans d’Yves Simon.
+TEST: Pour faire cesser ce chagrin, son père adoptif lui donnait un biscuit trempé dans du péquet, le genièvre local. Comme l’enfant fut sevré avec un hareng saur, il vécut toute son existence tenaillé par une soif inextinguible, dont l’étanchement explique un appendice nasal proéminent et rubicond.
+TEST: On appelle enharmonie la différence entre un mi dièse et un fa naturel et entre un si dièse et un do naturel lorsque le système tempéré, en rendant égaux les semi-tons, a ôté ces différences et donc rendu homophones les deux notes.
+TEST: […] ; je me souviens d’avoir lu autrefois, dans un manuel de Paul Bert, que le principe fondamental de la morale s’appuie sur les enseignements de Zoroastre et sur la Constitution de l’an III ; […].
+TEST: Il est vrai qu’il paraît inutile d’apprendre ce qui est écrit dans les livres puisque ça y est, encore faut-il pouvoir l’y trouver et donc de savoir lire, privilège maintenant réservé à une frange minoritaire de la population qui a la chance de naître dans une famille […], ayant le souci et la patience d’apprendre la lecture à sa progéniture.
+TEST: À quoi songes-tu donc ? s’informa la maîtresse du logis, surprise de l’inattention qu’elle lisait dans les yeux de l’artiste. Tu n’as pas de contrariétés.
+TEST: l’intonation qu’il mettait dans le mot « réactionnaires » signifiait surtout son mépris pour des amours qu’il soupçonnait d’être ridicules.
+TEST: Mais, pour que ne périsse pas la mémoire à tant de titres recommandables des trois sièges archiépiscopaux, savoir, Arles, Narbonne et Vienne en Dauphiné, dont l’érection n’a pas lieu, nous ordonnons d’ajouter leurs noms titulaires à d’autres sièges archiépiscopaux, […].
+TEST: [Titre] Au ministère de l’Intérieur, la chaise vide occupe tous les esprits
+TEST: Et quand je m’approchai du fauteuil de grand-mère pour lui baiser la main, elle se détourna et cacha sa main sous son mantelet.
+TEST: […], Barbara chercha Martin dans les vestiaires, elle voulut lui parler, mais il n’était pas seul : un petit myopathe à lunettes l’accompagnait dans un fauteuil électrique, Martin l’aidait à enfiler son tee-shirt.
+TEST: Les billets, les valeurs sont aussi regardées comme des meubles.
+TEST: Le titre I du Livre II du Code Civil traite de la distinction entre les biens meubles et immeubles.
+TEST: Avant-hier, j’ai fait un grand voyage. Je suis parti à trente kilomètres de Vézelay – où je passe le plus clair de mon temps cet été – dans la ville de Corbigny (Nièvre).
+TEST: Tant qu’il y aura des militaires Soit ton fils, soit le mien, On ne verra, par toute la terre Jamais rien de bien ! On te tuera pour te faire taire
+TEST: Par-derrière, comme un chien : Et tout ça pour rien ! Et tout ça pour rien !
+TEST: Il n’y avait plus qu’à faucher le blé noir, arracher les pommes de terre et gauler noix et châtaignes ; de ceci les gamins se chargeaient le jeudi et le dimanche, pour se distraire.
+TEST: Les études révèlent un risque d’écrêtement du trafic ferroviaire dès 2025, lorsque la demande est la plus critique, c’est-à-dire le vendredi soir à l’heure de pointe.
+TEST: Beaucoup de conciles émaneront des normes pour que soient nommés des curés idoines, qui soient vraiment au service de la paroisse, qui se distinguent par leur science et qui soient de vrais pasteurs au sein de la communauté de fidèles.
+TEST: Les ailes de cet avion viennent de Grande-Bretagne.
+TEST: La liberté passait sur le monde, l’internationale était sa voix criant par-dessus les frontières les revendications des déshérités.
 
 
 
@@ -22160,6 +22212,9 @@ TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétenc
 
 # et / est
 __conf_est_et__
+    seigneur et maître
+        <<- !2>>
+
     <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quelle]  *WORD                                     et  *WORD  <end>
     <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quelle]  *WORD               [lui|leur|nous|vous]  et  *WORD  [<end>|,]
     <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quelle]  *WORD  [de|d’] $:M                        et  *WORD  <end>
@@ -22189,6 +22244,7 @@ TEST: Les gouvernements espagnol et mexicain ont signé le traité.
 TEST: Béatrice Dalle et Claude.
 TEST: Martial et inflexible.
 TEST: il attend dans la pièce où entre Patrick et Paul l’agrippe aussitôt pour l’avertir du danger.
+TEST: Mon seigneur et maître.
 
 
 __conf_où_est__
@@ -23450,11 +23506,12 @@ __conf_ce_se_nom__
     <start>  se  *WORD  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
     <start>  se  *WORD  [lui|leur|y]    en                      @:(?:[123][sp]|P)
     <start>  se  *WORD  @:(?:[123][sp]|P)¬:G
-        <<- /conf/ morph0(\3, ":[NA]", ":Y") -2>> ce                            && Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
+        <<- /conf/ morph0(\3, ":[NA]", ":[YP]") -2>> ce                         && Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
 
 TEST: que sais-tu de {{se}} {{type}}                                    ->> ce|||typer
 TEST: {{se}} type nous emmerde.                                         ->> ce
 TEST: se doit d’être fort, ce con, sinon c’est la fin pour lui.
+TEST: Se voyant surpris par les ennemis, ils se remparèrent avec des chariots et avec tout ce qu’ils purent trouver.
 
 
 ## scène, senne, seine, saine
@@ -24091,6 +24148,7 @@ TEST: {{le}} {{publique}}                                                       
 TEST: {{Le}} {{pendue}}                                                                 ->> La|||pendu
 TEST: {{Le}} personne répond.                                                           ->> La
 TEST: {{le}} {{quotients}}                                                              ->> les|||quotient
+TEST: sous {{le}} {{yeux}}                                                              ->> les|||yeux
 TEST: la description des faits comme le montre Claire Scodellaro dans le chapitre 12
 TEST: on peut croire n’importe quoi, comme le montre le pari de Pascal, puisque ça ne coûte jamais rien.
 TEST: comme le montre la police de New York
@@ -24662,7 +24720,7 @@ __gn_au_1m__
 
     au  @>(?:[aâeéèêiîoôuûyœæAÂEÉÈÊIÎOÔUÛYŒÆ]|[hH].*;É)
         <<- /eleu/ morph(\2, ":[NA].*:s", ":[GWpi]") -1:.2>> "à l’|aux "    && Euphonie. Si “\2” est bien censé être un singulier, il faut élider. Sinon, il faut écrire “aux” et mettre “\2” au pluriel.
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":[GWs]") -1>> aux                               && Accord de nombre erroné : “\2” est au pluriel.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[GWsi]") -1>> aux                 && Accord de nombre erroné : “\2” est au pluriel.
 
 TEST: Téléphone {{au}} personne qui ont donné leur accord.                      ->> à la|aux
 TEST: téléphone {{au}} {{boulangère}}                                           ->> à la|aux|||boulanger
@@ -24671,6 +24729,7 @@ TEST: {{au}} États-Unis                                                        
 TEST: {{au }}arbre                                                              ->> "à l’|aux "
 TEST: {{au }}homme                                                              ->> "à l’|aux "
 TEST: {{au}} émissions de gaz à effet de serre                                  ->> aux
+TEST: En Éthiopie, au Yémen et aux Somalies, un petit arbuste fait l’objet d’un important commerce
 TEST: au iota de liberté que j’ai encore
 TEST: au chien, au chat, au poulet
 TEST: à partir de pièces détachées, au départ entièrement venues de l’étranger puis en partie fabriquées sur place
@@ -26764,7 +26823,7 @@ TEST: par {{cents}} idées différentes.                                        
 # mille
 __gn_mille__
     milles
-        <<- /gn/ morph(>1, ":(?:B:.:p|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
+        <<- /gn/ morph(>1, ":(?:B:.:p|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]", ":W"))
         ->> mille                           && “Mille” est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
 
 TEST: Plus de {{milles}} personnes sont venues.                         ->> mille
@@ -26772,6 +26831,7 @@ TEST: plus de deux cent quatre-vingt mille personnes
 TEST: trente-cinq mille hommes
 TEST: c’est à des milliers de milles d’ici
 TEST: à quelque 18 milles de l’archipel
+TEST: Après avoir marché pendant deux milles environ
 
 
 #### Groupes, regroupements, collections, etc.
@@ -28139,21 +28199,21 @@ __infi_savoir!5__
     >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
     >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
     >savoir  ?[que|qu’|quoi]¿  ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|savoirs|") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ morph(\1, ":V", ":M") and not value(<1, "|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez)$
     >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|savoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ morph(\1, ":V", ":M") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     >savoir  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ai(?:s|t|ent))$
     >savoir  ?[ne|n’]¿  [lui|leur|y]                    en                        ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ not value(\1, "|savoirs|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tagbefore(\1, "_ceque_")
+        <<- /infi/ morph(\1, ":V", ":M") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not tagbefore(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
     [de|d’]  savoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
@@ -28173,6 +28233,7 @@ TEST: je le savais désiré par de nombreuses personnes.
 TEST: il les savait commandités par ses ennemis.
 TEST: le savoir fabriqué dans les universités n’est guère reconnu.
 TEST: savoirs déconsidérés par les tyrans
+TEST: Sue l’appelait Anthony Barbant-Smith, prétendait qu’il descendait de la célèbre famille Barbant, que son père avait barbé toute l’Angleterre et que son grand-père était le fameux champion olympique des barbeurs.
 
 
 __infi_vouloir!5__
@@ -29196,7 +29257,7 @@ __purge_syntagme_verbal__
     [de|d’]  @:V[123]_i.*:Y  @:3[sp]¬:[DM]
         <<- not morph(\2, ">(?:être|demeurer|devenir|redevenir|sembler|para[îi]tre|rester)/") ~1:2>> *
 
-    [à|de|d’|par|pour|sans]  [l’|le|la|les]  ?[en|y]¿   $:Y
+    [à|de|d’|par|pour|sans]  [l’|le|la|les]  ?[en|y]¿   $:Y¬:V0a
         <<- not morph(>1, ":Y") ~>> *
 
     ne [lui|leur]
@@ -31616,7 +31677,8 @@ TEST: Quelle mouche les a piquées ?
 
 __ppas_qui_avoir__
     qui  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:Q.*:(?:f|m:p)¬:m:[si]
-        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")             && Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- /ppas/ not value(\-1, "|confiance|charge|cours|envie|garde|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        --1>> =suggVerbPpas(\-1, ":m:s")             && Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du bien.                ->> fait
 TEST: qui avait envie de voir sa mère.
@@ -35459,6 +35521,7 @@ TEST: Cela permet de détecter de manière bien plus sûre les gens qui sont por
 TEST: La vallée était à cet endroit plus jolie.
 TEST: ce qui rend la marche à ces endroits très agréable.
 TEST: elle sentit son pouvoir fragilisé par cette affaire
+TEST: pour l’avoir perdue, il fut blâmé
 
 
 
