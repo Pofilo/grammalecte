@@ -3708,6 +3708,7 @@ __fusions_noms_communs__
     star [system+s]
     quantitative easing
     R & D
+    think >tank
         <<- ~>> ␣
 
     jusqu’ [au-boutiste+s|au-boutisme+s]
@@ -6026,6 +6027,9 @@ __tu_substantifs!7__
     rendez vous
         <<- /tu/ morph(<1, ":[DR]|<start>|>[(,]") ->> rendez-vous  && Il manque un trait d’union.
 
+    rentre dedans
+        <<- /tu/ morph(<1, ":D.*:[me]") ->> rentre-dedans       && Il manque les traits d’union.
+
     rez de >chaussée
         <<- /tu/ ->> rez-de-chaussée                            && Il manque les traits d’union.
 
@@ -6137,6 +6141,7 @@ TEST: {{Quelques unes}} sont très habiles.                                     
 TEST: {{quelques un}} seront blâmés, les autres pardonnés                       ->> quelques-uns
 TEST: des {{rendez vous}}                                                       ->> rendez-vous
 TEST: un Mars par {{rendez vous}}                                               ->> rendez-vous
+TEST: faire du {{rentre dedans}}                                                ->> rentre-dedans
 TEST: Habiter au {{rez de chaussée}}, quelle horreur.                           ->> rez-de-chaussée
 TEST: encore un {{rond point}}                                                  ->> rond-point|ronds-points
 TEST: J’en ai ma claque de ces {{ronds de cuir}}                                ->> ronds-de-cuir
@@ -9052,6 +9057,15 @@ TEST: Elles avaient bien l’intention d’en parler.
 TEST: J’ai mis ces trésors de côté spécialement à votre intention
 
 
+__loc_à_fleur_de_peau__
+    !! à fleur de peau ¡¡
+    [a|à] [fleur+s|fleurent|fleure+s] de [peau+x|>pot|po]
+        <<- /loc/ ->> à fleur de peau                                       && Confusion. Locution “à fleur de peau”.|https://fr.wiktionary.org/wiki/%C3%A0_fleur_de_peau
+
+TEST: {{a fleure de pot}}                                                   ->> à fleur de peau
+TEST: elle était toujours à fleur de peau
+
+
 __conf_à_moindre_cout__
     !! à moindre [cout|coût] ¡¡
     [a|à] [moindre+s] [>cou|>coup|cout+s|coût+s]
@@ -9143,6 +9157,17 @@ __conf_à_quel_point!7__
 TEST: imaginez {{à qu’elle point}} j’étais prêt.                            ->> à quel point
 TEST: elle sait jusqu’à quel point elle pouvait se fier à eux.
 TEST: À quels points pensez-vous ?
+
+
+__loc_à_ras_bord__
+    !! à ras bord ¡¡
+    [a|à] [ras|ra|>rat] [bord+s|>bore|>bort]
+    [a|à] [>rab] %or
+        <<- /loc/ ->> à ras bord                                            && Locution “à ras bord”.|https://fr.wiktionary.org/wiki/%C3%A0_ras_bord
+
+TEST: {{a rab hors}}                                                        ->> à ras bord
+TEST: {{à rat bore}}                                                        ->> à ras bord
+TEST: verser à ras bord
 
 
 __conf_à_tire_d_aile__
@@ -13424,6 +13449,7 @@ TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.      ->> savoi
 
 # scène, senne, seine, saine
 __conf_scène_senne_seine_saine1__
+    sur le devant [de|d’] la [>senne|>seine|saine+s|>cène|sen]
     >metteur en [>senne|>seine|saine+s|>cène|sen]
     [première|deuxième|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-neuvième|vingtième] [>senne|>seine|saine+s]
         <<- /conf/ --1>> scène                                      && Confusion probable. Pour parler du lieu où se joue une pièce de théâtre, écrivez “scène”.|https://fr.wiktionary.org/wiki/sc%C3%A8ne
@@ -13653,6 +13679,7 @@ TEST: Je refuse, quoi qu’il en soit.
 TEST: on ne s’étonne plus que le parquet de Paris en soit à agir sous l’effet de quelque urgence médiatique
 TEST: Vous êtes soit pour soit contre, mais pas les deux en même temps
 TEST: elle faisait de la peinture sur soie
+TEST: soit elle était passée par une autre porte
 
 
 __conf_soie_soi_soit__
@@ -16452,6 +16479,9 @@ __purge_locutions_fois__
     pour la [première|seconde|dernière|~ième$] fois
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
     pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
+    pour la [première|seconde|~ième$] et dernière fois
+    pour la [première|seconde|~ième$] et dernière fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
+    pour la [première|seconde|~ième$] et dernière fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
     pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour [trois|3] fois rien
     pour [cette|une] fois
@@ -16768,9 +16798,10 @@ __purge_locutions__
     à la virgule près
     à la vitesse [de|d’] l’ éclair
     à [un|cet|l’] instant t
-    à ?[si|très|trop]¿ large spectre
-    à ?[si|très|trop]¿ [court|moyen|long] rayon d’ action
-    à ?[si|très|trop]¿ longue [distance|portée]
+    à ?[moins|plus|si|très|trop]¿ large échelle
+    à ?[moins|plus|si|très|trop]¿ large spectre
+    à ?[moins|plus|si|très|trop]¿ [court|moyen|long] rayon d’ action
+    à ?[moins|plus|si|très|trop]¿ longue [distance|portée]
     à loyer modéré
     à main [armée|droite|gauche|levée|nue]
     à mains nues
@@ -16873,6 +16904,7 @@ __purge_locutions__
     à tu et à toi
     à tue-tête
     à usage [interne|unique]
+    à ?[moins|plus|si|très|trop]¿ vaste échelle
     à visage [découvert|humain]
     à vitesse constante
     à vitesse grand V
@@ -17648,6 +17680,7 @@ __purge_locutions__
     sur ce ,
     sur ce plan-là
     sur la défensive
+    sur le devant [de|d’] la scène
     sur la forme comme sur le fond
     sur la même longueur d’ onde
     sur la sellette
@@ -19329,7 +19362,7 @@ __purge_couleurs__
     bleu    [acier|argenté|azur|céleste|ciel|électrique|givré|indigo|marine|nuit|outremer|outre-mer|persan|pétrole|roi|saphir|turquin|turquoise|vert]
     blond   [argenté|platine|cuivré|rougeâtre]
     brun    [cuivré|rouge|rougeâtre]
-    gris    [acier|anthracite|argenté|fer|perle|souris]
+    gris    [acier|anthracite|argenté|fer|perle|plomb|souris]
     jaune   [canari|citron|doré|maïs|paille|sable|rougeâtre]
     noir    [de|d’] [encre|jais]
     noir    et blanc
@@ -20233,7 +20266,8 @@ __da_substantifs__
     [<start>|,|(] $:D *WORD  [me|m’|te|t’|se|s’|nous|vous|lui|y]                                      @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
     [<start>|,|(] $:D *WORD  [le|la|l’|les|en|leur]                                                   @:(?:[123][sp]|P)¬:[NAG] ?$:Y¿  $:D  @:[NA]
     [<start>|,|(] $:D *WORD                                                                           @:(?:[123][sp]|P)¬*      ?$:Y¿  $:D  @:[NA]
-        <<- morph(\3, ":[NAY]") =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
+        <<- morph(\3, ":[NAY]") and not (morph(\-1, ":Y") and morph(\-2, ":Ov"))
+        =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
 
     [<start>|,|(] $:D *WORD  *WORD  [ne|n’]     ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿   @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
     [<start>|,|(] $:D *WORD  *WORD  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
@@ -20242,7 +20276,8 @@ __da_substantifs__
     [<start>|,|(] $:D *WORD  *WORD  [me|m’|te|t’|se|s’|nous|vous|lui|y]                                      @:(?:[123][sp]|P)        ?$:Y¿  $:D  @:[NA]
     [<start>|,|(] $:D *WORD  *WORD  [le|la|l’|les|en|leur]                                                   @:(?:[123][sp]|P)¬:[NAG] ?$:Y¿  $:D  @:[NA]
     [<start>|,|(] $:D *WORD  *WORD                                                                           @:(?:[123][sp]|P)¬*      ?$:Y¿  $:D  @:[NA]
-        <<- morph(\3, ":[NA]") and morph(\4, ":[NA]") =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
+        <<- morph(\3, ":[NA]") and morph(\4, ":[NA]") and not (morph(\-1, ":Y") and morph(\-2, ":Ov"))
+        =>> select(\3, ":[NAY]") and select(\-1, ":[NA]")
 
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- =>> select(\3, "", ":V")
@@ -20417,6 +20452,11 @@ TEST: il avait passé toutes ces années enterré dans son appartement
 TEST: Il passe toutes ses journées couché.
 TEST: Les visiteurs passent donc leurs journées agglutinés…
 TEST: il avait passé toute l’heure avachi sur sa chaise.
+
+
+__purge_comme_pronom__
+    >avoir comme [moi|toi|lui|elle|iel|nous|vous|eux|elles|iels] $:Q¬:G
+        <<- ~2:3>> *
 
 
 __da_participe_passé__
@@ -20693,6 +20733,10 @@ TEST: on a tous la haine
 TEST: Vente à la criée : Se dit d’une vente en gros faite à la halle avant l’ouverture du marché.
 TEST: le système dopaminergique mésocorticolimbique est pour une part préservé
 TEST: Celui-ci est un miséreux, certes, mais un comédien pour la majeure partie des cas, il se met en scène et joue de sa pitoyabilité pour attendrir le chaland.
+TEST: une bonne partie des ingénieurs en chef avaient comme elle commencé leur carrière dans la conception de moteurs
+TEST: tout le monde peut le lire
+TEST: je veux le lire
+TEST: notre fils peut le lire
 
 
 
@@ -24008,8 +24052,8 @@ TEST: j’aide l’homme et par amour pour lui le laisse libre.
 
 
 __gn_le_1m__
-    comme le [montre|précise] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]
-    comme le [montre|précise] $:M
+    comme le [montre|précise|relève] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]
+    comme le [montre|précise|relève] $:M
         <<- !2:3>>
 
     ,  le  *WORD
@@ -24053,6 +24097,8 @@ TEST: comme le montre la police de New York
 TEST: Comme avec l’Hyperloop, le bus chinois conçu pour passer au-dessus des voitures
 TEST: Je le levai, le brandis et frappai de taille.
 TEST: Leur population totale, qui en 1504 ne dépassait pas 69 feux ou ménages, comme le précise un compte de cette époque, atteignait 175 feux en 1789
+TEST: « On se réfère aux femmes qui ont bâti l’histoire de France », dit-elle, quitte à prendre quelques largesses avec l’histoire, comme le relève Florence Rochefort.
+
 
 __gn_le_2m__
     le  *WORD  *WORD
@@ -27710,6 +27756,18 @@ TEST: il suffit de {{mangé}} sain pour aller mieux.                            
 TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
 TEST: il suffit de cela.
 TEST: il suffit de le lire.
+
+
+__infi_se_devoir_de__
+    je [me|t’] >devoir  [de|d’] ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+    tu [te|t’] >devoir  [de|d’] ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+    nous nous >devoir   [de|d’] ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+    vous vous >devoir   [de|d’] ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+    [se|s’] >devoir     [de|d’] ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":M") --1>> =suggVerbInfi(\-1)                          && Après “se devoir de”, le verbe devrait être à l’infinitif.
+
+TEST: je me dois de la {{pensée}}                                                           ->> penser
+TEST: il se devait de {{données}} son avis                                                  ->> donner
 
 
 __infi_qqch_de__
