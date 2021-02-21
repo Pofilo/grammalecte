@@ -2859,6 +2859,9 @@ __da_a__
     [ça|ceci|cela] a
         <<- =>> select(\2, ":V")
 
+    a [,|et] [b|c|ç|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z]
+        <<- =>> select(\1, ":N")
+
 __da_autour__
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> select(\1, "", ":N")
@@ -4873,8 +4876,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.                           
 @@@@
 @@@@
 
-!!!! Doublons (casse identique)                                                                   !!
-
+##!!!! Doublons (casse identique)                                                                   !!
 
 # SLOWER THAN REGEX RULE
 #__doublon__
@@ -6637,7 +6639,7 @@ TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.                    
 
 __typo_À_début_phrase!7__
     <start>  A  @:[GNAY]¬:(?:Q|3s)
-        <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|giorno|")
+        <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|giorno|a|")
         -2>> À                                                                                      && S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 
     <start>  A  bientôt  [<end>|,|)]
@@ -18046,10 +18048,10 @@ __gestion_mots_grammaticaux__
 
 # Déterminant + nombre
 __p_dét_plur_nombre_nom__
-    [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+    [les|ces|des|mes|tes|ses|nos|vos|leurs]  [*NUM|$:B]  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2>> *
 
-    [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  ou  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+    [les|ces|des|mes|tes|ses|nos|vos|leurs]  [*NUM|$:B]  ou  [*NUM|$:B]  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2:4>> *
 
     [les|des]   >numéro  [un|*NUM|$:B]  et  [*NUM|$:B]
@@ -20489,6 +20491,12 @@ __da_participe_passé__
 
     >être   $:Q
         <<- not value(\1, "|être|êtres|") and not morph(<1, ":D") =>> rewrite(\2, ":A", "")
+
+
+__da_dit__
+    ,  dit  /_Maj_
+    ,  dit  $:D
+        <<- =>> =select(\2, "", ":A")
 
 
 __purge_rien__
@@ -25142,13 +25150,18 @@ TEST: l’homme les a volés
 
 
 __gn_les_2m_virg__
+    calendriers ,  [grégorien|julien|hégirien] et [grégorien|julien|hégirien]
+        <<- !3>> gn
+
     <start>  les  *WORD  ,  @:A¬:[GP]
         <<- /gn/ morph(\3, ":[NA].*:[pi]", ":3[sp]") and not agreement(\3, \5)
+            and not (value(>1, "|et|") and morph(\-1, "#G") and morph(>2, "#G"))
         --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
 
 TEST: les femmes, {{blessé}} par deux fois                                      ->> blessées
 TEST: les hommes, {{blessée}} par deux fois                                     ->> blessés
 TEST: les femmes, demeurant rue de la paix
+TEST: les deux camps, italien et allemand, étaient à portée d’arc
 
 
 __gn_leurs_1m__
@@ -26866,7 +26879,7 @@ TEST: avoir plein d’argent ne suffit pas toujours à tout résoudre
 __gn_groupe_de__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]
         || [>dizaine|>douzaine||>vingtaine|>trentaine|>quarantaine|>cinquantaine|>soixantaine|>centaine|>millier|>million|>milliard|>multitude|>horde]  [de|d’]  *WORD
-        <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>(?:fraude|large|long|profondeur|hauteur)/")
+        <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>(?:bénéfice|fraude|large|long|profondeur|hauteur|perte)/")
         -4>> =suggPlur(\4)                                                                  && Avec « \1 \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
@@ -26883,6 +26896,7 @@ TEST: Ce collectif d’{{artiste}} est très inventif.                 ->> artis
 TEST: les 80 milliards de fraude fiscale
 TEST: un groupe de prière
 TEST: elle fait environ un mètre de large sur des dizaines de long
+TEST: six milliards de perte
 
 
 __gn_cage_d_escalier__
@@ -27052,7 +27066,7 @@ __gn_intérieur_extérieur__
         <<- /gn/ -2>> =\2[:-1]                          && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
 
     [d’|ces|des|les|mes|tes|ses|leurs|nos|vos|en] [intérieures|extérieures]
-        <<- /gn/ -2>> =\2[:-2]+"s"                      && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
+        <<- /gn/ space(\1, 1, 3) -2>> =\2[:-2]+"s"      && Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
 
 TEST: que pensez-vous de notre {{intérieure}} ?             ->> intérieur
 TEST: à l’{{intérieure}} rien de notable.                   ->> intérieur
@@ -31779,6 +31793,7 @@ __ppas_det_sing_COD_que_avoir__
 
     [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
     [l’|mon|ton|son|notre|votre|leur]  *WORD  [que|qu’]  $:D¬:R  @:[NA]                                          ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/") >>>
         <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]|>impression/") and morph(\-1, ":Q.*:[fp]", ":[me]:[si]") --1>> =suggVerbPpas(\-1, ":m:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
         <<- /ppas/ __else__ and morph(\2, ":[NA].*:f", ":[me]") and morph(\-1, ":Q.*:[mp]", ":[fe]:[si]") --1>> =suggVerbPpas(\-1, ":f:s")
@@ -31834,6 +31849,8 @@ TEST: la danse qu’ils ont réussi à faire
 TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
 TEST: en ayant l’impression qu’il a beaucoup réussi
 TEST: rassuré par l’enquête qu’il avait dû mener, il consentit à me faire confiance
+TEST: l’hypothèse que ces deux familles aient partagé un ancêtre commun
+
 
 __ppas_det_plur_COD_que_avoir__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
