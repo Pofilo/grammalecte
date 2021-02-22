@@ -548,8 +548,26 @@ var lexgraph_fr = {
 
     // Other functions
 
-    filterSugg: function (aSugg) {
-        return aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); });
+    isValidSugg: function (sSugg, oSpellChecker) {
+        "return True if <sSugg> is valid"
+        if (sSugg.endsWith("è") || sSugg.endsWith("È")) {
+            return false;
+        }
+        if (sSugg.includes("’")) {
+            if (sSugg.search(/^[dD]’/) == 0 && !oSpellChecker.morph(sSugg.slice(2), ":[YNAW]")) {
+                return false;
+            }
+            if (sSugg.search(/^[nmtsNMTS]’/) == 0 && !oSpellChecker.morph(sSugg.slice(2), ":V")) {
+                return false;
+            }
+            if (sSugg.search(/^[jJ]’/) == 0 && !oSpellChecker.morph(sSugg.slice(2), ":(?:Y|[123][sp])")) {
+                return false;
+            }
+            if (sSugg.search(/^[cçCÇ]’/) == 0  && !oSpellChecker.morph(sSugg.slice(2), ":3[sp]")) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

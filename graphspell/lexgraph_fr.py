@@ -11,7 +11,7 @@ Lexicographer for the French language
 #           analyze(sWord) -> returns a string with the meaning of word
 #           readableMorph(sMorph) -> returns a string with the meaning of tags
 #           setLabelsOnToken(dToken) -> adds readable information on token
-#           filterSugg(aWord) -> returns a filtered list of suggestions
+#           isValidSugg(sWord, oSpellChecker) -> returns a filtered list of suggestions
 
 
 import re
@@ -510,7 +510,17 @@ def setLabelsOnToken (dToken):
 
 # Other functions
 
-def filterSugg (aSuggs):
-    "exclude suggestions"
-    return [ sSugg  for sSugg in aSuggs  if not sSugg.endswith(("è", "È")) ]
-    #return filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSuggs) # return an object filter
+def isValidSugg (sSugg, oSpellChecker):
+    "return True if <sSugg> is valid"
+    if sSugg.endswith(("è", "È")):
+        return False
+    if "’" in sSugg:
+        if sSugg.startswith(("d’", "D’")) and not oSpellChecker.morph(sSugg[2:], ":[YNAW]"):
+            return False
+        if sSugg.startswith(("n’", "m’", "t’", "s’", "N’", "M’", "T’", "S’")) and not oSpellChecker.morph(sSugg[2:], ":V"):
+            return False
+        if sSugg.startswith(("j’", "J’")) and not oSpellChecker.morph(sSugg[2:], ":(?:Y|[123][sp])"):
+            return False
+        if sSugg.startswith(("c’", "C’")) and not oSpellChecker.morph(sSugg[2:], ":3[sp]"):
+            return False
+    return True

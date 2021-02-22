@@ -340,9 +340,6 @@ class IBDAWG {
         this._suggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions();
-        if (this.lexicographer) {
-            aSugg = this.lexicographer.filterSugg(aSugg);
-        }
         if (sSfx || sPfx) {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx; } );

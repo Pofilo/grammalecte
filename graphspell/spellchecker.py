@@ -8,6 +8,7 @@ To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
 - the personal dictionary, created by the user for its own convenience
 """
 
+import re
 import importlib
 import traceback
 
@@ -256,6 +257,24 @@ class SpellChecker ():
             self._dLemmas[sWord] = { s[1:s.find("/")]  for s in lMorph }
         return lMorph
 
+    def morph (self, sWord, sPattern, sNegPattern=""):
+        "analyse a word, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
+        lMorph = self.getMorph(sWord)
+        if not lMorph:
+            return False
+        # check negative condition
+        if sNegPattern:
+            if sNegPattern == "*":
+                # all morph must match sPattern
+                zPattern = re.compile(sPattern)
+                return all(zPattern.search(sMorph)  for sMorph in lMorph)
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+        # search sPattern
+        zPattern = re.compile(sPattern)
+        return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
     def getLemma (self, sWord):
         "retrieves lemmas"
         if self.bStorage:
@@ -270,10 +289,12 @@ class SpellChecker ():
             if sWord in self.lexicographer.dSugg:
                 yield self.lexicographer.dSugg[sWord].split("|")
             elif sWord.istitle() and sWord.lower() in self.lexicographer.dSugg:
-                lRes = self.lexicographer.dSugg[sWord.lower()].split("|")
-                yield list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))
+                lSuggs = self.lexicographer.dSugg[sWord.lower()].split("|")
+                yield list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lSuggs))
             else:
-                yield self.oMainDic.suggest(sWord, nSuggLimit, True)
+                lSuggs = self.oMainDic.suggest(sWord, nSuggLimit, True)
+                lSuggs = [ sSugg  for sSugg in lSuggs  if self.lexicographer.isValidSugg(sSugg, self) ]
+                yield lSuggs
         else:
             yield self.oMainDic.suggest(sWord, nSuggLimit, True)
         if self.bCommunityDic:

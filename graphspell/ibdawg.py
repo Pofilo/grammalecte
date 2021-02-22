@@ -244,8 +244,6 @@ class IBDAWG:
         self._suggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions()
-        if self.lexicographer:
-            aSugg = self.lexicographer.filterSugg(aSugg)
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
