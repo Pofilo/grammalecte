@@ -15706,18 +15706,24 @@ __purge_saisons__
     par rapport à               la fin du printemps  [dernier|passé|précédent|prochain|~^[0-9]{2,5}$]
         <<- ~>> *
 
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps ~^[0-9]{2,5}$
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps de l’ [an|année] ~^[0-9]{2,5}$
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] d’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
-    par un beau [lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] printemps ?~^[0-9]{2,5}$¿
-    par une belle journée [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
-    par une belle journée [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
-    par une belle journée du printemps ~^[0-9]{2,5}$
-    par une belle journée du printemps de l’ [an|année] ~^[0-9]{2,5}$
-    par une belle journée d’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
-    par une belle journée [de|d’] printemps ?~^[0-9]{2,5}$¿
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps ~^[0-9]{2,5}$
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] du printemps de l’ [an|année] ~^[0-9]{2,5}$
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] d’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
+    par un [beau|chaud|frais|froid] [matin|soir|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche] [de|d’] printemps ?~^[0-9]{2,5}$¿
+    par un [bel|chaud|frais|froid] après-midi [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
+    par un [bel|chaud|frais|froid] après-midi [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
+    par un [bel|chaud|frais|froid] après-midi du printemps ~^[0-9]{2,5}$
+    par un [bel|chaud|frais|froid] après-midi du printemps de l’ [an|année] ~^[0-9]{2,5}$
+    par un [bel|chaud|frais|froid] après-midi d’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
+    par un [bel|chaud|frais|froid] après-midi [de|d’] printemps ?~^[0-9]{2,5}$¿
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] [de|d’] l’ [été|automne|hiver] ~^[0-9]{2,5}$
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] [de|d’] l’ [été|automne|hiver] de l’ [an|année] ~^[0-9]{2,5}$
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] du printemps ~^[0-9]{2,5}$
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] du printemps de l’ [an|année] ~^[0-9]{2,5}$
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] d’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
+    par une [belle|chaude|fraîche|froide] [journée|matinée|nuit|soirée] [de|d’] printemps ?~^[0-9]{2,5}$¿
         <<- ~>> *
 
     au cours [de|d’] l’ [été|automne|hiver] ?~^[0-9]{2,5}$¿ et ?[de|d’]¿ l’ [été|automne|hiver] ?~^[0-9]{2,5}$¿
@@ -29784,11 +29790,12 @@ TEST: elle s’était trouvé un mari.
 
 
 __ppas_nous_nous_être_verbe__
-    nous  ?ne¿  nous  ?y¿  [sommes|étions|fûmes|fussions|serons|serions]  @:Q.*:s¬:(?:G|Q.*:[pi])|>dire/
+    nous  ?ne¿  nous  ?y¿  [sommes|étions|fûmes|fussions|serons|serions]  @:Q.*:s¬:(?:G|Q.*:[pi])|>(?:dire|parler)/
         <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
         --1>> =suggVerbPpas(\-1, ":p")                                                              && Si ce participe passé se rapporte bien à “nous”, il devrait être au pluriel.
 
 TEST: Nous nous étions {{cru}} au paradis.                                  ->> crus|crues
+TEST: nous nous sommes parlé.
 
 
 __ppas_ils_se_être_verbe__
