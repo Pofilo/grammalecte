@@ -132,7 +132,7 @@ def getCommand ():
 
 def main ():
     "launch the CLI (command line interface)"
-    if sys.version < "3.5":
+    if sys.version_info < (3, 5):
         print("Python 3.5+ required")
         return
 

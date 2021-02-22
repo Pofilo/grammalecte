@@ -385,7 +385,7 @@ def extraTest (sLang):
 def main ():
     "build Grammalecte with requested options"
     print("Python: " + sys.version)
-    if sys.version < "3.7":
+    if sys.version_info < (3, 7):
         print("Python 3.7+ required")
         return
     xParser = argparse.ArgumentParser()
