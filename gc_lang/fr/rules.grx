@@ -2827,8 +2827,8 @@ __da_préverbes_verbes__
     [<start>|,|(]  quelqu’ un  *WORD
         <<- =>> select(\4, "", ":N")
 
-    >falloir [pouvoir|savoir|vouloir|manger|conseiller]
-        <<- =>> select(\2, "", ":N")
+    >falloir ?@:[WX]¿ [pouvoir|savoir|vouloir|manger|conseiller]
+        <<- =>> select(\-1, "", ":N")
 
     v’nir
         <<- ~>> venir
@@ -3696,7 +3696,7 @@ __fusions_noms_communs__
 
     n’ importe [qui|quoi|quel|quelle|quels|quelles|où|ou|lequel|laquelle|lesquels|lesquelles]
         <<- ~1:2>> ␣
-        <<- =>> setmeta(\1, "WORD") and define(\1, ":ÉO")
+        <<- =>> setmeta(\1, "WORD") and define(\1, ":LO")
 
     [cultural|gender] studies
         <<- ~>> ␣
@@ -3716,6 +3716,7 @@ __fusions_noms_communs__
 
     jusqu’ [au-boutiste+s|au-boutisme+s]
         <<- ~>> ␣
+        <<- =>> setmeta(\1, "WORD")
 
     notre père
         <<- morph(<1, ":D.*:[mp]") ~>> ␣
@@ -6638,7 +6639,9 @@ TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.                    
 !!!! A / À: accentuation la préposition en début de phrase                                        !!
 
 __typo_À_début_phrase!7__
-    <start>  A  @:[GNAY]¬:(?:Q|3s)
+    <start>  A  @:[GNAYM]¬:(?:Q|3s)
+    <start>  A  peine
+    <start>  A  [change|force] [de|d’]
         <<- /typo/ not value(\3, "|t’|priori|posteriori|postériori|contrario|capella|fortiori|giorno|a|")
         -2>> À                                                                                      && S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 
@@ -8395,45 +8398,74 @@ TEST: plus d’un ont été traumatisés
 TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
 
-__conf_par_vconj__
-    par  ?[le|la|l’|les|leur|leurs]¿  @:[123][sp]¬:[GNA]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           && Incohérence avec “\1” : “\-1” est une forme verbale.
-
-    par  un  @:V¬:[GNA]
-        <<- /conf/ not \3.istitle() and not value(<1, "|un|")
-        -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)                                              && Incohérence avec “\1 \2” : “\3” est une forme verbale.
-
-    par  une  @:V¬:[GNA]
-        <<- /conf/ not \3.istitle() and not value(<1, "|une|")
-        -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                                              && Incohérence avec “\1 \2” : “\3” est une forme verbale.
-
-TEST: par {{bloque}} de données                                         ->> bloc|blocs
-TEST: par une {{donnait}} sans importance                               ->> donne|donnée
-TEST: par un {{bloque}} de donnée                                       ->> bloc
-TEST: conçu par un {{employer}} très compétent                          ->> employé
-TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
-TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
-
-
 __conf_préposition_det_verbe__
-    [malgré|dès] [un|le]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)         && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+    [à|après|avant|par|pour|sans] [le|la|l’|leur|les] $:Y
+        <<- !-1>> conf
 
-    [malgré|dès] [une|la]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)         && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+    [chez|dès|malgré|parmi|selon] @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[DMO]")                                && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
 
-    [malgré|dès] [l’|leur|son|ton]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA].*:[si]", True)              && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+    par @:V¬:[GNAWMBY]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NADMG]", True)                        && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
 
-    [malgré|dès] [les|leurs]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA].*:[pi]", True)              && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] un  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() and not (value(<1, "|un|") and value(\1, "|à|contre|par|pour|"))
+        --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] une  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() and not (value(<1, "|une|") and value(\1, "|à|contre|par|pour|"))
+        --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] le  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] la  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [l’|leur]  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] les  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] leurs  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [son|ton]  @:V¬:[GNAWMB]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    en [un|le]  @:V¬:[GNAWMBP]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    en [une|la]  @:V¬:[GNAWMBP]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    en [l’|leur|son|ton]  @:V¬:[GNAWMBP]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+    en [les|leurs]  @:V¬:[GNAWMBP]
+        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+
+TEST: chez {{luis}}                                                             ->> lui|Luis
 TEST: malgré un {{employer}} peu dévoué                                         ->> employé
 TEST: dès le {{commencent}}, j’ai vu le problème.                               ->> commençant
 TEST: dès la {{posent}}                                                         ->> pause|pose
 TEST: malgré l’{{arrête}} qui interdisait le port                               ->> arête
 TEST: malgré les {{arrêtes}}                                                    ->> arêtes
+TEST: par {{bloque}} de données                                                 ->> bloc|blocs
+TEST: par une {{donnait}} sans importance                                       ->> donne|donnée
+TEST: par un {{bloque}} de donnée                                               ->> bloc
+TEST: malgré leurs {{bloques}}                                                  ->> blocs
+TEST: conçu par un {{employer}} très compétent                                  ->> employé
+TEST: donne ça à ton {{employer}}                                               ->> employé|employée
+TEST: en un {{emploie}} stable                                                  ->> emploi
+TEST: tu croyais en la {{cingler}}                                              ->> cinglée
+TEST: en leur {{tarer}} de père                                                 ->> taré|tarée|tare
+TEST: il faut croire en leurs {{ponds}}                                         ->> ponts
+TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
+TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
 TEST: malgré les deux précédentes erreurs
+TEST: en les prenant de haut
 
 
 __conf_préverbes__
@@ -11888,12 +11920,14 @@ TEST: Elle habite Vandœuvre-lès-Nancy.
 # leurs / leur
 __conf_leurs_verbe__
     leurs  @:(?:[123][sp]|Y)¬:[GNAM]
-        <<- /conf/ not value(<1, "|les|des|à|par|")
+        <<- /conf/ not morph(<1, ">[ld]es/|:R")
         -1>> leur                                   && Incohérence : “leurs” est un déterminant pluriel censé précéder un substantif pluriel. Pour le pronom devant un verbe, écrivez “leur”.
 
 TEST: je vais {{leurs}} reprendre                                       ->> leur
 TEST: je {{leurs}} apprends la programmation                            ->> leur
 TEST: après qu’un des leurs ait été gravement blessé par un tir de grenade
+TEST: les leurs sont affreux.
+TEST: il était des leurs.
 
 
 # loin s’en faut
@@ -18950,6 +18984,7 @@ __substantifs_multi_mots__
     >peinture à l’ huile
     >peloton d’ exécution
     >pendaison [de|d’] crémaillère
+    >période [de|d’] vaches maigres
     >périphérique à bande ?[analogique|magnétique]¿
     >personnage [de|d’] roman
     perspectives d’ avenir
@@ -19810,6 +19845,10 @@ __purge_adverbes__
 
     , *WORD et $:W¬* ,
         <<- morph(\2, ":W", "*") ~>> *
+
+    [<start>|,|(] même $:D
+        <<- ~2>> *
+
 
 
 @@@@
@@ -23035,6 +23074,20 @@ TEST: Ils ne viendront probablement {{par}}…                                  
 TEST: Elles ne s’en soucient {{par}} vraiment, quoi qu’elles en disent.                 ->> pas
 
 
+__conf_plaint_plein_plain__
+    [me|m’]                 [suis|étais|fus|sois|fusse|serai|serais]            [plain+s|plein+s]
+    tu ?[ne|n’]¿ [te|t’]    [es|étais|fus|sois|fusses|seras|serais]             [plain+s|plein+s]
+    [se|s’]                 >être                                               [plain+s|plein+s]
+        <<- /conf/ --1>> plaint                                 && Confusion probable. Le participe passé du verbe “plaindre” s’écrit “plaint”.
+
+    nous ?[ne|n’]¿ nous [sommes|étions|fûmes|soyons|fussions|serons|serions]    [plain+s|plein+s]
+    vous ?[ne|n’]¿ vous [êtes|étiez|fûtes|soyez|fussiez|serez|seriez]           [plain+s|plein+s]
+        <<- /conf/ not morph(<1, ":R") --1>> plaints            && Confusion probable. Le participe passé du verbe “plaindre” s’écrit “plaint”.
+
+TEST: je me suis {{plein}} de ces dingues auprès du maire       ->> plaint
+TEST: vous vous êtes {{plein}} de ces rustres                   ->> plaints
+TEST: c’est plein de sottises
+
 
 # partir en quenouille / vrille
 __conf_partir_en_quenouille__
@@ -23476,14 +23529,14 @@ __conf_sang_sans_sens__
     [c|c’] >être [mon|ton|son|notre|votre|leur|leurs] [sans|san]
         <<- /conf/ --1>> sang                                       && Confusion probable. Pour évoquer le fluide sanguin, écrivez “sang”.|https://fr.wiktionary.org/wiki/sang
 
-TEST: Tout est {{sans dessus dessous}}.                             ->> sens dessus dessous
-TEST: le {{sans}} a coulé.                                          ->> sang
-TEST: le {{san}} qui coulera encore sera sur vos mains              ->> sang
-TEST: elle a ça dans le {{sans}}                                    ->> sang
-TEST: elle pissait le {{sans}}                                      ->> sang
-TEST: elle a su malgré garder un certain {{sans}} de la mesure      ->> sens
-TEST: avoir le {{sans}} de la mesure, c’est primordial              ->> sens
-TEST: ne fais pas couler le {{sens}}                                ->> sang
+TEST: Tout est {{sans dessus dessous}}.                                     ->> sens dessus dessous
+TEST: le {{sans}} a coulé.                                                  ->> sang
+TEST: le {{san}} qui coulera encore sera sur vos mains                      ->> sang
+TEST: elle a ça dans le {{sans}}                                            ->> sang
+TEST: elle pissait le {{sans}}                                              ->> sang
+TEST: elle a su malgré tout garder un certain {{sans}} de la mesure         ->> sens
+TEST: avoir le {{sans}} de la mesure, c’est primordial                      ->> sens
+TEST: ne fais pas couler le {{sens}}                                        ->> sang
 TEST: ce témoignage va dans le sens de la victime.
 
 
@@ -28759,7 +28812,7 @@ __purge_prépositions_pronoms__
     à [cela|ceci|ça] près
         <<- ~>> *
 
-    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] ?tout¿ [cela|ceci|ça]   [<end>|,|@:[VXG]¬>qui/]
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon|parmi] ?tout¿ [cela|ceci|ça]   [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:-2>> *
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon]  [autrui|quelqu’un|quelqu’une]      [<end>|,|@:[VXG]¬>qui/]
@@ -28771,11 +28824,11 @@ __purge_prépositions_pronoms__
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] on ne sait [qui|quoi]   [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:5>> *
 
-    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout un chacun          [<end>|,|@:[VXG]¬>qui/]
-    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout le monde           [<end>|,|@:[VXG]¬>qui/]
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon|parmi] tout un chacun          [<end>|,|@:[VXG]¬>qui/]
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon|parmi] tout le monde           [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:4>> *
 
-    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là] [<end>|,|@:[VXG]¬>qui/]
+    [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon|parmi] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là] [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:2>> *
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|de|d’|en|malgré|selon]         moi     [seul+e]        [<end>|,|@:[VXG]¬>qui/]
@@ -28889,14 +28942,14 @@ __purge_pronoms_après_sujet_verbe__
 
 
 __purge_prep_pronom_comparaison__
-    à       [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] à      [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    avec    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] avec   [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    contre  [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] contre [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    de      [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] de     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    par     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] par    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    pour    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    sous    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
-    sur     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels]
+    à       [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] à      {_pronom_obj_}
+    avec    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] avec   {_pronom_obj_}
+    contre  [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] contre {_pronom_obj_}
+    de      [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] de     {_pronom_obj_}
+    par     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] par    {_pronom_obj_}
+    pour    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   {_pronom_obj_}
+    sous    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   {_pronom_obj_}
+    sur     [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    {_pronom_obj_}
     à       [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] à      n’importe qui d’ autre
     avec    [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] avec   n’importe qui d’ autre
     contre  [moi|toi|lui|elle|nous|vous|eux|elles|iel|iels] [autant|plus|moins] [que|qu’] contre n’importe qui d’ autre
@@ -28924,7 +28977,7 @@ __purge_l_un_l_autre_les_uns_les_autres__
     sous l’ un et ?sous¿ l’ autre
     sur l’ un et ?sur¿ l’ autre
     sur l’ un comme sur l’ autre
-    l’ [un|une] [après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
+    l’ [un|une] [à|après|avec|chez|contre|dans|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
     l’ [un|une] près de l’ autre
     l’ [un|une] par rapport à l’ autre
     entre l’ [un|une] et l’ autre
@@ -32580,54 +32633,54 @@ TEST: Ne m’en rien laisser.
 !!
 
 __conf_le_la_leur_les_verbe_nom!6__
-    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0)  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
-    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0)  [nous|vous]                    @:[123][sp]¬:[QG]
-    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0)                                 @:[123][sp]¬:[QAG]
+    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0|Ov)  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]                    @:[123][sp]¬:[QG]
+    [<start>|,|(] [le|un]         @:V¬:(?:[NAY]|V0|Ov)                                 @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)                              && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0)  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
-    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0)  [nous|vous]                    @:[123][sp]¬:[QG]
-    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0)                                 @:[123][sp]¬:[QAG]
+    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0|Ov)  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]                    @:[123][sp]¬:[QG]
+    [<start>|,|(] [la|une]        @:V¬:(?:[NAY]|V0|Ov)                                 @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                              && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0)  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
-    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0)  [nous|vous]                    @:[123][sp]¬:[QG]
-    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0)                                 @:[123][sp]¬:[QAG]
+    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0|Ov)  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
+    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]                    @:[123][sp]¬:[QG]
+    [<start>|,|(] l’              @:V¬:(?:[NAY]|V0|Ov)                                 @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0)  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
-    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0)  [nous|vous]                    @:[123][sp]¬:[QG]
-    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0)                                 @:[123][sp]¬:[QAG]
+    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0|Ov)  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]            @:[123][sp]¬:[QNAG]
+    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]                    @:[123][sp]¬:[QG]
+    [<start>|,|(] leur            @:V¬:(?:[NAY]|V0|Ov)                                 @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0)  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]     @:[123][sp]¬:[QNAG]
-    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0)  [nous|vous]             @:[123][sp]¬:[QG]
-    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0)                          @:[123][sp]¬:[QAG]
+    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0|Ov)  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]     @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]             @:[123][sp]¬:[QG]
+    [<start>|,|(] [les|plusieurs|leurs]  @:V¬:(?:[NAY]|V0|Ov)                          @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[pi]", True)                                   && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0)  [me|m’|te|s’|se|s’]
-    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0)  [ne|n’]                  @:[123][sp]
-    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]      @:[123][sp]¬:[QNAG]
-    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0)  [nous|vous]              @:[123][sp]¬:[QG]
-    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0)                           @:[123][sp]¬:[QAG]
+    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0|Ov)  [me|m’|te|s’|se|s’]
+    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0|Ov)  [ne|n’]                  @:[123][sp]
+    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]      @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]              @:[123][sp]¬:[QG]
+    [<start>|,|(] [certains|maints]     @:V¬:(?:[NAY]|V0|Ov)                           @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[me]:[pi]", True)                              && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
-    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0)  [me|m’|te|s’|se|s’]
-    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0)  [ne|n’]                  @:[123][sp]
-    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0)  [le|la|l’|les|leur]      @:[123][sp]¬:[QNAG]
-    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0)  [nous|vous]              @:[123][sp]¬:[QG]
-    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0)                           @:[123][sp]¬:[QAG]
+    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0|Ov)  [me|m’|te|s’|se|s’]
+    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0|Ov)  [ne|n’]                  @:[123][sp]
+    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0|Ov)  [le|la|l’|les|leur]      @:[123][sp]¬:[QNAG]
+    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0|Ov)  [nous|vous]              @:[123][sp]¬:[QG]
+    [<start>|,|(] [certaines|maintes]   @:V¬:(?:[NAY]|V0|Ov)                           @:[123][sp]¬:[QAG]
         <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[pi]", True)                              && Confusion probable. Après le déterminant “\2”, il faut placer un nom, pas une forme verbale comme “\3”.
 
@@ -32650,6 +32703,7 @@ TEST: Son ministre du Budget, Gérald Darmanin, l’avait dit plus crûment sur 
 TEST: Certains jouent la carte de la dérision
 TEST: Certains font grève tous les vendredis pour soutenir cette cause.
 TEST: Certains confient ne pas avoir mangé depuis deux ou trois jours
+TEST: il les lui inspire, les lui souffle à l’oreille
 
 
 __conf_suj_verbe_det_verbe_nom__

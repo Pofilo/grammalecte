@@ -137,7 +137,7 @@ class TestPhonet (unittest.TestCase):
             ["ces", "saie", "saies", "ses", "sais", "sait"],
             ["cet", "cette", "sept", "set", "sets"],
             ["dé", "dés", "dès", "dais", "des"],
-            ["don", "dons", "dont"],
+            ["don", "dons", "dont", "Don"],
             ["été", "étaie", "étaies", "étais", "était", "étai", "étés", "étaient"],
             ["faire", "fer", "fers", "ferre", "ferres", "ferrent"],
             ["fois", "foi", "foie", "foies"],
