@@ -3394,7 +3394,9 @@ __da_groupe_nominal__
         <<- =>> select(\2, ":N")
 
     leurs @:[NA]¬:V0
-        <<- not value(<1, "|je|tu|il|on|elle|iel|nous|vous|ils|elles|iels|") =>> select(\-1, ":[NA]")
+        <<- not value(<1, "|je|tu|il|on|elle|iel|nous|vous|ils|elles|iels|")
+            and not (value(<1, "|des|les|") and morph(\-1, ":G"))
+        =>> select(\-1, ":[NA]")
 
     mon @:[NA]¬:V0
     mon [avoir|être]
@@ -8403,50 +8405,51 @@ __conf_préposition_det_verbe__
         <<- !-1>> conf
 
     [chez|dès|malgré|parmi|selon] @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[DMO]")                                && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[DMO]")                            && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
 
     par @:V¬:[GNAWMBY]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NADMG]", True)                        && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NADMG]", True)                    && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] un  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() and not (value(<1, "|un|") and value(\1, "|à|contre|par|pour|"))
+        <<- /conf/ not tag(\-1, "_Maj_") and not (value(<1, "|un|") and value(\1, "|à|contre|par|pour|"))
         --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] une  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() and not (value(<1, "|une|") and value(\1, "|à|contre|par|pour|"))
+        <<- /conf/ not tag(\-1, "_Maj_") and not (value(<1, "|une|") and value(\1, "|à|contre|par|pour|"))
         --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] le  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] la  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [l’|leur]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] les  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] leurs  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [son|ton]  @:V¬:[GNAWMB]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     en [un|le]  @:V¬:[GNAWMBP]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     en [une|la]  @:V¬:[GNAWMBP]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)               && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     en [l’|leur|son|ton]  @:V¬:[GNAWMBP]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     en [les|leurs]  @:V¬:[GNAWMBP]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                    && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
-TEST: chez {{luis}}                                                             ->> lui|Luis
+TEST: Tout ce qu’on fera chez {{sera}} enregistré.                              ->>
+TEST: chez {{luis}}                                                             ->> lui|Louis|Luis
 TEST: malgré un {{employer}} peu dévoué                                         ->> employé
 TEST: dès le {{commencent}}, j’ai vu le problème.                               ->> commençant
 TEST: dès la {{posent}}                                                         ->> pause|pose
@@ -8466,6 +8469,8 @@ TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide
 TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
 TEST: malgré les deux précédentes erreurs
 TEST: en les prenant de haut
+TEST: chez ACTIONS, rien ne va plus
+TEST: chez Terra, tout va bien
 
 
 __conf_préverbes__
@@ -8511,15 +8516,6 @@ TEST: ça {{te s’}}arrive pas                                                -
 TEST: il {{se me}} peut que nous soyons sélectionnés                        ->> se|me
 TEST: il {{se m’}}est difficile d’y parvenir.                               ->> se |m’
 TEST: le pronom “se” ne devrait pas précéder l’adverbe “ne”.
-
-
-__conf_chez_vconj__
-    chez  @:(?:[123][sp]|P)¬:[GNAQM]
-        <<- /conf/ not tag(\2, "_Maj_") -2>> _                                                      && Incohérence avec “chez” : “\2” est une forme verbale.
-
-TEST: Tout ce qu’on fera chez {{sera}} enregistré.                          ->>
-TEST: chez ACTIONS, rien ne va plus
-TEST: chez Terra, tout va bien
 
 
 __conf_de_plus_en_plus_verbe!2__
@@ -25214,7 +25210,7 @@ TEST: l’homme les a volés
 
 
 __gn_les_2m_virg__
-    calendriers ,  [grégorien|julien|hégirien] et [grégorien|julien|hégirien]
+    calendriers  ,  [grégorien|julien|hégirien] et [grégorien|julien|hégirien]
         <<- !3>> gn
 
     <start>  les  *WORD  ,  @:A¬:[GP]
@@ -25237,6 +25233,7 @@ __gn_leurs_1m__
 TEST: {{leurs}} {{action}}                                                      ->> leur|||actions
 TEST: {{leur}} {{données}}                                                      ->> leurs|||donnée
 TEST: {{leurs}} {{abricot}}                                                     ->> leur|||abricots
+TEST: comme mes parents et les leurs avant eux
 
 
 __gn_det_mas_plur_1m__
@@ -26070,37 +26067,128 @@ TEST: puis il y a entre 4 à 1 millions d’années sous une forme proche de la 
 
 
 ##  det nom et det nom adj
-__gn_det_nom_et_det_nom__
-    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|P|G)
-        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]") and morph(\5, ":[NA].*:[me]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+__gn_det_nom_mas_et_det_nom_mas__
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [le|un|ce|cet]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":V0") and morph(\5, ":[NA].*:[me]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
         --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
 
-    [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
-        <<- /gn/ morph(\2, ":[NA].*:m:[si]") and morph(\5, ":[NA].*:f:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
-        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
-
-    [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|P|G)
-        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:m:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":V0") and morph(\5, ":[NA].*:[me]:[si]", ":(?:>[aâeéèêiîoôuh].*:[ef]|V0|G)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
         --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
 
-    [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [la|l’|une|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
-        <<- /gn/ morph(\2, ":[NA].*:f:[si]") and morph(\5, ":[NA].*:f:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
-        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+    [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[me]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":V0") and morph(\5, ":[NA].*:m:[si]", ":(?:[fe]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggMasSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (masculin singulier ou pluriel).
 
 TEST: avec ce fils et notre neveu {{arrogante}}                                     ->> arrogant|arrogants
-TEST: le panneau et la paroi {{latéral}}.                                           ->> latérale|latéraux
-TEST: Il faut donc examiner ensemble le panneau et la paroi {{latérales}}.          ->> latérale|latéraux
 TEST: la force et le talent {{reconnues}}                                           ->> reconnu|reconnus
+TEST: ma haine et mon amour {{mêlée}}                                               ->> mêlé|mêlés
+TEST: une sœur et un frère décédés
+TEST: l’islamisme et l’extrême droite.
+
+
+__gn_det_nom_fem_et_det_nom_fem__
+    [la|une|cette|ma|ta|sa]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[fe]:[si]", ":V0") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [la|une|cette|ma|ta|sa]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[fe]:[si]", ":V0") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [la|une|cette|ma|ta|sa]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[fe]:[si]", ":V0") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:[fe]|3[sp]|P|G)
+        <<- /gn/ morph(\2, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggFemPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” ou bien “\2” et “\5” (féminin singulier ou pluriel).
+
 TEST: la nation et la patrie {{menacés}}                                            ->> menacée|menacées
-TEST: un frère, une sœur et une tante perdus dans le désert
-TEST: un frère et un frère décédés
+TEST: ma mère et notre passion {{inouïs}}                                           ->> inouïe|inouïes
+TEST: cette femme et mon amie {{parti}} ensemble                                    ->> partie|parties
+TEST: notre amie et cette femme {{partis}}                                          ->> partie|parties
+TEST: votre mère et votre grand-mère {{réuni}}                                      ->> réunie|réunies
+TEST: leur amie et mon amie {{retrouvés}}                                           ->> retrouvée|retrouvées
+TEST: ton amie et ma mère {{réunis}}                                                ->> réunie|réunies
+TEST: son amie et notre mère {{enrichis}}                                           ->> enrichie|enrichies
+TEST: mon amie et son amie {{oubliés}}                                              ->> oubliée|oubliées
+TEST: une sœur et une sœur réunies
 TEST: l’intelligence et la force unies
+TEST: une nation avec une armée et une volonté a toutes les chances d’y parvenir
+TEST: un frère, une sœur et une tante perdus dans le désert
+
+
+__gn_det_nom_mas_et_det_nom_fem__
+    [le|un|ce|cet]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":V0") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [le|un|ce|cet]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":V0") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [le|un|ce|cet]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":V0") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":(?:[fe]|V0)") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":(?:[fe]|V0)") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [l’|notre|votre|leur]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:m:[si]", ":(?:[fe]|V0)") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [la|une|cette|ma|ta|sa]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":(?:>[aâeéèêiîoôuh].*:[ef]|V0|G)") and morph(\5, ":[NA].*:[fe]:[si]", ":V0") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [l’|notre|votre|leur]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":(?:>[aâeéèêiîoôuh].*:[ef]|V0|G)") and morph(\5, ":[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+    [mon|ton|son]  *WORD  [et|ou]  [mon|ton|son]  *WORD  @:A.*¬:(?:A.*:(?:f:[si]|m:[pi]|e)|3[sp]|P|G)
+        <<- /gn/ morph(\2, ":[NA].*:[me]:[si]", ":(?:>[aâeéèêiîoôuh].*:[ef]|V0|G)") and morph(\5, ">[aâeéèêiîoôuh].*:[NA].*:f:[si]", ":(?:[me]|V0)") and not (value(<1, "|,|de|d’|du|des|") and morph(<2, ":[NA]"))
+        --1>> =suggFemSing(\-1) + "|" + suggMasPlur(\-1)                            && Soit cet adjectif doit être accordé avec “\5” (féminin singulier) ou bien “\2” et “\5” (masculin pluriel).
+
+TEST: Il faut donc examiner ensemble le panneau et la paroi {{latérales}}.          ->> latérale|latéraux
+TEST: cet ami et l’animatrice {{parties}}                                           ->> partie|partis
+TEST: cet homme et mon amie {{renvoyé}}                                             ->> renvoyée|renvoyés
+TEST: notre père et la femme {{arrivé}} hier                                        ->> arrivée|arrivés
+TEST: leur père et notre amie {{parti}} ensemble                                    ->> partie|partis
+TEST: notre ami et ton ennemie {{réunies}}                                          ->> réunie|réunis
+TEST: ton chien et sa maîtresse {{parti}}                                           ->> partie|partis
+TEST: mon ami et notre mère {{renvoyées}}                                           ->> renvoyée|renvoyés
+TEST: son époux et mon épouse {{parti}} ensemble                                    ->> partie|partis
 TEST: un frère et une sœur réunis
 TEST: un frère et une sœur divisés
 TEST: un frère et une sœur décédée
-TEST: une sœur et un frère décédés
-TEST: une sœur et une sœur réunies
-TEST: une nation avec une armée et une volonté a toutes les chances d’y parvenir
+TEST: un frère et un frère décédés
 TEST: un crochet est sorti de la voiture et l’a ralentie
 TEST: Alors l’époux et l’épouse manquant leur train et leur voyage de noces, reconduisirent l’éléphantesse au jardin zoologique.
 TEST: Cela se traduit par le fameux modèle simplifié de tenaille identitaire, décliné à l’envi : l’islamisme d’un côté et l’extrême droite de l’autre.
