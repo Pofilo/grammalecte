@@ -1860,6 +1860,7 @@ __virg_virgule_après_point__
         <<- /virg/ space(\1, 0, 0) and space(\2, 0, 0)
             and not value(\1, "|etc|fig|hab|litt|fig|hab|litt|circ|coll|ref|réf|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp|")
             and \1.__len__() > 1
+            and not \1.isupper()
         -2:3>> ,|.                                                          && Pas de virgule après un point (sauf éventuellement après une abréviation).
 
 TEST: Les chiens, les chats{{.,}} les poules.                               ->> ,|.
@@ -8401,7 +8402,7 @@ TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
 
 __conf_préposition_det_verbe__
-    [à|après|avant|par|pour|sans] [le|la|l’|leur|les] $:Y
+    [à|après|avant|avec|contre|par|pour|sans] [le|la|l’|leur|les] $:Y
         <<- !-1>> conf
 
     [chez|dès|malgré|parmi|selon] @:V¬:[GNAWMB]
@@ -8411,30 +8412,36 @@ __conf_préposition_det_verbe__
         <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NADMG]", True)                    && Incohérence : après la préposition “\1”, on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] un  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not (value(<1, "|un|") and value(\1, "|à|contre|par|pour|"))
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
         --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] une  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not (value(<1, "|une|") and value(\1, "|à|contre|par|pour|"))
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
         --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] le  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] la  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [l’|leur]  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] les  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] leurs  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [son|ton]  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     en [un|le]  @:V¬:[GNAWMBP]
         <<- /conf/ not tag(\-1, "_Maj_") --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)           && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
@@ -8471,6 +8478,8 @@ TEST: malgré les deux précédentes erreurs
 TEST: en les prenant de haut
 TEST: chez ACTIONS, rien ne va plus
 TEST: chez Terra, tout va bien
+TEST: les coups par l’avant l’avaient effrayée
+TEST: je ne suis pas contre le prendre par surprise
 
 
 __conf_préverbes__
