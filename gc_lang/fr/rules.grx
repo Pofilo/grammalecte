@@ -4972,12 +4972,13 @@ TEST: combien {{d’}}iourtes                                                 ->
 # ce -> cet
 __eleu_euphonie_cet__
     ce  ~^[aâeéèêiîoôuûyœæh]
-        <<- /eleu/ not tag(\1, "eg1mot") and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]", ":G|;é")
+        <<- /eleu/ space(\1, 1, 1) and not tag(\1, "eg1mot") and not re.search("(?i)^(?:I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]", ":G|;é")
         -1>> cet                                                                && Euphonie : devant un mot commençant par une voyelle, le déterminant “ce” devient “cet”.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: {{ce}} animal est dangereux                                                       ->> cet
 TEST: {{ce}} humble représentant                                                        ->> cet
 TEST: ce yacht
+TEST: ce “animal” était une erreur de jugement
 
 
 # Verbe 1ʳᵉ personne du singulier, interrogatif… xxxé-je
@@ -24731,7 +24732,7 @@ __gn_du_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
     du  @>(?:[aâeéèêiîoôuûyœæAÂEÉÈÊIÎOÔUÛYŒÆ]|[hH].*;É)
-        <<- /eleu/ morph(\2, ":[NA].*:s", ":[GWpi]|;é") -1:.2>> de l’                       && Euphonie. Il faut élider.|https://fr.wikipedia.org/wiki/%C3%89lision
+        <<- /eleu/ space(\1, 1, 1) and morph(\2, ":[NA].*:s", ":[GWpi]|;é") -1:.2>> de l’   && Euphonie. Il faut élider.|https://fr.wikipedia.org/wiki/%C3%89lision
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    && Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: cette bouffe, c’est du {{chiens}}                                         ->> chien
@@ -24739,6 +24740,7 @@ TEST: cette bouffe, c’est {{du}} {{chienne}}                                  
 TEST: je parle {{du }}homme                                                     ->> de l’
 TEST: du {{amours}}                                                             ->> amour
 TEST: Un second passage, qui menait du faubourg du Temple aux étroites voies désertes du onzième arrondissement, me réservait des surprises.
+TEST: puisqu’on a eu du très fidèle et très bon et du très éloigné du livre mais très bon…
 
 
 __gn_dudit_1m__
@@ -24796,7 +24798,8 @@ __gn_au_1m__
         <<- /gn/ __also__ -1>> aux                                                          && Accord de nombre erroné : “\2” est au pluriel.
 
     au  @>(?:[aâeéèêiîoôuûyœæAÂEÉÈÊIÎOÔUÛYŒÆ]|[hH].*;É)
-        <<- /eleu/ morph(\2, ":[NA].*:s", ":[GWpi]") -1:.2>> "à l’|aux "    && Euphonie. Si “\2” est bien censé être un singulier, il faut élider. Sinon, il faut écrire “aux” et mettre “\2” au pluriel.
+        <<- /eleu/ space(\1, 1, 1) and morph(\2, ":[NA].*:s", ":[GWpi]")
+        -1:.2>> "à l’|aux "                                                 && Euphonie. Si “\2” est bien censé être un singulier, il faut élider. Sinon, il faut écrire “aux” et mettre “\2” au pluriel.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[GWsi]") -1>> aux                 && Accord de nombre erroné : “\2” est au pluriel.
 
 TEST: Téléphone {{au}} personne qui ont donné leur accord.                      ->> à la|aux
@@ -24810,6 +24813,7 @@ TEST: En Éthiopie, au Yémen et aux Somalies, un petit arbuste fait l’objet d
 TEST: au iota de liberté que j’ai encore
 TEST: au chien, au chat, au poulet
 TEST: à partir de pièces détachées, au départ entièrement venues de l’étranger puis en partie fabriquées sur place
+TEST: en raison notamment de choix artistiques, allant du « très réducteur voire insultant » au « proprement incompréhensible ».
 
 
 __gn_det_mas_sing_2m__
