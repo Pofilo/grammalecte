@@ -10297,6 +10297,7 @@ TEST: cela finit toujours tôt ou tard par {{ce}} savoir                        
 TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, éteindre par la moindre goutte de sang qui sorte de leurs plaies.
 TEST: à qui ce texte doit tant, à qui ce texte est dédié
 TEST: il y aurait, ce faisant, des complications interminables.
+TEST: Ce en quoi personne ne trouvera à redire.
 
 
 # ce à quoi
@@ -13217,6 +13218,37 @@ __conf_quelque_part__
 TEST: Il faut bien aller {{quelle que part}}.                           ->> quelque part
 TEST: Je les ai oubliés {{quelque pars}}.                               ->> quelque part
 TEST: Elles sont forcément {{quelque parts}} ici.                       ->> quelque part
+
+
+# possible
+__gn_autant_que_possible__
+    autant  que  possibles
+        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant que ce qui est possible.
+
+    autant  [de|d’]  *WORD  que  possibles
+        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant \2 \3 que ce qui est possible.
+
+    autant  [de|d’]  *WORD  *WORD  que  possibles
+        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant \2 \3 \4 que ce qui est possible.
+
+TEST: nous ferons des tests autant que {{possibles}}.                           ->> possible
+TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.       ->> possible
+TEST: rabaissons autant de connards prétentieux que {{possibles}}…              ->> possible
+
+
+# quelque
+__loc_quelque_temps__
+    quelques temps
+        <<- /loc/ ->> quelque temps  && Il n’y a pas plusieurs temps. “Quelque temps” signifie un temps indéterminé. Ici, “quelque” est un adverbe (donc invariable).|https://fr.wiktionary.org/wiki/quelque_temps
+
+TEST: Il y a {{quelques temps}} que nous nous connaissons.          ->> quelque temps
+
+
+__loc_en_quelque_sorte__
+    en quelques sortes
+        <<- /loc/ ->> en quelque sorte                              && En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
+
+TEST: Je suis en vacances, {{en quelques sortes}}.                  ->> en quelque sorte
 
 
 # quelques fois / quelquefois
@@ -27297,37 +27329,6 @@ TEST: ils y sont allés à {{pieds}}.                                           
 TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}       ->> au pied levé
 
 
-# possible
-__gn_autant_que_possible__
-    autant  que  possibles
-        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant que ce qui est possible.
-
-    autant  [de|d’]  *WORD  que  possibles
-        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant \2 \3 que ce qui est possible.
-
-    autant  [de|d’]  *WORD  *WORD  que  possibles
-        <<- /gn/ --1>> possible                                     && Invariable. Implicitement, autant \2 \3 \4 que ce qui est possible.
-
-TEST: nous ferons des tests autant que {{possibles}}.                           ->> possible
-TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.       ->> possible
-TEST: rabaissons autant de connards prétentieux que {{possibles}}…              ->> possible
-
-
-# quelque
-__loc_quelque_temps__
-    quelques temps
-        <<- /loc/ ->> quelque temps  && Il n’y a pas plusieurs temps. “Quelque temps” signifie un temps indéterminé. Ici, “quelque” est un adverbe (donc invariable).|https://fr.wiktionary.org/wiki/quelque_temps
-
-TEST: Il y a {{quelques temps}} que nous nous connaissons.          ->> quelque temps
-
-
-__loc_en_quelque_sorte__
-    en quelques sortes
-        <<- /loc/ ->> en quelque sorte                              && En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
-
-TEST: Je suis en vacances, {{en quelques sortes}}.                  ->> en quelque sorte
-
-
 # rafales
 __loc_par_en_rafales__
     [par|en]  rafale
@@ -29260,95 +29261,68 @@ __purge_syntagmes_nominaux__
     [avec|chez|contre|dans|envers|par|pour|selon|sans|sous|sur|au|aux]  @:[NAM]¬:[GY]  ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:2>> *
 
-    [un|ce|cet|au|ledit] *WORD *WORD
-        <<- morph(\2, ":[NA].*[me]:[si]", ":(?:P|X|G|Y|V0)") and morph(\3, ":[NA].*[me]:[si]", ":(?:G|[123][sp]|P|M)") >>>
+    le                          @:[NA].*:[me]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)
+    la                          @:[NA].*:[fe]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)
+    l’                          @:[NA].*:[si]¬:(?:[123][sp]|P|X|G|Y|V0)|>air/   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
+    [un|ce|cet|au|ledit]        @:[NA].*:[me]:[si]¬:(?:P|X|G|Y|V0)              @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)
+    [cette|ma|ta|sa|ladite]     @:[NA].*:[fe]:[si]¬:G                           @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)
+    mon                         @:[NA].*:[si]¬:(?:P|X|G|Y|V0)                   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
+    [ton|son]                   @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
+    chaque                      @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    mon *WORD *WORD
-        <<- morph(\2, ":[NA].*:[si]", ":(?:P|X|G|Y|V0)") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
+    [notre|votre]               @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
+    leur                        @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)
+        <<- not value(<1, "|la|le|du|au|") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    [ton|son] *WORD *WORD
-        <<- morph(\2, ":[NA].*:[si]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
+    les                         @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
+    [des|ces]                   @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
+    [mes|tes|ses|nos|vos]       @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
+    [aux|quelques]              @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
+    lesdits                     @:[NA].*:[me]:[pi]¬:G                           @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)
+    lesdites                    @:[NA].*:[fe]:[pi]¬:G                           @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)
+    [certains|maints]           @:[NA].*:[me]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)
+    [certaines|maintes]         @:[NA].*:[fe]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)
+    plusieurs                   @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    [cette|ma|ta|sa|ladite] *WORD *WORD
-        <<- morph(\2, ":[NA].*:[fe]:[si]", ":G") and morph(\3, ":[NA].*:[fe]:[si]", ":(?:G|[123][sp]|P|M)") >>>
+    leurs                       @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)
+        <<- not value(<1, "|les|des|aux|") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    [notre|votre] *WORD *WORD
-        <<- not value(<1, "|la|le|du|") and morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
+    le                          @:[NA].*:[me]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*
+    la                          @:[NA].*:[fe]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*
+    l’                          @:[NA].*:[si]¬:(?:[123][sp]|P|X|G|Y|V0)|>air/   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+    [un|ce|cet|au|ledit]        @:[NA].*:[me]:[si]¬:(?:P|X|G|Y|V0)              @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*
+    [cette|ma|ta|sa|ladite]     @:[NA].*:[fe]:[si]¬:G                           @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*
+    mon                         @:[NA].*:[si]¬:(?:P|X|G|Y|V0)                   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+    [ton|son]                   @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+    chaque                      @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+        <<- ~-1>> *
 
-    chaque *WORD *WORD
-        <<- morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
+    [notre|votre]               @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+    leur                        @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
+        <<- not value(<1, "|le|la|du|au|") ~-1>> *
 
-    le *WORD *WORD
-        <<- morph(\2, ":[NA].*[me]:[si]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*[me]:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
+    les                         @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+    [des|ces]                   @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+    [mes|tes|ses|nos|vos]       @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+    [aux|quelques]              @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+    lesdits                     @:[NA].*:[me]:[pi]¬:G                           @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*
+    lesdites                    @:[NA].*:[fe]:[pi]¬:G                           @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*
+    [certains|maints]           @:[NA].*:[me]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*
+    [certaines|maintes]         @:[NA].*:[fe]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*
+    plusieurs                   @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+        <<- ~-1>> *
 
-    la *WORD *WORD
-        <<- morph(\2, ":[NA].*[fe]:[si]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*[fe]:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
+    leurs                       @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
+        <<- not value(<1, "|les|des|aux|") ~-1>> *
 
-    les *WORD *WORD
-        <<- morph(\2, ":[NA].*[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    l’ *WORD *WORD
-        <<- morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|P|X|G|Y|V0)|>air/") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    leur *WORD *WORD
-        <<- not value(<1, "|le|la|du|au|") and morph(\2, ":[NA].*:[si]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[si]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    leurs *WORD *WORD
-        <<- not value(<1, "|des|les|aux|") and morph(\2, ":[NA].*:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    [des|ces|mes|tes|ses|nos|vos|aux|quelques] *WORD *WORD
-        <<- morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    lesdits *WORD *WORD
-        <<- morph(\2, ":[NA].*:[me]:[pi]", ":G") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    lesdites *WORD *WORD
-        <<- morph(\2, ":[NA].*:[fe]:[pi]", ":G") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    [certains|maints] *WORD *WORD
-        <<- morph(\2, ":[NA].*:[me]:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[me]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    [certaines|maintes] *WORD *WORD
-        <<- morph(\2, ":[NA].*:[fe]:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[fe]:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
-
-    plusieurs *WORD *WORD
-        <<- morph(\2, ":[NA].*:[pi]", ":(?:[123]p|P|X|G|Y|V0)") and morph(\3, ":[NA].*:[pi]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
-        <<- __else__ ~3>> *
 
     [de|d’]  @:[NA].*:s¬:[YG]  <end>
     [de|d’]  @:[NA].*:s¬:[YG]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
@@ -29357,11 +29331,11 @@ __purge_syntagmes_nominaux__
     [de|d’]  @:[NA].*:s¬:[YG]  ?,¿  [/_VCint_|/_VCimp_]
         <<- not value(\2, "|autres|") ~1:2>> *
 
-    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   <end>
-    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
-    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   @:[VR]¬:[NAP]
-    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   , @¬:[NA]
-    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿  [/_VCint_|/_VCimp_]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp])   <end>
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp])   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp])   @:[VR]¬:[NAP]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp])   , @¬:[NA]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp])   ?,¿  [/_VCint_|/_VCimp_]
         <<- ~1:3>> *
 
     [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
