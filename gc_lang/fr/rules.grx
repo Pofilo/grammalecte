@@ -2867,6 +2867,9 @@ __da_autour__
     autour [de|du|d’|des]
         <<- not morph(<1, ":D.*:[me]") =>> select(\1, "", ":N")
 
+    autour
+        <<- morph(<1, ":D.*:[me]") =>> select(\1, "", ":G")
+
 __da_avant__
     avant [que|qu’|$:D]
         <<- not value(<1, "|l’|quel|cet|un|mon|ton|son|notre|votre|leur|") =>> select(\1, ":R")
@@ -2954,6 +2957,10 @@ __da_contre__
     contre
         <<- not morph(<1, ":[DA].*:[me]:[si]") =>> select(\1, "", ":N")
 
+__da_courant__
+    courant
+        <<- morph(<1, ":D.*:[me]") =>> select(\1, "", ":G")
+
 __da_dans__
     dans
         <<- not morph(<1, ":D.*:p|>[a-zé-]+ième/") =>> select(\1, ":R")
@@ -3008,8 +3015,9 @@ __da_entre__
     entre autres
         <<- =>> define(\1, ":R")
 
-    >différence entre
     >choisir entre
+    >différence entre
+    >distinction entre
         <<- =>> select(\-1, ":R")
 
 __da_environ__
@@ -3031,6 +3039,9 @@ __da_face__
 __da_grâce__
     grâce [à|au|aux]
         <<- not morph(<1, ":(?:D|A.*:[fe]:[si])") =>> select(\1, "", ":N")
+
+    grâce
+        <<- morph(<1, ":D.*:[fe]") =>> select(\1, "", ":G")
 
 __da_grave__
     grave
@@ -33433,19 +33444,19 @@ __purge_proposition_subordonnée2__
 
 
 __énumérations_substantifs__
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> _enum_
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] *WORD
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G  ?@:[NAM]¬:G¿
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G  ?@:[NAM]¬:G¿
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] *WORD
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G ?@:[NAM]¬:G¿
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G ?@:[NAM]¬:G¿
+        <<- morph(\2, ":[NAM]") />> _enum_
 
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] (*WORD)
-        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> _enum_
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] *WORD
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G ?@:[NAM]¬:G¿
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] *WORD
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|maintes|maintes|tout|tous|toute|toutes] @:[NAM]¬:G ?@:[NAM]¬:G¿
+        <<- morph(\3, ":[NAM]") />> _enum_
 
 
 __da_est__
