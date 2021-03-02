@@ -2868,7 +2868,7 @@ __da_autour__
         <<- not morph(<1, ":D.*:[me]") =>> select(\1, "", ":N")
 
     autour
-        <<- morph(<1, ":D.*:[me]") =>> select(\1, "", ":G")
+        <<- value(<1, "|l’|d’|cet|quel|mon|notre|votre|") =>> select(\1, "", ":G")
 
 __da_avant__
     avant [que|qu’|$:D]
@@ -16580,11 +16580,9 @@ __purge_locutions_fois__
     plus d’ une fois
     plus d’ une fois par [seconde|minute|heure|jour|semaine|mois|trimestre|semestre|an|année|décennie|siècle|millénaire]
     pour la [première|seconde|dernière|~ième$] fois
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
+    pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|ma|ta|sa|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ [existence|vie] ?[misérable|insignifiante|palpitante]¿
     pour la [première|seconde|~ième$] et dernière fois
-    pour la [première|seconde|~ième$] et dernière fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
-    pour la [première|seconde|~ième$] et dernière fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
+    pour la [première|seconde|~ième$] et dernière fois [de|d’] [mon|ton|son|ma|ta|sa|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ [existence|vie] ?[misérable|insignifiante|palpitante]¿
     pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour [trois|3] fois rien
     pour [cette|une] fois
@@ -17427,7 +17425,7 @@ __purge_locutions__
     en position [de|d’] [force|faiblesse]
     en premier lieu
     en première [instance|ligne]
-    en [première|seconde|~ième$] [classe|position]
+    en [première|seconde|~ième$] [classe|instance|position]
     en [1ʳᵉ|2ᵉ|3ᵉ|4ᵉ|5ᵉ|6ᵉ|7ᵉ|8ᵉ|9ᵉ|10ᵉ|11ᵉ|12ᵉ|13ᵉ|14ᵉ|15ᵉ|16ᵉ|17ᵉ|18ᵉ|19ᵉ|20ᵉ] [classe|position]
     en provenance du monde entier
     en pure perte
@@ -18612,7 +18610,7 @@ __substantifs_multi_mots__
     >chasse à l’ homme
     >chasse d’ eau
     >chasseur [de|d’] primes
-    >château [de|d’] cartes
+    >château [de|d’] [cartes|sable]
     >château d’ eau
     >chauffeur [de|d’] bus
     >chef [de|d’] [cabinet|file|gare|secteur]
@@ -29306,33 +29304,33 @@ __purge_syntagmes_nominaux__
         <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
-    le                          @:[NA].*:[me]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*
-    la                          @:[NA].*:[fe]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*
-    l’                          @:[NA].*:[si]¬:(?:[123][sp]|P|X|G|Y|V0)|>air/   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-    [un|ce|cet|au|ledit]        @:[NA].*:[me]:[si]¬:(?:P|X|G|Y|V0)              @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*
-    [cette|ma|ta|sa|ladite]     @:[NA].*:[fe]:[si]¬:G                           @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*
-    mon                         @:[NA].*:[si]¬:(?:P|X|G|Y|V0)                   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-    [ton|son]                   @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-    chaque                      @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-        <<- ~-1>> *
+    le                          @:[NA].*:[me]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*    ?@:[NA].*:[me]:[si]¬*¿
+    la                          @:[NA].*:[fe]:[si]¬:(?:[123][sp]|P|X|G|Y|V0)    @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*    ?@:[NA].*:[fe]:[si]¬*¿
+    l’                          @:[NA].*:[si]¬:(?:[123][sp]|P|X|G|Y|V0)|>air/   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+    [un|ce|cet|au|ledit]        @:[NA].*:[me]:[si]¬:(?:P|X|G|Y|V0)              @:[NA].*:[me]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[si]¬*    ?@:[NA].*:[me]:[si]¬*¿
+    [cette|ma|ta|sa|ladite]     @:[NA].*:[fe]:[si]¬:G                           @:[NA].*:[fe]:[si]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[si]¬*    ?@:[NA].*:[fe]:[si]¬*¿
+    mon                         @:[NA].*:[si]¬:(?:P|X|G|Y|V0)                   @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+    [ton|son]                   @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+    chaque                      @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+        <<- ~4:0>> *
 
-    [notre|votre]               @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-    leur                        @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*
-        <<- not value(<1, "|le|la|du|au|") ~-1>> *
+    [notre|votre]               @:[NA].*:[si]¬:G                                @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+    leur                        @:[NA].*:[si]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[si]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[si]¬*         ?@:[NA].*:[si]¬*¿
+        <<- not value(<1, "|le|la|du|au|") ~4:0>> *
 
-    les                         @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-    [des|ces]                   @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-    [mes|tes|ses|nos|vos]       @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-    [aux|quelques]              @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-    lesdits                     @:[NA].*:[me]:[pi]¬:G                           @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*
-    lesdites                    @:[NA].*:[fe]:[pi]¬:G                           @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*
-    [certains|maints]           @:[NA].*:[me]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*
-    [certaines|maintes]         @:[NA].*:[fe]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*
-    plusieurs                   @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-        <<- ~-1>> *
+    les                         @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+    [des|ces]                   @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+    [mes|tes|ses|nos|vos]       @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+    [aux|quelques]              @:[NA].*:[pi]¬:G                                @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+    lesdits                     @:[NA].*:[me]:[pi]¬:G                           @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*    ?@:[NA].*:[me]:[pi]¬*¿
+    lesdites                    @:[NA].*:[fe]:[pi]¬:G                           @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*    ?@:[NA].*:[fe]:[pi]¬*¿
+    [certains|maints]           @:[NA].*:[me]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[me]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[me]:[pi]¬*    ?@:[NA].*:[me]:[pi]¬*¿
+    [certaines|maintes]         @:[NA].*:[fe]:[pi]¬:(?:[123]p|P|X|G|Y|V0)       @:[NA].*:[fe]:[pi]¬:(?:G|[123][sp]|P|M)     @:[NA].*:[fe]:[pi]¬*    ?@:[NA].*:[fe]:[pi]¬*¿
+    plusieurs                   @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+        <<- ~4:0>> *
 
-    leurs                       @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*
-        <<- not value(<1, "|les|des|aux|") ~-1>> *
+    leurs                       @:[NA].*:[pi]¬:(?:[123]p|P|X|G|Y|V0)            @:[NA].*:[pi]¬:(?:G|[123][sp]|P|M)          @:[NA].*:[pi]¬*         ?@:[NA].*:[pi]¬*¿
+        <<- not value(<1, "|les|des|aux|") ~4:0>> *
 
 
     [de|d’]  @:[NA].*:s¬:[YG]  <end>
