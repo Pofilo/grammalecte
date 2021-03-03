@@ -1199,10 +1199,10 @@ TEST: x{{ - }}200                                                           ->> 
 !!
 
 __<s]/typo(typo_signe_moins)__
-    -(\d+)  @@$  <<- not before("\\w$") ->> −\1|– \1|— \1
-    && S’il s’agit de représenter un nombre négatif, utilisez le signe typographique “moins” [1]. S’il s’agit d’une incise, utilisez un tiret demi-cadratin [2] ou un tiret cadratin [3].
+    -(\d+)  @@$  <<- not before("\\w$") ->> – \1|— \1|−\1
+    && Pour une incise, utilisez un tiret demi-cadratin [1] ou un tiret cadratin [2]. Pour un nombre négatif, utilisez le signe typographique “moins” [3].
 
-TEST: Résultat : {{-72}}.                                                   ->> −72|– 72|— 72
+TEST: Résultat : {{-72}}.                                                   ->> – 72|— 72|−72
 
 
 __<s>/typo(typo_signe_multiplication)__
@@ -4960,6 +4960,7 @@ TEST: Ce sont les deux premiers principes de la philosophie chinoise
 TEST: l’un passif et ténébreux, le Yin ; l’autre actif et lumineux, le Yang ; l’un mâle, le Yang.
 TEST: Sur le Yémen maintenant, le département d’État s’est prononcé sur l’un des deux grands protagonistes de cette guerre meurtrière qui massacre des civils depuis
 TEST: Avec le y.
+TEST: la hyène, la ouate.
 
 
 __eleu_élisions_superflues__
@@ -8138,8 +8139,12 @@ TEST: Les écrits de d’Alembert.
 
 
 __conf_déterminant_fem_sing_verbe__
-    [ma|cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
+    [cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA].*:[fe]:[si]", True)                      && Incohérence avec “\1” : “\2” est une forme verbale.
+
+    ma  @:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA].*:[fe]:[si]", True)                      && Incohérence avec “\1” : “\2” est une forme verbale.
+        <<- /conf/ __also__ -1>> me                                                                 && Incohérence : “\2” est une forme verbale. Vouliez-vous écrire “me” ?
 
     quelle  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir)/
         <<- /conf/ \2.islower() and not value(<1, "|le|la|les|") and hasSimil(\2, ":[NA].*:[fe]:[si]")
@@ -8163,6 +8168,7 @@ TEST: {{çà}} va                                                               
 TEST: {{sa}} va                                                                 ->> ça
 TEST: {{sa}} a tout changé                                                      ->> ça
 TEST: {{quelle}} {{camera}} ce serait ?                                         ->> qu’elle|||caméra
+TEST: elle {{ma}} {{prévient}}                                                  ->> me|||prévenue
 TEST: quelle serait la solution ?
 TEST: quelle pourrait être la solution à ce problème ?
 
@@ -8871,6 +8877,13 @@ TEST: ce qui {{à}} pris tant de valeur, c’est…                          ->>
 TEST: un élève qui nous {{à}} fait bien des misères.                    ->> a
 
 
+    qui à de [quoi|qui]
+        <<- /conf/ -2>> a                                           && Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+TEST: une situation qui {{à}} de quoi nous faire perdre la tête         ->> a
+TEST: un acte militant qui a de quoi inquiéter
+
+
     [leur|leurs] à
         <<- /conf/ not morph(<1, ":D") --1>> a                      && Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
@@ -8878,14 +8891,14 @@ TEST: le peuple leur {{à}} donner tort                                  ->> a
 
 
     à  le  @:[NAQ].*:[me]¬:(?:Y|Ov)
-        <<- /conf/ -1:2>> a le|au
+        <<- /conf/ space(\1, 1, 1) -1:2>> a le|au
         && Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
 
 TEST: Ce chien, croyons-nous savoir, {{à le}} maître le plus violent qui soit.      ->> a le|au
 
 
     à  le  @:[NAQ].*:f¬:(?:Y|Ov)
-        <<- /conf/ -1:2>> à la|a la
+        <<- /conf/ space(\1, 1, 1) -1:2>> à la|a la
         && Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “a la”. Exemple : elle _a_ la Palme d’Or du festival de Cannes.
         <<- !2>>
 
@@ -8893,7 +8906,7 @@ TEST: {{à le}} {{donnée}}                                               ->> à
 
 
     à  les  @:[NAQ]¬:(?:Y|Oo)
-        <<- /conf/ -1:2>> a les|aux
+        <<- /conf/ space(\1, 1, 1) -1:2>> a les|aux
         && Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
 
 TEST: Celui qui y croit {{à les}} moyens d’y parvenir.                  ->> a les|aux
@@ -12178,7 +12191,7 @@ TEST: je leur nuis tous les jours
 # nulle part
 __conf_nulle_part__
     nul part
-        <<- /conf/ not morph(<1, ":D.*:m:[si]") ->> nulle part      && Confusion : pour dire “en aucun lieu”, écrivez “nulle part”.
+        <<- /conf/ not morph(<1, ":D.*:m:[si]") ->> nulle part      && Confusion probable : pour dire “en aucun lieu”, écrivez “nulle part”.
 
 TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration     ->> nulle part
 
@@ -13393,6 +13406,16 @@ __conf_qui_l_eût_cru__
 TEST: Qui l’{{eut}} cru.                                            ->> eût
 TEST: {{Qu’y}} l’eût cru.                                           ->> Qui
 TEST: Qui l’eût cru ? Cette emmerdeuse nous a tous joués.
+
+
+# qui plus est
+__loc_qui_plus_est__
+    !! qui plus est ¡¡
+    qui [plu+s] [est+s|es|ait|aie+s|ai+s|hé|eh|aient|é]
+        <<- /loc/ ->> qui plus est                              && Confusion. Locution “qui plus est”, qui signifie “de plus”.|https://fr.wiktionary.org/wiki/qui_plus_est
+
+TEST: {{qui plu est}}, il ne cessait de nous faire la gueule        ->> qui plus est
+TEST: c’est un tyran, qui plus est.
 
 
 # quoi que / quoique
@@ -20135,8 +20158,8 @@ __purge_locutions_potentielles__
     en [mémoire|souvenir] du bon vieux temps [<end>|,|)]
         <<- ~1:-2>> *
 
-    en un sens  @¬:A.*:[me]:[si]
-    en un sens  [<end>|,|)]
+    en [ce|un] sens  @¬:A.*:[me]:[si]
+    en [ce|un] sens  [<end>|,|)]
         <<- ~1:3>> *
 
     en sus
@@ -21008,6 +21031,15 @@ __da_formes_verbales__
     [elle|iel|celui-ci|celle-ci|celui-là|celle-là|ça|ceci] [a|fut|aura|est]
     [<start>|,|(] cela [a|fut|aura|est]
         <<- =>> select(\-1, ":V")
+
+    [je|j’] [me|m’] [suis|étais|fus|sois|fusse|serai|serais]                $:Q
+    tu [te|t’]      [es|étais|fus|sois|fusses|seras|serais]                 $:Q
+    [se|s’]         [est|était|fut|soit|fût|sera|serait]                    $:Q
+    [se|s’]         [sont|étaient|furent|soient|fussent|seront|seraient]    $:Q
+    nous nous [sommes|étions|fûmes|soyons|fussions|serons|serions]          $:Q
+    vous vous [êtes|étiez|fûtes|soyez|fussiez|serez|seriez]                 $:Q
+        <<- =>> select(\-1, ":Q")
+
 
 __da_point2__
     point
@@ -28912,12 +28944,60 @@ TEST: ils restent
 TEST: ils restent là
 
 
-
 !!!
 !!!
 !!! Processeur: simplification des substantifs                                                    !!
 !!!
 !!!
+
+
+__tag_COI__
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]              ($:Q)  à            $:D @:[NA]¬:Y
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]              ($:Q)  [au|aux]     @:[NA]
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]              ($:Q)  à            $:M
+    tu       ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]               ($:Q)  à            $:D @:[NA]¬:Y
+    tu       ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]               ($:Q)  [au|aux]     @:[NA]
+    tu       ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]               ($:Q)  à            $:M
+    nous     ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]         ($:Q)  à            $:D @:[NA]¬:Y
+    nous     ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]         ($:Q)  [au|aux]     @:[NA]
+    nous     ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]         ($:Q)  à            $:M
+        <<- /1>> _COI_
+
+    [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                  ($:Q)  à            $:D @:[NA]¬:Y
+    [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                  ($:Q)  [au|aux]     @:[NA]
+    [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                  ($:Q)  à            $:M
+    [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  ($:Q)  à            $:D @:[NA]¬:Y
+    [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  ($:Q)  [au|aux]     @:[NA]
+    [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  ($:Q)  à            $:M
+        <<- /1>> _COI_
+
+    [je|j’]             ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]              ($:Q)  à  {_pronom_obj_}
+    tu                  ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]               ($:Q)  à  {_pronom_obj_}
+    nous                ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]         ($:Q)  à  {_pronom_obj_}
+        <<- not ( morph(\-1, ":Ov") and morph(>1, ":(?:Ov|Y)") ) /1>> _COI_
+
+    [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                  ($:Q)  à  {_pronom_obj_}
+    [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  ($:Q)  à  {_pronom_obj_}
+        <<- not ( morph(\-1, ":Ov") and morph(>1, ":(?:Ov|Y)") ) /1>> _COI_
+
+    [auquel|auxquels|auxquelles] [je|j’]            ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]                 $:Q
+    à laquelle                   [je|j’]            ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]                 $:Q
+    [auquel|auxquels|auxquelles] tu                 ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]                  $:Q
+    à laquelle                   tu                 ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]                  $:Q
+    [auquel|auxquels|auxquelles] [il|elle|iel]      ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                     $:Q
+    à laquelle                   [il|elle|iel]      ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                     $:Q
+    [auquel|auxquels|auxquelles] nous               ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]            $:Q
+    à laquelle                   nous               ?[ne|n’]¿  nous     ?y¿  [sommes|étions|fûmes|fussions|serons|serions]            $:Q
+    [auquel|auxquels|auxquelles] [ils|elles|iels]   ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]     $:Q
+    à laquelle                   [ils|elles|iels]   ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]     $:Q
+        <<- /-1>> _COI_
+
+    [auquel|auxquels|auxquelles] @:D.*:s  *WORD    ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                     $:Q
+    à laquelle                   @:D.*:s  *WORD    ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]                     $:Q
+    [auquel|auxquels|auxquelles] @:D.*:p  *WORD    ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]     $:Q
+    à laquelle                   @:D.*:p  *WORD    ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]     $:Q
+        <<- /-1>> _COI_
+
 
 __purge_prépositions_pronoms__
     à part [cela|ceci|ça]
@@ -29895,67 +29975,155 @@ TEST: Du passé chez votre ami vous parvenaient les meilleurs souvenirs.
 !!
 
 __ppas_je_me_être_verbe__
-    je  ?ne¿  [me|m’]  ?y¿  [suis|sois|soit|suit|étais|était|fusse|fusses|fus|fut|fût|serai|serais|serait]  @:Q.*:p¬:(?:G|Q.*:[si])|>dire/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|"))
-        --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “je”, il devrait être au singulier.
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?y¿  [suis|sois|étais|fusse|fus|serai|serais]  @:Q.*:p¬:(?:G|Q.*:[si])
+        <<- /ppas/ not value(<1, "|que|qu’|") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":s")                                                            && Si ce participe passé se rapporte bien à “je”, il devrait être au singulier.
 
-TEST: je ne me suis jamais {{perdus}}                                       ->> perdu
-TEST: c’est de ce château que je me suis {{enfuis}}.                        ->> enfui
+TEST: je ne me suis jamais {{perdus}}                                       ->> perdu|perdue
+TEST: je me suis {{enfuis}} à la campagne où j’ai tant d’amis.              ->> enfui|enfuie
 TEST: je me suis donné du temps.
 
 
 __ppas_tu_te_être_verbe__
-    tu  ?ne¿  [te|t’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  @:Q.*:p¬:(?:G|Q.*:[si])|>dire/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|"))
-        --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “tu”, il devrait être au singulier.
+    tu  ?[ne|n’]¿  [te|t’]  ?y¿  [es|sois|étais|fusses|fus|seras|serais]  @:Q.*:p¬:(?:G|Q.*:[si])
+        <<- /ppas/ not value(<1, "|que|qu’|") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":s")                                                              && Si ce participe passé se rapporte bien à “tu”, il devrait être au singulier.
 
-TEST: tu t’es finalement {{retrouvés}} en mauvaise posture.                 ->> retrouvé
+TEST: tu t’es finalement {{retrouvés}} en mauvaise posture.                 ->> retrouvé|retrouvée
 TEST: tu ne t’étais pas laissé le temps d’y réfléchir.
 
 
-__ppas_il_se_être_verbe__
-    il  ?ne¿  [se|s’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  @:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si])
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|"))
+__ppas_3s_mas_se_être_verbe__
+    il  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si])
+        <<- /ppas/ not value(<1, "|que|qu’|") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
         --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “il”, il devrait être au masculin singulier.
 
-TEST: le dédale dans lequel il se serait {{perdue}}                         ->> perdu
+    [un|ce|cet|le]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si])
+        <<- /ppas/ morph(\2, ":[NA].*:[me]:[si]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au masculin singulier.
+
+    [l’|notre|votre|leur]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si])
+        <<- /ppas/ morph(\2, ":[NA].*:m:[si]", ":[fe]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au masculin singulier.
+
+    [mon|ton|son]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si])
+        <<- /ppas/ morph(\2, ">[bcçdfghjklmnpqrstvwxz].*:[NA].*:m:[si]", ":[fe]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":m:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au masculin singulier.
+
+TEST: le dédale dans lequel il se serait {{perdue}}                                                 ->> perdu
+TEST: avec le jeu auquel cet homme s’est {{prise}}, on pense que                                    ->> pris|prisé
+TEST: l’effort s’était {{amoindrie}}                                                                ->> amoindri
+TEST: mon chien s’est {{trompée}}                                                                   ->> trompé
 TEST: il s’était perdu dans la forêt.
 TEST: il s’était dit qu’il avait eu tort de s’irriter si vivement pour une telle peccadille.
 
 
-__ppas_elle_se_être_verbe__
-    elle  ?ne¿  [se|s’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  @:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>dire/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
+__ppas_3s_fem_se_être_verbe__
+    elle  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>(?:dire|parler)/
+        <<- /ppas/ not morph(<1, ":R|>qu[e’]/") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
         --1>> =suggVerbPpas(\-1, ":f:s")                                                            && Si ce participe passé se rapporte bien à “elle”, il devrait être au féminin singulier.
 
-TEST: elle s’y était {{préparé}}.                                           ->> préparée
+    [une|cette|la|ma|ta|sa]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ":[NA].*:[fe]:[si]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":f:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au féminin singulier.
+
+    [l’|notre|votre|leur]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ":[NA].*:f:[si]", ":[me]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":f:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au féminin singulier.
+
+    [mon|ton|son]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ">[aâeéèêiîoôuûyœæh].*:[NA].*:f:[si]", ":[me]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":f:s")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au féminin singulier.
+
+TEST: elle s’y était {{préparé}}.                                                                   ->> préparée
+TEST: le spectacle auquel elle s’était {{préparé}} toute la journée afin d’être parfaite            ->> préparée
+TEST: elle s’était {{préparé}} au spectacle lamentable donné par ces gens, tu sais ?                ->> préparée
+TEST: Elle s’est {{livré}} à toutes sortes d’actions douteuses, tu le sais ?                        ->> livrée
+TEST: la petite s’était {{trompé}} si souvent                                                       ->> trompée
+TEST: notre volonté s’était {{affaiblies}}                                                          ->> affaiblie
+TEST: son élégance s’était {{estompé}}                                                              ->> estompée
 TEST: elle s’était trouvé un mari.
 
 
+__ppas_3s_epi_se_être_verbe__
+    iel  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:p¬:(?:G|Q.*:[si])|>(?:dire|parler)/
+        <<- /ppas/ not morph(<1, ":R|>qu[e’]/") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":s")                                                              && Si ce participe passé se rapporte bien à “iel”, il devrait être au singulier.
+
+    [l’|notre|votre|leur|mon|ton|son]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [est|soit|était|fut|fût|sera|serait]  @:Q.*:p¬:(?:G|Q.*:[si])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ":[NA].*:e:[si]", ":[mf]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":s")                                                              && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au singulier.
+
+TEST: iel s’est {{perdus}} dans cette ville                                 ->> perdu|perdue
+TEST: notre psychologue s’est encore {{perdus}}                             ->> perdu|perdue
+
+
 __ppas_nous_nous_être_verbe__
-    nous  ?ne¿  nous  ?y¿  [sommes|étions|fûmes|fussions|serons|serions]  @:Q.*:s¬:(?:G|Q.*:[pi])|>(?:dire|parler)/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
+    nous  ?[ne|n’]¿  nous  ?y¿  [sommes|étions|fûmes|fussions|serons|serions]  @:Q.*:s¬:(?:G|Q.*:[pi])|>(?:dire|parler)/
+        <<- /ppas/ not morph(<1, ":R|>qu[e’]/") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e_", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
         --1>> =suggVerbPpas(\-1, ":p")                                                              && Si ce participe passé se rapporte bien à “nous”, il devrait être au pluriel.
 
 TEST: Nous nous étions {{cru}} au paradis.                                  ->> crus|crues
 TEST: nous nous sommes parlé.
+TEST: nous nous sommes attaché à lui démontrer son erreur
 
 
-__ppas_ils_se_être_verbe__
-    ils  ?ne¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|serons|seraient]  @:Q.*:(?:f|m:s)¬:(?:G|Q.*:m:[pi])|>dire/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|"))
+__ppas_3p_mas_se_être_verbe__
+    ils  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:(?:f|m:s)¬:(?:G|Q.*:m:[pi])|>(?:dire|parler)/
+        <<- /ppas/ not value(<1, "|que|qu’|") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e_", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
         --1>> =suggVerbPpas(\-1, ":m:p")                                                            && Si ce participe passé se rapporte bien à “ils”, il devrait être au masculin pluriel.
 
 TEST: ils s’y étaient {{abandonné}} avec ferveur                            ->> abandonnés
 
 
 __ppas_elles_se_être_verbe__
-    elles  ?ne¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:(?:m|f:s)¬:(?:G|Q.*:f:[pi])|>dire/
-        <<- /ppas/ morph(\-1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
+    elles  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:(?:m|f:s)¬:(?:G|Q.*:f:[pi])|>(?:dire|parler)/
+        <<- /ppas/ not morph(<1, ":R|>qu[e’]/") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e_", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
         --1>> =suggVerbPpas(\-1, ":f:p")                                                            && Si ce participe passé se rapporte bien à “elles”, il devrait être au féminin pluriel.
 
 TEST: elles ne s’y étaient pas {{donnée}}.                                  ->> données
 TEST: sans fin elles se sont succédé
+
+
+__ppas_iels_se_être_verbe__
+    iels  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:s¬:(?:G|Q.*:[pi])|>(?:dire|parler)/
+        <<- /ppas/ not morph(<1, ":R|>qu[e’]/") and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":p")                                                             && Si ce participe passé se rapporte bien à “iels”, il devrait être au masculin pluriel.
+
+TEST: iels s’y étaient {{abandonné}} avec ferveur                           ->> abandonnés|abandonnées
+
+
+__ppas_det_plur_se_être_verbe__
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|@:B:.:p]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  $:Q¬:G
+        <<- /ppas/ not morph(<1, ":[RV]") and not agreement(\2, \-1, False) and not morph(\-1, ">(?:dire|parler)/")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) ) >>>
+        <<- /ppas/ morph(\2, ":[NA].*:m:[pi]", ":[fe]") --1>> =suggVerbPpas(\-1, ":m:p")                && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au masculin pluriel.
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:f:[pi]", ":[me]") --1>> =suggVerbPpas(\-1, ":f:p")   && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au féminin pluriel.
+        <<- /ppas/ __else__ and morph(\2, ":[NA].*:e:[pi]") --1>> =suggVerbPpas(\-1, ":p")              && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au pluriel.
+
+    [certains|maints]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:(?:f|m:s)¬:(?:G|Q.*:m:[pi])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ":[NA].*:[me]:[pi]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":m:p")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au masculin pluriel.
+
+    [certaines|maintes]  *WORD  ?[ne|n’]¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  @:Q.*:(?:m|f:s)¬:(?:G|Q.*:f:[pi])|>(?:dire|parler)/
+        <<- /ppas/ morph(\2, ":[NA].*:[fe]:[pi]") and not morph(<1, ":[RV]")
+            and ( value(>1, "|<end>|") or morph(\-1, ":V[123]_.__p_e", "*") or ( tag(\-1, "_COI_") and morph(\-1, ":V[123]_.t.q", "*") ) )
+        --1>> =suggVerbPpas(\-1, ":f:p")                                                            && Si ce participe passé se rapporte bien à “\1 \2”, il devrait être au féminin pluriel.
+
+TEST: les légions se sont {{livré}} au pire instinct qui les animait            ->> livrées
+TEST: ces hommes s’étaient {{dépravé}}                                          ->> dépravés
+TEST: nos scientifiques se seraient {{relâché}}                                 ->> relâchés|relâchées
+TEST: certaines femmes se sont {{donnée}} à lui                                 ->> données
+TEST: certains hommes se sont {{abandonnées}} à cette mission                   ->> abandonnés
+TEST: certains hommes se sont dit : « Pourquoi pas nous ? »
 
 
 __ppas_ne_me_te_se_être__
