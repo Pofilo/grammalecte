@@ -11166,8 +11166,32 @@ __conf_être_en_xxxx__
 TEST: Je suis {{an}} désaccord avec lui.                                ->> en
 
 
+# en continu
+__conf_en_continu__
+    [>info|>information|>formation] en continue
+        <<- /loc/ -2:3>> en continu                             && Confusion probable. Locution “en continu”, c’est-à-dire en flux incessant.|https://fr.wiktionary.org/wiki/en_continu
+
+    en continue
+        <<- /loc/ not value(<1, "|j’|il|elle|iel|n’|homme|femme|enfant|bébé|")
+        ->> en continu                                          && Confusion probable. Locution “en continu”, c’est-à-dire en flux incessant.|https://fr.wiktionary.org/wiki/en_continu
+
+TEST: chaines d’info {{en continue}}                                    ->> en continu
+TEST: ces attaques {{en continue}} sont difficiles à gérer              ->> en continu
+TEST: il n’en continue pas moins à nous harceler
+
+
+# en coup de vent
+__loc_en_coup_de_vent__
+    !! en coup de vent ¡¡
+    [an|en] [>cou|>coût|>cout] [de|d’] [>van|>vent]
+        <<- /loc/ ->> en coup de vent                           && Confusion. Locution “en coup de vent”.|https://fr.wiktionary.org/wiki/en_coup_de_vent
+
+TEST: partir {{en cou de van}}                                  ->> en coup de vent
+TEST: agir en coup de vent
+
+
 # en dents de scie
-__conf_en_dents_de_scie__
+__loc_en_dents_de_scie__
     !! en dents de scie ¡¡
     !! en dents d’ scie ¡¡
     [en|>an]  [>dan|dent+s]  [de|d’] [si|scie+s]
@@ -11184,16 +11208,6 @@ __conf_dessus_dessous__
         <<- /conf/ ->> en dessous|au-dessus                     && Confusion.|https://fr.wiktionary.org/wiki/en_dessous
 
 TEST: Il est {{en dessus}} de tout.                             ->> en dessous|au-dessus
-
-
-# en coup de vent
-__conf_en_coup_de_vent__
-    !! en coup de vent ¡¡
-    [an|en] [>cou|>coût|>cout] [de|d’] [>van|>vent]
-        <<- /loc/ ->> en coup de vent                           && Confusion. Locution “en coup de vent”.|https://fr.wiktionary.org/wiki/en_coup_de_vent
-
-TEST: partir {{en cou de van}}                                  ->> en coup de vent
-TEST: agir en coup de vent
 
 
 # en général
@@ -13981,21 +13995,54 @@ __conf_sûr_sur__
         <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")
         && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
-    en >lieu sur
-        <<- /conf/ -3>> sûr
+    en >lieu >sur
+    en >main [sure+s]
+        <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")
         && Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
+    [ce|c’] ?[ne|n’]¿ >être ?@:[WX]¿ plus >sur
+        <<- /conf/ not morph(>1, ":D") --1>> =\-1.replace("u", "û").replace("U", "Û")
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
+
+    ce qu’ il y a [de|d’] >sur
+        <<- /conf/ --1>> sûr
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
+
     en >être >sur
-        <<- /conf/ -3>> =\3.replace("u", "û").replace("U", "Û")
+        <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
+
+    >avion      ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    >chemin     ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    >échelle    ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    >main       ?[très|vraiment|peu|ultra]¿  [sure+s]   [<end>|,|)]
+    mémoire     ?[très|vraiment|peu|ultra]¿  sure       [<end>|,|)]
+    >garant     ?[très|vraiment|peu|ultra]¿  >sur       [<end>|,|)]
+    [gout|goût] ?[très|vraiment|peu|ultra]¿  sur        [<end>|,|)]
+    >jugement   ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    >lieu       ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    œil         ?[très|vraiment|peu|ultra]¿  sur        [<end>|,|)]
+    >rade       ?[très|vraiment|peu|ultra]¿  [sure+s]   [<end>|,|)]
+    >transport  ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
+    bien                                     sur        [<end>|,|)]
+    bien                                     sur        $:Os¬:Oo
+        <<- /conf/ --2>> =\-2.replace("u", "û").replace("U", "Û")
         && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
 TEST: Je suis {{sur}} de Patrick.                                                   ->> sûr
 TEST: Je suis {{sure}} qu’il ne va pas tarder à venir                               ->> sûre
 TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.                   ->> sûres
 TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.        ->> sûr
+TEST: c’était plus {{sur}}                                                          ->> sûr
 TEST: Il est tellement {{sur}} de la trouver.                                       ->> sûr
 TEST: ils sont en lieu {{sur}} et introuvables.                                     ->> sûr
 TEST: J’en suis {{sur}} désormais.                                                  ->> sûr
+TEST: ce qu’il y a de {{sure}}, c’est que ça va prendre du temps                    ->> sûr
+TEST: Rien n’est si {{sur}} que la mort.                                            ->> sûr
+TEST: c’est vraiment plus {{sur}}                                                   ->> sûr
+TEST: tu as un œil très {{sur}}                                                     ->> sûr
+TEST: elle était {{sure}} de la prononciation                                       ->> sûre
+TEST: Je suis sur de la pelouse
 TEST: Il tapait par à-coups sur la table.
 TEST: il s’étendit sur de la mousse à mémoire de forme
 TEST: Elle réussira à coup sûr.
