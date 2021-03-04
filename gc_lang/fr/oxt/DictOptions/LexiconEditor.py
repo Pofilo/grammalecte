@@ -390,8 +390,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 oIBDAWG = ibdawg.IBDAWG(self.oPersonalDicJSON)
                 for i, aEntry in enumerate(oIBDAWG.select()):
                     xGridDataModel.addRow(i, aEntry)
-                self.xNumLex.Label = str(i)
-                self.xNumDic.Label = str(i)
+                self.xNumLex.Label = str(i+1)
+                self.xNumDic.Label = str(i+1)
                 self.xDateDic.Label = oIBDAWG.sDate
             except:
                 sMessage = ui.get('not_loaded')
@@ -429,14 +429,14 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 try:
                     sTest = json.loads(sJSON)
                 except:
-                    sMessage = ui.get('wrong_json', "#err_msg: %s") % spfImported
+                    sMessage = ui.get('wrong_json') % spfImported
                     MessageBox(self.xDocument, sMessage, ui.get('import_title'), ERRORBOX)
                 else:
                     self.xOptionNode.setPropertyValue("personal_dic", sJSON)
                     self.xSettingNode.commitChanges()
                     self.loadLexicon()
         else:
-            sMessage = ui.get('file_not_found', "#err_msg: %s") % spfImported
+            sMessage = ui.get('file_not_found') % spfImported
             MessageBox(self.xDocument, sMessage, ui.get('import_title'), ERRORBOX)
 
     @_waitPointer
