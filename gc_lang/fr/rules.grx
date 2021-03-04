@@ -2304,10 +2304,10 @@ __immunités_termes_grammaticaux__
     [<start>|,]  «          $:Q         »          est [un|le]     participe passé
     [<start>|,]  [‘|'|’|`]  $:Q         [‘|'|’|`]  est [un|le]     participe passé
     [<start>|,]  ‹          $:Q         ›          est [un|le]     participe passé
-    [<start>|,]  [“|”|"]    $:V         [“|”|"]    est [une|la]    forme verbale
-    [<start>|,]  «          $:V         »          est [une|la]    forme verbale
-    [<start>|,]  [‘|'|’|`]  $:V         [‘|'|’|`]  est [une|la]    forme verbale
-    [<start>|,]  ‹          $:V         ›          est [une|la]    forme verbale
+    [<start>|,]  [“|”|"]    $:V         [“|”|"]    est [une|la]    forme [conjuguée|verbale]
+    [<start>|,]  «          $:V         »          est [une|la]    forme [conjuguée|verbale]
+    [<start>|,]  [‘|'|’|`]  $:V         [‘|'|’|`]  est [une|la]    forme [conjuguée|verbale]
+    [<start>|,]  ‹          $:V         ›          est [une|la]    forme [conjuguée|verbale]
     [<start>|,]  [“|”|"]    *WORD       [“|”|"]    est [une|la]    forme verbale interrogative
     [<start>|,]  «          *WORD       »          est [une|la]    forme verbale interrogative
     [<start>|,]  [‘|'|’|`]  *WORD       [‘|'|’|`]  est [une|la]    forme verbale interrogative
@@ -9085,50 +9085,6 @@ TEST: il viendra comme {{à l’accoutumé}} avec son petit air de faux-jeton   
 TEST: comme à l’accoutumée, elle ne fait pas grand-chose.
 
 
-__conf_attention_intention__
-    à l’ intention de @:M[12]
-    à l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire]
-    à l’ intention du {humain}
-    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
-    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur|la] {humaine}
-        <<- /conf/ not morph(<1, ">(?:cadeau|offrande|présent)") -3>> attention
-        && Confusion probable. On a/attire/obtient l’attention de quelqu’un, on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
-
-    >porter à l’ intention [de|d’|,]
-    >porter à [mon|ton|son|notre|votre|leur] intention
-        <<- /conf/ -4>> attention
-        && Confusion probable. On a/attire/obtient l’attention de quelqu’un, on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
-
-    [>attirer|>éveiller|>obtenir|>susciter] [l’|mon|ton|son|notre|votre|leur] intention
-    >avoir [mon|ton|son|notre|votre|leur] intention
-    >avoir l’ intention de @:M[12]
-    >avoir l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire|Dieu]
-    >avoir l’ intention du {humain}
-    >avoir l’ intention de la {humaine}
-    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
-    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humaine}
-        <<- /conf/ -3>> attention
-        && Confusion probable. On a/attire/obtient/suscite l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
-
-    [>connaître|>connaitre] [l’|mon|ton|son|notre|votre|leur] attention
-        <<- /conf/ -3>> intention
-        && Confusion probable. L’attention est la vigilance. Si vous voulez évoquer les volontés ou les desseins d’une personne, écrivez “intentions”.|https://fr.wiktionary.org/wiki/intention
-
-    [>connaître|>connaitre] [les|mes|tes|ses|nos|vos|leurs] attentions
-        <<- /conf/ -3>> intentions
-        && Confusion probable. L’attention est la vigilance. Si vous voulez évoquer les volontés ou les desseins d’une personne, écrivez “intentions”.|https://fr.wiktionary.org/wiki/intention
-
-TEST: Elle attirait son {{intention}}                                               ->> attention
-TEST: Il faut porter à mon {{intention}} ces problèmes.                             ->> attention
-TEST: connaitre son {{attention}}                                                   ->> intention
-TEST: Il faut connaitre leurs {{attentions}} pour préparer notre riposte.           ->> intentions
-TEST: il faut porter ces méfaits à l’{{intention}} du prince.                       ->> attention
-TEST: nous avons l’{{intention}} de la reine                                        ->> attention
-TEST: Ils ont l’intention de nous nuire
-TEST: Elles avaient bien l’intention d’en parler.
-TEST: J’ai mis ces trésors de côté spécialement à votre intention
-
-
 __loc_à_fleur_de_peau__
     !! à fleur de peau ¡¡
     [a|à] [fleur+s|fleurent|fleure+s] de [peau+x|>pot|po]
@@ -9810,6 +9766,15 @@ __conf_m_a_tuer__
 TEST: la réalité m’a {{tuer}}                           ->> tué|tuée
 
 
+# aïe
+__conf_aïe__
+    [<start>|!|.] aie [<end>|!|.]
+        <<- /conf/ -2>> aïe                             && Confusion probable : “aie” est une forme conjuguée du verbe avoir. Pour l’interjection exprimant la douleur, écrivez “aïe”.|https://fr.wiktionary.org/wiki/a%C3%AFe
+
+TEST: — {{Aie}} ! {{aie}} ! {{aie}} ! » fit le Grand Chancelier.        ->> Aïe|||aïe|||aïe
+TEST: {{Aie}} ! je me suis fait mal !                                   ->> Aïe
+
+
 # après avoir
 __conf_après_avoir__
     [à|a] [>prêt|>pré|près] [a|à] [voire|voir]
@@ -10061,6 +10026,50 @@ TEST: l’ingénieur du son arrivé hier
 TEST: combien de nouveaux arrivés
 
 
+__conf_attention_intention__
+    à l’ intention de @:M[12]
+    à l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire]
+    à l’ intention du {humain}
+    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
+    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur|la] {humaine}
+        <<- /conf/ not morph(<1, ">(?:cadeau|offrande|présent)") -3>> attention
+        && Confusion probable. On a/attire/obtient l’attention de quelqu’un, on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    >porter à l’ intention [de|d’|,]
+    >porter à [mon|ton|son|notre|votre|leur] intention
+        <<- /conf/ -4>> attention
+        && Confusion probable. On a/attire/obtient l’attention de quelqu’un, on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    [>attirer|>éveiller|>obtenir|>susciter] [l’|mon|ton|son|notre|votre|leur] intention
+    >avoir [mon|ton|son|notre|votre|leur] intention
+    >avoir l’ intention de @:M[12]
+    >avoir l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire|Dieu]
+    >avoir l’ intention du {humain}
+    >avoir l’ intention de la {humaine}
+    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
+    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humaine}
+        <<- /conf/ -3>> attention
+        && Confusion probable. On a/attire/obtient/suscite l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    [>connaître|>connaitre] [l’|mon|ton|son|notre|votre|leur] attention
+        <<- /conf/ -3>> intention
+        && Confusion probable. L’attention est la vigilance. Si vous voulez évoquer les volontés ou les desseins d’une personne, écrivez “intentions”.|https://fr.wiktionary.org/wiki/intention
+
+    [>connaître|>connaitre] [les|mes|tes|ses|nos|vos|leurs] attentions
+        <<- /conf/ -3>> intentions
+        && Confusion probable. L’attention est la vigilance. Si vous voulez évoquer les volontés ou les desseins d’une personne, écrivez “intentions”.|https://fr.wiktionary.org/wiki/intention
+
+TEST: Elle attirait son {{intention}}                                               ->> attention
+TEST: Il faut porter à mon {{intention}} ces problèmes.                             ->> attention
+TEST: connaitre son {{attention}}                                                   ->> intention
+TEST: Il faut connaitre leurs {{attentions}} pour préparer notre riposte.           ->> intentions
+TEST: il faut porter ces méfaits à l’{{intention}} du prince.                       ->> attention
+TEST: nous avons l’{{intention}} de la reine                                        ->> attention
+TEST: Ils ont l’intention de nous nuire
+TEST: Elles avaient bien l’intention d’en parler.
+TEST: J’ai mis ces trésors de côté spécialement à votre intention
+
+
 # au temps / autant
 __conf_au_temps_pour_moi__
     [<start>|,|(]  au  [tant|tan]  pour moi
@@ -10236,31 +10245,33 @@ TEST: ce qui est capital dans notre société, c’est l’argent.
 __conf_ce_ceux_se!6__
     pour se faire ,
     pour se faire @:G¬:[AYD]
-        <<- /conf/ -2>> ce                              && Confusion probable. Dans cette locution, il faut employer “ce”.|https://fr.wiktionary.org/wiki/pour_ce_faire
+        <<- /conf/ -2>> ce                                  && Confusion probable. Dans cette locution, il faut employer “ce”.|https://fr.wiktionary.org/wiki/pour_ce_faire
 
     se [que|qu’|qui|dont|malgré|pourquoi|avec|pour|par]
         <<- /conf/ not (tag(\1, "eg1mot") and value(<1, "|pronom|"))
-        -1>> ce                                         && Confusion. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+        -1>> ce                                             && Confusion. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
 
     ceux  ?[ne|n’]¿  @:V0.*:[123][sp]¬:P|>a/
-        <<- /conf/ -1>> ce                              && Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
+        <<- /conf/ -1>> ce                                  && Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
 
     se [ne|n’] [>être|>pouvoir|>devoir]
         <<- /conf/ not \1.isupper() and not (tag(\1, "eg1mot") and value(<1, "|pronom|"))
-        -1>> ce                                         && Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+        -1>> ce                                             && Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
 
     se  /-là
     se  @:[NAQ]¬:([123][sp]|Y|P|Q)|>l[ea]?/
-        <<- /conf/ not \1.isupper() -1>> ce             && Confusion. Ce chien, ce chat… Se demander, se croire…
+        <<- /conf/ not \1.isupper() -1>> ce                 && Confusion. Ce chien, ce chat… Se demander, se croire…
 
     se  /-la
-        <<- /conf/ morphVC(\2, ":[NA]") -1>> ce         && Confusion. Ce chien, ce chat… Se demander, se croire…
+        <<- /conf/ morphVC(\2, ":[NA]") -1>> ce             && Confusion. Ce chien, ce chat… Se demander, se croire…
 
     ceux  ne  @:[123]s¬:P
-        <<- /conf/ -1>> ce                              && Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
+        <<- /conf/ -1>> ce                                  && Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
 
     ceux  @:N.*:s¬:[APGV]
-        <<- /conf/ -1>> ce                              && Confusion probable.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
+        <<- /conf/ -1>> ce                                  && Confusion probable.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
+
+
 
 TEST: {{Se}} seraient des histoires.                                            ->> Ce
 TEST: {{se}} seraient des jours heureux.                                        ->> ce
@@ -10282,6 +10293,7 @@ TEST: les photographies de ceux n’ayant pas dépassé sept sur vingt.
 TEST: Pensez-vous que ceux ne sachant même pas ce qu’est une VHS peuvent y trouver leur compte ?
 TEST: la réduction de ma liberté intellectuelle et celle de ceux autour de moi
 TEST: ceux autour de vous ne sont pas ce que vous croyez.
+TEST: voir ce que c’est n’est pas impossible
 
 
 __conf_se_ceux_ce!6__
@@ -10361,8 +10373,8 @@ __conf_ces_ses_c_est__
         <<- /conf/ -1>> ces                 && Confusion : “ses” est un déterminant possessif ; si vous voulez désigner des éléments en particulier, vous devriez utiliser le déterminant démonstratif “ces”.
 
     c’ est n’ [est|était]
-    c’ est ne [serait|sera]
-        <<- /conf/ not value(<1, "|que|qu’|") -1:2>> ce                     && Confusion probable.
+    c’ est ne [serait|sera|fut|fût]
+        <<- /conf/ not value(<1, "|que|qu’|") -1:2>> ce                     && Confusion probable. Exemples : ce n’est pas rien, ce n’est rien, c’est difficile, c’est beau.
 
 TEST: {{ses}} au-dessus de ses forces.                                      ->> c’est
 TEST: {{ces}} comme la peste                                                ->> c’est
@@ -10374,6 +10386,7 @@ TEST: le problème, {{ses}} que nous jugeons trop vite                       ->>
 TEST: {{c’est}} {{délires}} nous ennuient                                   ->> ces|ses|||délire
 TEST: {{ses}} gens-là sont des salopards                                    ->> ces
 TEST: {{c’est}} n’est pas ça.                                               ->> ce
+TEST: Représenter le quotidien {{c’est}} n’est pas seulement                ->> ce
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
@@ -27795,15 +27808,38 @@ TEST: La puissance publique s’en est-elle rendu compte ?
 TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
 
 
-## désolé pour
-__ppas_désoler__
-    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir] désoler [<end>|,|)]
-    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir] désoler pour @:(?:[DM]|Oo)
-        <<- /ppas/ -2>> désolé|désolée                                                              && Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
+## désolé
+__conf_désolé__
+    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir|>apparaître|>apparaitre] désoler [<end>|,|)]
+    [<start>|,|(|>être|>devenir|>paraître|>rester|>sembler|>demeurer|>redevenir|>apparaître|>apparaitre] désoler pour @:(?:[DM]|Oo)
+        <<- /conf/ -2>> désolé|désolée                                                              && Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
 
 TEST: {{Désoler}} pour la soupe froide.                                             ->> Désolé|Désolée
 TEST: {{désoler}} pour Patrick, mais il l’a mérité.                                 ->> désolé|désolée
 TEST: elle restait {{désoler}} pour la pauvre Claire                                ->> désolé|désolée
+
+
+## perçu
+__conf_percu__
+    [>bruit|>cri|>parole|>musique] perçut $¬:D
+        <<- /conf/ --2>> perçu|perçus                                   && Confusion probable : “perçut” est une forme conjuguée de percevoir. Pour le participe passé, écrivez “perçu”.
+
+    >son perçut par
+        <<- /conf/ morph(<1, ":D", "*") --2>> perçu|perçus              && Confusion probable : “perçut” est une forme conjuguée de percevoir. Pour le participe passé, écrivez “perçu”.
+
+TEST: les bruits {{perçut}} étaient effrayants                                      ->> perçu|perçus
+TEST: les sons {{perçut}} par ma femme                                              ->> perçu|perçus
+TEST: l’ingénieur du son perçut la menace
+
+
+## rempli
+__conf_remplie__
+    [<start>|,|(|la|cette|une|quelle|ma|ta|sa|notre|votre|leur] [tête|caboche|cervelle|cuve] ?[bien|toute]¿ remplit [de|du|d’|des|par|<end>|,|)]
+        <<- /conf/ --2>> remplie                                        && Confusion probable : “remplit” est une forme conjuguée de remplir. Pour le participe passé, écrivez “remplie”.
+
+TEST: la tête {{remplit}} de conneries de toutes sortes                                             ->> remplie
+TEST: C’est ainsi que, la tête toute {{remplit}} de termes plus compliqués les uns que les autres.  ->> remplie
+TEST: l’homme de tête remplit le réservoir.
 
 
 
@@ -29271,6 +29307,10 @@ __purge_pronoms__
     la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) @:[VR]¬:[NAP]
     la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:p¬:(?:G|[123][sp]) , @¬:[NA]
         <<- ~3:6>> *
+
+    la plupart du
+    la plupart de la
+        <<- /2>> _plupart_sg_
 
     [<start>|,|l’] [un|une] des *WORD <end>
     [<start>|,|l’] [un|une] des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|iel|iels|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles|est]
@@ -34652,8 +34692,11 @@ TEST: Beaucoup manger ne nous préservera pas de la famine.
 # L’accord par syllepse est obligatoire après /la plupart/, ainsi qu’après /nombre/ et /quantité/ employés sans déterminant. L’accord se fait avec le « pseudo-complément ».
 __conj_d_aucuns_la_plupart__
     d’ aucuns   @:V¬:(?:3p|P|Q|G)
-    la plupart  @:V¬:(?:3p|P|Q|G)
         <<- /conj/ not morph(<1, ":[VR]")
+        -3>> =suggVerb(\3, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+    la plupart  @:V¬:(?:3p|P|Q|G)
+        <<- /conj/ not morph(<1, ":[VR]") and not (tag(\2, "_plupart_sg_") and morph(\-1, ":3s"))
         -3>> =suggVerb(\3, ":3p")                                       && Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     d’ aucuns   qui  @:V¬:(?:3p|P|G)
@@ -34664,6 +34707,7 @@ TEST: la plupart des hommes {{vienne}}                                          
 TEST: La plupart {{admet}}                                                                          ->> admettent
 TEST: d’aucuns {{pense}} que c’est faux                                                             ->> pensent
 TEST: avec la plupart des femmes qui {{devienne}} mère                                              ->> deviennent
+TEST: Tout le monde n’a pas internet et la plupart de la documentation est en anglais
 
 
 __conj_certains_certaines_plusieurs__
