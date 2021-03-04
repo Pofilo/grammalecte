@@ -479,7 +479,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 if sJSON:
                     with open(spfExported, "w", encoding="utf-8") as hDst:
                         hDst.write(sJSON)
-                    sMessage = ui.get('export_message', "#err_msg: %s") % spfExported
+                    sMessage = ui.get('export_message') % spfExported
                 else:
                     sMessage = ui.get('empty_dictionary')
                 MessageBox(self.xDocument, sMessage, ui.get('export_title'))
