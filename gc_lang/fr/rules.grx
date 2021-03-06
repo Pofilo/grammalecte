@@ -14015,17 +14015,21 @@ __conf_sûr_sur__
         <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")
         && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
 
+    >main       ?[très|vraiment|peu|ultra]¿  [sure+s]
+    >mémoire    ?[très|vraiment|peu|ultra]¿  [sure+s]
+    >source     ?[très|vraiment|peu|ultra]¿  [sure+s]
+    >rade       ?[très|vraiment|peu|ultra]¿  [sure+s]
+        <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")
+        && Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|https://fr.wiktionary.org/wiki/sur
+
     >avion      ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
     >chemin     ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
     >échelle    ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
-    >main       ?[très|vraiment|peu|ultra]¿  [sure+s]   [<end>|,|)]
-    mémoire     ?[très|vraiment|peu|ultra]¿  sure       [<end>|,|)]
     >garant     ?[très|vraiment|peu|ultra]¿  >sur       [<end>|,|)]
     [gout|goût] ?[très|vraiment|peu|ultra]¿  sur        [<end>|,|)]
     >jugement   ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
     >lieu       ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
     œil         ?[très|vraiment|peu|ultra]¿  sur        [<end>|,|)]
-    >rade       ?[très|vraiment|peu|ultra]¿  [sure+s]   [<end>|,|)]
     >transport  ?[très|vraiment|peu|ultra]¿  [sur+s]    [<end>|,|)]
     bien                                     sur        [<end>|,|)]
     bien                                     sur        $:Os¬:Oo
@@ -14045,6 +14049,7 @@ TEST: Rien n’est si {{sur}} que la mort.                                      
 TEST: c’est vraiment plus {{sur}}                                                   ->> sûr
 TEST: tu as un œil très {{sur}}                                                     ->> sûr
 TEST: elle était {{sure}} de la prononciation                                       ->> sûre
+TEST: de source {{sure}}                                                            ->> sûre
 TEST: Je suis sur de la pelouse
 TEST: Il tapait par à-coups sur la table.
 TEST: il s’étendit sur de la mousse à mémoire de forme
@@ -21382,6 +21387,25 @@ TEST: cet homme {{à}} faim                                                     
 TEST: Votre réaction à froid ?
 
 
+__conf_ait_est_faim_tort!3__
+    [es|est] [confiance|conscience|envie|été|peur|faim|hâte|honte|recours|soif|tort]
+    [es|est] peine [à|a]
+        <<- /conf/ not tagbefore(\1, "_ceque_") and not value(<1, "|tout|d’|l’|") >>>
+        <<- /conf/ not tagbefore(\1, "_1s_") -1>> ait               && Confusion probable dans l’expression “avoir \2”. Vous utilisez ici le verbe “être”.
+        <<- /conf/ __else__ -1>> ait|aie                            && Confusion probable dans l’expression “avoir \2”. Vous utilisez ici le verbe “être”.
+
+TEST: qu’il {{est}} confiance en toi, c’est possible                                        ->> ait
+TEST: je sais, qu’il {{est}} peine à trouver le bonheur ça se conçoit.                      ->> ait|aie
+TEST: La révolution est crainte.
+TEST: Je n’en ai cure.
+TEST: Notre communauté vous est redevable.
+TEST: l’humour est affaire de culture
+TEST: Aller chercher l’air pur à la campagne est peine perdue.
+TEST: tout est peine perdue.
+TEST: c’est froid ou c’est chaud ?
+TEST: le jugement rendu n’est qu’une pièce d’un puzzle plus grand dont le but ultime est de rendre confiance aux opérateurs du marché dans le bon fonctionnement des institutions.
+
+
 __conf_à_verse_averse__
     !! >pleuvoir à verse ¡¡
     >pleuvoir averse
@@ -25446,13 +25470,14 @@ __gn_les_2m_virg__
 
     <start>  les  *WORD  ,  @:A¬:[GP]
         <<- /gn/ morph(\3, ":[NA].*:[pi]", ":3[sp]") and not agreement(\3, \5)
-            and not (value(>1, "|et|") and morph(\-1, "#G") and morph(>2, "#G"))
+            and not ( value(>1, "|et|") and ( (morph(\-1, "#G") and morph(>2, "#G")) or (morph(\-1, ";C") and morph(>2, ";C")) ) )
         --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
 
 TEST: les femmes, {{blessé}} par deux fois                                      ->> blessées
 TEST: les hommes, {{blessée}} par deux fois                                     ->> blessés
 TEST: les femmes, demeurant rue de la paix
 TEST: les deux camps, italien et allemand, étaient à portée d’arc
+TEST: les deux soleils, noir et blanc, constituaient un symbole marquant
 
 
 __gn_leurs_1m__
@@ -32987,7 +33012,6 @@ TEST: Il va y àvoir des contingents étrangers qui débarquent à Paris. (erron
 TEST: Viens y faire un test.
 
 
-
 __imp_union_convenir_en__
     [conviens|convenez|convenons] en
         <<- /imp/ space(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     && Il manque un trait d’union.
@@ -33788,25 +33812,6 @@ TEST: ce que nous savions, cela venait {{a}} la maison régulièrement.         
 TEST: ce que je sais, quoiqu’il fasse, c’est {{a}} des années-lumière de réussir.           ->> à
 TEST: vous examiner a eu des conséquences imprévues.
 TEST: je suis A.
-
-
-#### être / avoir
-__conf_ait_confiance_été_faim_tort!3__
-    [es|est] [confiance|conscience|envie|été|peur|faim|hâte|honte|recours|soif|tort]
-    [es|est] peine [à|a]
-        <<- /conf/ not tagbefore(\1, "_ceque_") and not value(<1, "|tout|d’|l’|") >>>
-        <<- /conf/ not tagbefore(\1, "_1s_") -1>> ait               && Confusion probable dans l’expression “avoir \2”. Vous utilisez ici le verbe “être”.
-        <<- /conf/ __else__ -1>> ait|aie                            && Confusion probable dans l’expression “avoir \2”. Vous utilisez ici le verbe “être”.
-
-TEST: qu’il {{est}} confiance en toi, c’est possible                                        ->> ait
-TEST: je sais, qu’il {{est}} peine à trouver le bonheur ça se conçoit.                      ->> ait|aie
-TEST: La révolution est crainte.
-TEST: Je n’en ai cure.
-TEST: Notre communauté vous est redevable.
-TEST: l’humour est affaire de culture
-TEST: Aller chercher l’air pur à la campagne est peine perdue.
-TEST: tout est peine perdue.
-TEST: c’est froid ou c’est chaud ?
 
 
 #### et / est
