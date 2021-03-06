@@ -10074,23 +10074,24 @@ TEST: J’ai mis ces trésors de côté spécialement à votre intention
 
 
 # au temps / autant
-__conf_au_temps_pour_moi__
-    [<start>|,|(]  au  [tant|tan]  pour moi
-    [<start>|,|(]  aux [tant|tans]  pour moi
-        <<- /conf/ -2:3>> au temps                      && Pour reconnaître son erreur, « au temps pour moi » est l’expression recommandée par l’Académie française.
+__loc_au_temps_pour_moi__
+    !! au temps pour moi ¡¡
+    [au+x]  [tant|tan+s|temps]  pour [moi+s]
+    [au+x]  t’ [en|>an]  pour [moi+s]
+        <<- /loc/ ->> au temps pour moi                 && Pour reconnaître son erreur, “au temps pour moi” est l’expression recommandée par l’Académie française.
 
-    [<start>|,|(]  [autant|>autan]  pour moi
-        <<- /conf/ -2>> au temps                        && Pour reconnaître son erreur, « au temps pour moi » est l’expression recommandée par l’Académie française.
+    [<start>|,|(] [autant|>autan]  pour moi
+        <<- /loc/ -2:0>> au temps pour moi              && Pour reconnaître son erreur, “au temps pour moi” est l’expression recommandée par l’Académie française.
 
-TEST: Je me suis trompé. {{Autant}} pour moi.                           ->> Au temps
-TEST: Je me suis trompé. {{Au tan}} pour moi.                           ->> Au temps
+TEST: Je me suis trompé. {{Autant pour moi}}.                           ->> Au temps pour moi
+TEST: Je me suis trompé. {{Au tan pour moi}}.                           ->> Au temps pour moi
 
 
-__conf_autant_que_faire_se_peut!7__
+__loc_autant_que_faire_se_peut!7__
     !! autant que faire se peut ¡¡
     [au|aux] [temps|tant|>tan]  [que|qu’] [faire|ferre|ferres|>fer] [se|ce] [peu|peut|peux]
     [>autan|autant]             [que|qu’] [faire|ferre|ferres|>fer] [se|ce] [peu|peut|peux]
-        <<- /loc/ ->> autant que faire se peut          && Locution adverbiale : « autant que faire se peut ».|https://fr.wiktionary.org/wiki/autant_que_faire_se_peut
+        <<- /loc/ ->> autant que faire se peut          && Locution adverbiale : “autant que faire se peut”.|https://fr.wiktionary.org/wiki/autant_que_faire_se_peut
 
 TEST: on va y arriver, {{au temps que faire ce peu}}…                   ->> autant que faire se peut
 TEST: autant que faire se peut, il faut éviter la confusion entre ces deux discours.
@@ -10101,7 +10102,7 @@ __conf_avant_avent__
     [<start>|,|(]  avent  $:D
         <<- /conf/ -2>> avant                                   && Confusion probable. Si vous évoquez ce qui précède, écrivez “avant”.|https://fr.wiktionary.org/wiki/avant
 
-    avent  [moi|toi|lui|elle|soi|nous|vous|eux|elles|iel|iels]
+    avent  {_pronom_obj_}
         <<- /conf/ not morph(<1, ":D") -1>> avant               && Confusion. Si vous évoquez ce qui précède, écrivez “avant”.|https://fr.wiktionary.org/wiki/avant
 
     calendrier de l’ avant
@@ -10116,21 +10117,26 @@ TEST: le calendrier de l’{{avant}}                                  ->> Avent
 
 # boue / bout
 __conf_bout_boue__
+    >bain de >bout
+        <<- /conf/ --1>> boue                                       && Confusion. Un bout est l’extrémité de quelque chose. La boue est un mélange de terre et d’eau.|https://fr.wiktionary.org/wiki/boue
+
     >joindre ?@:[WX]¿ les deux bout
         <<- /conf/ =>> =select(\-1, ":N")
 
     >joindre ?@:[WX]¿ les deux [>boue|bous]
-        <<- /conf/ --1>> bouts                                      && Confusion. La boue est un mélange de terre et d’eau. Pour l’extrémité de quelque chose, écrivez “bout”.
+        <<- /conf/ --1>> bouts                                      && Confusion. La boue est un mélange de terre et d’eau. Pour l’extrémité de quelque chose, écrivez “bout”.|https://fr.wiktionary.org/wiki/bout
 
+TEST: prendre un bain de {{bout}}                                   ->> boue
 TEST: joindre les deux {{bout}}                                     ->> bouts
 TEST: joindre les deux {{boues}}                                    ->> bouts
 TEST: elle ne parvient pas à joindre les deux {{bous}}              ->> bouts
 
+
 # branle-bas de combat
-__conf_branle_bas_de_combat__
+__loc_branle_bas_de_combat__
     [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] >combat
     [branle+s] [ba|bas|bat+s|>bât|>ban|>banc|>bande] [de|d’] [con|+s] [ba|bas|bat+s|>bât]
-        <<- /conf/ ->> branle-bas de combat                         && Écrivez “branle-bas de combat”.|https://fr.wiktionary.org/wiki/branle-bas_de_combat
+        <<- /loc/ ->> branle-bas de combat                          && Écrivez “branle-bas de combat”.|https://fr.wiktionary.org/wiki/branle-bas_de_combat
 
 TEST: le branle-bas de combat commençait, mais trop tard
 TEST: {{branle bat de con bat}}                                     ->> branle-bas de combat
@@ -10163,7 +10169,7 @@ __conf_ça_çà_sa!7__
         <<- /conf/ __else__ ->> ça                                      && Confusion. Si vous voulez dire “cela”, écrivez “ça”.
 
     ça et là
-        <<- /conf/ not morph(<1, ":R") ->> çà et là     && Confusion : “ça” équivaut à “cela”. Dans l’expression “çà et là”, le terme “çà” signifie “ici”.
+        <<- /loc/ not morph(<1, ":R") ->> çà et là      && Confusion : “ça” équivaut à “cela”. Dans l’expression “çà et là”, le terme “çà” signifie “ici”.
 
 TEST: Je prends {{sa}}…                                                         ->> ça
 TEST: {{ça}} patrie, il la détestait                                            ->> sa
