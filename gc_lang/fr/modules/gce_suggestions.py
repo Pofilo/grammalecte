@@ -186,7 +186,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
         lMode = [cMode]
     else:
         return ""
-    sWho = _dQuiEst.get(sSuj.lower(), ":3s")
+    sWho = _dQuiEst.get(sSuj.lower(), sSuj)
     dSugg = {}
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)

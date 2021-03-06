@@ -239,7 +239,7 @@ function suggVerbMode (sFlex, cMode, sSuj) {
     } else {
         return "";
     }
-    let sWho = _dQuiEst.gl_get(sSuj.toLowerCase(), ":3s");
+    let sWho = _dQuiEst.gl_get(sSuj.toLowerCase(), sSuj);
     let aSugg = new Set();
     for (let sStem of gc_engine.oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
