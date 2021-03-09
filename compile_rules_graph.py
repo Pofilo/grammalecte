@@ -287,7 +287,7 @@ class GraphBuilder:
             nPriority = self.dOptPriority.get(sOption, 4)
 
         # valid action?
-        m = re.search(r"(?P<action>[-=~/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
+        m = re.search(r"(?P<action>[-=~/!>&])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
         if not m:
             print("\n# Error. No action found at: ", sLineId, sActionId)
             exit()
@@ -375,7 +375,7 @@ class GraphBuilder:
             ## no action, break loop if condition is False
             return [sLineId, sOption, sCondition, cAction, ""]
 
-        if not sAction and cAction != "!":
+        if not sAction and cAction not in "!#":
             print(f"\n# Error in action at line <{sLineId}/{sActionId}>:  This action is empty.")
             exit()
 
@@ -406,7 +406,7 @@ class GraphBuilder:
                 elif iStartAction < 0 or iEndAction < 0 and iStartAction != iEndAction:
                     print(f"\n# Warning in action at line <{sLineId}/{sActionId}>: rewriting with possible token position modified.")
             return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
-        if cAction in "!/":
+        if cAction in "!/&":
             ## tags
             return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
         if cAction == "=":
@@ -545,7 +545,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
         elif sLine.startswith("        <<- "):
             # actions
             lActions.append([iLine, sLine[12:].strip()])
-            if not re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
+            if not re.search(r"[-=~/!>&](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
                 bActionBlock = True
         elif sLine.startswith("        && "):
             # action message
@@ -555,7 +555,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             # action line continuation
             iPrevLine, sPrevLine = lActions[-1]
             lActions[-1] = [iPrevLine, sPrevLine + " " + sLine.strip()]
-            if re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
+            if re.search(r"[-=~/!>&](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
                 bActionBlock = False
         elif re.match("[  ]*$", sLine):
             # empty line to end merging
