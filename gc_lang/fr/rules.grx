@@ -5982,6 +5982,9 @@ __tu_substantifs!7__
     états majors
         <<- /tu/ ->> \1-\2                                      && Il manque un trait d’union.
 
+    >fac [similé+ses]
+        <<- /tu/ ->> fac-similé|fac-similés                     && Il manque un trait d’union.
+
     face [a|à] face
         <<- /tu/ morph(<1, ":D") ->> face-à-face                && Si vous employez cette locution comme un nom, mettez des traits d’union.|https://fr.wiktionary.org/wiki/face-%C3%A0-face
 
@@ -6140,6 +6143,7 @@ TEST: encore un {{cul de sac}}                                                  
 TEST: Le {{moto club}} était sur le point de faire faillite.                    ->> motoclub|moto-club|club moto
 TEST: J’ai beaucoup de {{déjà vu}}.                                             ->> déjà-vu
 TEST: L’{{état major}} n’a pas encore tranché la question.                      ->> état-major
+TEST: des {{facs similés}}                                                      ->> fac-similé|fac-similés
 TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants        ->> face-à-face
 TEST: ces {{fiers à bras}} vont encore se prendre une raclée mémorable          ->> fiers-à-bras
 TEST: {{gagne pain}} de merde                                                   ->> gagne-pain
@@ -18767,6 +18771,8 @@ __substantifs_multi_mots__
     >certificat d’ études ?[primaires|secondaires|supérieures|spécialisées|musicales|théâtrales|bibliques|théologiques]¿
     >certificat [de|d’] scolarité ?[maternelle|primaire|secondaire]¿
     [>chaîne|>chaine] [de|d’] restauration rapide
+    [>chaîne|>chaine] d’ [>information|>info]
+    [>chaîne|>chaine] d’ [>information|>info] en continu
     >chair à [pâté|>canon]
     >chair [de|d’] poule
     >chalet d’ alpage
@@ -18870,13 +18876,14 @@ __substantifs_multi_mots__
     >date d’ expiration
     >débat sans fin
     >déclaration sur l’ honneur
+    >défaut [de|d’] paiement
     >degré d’ arc
     >délai [de|d’] [attente|carence|connexion|prescription|préavis|rétraction|rigueur]
     >demande d’ asile
     >demandeur d’ [asile|emploi]
     >dépôt [de|d’] bilan
-    >défaut [de|d’] paiement
     >descente aux [enfers|flambeaux]
+    >détournement de fonds ?[publics|privés]¿
     >dindon [de|d’] la farce
     dieu tout-puissant
     [>dîner|>diner] aux chandelles
@@ -21062,6 +21069,7 @@ TEST: Beaucoup de conciles émaneront des normes pour que soient nommés des cur
 TEST: Les ailes de cet avion viennent de Grande-Bretagne.
 TEST: La liberté passait sur le monde, l’internationale était sa voix criant par-dessus les frontières les revendications des déshérités.
 TEST: La danse est d’ailleurs en ce sens salvatrice.
+TEST: La gauche a fait main basse sur la plupart des villes vaudoises, les Verts bondissent aux législatifs.
 
 
 
@@ -24060,10 +24068,14 @@ __conf_tant_temps_tan__
     [>avoir|>prendre|<start>|,|(] du bon [tant|>tan]
     [>avoir|>prendre|<start>|,|(] la notion du [tant|>tan]
     c’ >être [le|l’] bon ?vieux¿ [tant|>tan]
-    >prendre du [tant|>tan]
+    >prendre du ?bon¿ [tant|>tan]
+    >prendre [mon|ton|son|notre|votre|leur] >tan
     au bon vieux [tant|>tan]
     combien [de|d’] [>tan|tant]
         <<- /conf/ --1>> temps                                      && Confusion probable. Pour parler d’une période, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
+
+    >prendre [mon|ton|son|notre|votre|leur] tant
+        <<- /conf/ not morph(>1, ":[AW]") --1>> temps               && Confusion probable. Pour parler d’une période, écrivez “temps”.|https://fr.wiktionary.org/wiki/temps
 
     les [tant|>tan] >changer
     les [tant|>tan] >avoir [changé+ses]
@@ -24078,6 +24090,7 @@ TEST: elle sait prendre du bon {{tant}}                             ->> temps
 TEST: les {{tans}} changent                                         ->> temps
 TEST: les {{tant}} ont changé                                       ->> temps
 TEST: elle avait {{temps}} de temps                                 ->> tant
+TEST: surtout, prends ton {{tant}}                                  ->> temps
 TEST: il est temps de partir
 TEST: elle a tant de jouets
 
@@ -24374,11 +24387,17 @@ TEST: elle prendra l’{{avions}} dès que possible                             
 
 
 __gn_l_2m_virg__
-    <start>  l’  *WORD  ,  @:A¬:[GP]
+    <start>  l’  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":3[sp]") and not agreement(\3, \5)
-        --1>> =suggAgree(\5, \3)                                                                    && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: L’homme, {{blessés}} par deux fois                                            ->> blessé
+    <start>  l’  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":3[sp]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: l’émotion, {{grand}} l’été, petite l’hiver                                    ->> grande
+TEST: L’homme, {{blessés}} dans son orgueil                                         ->> blessé
 
 
 __gn_l_3m__
@@ -24513,11 +24532,20 @@ TEST: Cela aboutira sur une contractualisation coûteuse pour organiser cette di
 
 
 __gn_le_2m_virg__
-    <start>  le  *WORD  ,  @:A¬:[GP]
-        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]", ":3[sp]") and not agreement(\3, \5)
-        --1>> =suggMasSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+    <start>  le  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  [<end>|,|)|*WORDELD]
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]", ":3[sp]")
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: Le tyran, {{blessée}} par deux fois                                               ->> blessé
+    <start>  le  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]", ":3[sp]")
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: le tyran, {{remerciée}}…                                                          ->> remercié
+TEST: Le tyran, {{blessée}} dans son orgueil                                            ->> blessé
+TEST: le Sénégal, nation d’Afrique
+TEST: le Luxembourg, paradis fiscal
+TEST: Le Brésil, grande nation d’Amérique du Sud
 
 
 __gn_le_3m__
@@ -24635,11 +24663,18 @@ TEST: Il faut donc examiner ensemble les panneaux et la paroi latérale.
 
 
 __gn_la_2m_virg__
-    <start>  la  *WORD  ,  @:A¬:[GP]
-        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]", ":3[sp]") and not agreement(\3, \5)
-        --1>> =suggFemSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+    <start>  la  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  [<end>|,|)|*WORDELD]
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]", ":3[sp]")
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: La femme, {{blessées}} par deux fois                                                      ->> blessée
+    <start>  la  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]", ":3[sp]")
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: la petite, réellement {{oublié}}                                                          ->> oubliée
+TEST: La femme, {{blessées}} dans son orgueil                                                   ->> blessée
+TEST: La France, petit état
 TEST: la petite, prenant le parti de son frère,
 
 
@@ -24727,11 +24762,17 @@ TEST: 3 milliards d’euros que depuis 2012 l’État leur a volés
 
 
 __gn_leur_2m_virg__
-    <start>  leur  *WORD  ,  @:A¬:[GP]
+    <start>  leur  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":3[sp]") and not agreement(\3, \5)
-        --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: Leur maître, {{blessés}} par deux fois                                    ->> blessé
+    <start>  leur  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":3[sp]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: leur passion, souvent {{assouvi}}                                         ->> assouvie
+TEST: Leur maître, {{blessés}} dans son orgueil                                 ->> blessé
 
 
 __gn_leur_3m__
@@ -24930,11 +24971,17 @@ TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{
 
 
 __gn_un_2m_virg__
-    <start>  un  *WORD  ,  @:A¬:[GP]
-        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]") and not agreement(\3, \5)
-        --1>> =suggMasSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+    <start>  un  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  [<end>|,|)|*WORDELD]
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]")
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: un homme, {{blessés}} par deux fois                                       ->> blessé
+    <start>  un  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]")
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: un gros, toujours {{fâchée}}                                              ->> fâché
+TEST: un homme, {{blessés}} par son frère                                       ->> blessé
 
 
 __gn_une_2m__
@@ -24966,11 +25013,17 @@ TEST: L’or allume le feu d’une cupidité d’une couleur et d’une sorte di
 
 
 __gn_une_2m_virg__
-    <start>  une  *WORD  ,  @:A¬:[GP]
-        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]") and not agreement(\3, \5)
-        --1>> =suggFemSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+    <start>  une  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  [<end>|,|)|*WORDELD]
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]")
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: une femme, {{blessés}} par deux fois                                      ->> blessée
+    <start>  une  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]")
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: une écolo, souvent {{inquiété}}                                           ->> inquiétée
+TEST: une femme, {{blessés}} dans son orgueil                                   ->> blessée
 
 
 __gn_du_1m__
@@ -25086,11 +25139,17 @@ TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.             
 
 
 __gn_det_mas_sing_2m_virg__
-    <start>  [ce|cet|quel|au|ledit|dudit|audit|aucun|nul]  *WORD  ,  @:A¬:[GP]
+    <start>  [ce|cet|quel|au|ledit|dudit|audit|aucun|nul]  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[me]:[si]") and not agreement(\3, \5)
-        --1>> =suggMasSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: ce con, {{blessée}} par deux fois                                         ->> blessé
+    <start>  [ce|cet|quel|au|ledit|dudit|audit|aucun|nul]  *WORD  ,  @:A¬:(?:[GP]|A.*:[me]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[si]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggMasSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: ledit crétin, encore une fois {{harcelés}}                                ->> harcelé
+TEST: ce con, {{blessée}} dans son orgueil                                      ->> blessé
 
 
 __gn_det_mas_sing_3m__
@@ -25163,12 +25222,20 @@ TEST: le ton monte.
 
 
 __gn_mon_ton_son_2m_virg__
-    <start>  [mon|ton|son]  *WORD  ,  @:A¬:[GP]
+    <start>  [mon|ton|son]  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[si]") and not agreement(\3, \5) >>>
-        <<- /gn/ morph(\3, ">[bcçdfgjklmnpqrstvwxz].*:[NA].*:[me]:[si]")  --1>> =suggMasSing(\-1)   && Cet adjectif n’est pas accordé avec “\2 \3”.
-        <<- /gn/ morph(\3, ">[aâeéèêiîoôuûyœæh]") --1>> =suggAgree(\-1, \3)                         && Cet adjectif n’est pas accordé avec “\2 \3”.
+        <<- /gn/ morph(\3, ">[bcçdfgjklmnpqrstvwxz].*:[NA].*:[me]:[si]")  -5>> =suggMasSing(\5)     && Cet adjectif n’est pas accordé avec “\2 \3”.
+        <<- /gn/ morph(\3, ">[aâeéèêiîoôuûyœæh]") -5>> =suggAgree(\5, \3)                           && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: mon mari, {{blessée}} par deux fois                                       ->> blessé
+    <start>  [mon|ton|son]  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[si]") and not agreement(\3, \5) and not ( morph(\-1, ":N") and agreement(\-2, \-1) ) >>>
+        <<- /gn/ morph(\3, ">[bcçdfgjklmnpqrstvwxz].*:[NA].*:[me]:[si]")  -5>> =suggMasSing(\5)     && Cet adjectif n’est pas accordé avec “\2 \3”.
+        <<- /gn/ morph(\3, ">[aâeéèêiîoôuûyœæh]") -5>> =suggAgree(\5, \3)                           && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: mon mari, {{blessée}}                                                     ->> blessé
+TEST: ton âme, {{ébranlé}}                                                      ->> ébranlée
+TEST: son homme, {{stupéfaite}}                                                 ->> stupéfait
+TEST: mon mari, {{blessée}} dans son orgueil                                    ->> blessé
 TEST: ton âme, {{ébranlé}} par ces révélations                                  ->> ébranlée
 TEST: son homme, {{stupéfaite}} par ces révélations                             ->> stupéfait
 
@@ -25268,11 +25335,17 @@ TEST: il fut cette fois ulcéré de voir son entreprise une fois de plus ruinée
 
 
 __gn_det_fem_sing_2m_virg__
-    <start>  [ma|ta|sa|cette|quelle|ladite|aucune|nulle]  *WORD  ,  @:A¬:[GP]
+    <start>  [ma|ta|sa|cette|quelle|ladite|aucune|nulle]  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]") and not agreement(\3, \5)
-        --1>> =suggFemSing(\-1)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: cette femme, {{blessées}} par deux fois                                   ->> blessée
+    <start>  [ma|ta|sa|cette|quelle|ladite|aucune|nulle]  *WORD  ,  @:A¬:(?:[GP]|A.*:[fe]:[si])  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[si]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggFemSing(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: cette femme, {{blessé}}                                                   ->> blessée
+TEST: cette femme, {{blessées}} dans son orgueil                                ->> blessée
 
 
 __gn_det_fem_sing_3m__
@@ -25345,12 +25418,17 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 
 __gn_det_epi_sing_2m_virg__
-    <start>  [chaque|quelque|notre|votre]  *WORD  ,  @:A¬:[GP]
+    <start>  [chaque|quelque|notre|votre]  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[si]") and not agreement(\3, \5)
-        --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: votre femme, {{blessés}} par deux fois                                    ->> blessée
-TEST: chaque homme, {{blessées}} par deux fois                                  ->> blessé
+    <start>  [chaque|quelque|notre|votre]  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[si]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: votre femme, {{blessés}}                                                  ->> blessée
+TEST: chaque homme, {{blessées}} dans son orgueil                               ->> blessé
 
 
 __gn_det_epi_sing_3m__
@@ -25474,13 +25552,18 @@ __gn_les_2m_virg__
     calendriers  ,  [grégorien|julien|hégirien] et [grégorien|julien|hégirien]
         <<- !3>> gn
 
-    <start>  les  *WORD  ,  @:A¬:[GP]
+    <start>  les  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[pi]", ":3[sp]") and not agreement(\3, \5)
-            and not ( value(>1, "|et|") and ( (morph(\-1, "#G") and morph(>2, "#G")) or (morph(\-1, ";C") and morph(>2, ";C")) ) )
-        --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: les femmes, {{blessé}} par deux fois                                      ->> blessées
-TEST: les hommes, {{blessée}} par deux fois                                     ->> blessés
+    <start>  les  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[pi]", ":3[sp]") and not agreement(\3, \5)
+            and not ( value(\-1, "|et|") and ( (morph(\-2, "#G") and morph(>1, "#G")) or (morph(\-2, ";C") and morph(>1, ";C")) ) )
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: les femmes, {{blessé}}                                                    ->> blessées
+TEST: les hommes, {{blessée}} dans leur orgueil                                 ->> blessés
 TEST: les femmes, demeurant rue de la paix
 TEST: les deux camps, italien et allemand, étaient à portée d’arc
 TEST: les deux soleils, noir et blanc, constituaient un symbole marquant
@@ -25639,12 +25722,17 @@ TEST: le bruit de nos pas étouffé par l’épais tapis.
 
 
 __gn_det_epi_plur_2m_virg__
-    <start>  [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  ,  @:A¬:[GP]
+    <start>  [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[pi]") and not agreement(\3, \5)
-        --1>> =suggAgree(\-1, \3)                                                           && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: nos femmes, {{blessé}} par deux fois                                      ->> blessées
-TEST: vos hommes, {{blessée}} par deux fois                                     ->> blessés
+    <start>  [ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|aux|moult]  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[pi]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: nos femmes, {{blessé}}                                                    ->> blessées
+TEST: vos hommes, {{blessée}} dans leur orgueil                                 ->> blessés
 TEST: ces personnes, méprisant le danger, furent blessées
 
 
@@ -25673,11 +25761,17 @@ TEST: chez certains la revue Limite provoque des crises d’hystérie.
 
 
 __gn_det_mas_plur_2m_virg__
-    <start>  [certains|maints|quels|lesdits|desdits|auxdits]  *WORD  ,  @:A¬:[GP]
+    <start>  [certains|maints|quels|lesdits|desdits|auxdits]  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[me]:[pi]") and not agreement(\3, \5)
-        --1>> =suggMasPlur(\-1)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggMasPlur(\5)                                                               && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: maints hommes, {{blessée}} par deux fois                                              ->> blessés
+    <start>  [certains|maints|quels|lesdits|desdits|auxdits]  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[me]:[pi]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggMasPlur(\5)                                                               && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: maints hommes, {{blessé}}                                                             ->> blessés
+TEST: maints hommes, {{blessée}} dans leur orgueil                                          ->> blessés
 
 
 __gn_det_fem_plur_2m__
@@ -25704,11 +25798,17 @@ TEST: ici ou auxdites lointaines {{contrée}}                                   
 
 
 __gn_det_fem_plur_2m_virg__
-    <start>  [certaines|maintes|quelles|lesdites|desdites|auxdites]  *WORD  ,  @:A¬:[GP]
+    <start>  [certaines|maintes|quelles|lesdites|desdites|auxdites]  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[fe]:[pi]") and not agreement(\3, \5)
-        --1>> =suggFemPlur(\-1)                                                             && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggFemPlur(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: certaines femmes, {{blessé}} par deux fois                                            ->> blessées
+    <start>  [certaines|maintes|quelles|lesdites|desdites|auxdites]  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[fe]:[pi]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggFemPlur(\5)                                                                       && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: certaines femmes, {{blessés}}                                                         ->> blessées
+TEST: certaines femmes, {{blessé}} dans leur orgueil                                        ->> blessées
 
 
 __gn_nombre_plur_2m__
@@ -25737,7 +25837,7 @@ __gn_nombre_2m_virg__
         --1>> =suggAgree(\-1, \3)                                                                   && Cet adjectif n’est pas accordé avec “\2 \3”.
 
 TEST: deux femmes, {{blessé}} par deux fois                                                 ->> blessées
-TEST: trois hommes, {{blessée}} par deux fois                                               ->> blessés
+TEST: trois hommes, {{blessée}} dans leur orgueil                                           ->> blessés
 
 
 __gn_des_2m__
@@ -25764,12 +25864,17 @@ TEST: des passeports américain, canadien, néerlandais, allemand et britannique
 
 
 __gn_des_2m_virg__
-    <start>  des  *WORD  ,  @:A¬:[GP]
+    <start>  des  *WORD  ,  @:A¬:[GP]  [<end>|,|)|*WORDELD]
         <<- /gn/ morph(\3, ":[NA].*:[pi]") and not agreement(\3, \5)
-        --1>> =suggAgree(\-1, \3)                                                                   && Cet adjectif n’est pas accordé avec “\2 \3”.
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
 
-TEST: des femmes, {{blessé}} par deux fois                                                  ->> blessées
-TEST: des hommes, {{blessée}} par deux fois                                                 ->> blessés
+    <start>  des  *WORD  ,  @:A¬:[GP]  *WORD
+        <<- /gn/ morph(\3, ":[NA].*:[pi]") and not agreement(\3, \5)
+            and not ( morph(\-1, ":N") and agreement(\-2, \-1) )
+        -5>> =suggAgree(\5, \3)                                                                     && Cet adjectif n’est pas accordé avec “\2 \3”.
+
+TEST: des femmes, {{blessé}}                                                                ->> blessées
+TEST: des hommes, {{blessée}} dans leur orgueil                                             ->> blessés
 
 
 __gn_plusieurs_1m__
