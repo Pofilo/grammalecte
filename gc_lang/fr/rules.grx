@@ -1562,6 +1562,61 @@ TEST: “Parce que… ?” finit par demander Paul.
 TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 
+!!!! Purge des références aux notes                                                               !!
+
+# les références aux notes
+__<s>(p_exposants)__
+    [¹²³⁴⁵⁶⁷⁸⁹⁰]+
+        <<- ~>> *
+
+__[i](p_références_aux_notes)__
+    ({w_2})(\d+)  @@0,$
+        <<- not morph(\0, ":") and morph(\1, ":") ~2>> *
+
+TEST: POLITIQUESOCIÉTÉÉCONOMIEMONDECULTUREART DE VIVREMAGAZINE (qui peut faire boguer JavaScript avec certaines regex)
+
+
+!!!! Normalisation du “t” euphonique                                                              !!
+
+__<i]/tu(tu_t_euphonique_incorrect)__
+    ([-–—− ]t(?:[’' ][-–—−]?|[-–—−][’' ]?))(ie?ls?|elles?|on|tu)  @@0,$
+        <<- re.search("(?i)^(?:ie?ls|elles|tu)$", \2) -1>> -    && Le “t” euphonique n’est pas nécessaire avec “\2”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+        <<- __else__ and \1 != "-t-" and \1 != "-T-" -1>> -t-   && Pour le “t” euphonique, il faut deux traits d’union. Pas d’apostrophe. Pas d’espace.
+        <<- \1 != "-t-" ~1>> -t-
+__<i]/tu(tu_t_euphonique_superflu)__
+    [td]([- ]t[-’' ])(?:ie?l|elle|on)  @@1
+        <<- -1>> -                                              && Le “t” euphonique est superflu quand le verbe se termine par “t” ou “d”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+        <<- \1 != "-t-" ~1>> -t-
+__<i]/eleu(eleu_t_euphonique_manquant)__
+    [aec](-(ie?l|elle|on))  @@1,2  <<- -1>> -t-\2               && Euphonie. Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
+
+TEST: va{{ t’}}il y parvenir ?                          ->> -t-
+TEST: A{{ t’}}elle soif ?                               ->> -t-
+TEST: A{{ t-}}elle faim ?                               ->> -t-
+TEST: a{{ t'}}elle                                      ->> -t-
+TEST: a{{-t'}}il                                        ->> -t-
+TEST: a{{-t }}il.                                       ->> -t-
+TEST: a{{ t’}}il.                                       ->> -t-
+TEST: a{{ t-}}on.                                       ->> -t-
+TEST: donne{{ t-}}il                                    ->> -t-
+TEST: donne{{-t }}il                                    ->> -t-
+TEST: vient{{-t-}}il                                    ->> -
+TEST: viendras{{-t-}}tu                                 ->> -
+TEST: Viendront{{ t-}}ils                               ->> -
+TEST: viennent{{ t-}}ils                                ->> -
+TEST: mangent{{-t-}}elles                               ->> -
+TEST: Ont{{ t’}}ils                                     ->> -
+TEST: Ont{{-t’}}ils                                     ->> -
+TEST: l’ont{{ t’}}ils vu ?                              ->> -
+TEST: exploite{{−t−}}il les ressources numériques       ->> -t-
+TEST: vainc{{-il}} ses ennemis aisément                 ->> -t-il
+TEST: Assis, gronde{{-t -}}elle                         ->> -t-
+TEST: vient-il demain ?
+TEST: prend-elle l’avantage ?
+TEST: saura-t-on jamais la vérité ?
+TEST: arrive-t-elle ce matin ?
+TEST: y aura-t-il du poulet au dîner ?
+
 
 
 !!
@@ -1640,20 +1695,6 @@ TEST: {{3O}} (chiffre avec un O).                                           ->> 
 
 
 
-!!!! Purge des références aux notes                                                               !!
-
-# les références aux notes
-__<s>(p_exposants)__
-    [¹²³⁴⁵⁶⁷⁸⁹⁰]+
-        <<- ~>> *
-
-__[i](p_références_aux_notes)__
-    ({w_2})(\d+)  @@0,$
-        <<- not morph(\0, ":") and morph(\1, ":") ~2>> *
-
-TEST: POLITIQUESOCIÉTÉÉCONOMIEMONDECULTUREART DE VIVREMAGAZINE (qui peut faire boguer JavaScript avec certaines regex)
-
-
 !!!! Traits d’union                                                                               !!
 
 __[i]/tu(tu_trait_union_douteux)__
@@ -1662,46 +1703,6 @@ __[i]/tu(tu_trait_union_douteux)__
 
 TEST: Nous préparons une {{contre–attaque}}.                    ->> contre-attaque
 TEST: Nous préparons une {{contre−attaque}}.                    ->> contre-attaque
-
-
-__<i]/tu(tu_t_euphonique_incorrect)__
-    ([-–—− ]t(?:[’' ][-–—−]?|[-–—−][’' ]?))(ie?ls?|elles?|on|tu)  @@0,$
-        <<- re.search("(?i)^(?:ie?ls|elles|tu)$", \2) -1>> -    && Le “t” euphonique n’est pas nécessaire avec “\2”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
-        <<- __else__ and \1 != "-t-" and \1 != "-T-" -1>> -t-   && Pour le “t” euphonique, il faut deux traits d’union. Pas d’apostrophe. Pas d’espace.
-        <<- \1 != "-t-" ~1>> -t-
-__<i]/tu(tu_t_euphonique_superflu)__
-    [td]([- ]t[-’' ])(?:ie?l|elle|on)  @@1
-        <<- -1>> -                                              && Le “t” euphonique est superflu quand le verbe se termine par “t” ou “d”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
-        <<- \1 != "-t-" ~1>> -t-
-__<i]/eleu(eleu_t_euphonique_manquant)__
-    [aec](-(ie?l|elle|on))  @@1,2  <<- -1>> -t-\2               && Euphonie. Il faut un “t” euphonique.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=t+euphonique&id=2513
-
-TEST: va{{ t’}}il y parvenir ?                          ->> -t-
-TEST: A{{ t’}}elle soif ?                               ->> -t-
-TEST: A{{ t-}}elle faim ?                               ->> -t-
-TEST: a{{ t'}}elle                                      ->> -t-
-TEST: a{{-t'}}il                                        ->> -t-
-TEST: a{{-t }}il.                                       ->> -t-
-TEST: a{{ t’}}il.                                       ->> -t-
-TEST: a{{ t-}}on.                                       ->> -t-
-TEST: donne{{ t-}}il                                    ->> -t-
-TEST: donne{{-t }}il                                    ->> -t-
-TEST: vient{{-t-}}il                                    ->> -
-TEST: viendras{{-t-}}tu                                 ->> -
-TEST: Viendront{{ t-}}ils                               ->> -
-TEST: viennent{{ t-}}ils                                ->> -
-TEST: mangent{{-t-}}elles                               ->> -
-TEST: Ont{{ t’}}ils                                     ->> -
-TEST: Ont{{-t’}}ils                                     ->> -
-TEST: l’ont{{ t’}}ils vu ?                              ->> -
-TEST: exploite{{−t−}}il les ressources numériques       ->> -t-
-TEST: vainc{{-il}} ses ennemis aisément                 ->> -t-il
-TEST: Assis, gronde{{-t -}}elle                         ->> -t-
-TEST: vient-il demain ?
-TEST: prend-elle l’avantage ?
-TEST: saura-t-on jamais la vérité ?
-TEST: arrive-t-elle ce matin ?
-TEST: y aura-t-il du poulet au dîner ?
 
 
 
@@ -3827,6 +3828,11 @@ __fusions_noms_propres__
     ~^[A-ZÀÂÉÈÊÎÔ]. Airways
         <<- ~>> ␣
         <<- =>> define(\2, ":MP:e:i")
+
+
+__merge__
+    à la fois
+        <<- &>> :LW
 
 
 __immunités__
@@ -23209,7 +23215,9 @@ TEST: Elle en est tombée des {{nus}}.                           ->> nues
 
 # numérique / digital
 __conf_numérique_digital__
-    [>agence|>appareil|>banque|>caméra|>colonie|>colonisation|>communication|>compagnie|>connexion|>économie|>entreprise|>ère|>expérience|>identité|>industrie|>présence|>prise|>service|>solution|>stratégie|>télévision|>transformation|>transition] >digital
+    [>agence|>appareil|>banque|>caméra|>colonie|>colonisation|>communication|>compagnie|>connexion]     >digital
+    [>document|>économie|>entreprise|>ère|>expérience|>fichier|>identité|>industrie|>présence|>prise]   >digital
+    [>service|>solution|>stratégie|>télévision|>transformation|>transition|>révolution]                 >digital
         <<- /conf/ -2>> numérique|numériques
         && Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Écrivez “numérique”.
 
