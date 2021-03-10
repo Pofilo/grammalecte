@@ -599,6 +599,14 @@ class TextParser {
                 // check arcs for each existing pointer
                 let lNextPointer = [];
                 for (let oPointer of lPointer) {
+                    if (oPointer["nMultiEnd"] != -1) {
+                        if (oToken["i"] <= oPointer["nMultiEnd"]) {
+                            lNextPointer.push(oPointer);
+                        }
+                        if (oToken["i"] != oPointer["nMultiEnd"]) {
+                            continue;
+                        }
+                    }
                     for (let [cActionType, sMatch, iNode] of this._getMatches(oGraph, oToken, oGraph[oPointer["iNode"]])) {
                         if (cActionType === null) {
                             lNextPointer.push(oPointer);
@@ -607,7 +615,8 @@ class TextParser {
                         if (bDebug) {
                             console.log("  MATCH: " + cActionType + sMatch);
                         }
-                        lNextPointer.push({ "iToken1": oPointer["iToken1"], "iNode": iNode });
+                        let nMultiEnd = (cActionType != "&") ? -1 : dToken["nMultiStartTo"];
+                        lNextPointer.push({ "iToken1": oPointer["iToken1"], "iNode": iNode, "nMultiEnd": nMultiEnd });
                     }
                 }
                 lPointer = lNextPointer;
@@ -619,10 +628,19 @@ class TextParser {
                     if (bDebug) {
                         console.log("  MATCH: " + cActionType + sMatch);
                     }
-                    lPointer.push({ "iToken1": iToken, "iNode": iNode });
+                    let nMultiEnd = (cActionType != "&") ? -1 : dToken["nMultiStartTo"];
+                    lPointer.push({ "iToken1": iToken, "iNode": iNode, "nMultiEnd": nMultiEnd });
                 }
                 // check if there is rules to check for each pointer
                 for (let oPointer of lPointer) {
+                    if (oPointer["nMultiEnd"] != -1) {
+                        if (oToken["i"] < oPointer["nMultiEnd"]) {
+                            continue;
+                        }
+                        if (oToken["i"] == oPointer["nMultiEnd"]) {
+                            oPointer["nMultiEnd"] = -1;
+                        }
+                    }
                     if (oGraph[oPointer["iNode"]].hasOwnProperty("<rules>")) {
                         let bChange = this._executeActions(oGraph, oGraph[oPointer["iNode"]]["<rules>"], oPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext);
                         if (bChange) {
@@ -659,6 +677,7 @@ class TextParser {
                     // Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     // Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     // Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
+                    // Immunity      [ option, condition, "&", "",                            iTokenStart, iTokenEnd ]
                     // Test          [ option, condition, ">", "" ]
                     if (!sOption || dOptions.gl_get(sOption, false)) {
                         bCondMemo = !sFuncCond || gc_functions[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
@@ -750,7 +769,23 @@ class TextParser {
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                            else if (cActionType == "#") {
+                                // multi-tokens
+                                let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
+                                let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
+                                let oMultiToken = {
+                                    "nTokenStart": nTokenStart,
+                                    "nTokenEnd": nTokenEnd,
+                                    "lTokens": this.lTokens.slice(nTokenStart, nTokenEnd+1),
+                                    "lMorph": (sWhat) ? sWhat.split("|") : [":HM"]
+                                }
+                                this.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd
+                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart
+                                this.lTokens[nTokenStart]["dMultiToken"] = dMultiToken
+                                this.lTokens[nTokenEnd]["dMultiToken"] = dMultiToken
+                            }
+                            else {
                                 console.log("# error: unknown action at " + sLineId);
                             }
                         }

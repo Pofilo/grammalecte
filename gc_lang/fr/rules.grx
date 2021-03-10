@@ -432,6 +432,7 @@ __<s>/typo(typo_parenthèse_ouvrante_collée)__
         <<- ->> " ("                                                                                && Il manque un espace avant la parenthèse.
 
 TEST: C’est au fond du couloir{{(}}celui du deuxième étage{{)}}qu’il se trouve.     ->> " (|||) "
+TEST: de gain différentiel 𝐴 (𝑉ᵣ = 𝐴·𝑣H{{)}}et associé                              ->> ") "
 TEST: (a + b)²
 TEST: il faut (re)former tout ça.
 TEST: il (n’)est (qu’)ingénieur
@@ -3831,7 +3832,7 @@ __fusions_noms_propres__
 
 
 __merge__
-    à la fois
+    à la pp
         <<- &>> :LW
 
 
@@ -4909,6 +4910,19 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.                           
 #    ->> \1                                                                                          && Doublon.
 #
 #TEST: Il y a un {{doublon doublon}}.                                                                ->> doublon
+
+__test_merge__
+    &:LW
+        <<- echo("DETECTED") ~>> *
+
+    je vais &:LW
+        <<- --1>> X                 && TEST0.
+
+    je vais &:LW de
+        <<- --1>> X                 && TEST2.
+        <<- -1>> Z                  && TEST1.
+
+
 
 
 !!

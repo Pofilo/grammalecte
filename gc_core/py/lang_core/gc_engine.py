@@ -509,6 +509,31 @@ class TextParser:
                                 if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                     yield ("@", sRegex, dNode["<re_morph>"][sRegex])
                                     bTokenFound = True
+            # regex multi morph arcs
+            if "<re_mmorph>" in dNode:
+                if "nMultiStartTo" in dToken:
+                    lMorph = dToken["dMultiToken"]["lMorph"]
+                    for sRegex in dNode["<re_mmorph>"]:
+                        if "¬" not in sRegex:
+                            # no anti-pattern
+                            if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
+                                yield ("&", sRegex, dNode["<re_mmorph>"][sRegex])
+                                bTokenFound = True
+                        else:
+                            # there is an anti-pattern
+                            sPattern, sNegPattern = sRegex.split("¬", 1)
+                            if sNegPattern == "*":
+                                # all morphologies must match with <sPattern>
+                                if sPattern:
+                                    if all(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                        yield ("&", sRegex, dNode["<re_mmorph>"][sRegex])
+                                        bTokenFound = True
+                            else:
+                                if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
+                                    continue
+                                if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                    yield ("&", sRegex, dNode["<re_mmorph>"][sRegex])
+                                    bTokenFound = True
         # token tags
         if "aTags" in dToken and "<tags>" in dNode:
             for sTag in dToken["aTags"]:
@@ -543,13 +568,19 @@ class TextParser:
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
+                if dPointer["nMultiEnd"] != -1:
+                    if dToken["i"] <= dPointer["nMultiEnd"]:
+                        lNextPointer.append(dPointer)
+                    if dToken["i"] != dPointer["nMultiEnd"]:
+                        continue
                 for cActionType, sMatch, iNode in self._getMatches(dGraph, dToken, dGraph[dPointer["iNode"]]):
                     if cActionType is None:
                         lNextPointer.append(dPointer)
                         continue
                     if bDebug:
                         echo("  MATCH: " + cActionType + sMatch)
-                    lNextPointer.append({ "iToken1": dPointer["iToken1"], "iNode": iNode })
+                    nMultiEnd = -1  if cActionType != "&"  else dToken["nMultiStartTo"]
+                    lNextPointer.append({ "iToken1": dPointer["iToken1"], "iNode": iNode, "nMultiEnd": nMultiEnd })
             lPointer = lNextPointer
             # check arcs of first nodes
             for cActionType, sMatch, iNode in self._getMatches(dGraph, dToken, dGraph[0]):
@@ -557,11 +588,15 @@ class TextParser:
                     continue
                 if bDebug:
                     echo("  MATCH: " + cActionType + sMatch)
-                lPointer.append({ "iToken1": iToken, "iNode": iNode })
+                nMultiEnd = -1  if cActionType != "&"  else dToken["nMultiStartTo"]
+                lPointer.append({ "iToken1": iToken, "iNode": iNode, "nMultiEnd": nMultiEnd })
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
-                #if bDebug:
-                #    echo("+", dPointer)
+                if dPointer["nMultiEnd"] != -1:
+                    if dToken["i"] < dPointer["nMultiEnd"]:
+                        continue
+                    if dToken["i"] == dPointer["nMultiEnd"]:
+                        dPointer["nMultiEnd"] = -1
                 if "<rules>" in dGraph[dPointer["iNode"]]:
                     bChange = self._executeActions(dGraph, dGraph[dPointer["iNode"]]["<rules>"], dPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
@@ -587,6 +622,7 @@ class TextParser:
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     # Immunity      [ option, condition, "!", option,                        iTokenStart, iTokenEnd ]
+                    # Multi-token   [ option, condition, "&", morphologies,                  iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
                         bCondMemo = not sFuncCond or getattr(gc_functions, sFuncCond)(self.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
@@ -658,6 +694,21 @@ class TextParser:
                                         nErrorStart = self.nOffsetWithinParagraph + self.lTokens[i]["nStart"]
                                         if nErrorStart in self.dError:
                                             del self.dError[nErrorStart]
+                            elif cActionType == "&":
+                                # multi-tokens
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                dMultiToken = {
+                                    "nTokenStart": nTokenStart,
+                                    "nTokenEnd": nTokenEnd,
+                                    "lTokens": self.lTokens[nTokenStart:nTokenEnd+1],
+                                    "lMorph": sWhat.split("|")  if sWhat else  [":HM"]
+                                }
+                                self.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd
+                                self.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart
+                                self.lTokens[nTokenStart]["dMultiToken"] = dMultiToken
+                                self.lTokens[nTokenEnd]["dMultiToken"] = dMultiToken
+                                print(dMultiToken)
                             else:
                                 echo("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
