@@ -2,12 +2,18 @@
 # License: MPL 2
 # A derivative work of Lightproof from László Németh (http://cgit.freedesktop.org/libreoffice/lightproof/)
 
-import uno
-import unohelper
+
 import json
+import re
 import sys
 import traceback
+
 from collections import deque
+from operator import itemgetter
+from bisect import bisect_left
+
+import uno
+import unohelper
 
 from com.sun.star.linguistic2 import XProofreader, XSupportedLocales
 from com.sun.star.linguistic2 import ProofreadingResult
@@ -45,6 +51,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         self.loadUserDictionaries()
         # underlining options
         self.setWriterUnderliningStyle()
+        # regex for special chars that modify positioning
+        self.zSpecialChars = re.compile("[\U00010000-\U0001fbff]")
         # store for results of big paragraphs
         self.dResult = {}
         self.nMaxRes = 1500
@@ -108,10 +116,13 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
                 return self.dResult[nHashedVal]
         # WORKAROUND ->>>
 
-        xRes.nBehindEndOfSentencePosition = xRes.nStartOfNextSentencePosition
-
         try:
-            xRes.aErrors = tuple(gce.parse(rText, rLocale.Country))
+            aErrors = tuple(gce.parse(rText, rLocale.Country))
+            if aErrors and self.zSpecialChars.search(rText):
+                ## Special chars may alter error positioning
+                nOffset = self.convertErrorsPosition(rText, aErrors)
+                xRes.nStartOfNextSentencePosition += nOffset
+            xRes.aErrors = aErrors
             # ->>> WORKAROUND
             if xRes.nStartOfNextSentencePosition > 3000:
                 self.dResult[nHashedVal] = xRes
@@ -123,6 +134,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             # END OF WORKAROUND
         except:
             traceback.print_exc()
+
+        xRes.nBehindEndOfSentencePosition = xRes.nStartOfNextSentencePosition
         return xRes
 
     def ignoreRule (self, rid, aLocale):
@@ -160,6 +173,26 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             gce.setWriterUnderliningStyle(sLineType, bMulticolor)
         except:
             traceback.print_exc()
+
+    def convertErrorsPosition (self, sText, aErrors):
+        "return list of errors with modified position for Writer"
+        # last char position of the last error
+        nCheckEnd = 0
+        for xErr in aErrors:
+            nCheckEnd = max(xErr.nErrorStart + xErr.nErrorLength, nCheckEnd)
+        # list thresholds of offsets
+        lThresholds = []
+        for iCursor in range(nCheckEnd):
+            nCharVal = ord(sText[iCursor])
+            if nCharVal > 65535:    # \U00010000: each chars beyond this point has a length of 2
+                lThresholds.append(iCursor + 1)  # +1 because only chars after are shifted
+        # modify errors position according to thresholds
+        for xErr in aErrors:
+            nErrorEnd = xErr.nErrorStart + xErr.nErrorLength
+            xErr.nErrorStart += bisect_left(lThresholds, xErr.nErrorStart)
+            nErrorEnd += bisect_left(lThresholds, nErrorEnd)
+            xErr.nErrorLength = nErrorEnd - xErr.nErrorStart
+        return len(lThresholds)
 
 
 g_ImplementationHelper = unohelper.ImplementationHelper()
