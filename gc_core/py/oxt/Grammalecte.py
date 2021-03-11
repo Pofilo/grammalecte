@@ -175,17 +175,20 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             traceback.print_exc()
 
     def convertErrorsPosition (self, sText, aErrors):
-        "return list of errors with modified position for Writer"
+        "change position of errors, returns offset"
         # last char position of the last error
+        # To see if errors position is correct, try with:
+        #   J'en ai mare, 𝐴𝐴𝐴𝐴𝐴, je vient, (𝑉ᵣ = 𝐴·𝑣H). C'est sa, mais oui... Je suis très fâchés.
+        #   Qu'il sais, 𝐴𝐴𝐴, je vient, (𝑉ᵣ = 𝐴·𝑣H). Oui... Je suis fâchés
+
         nCheckEnd = 0
         for xErr in aErrors:
             nCheckEnd = max(xErr.nErrorStart + xErr.nErrorLength, nCheckEnd)
         # list thresholds of offsets
         lThresholds = []
         for iCursor in range(nCheckEnd):
-            nCharVal = ord(sText[iCursor])
-            if nCharVal > 65535:    # \U00010000: each chars beyond this point has a length of 2
-                lThresholds.append(iCursor + 1)  # +1 because only chars after are shifted
+            if ord(sText[iCursor]) > 65535:         # \U00010000: each chars beyond this point has a length of 2
+                lThresholds.append(iCursor + 1)     # +1 because only chars after are shifted
         # modify errors position according to thresholds
         for xErr in aErrors:
             nErrorEnd = xErr.nErrorStart + xErr.nErrorLength
