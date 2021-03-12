@@ -215,6 +215,27 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
+def g_morphx (dToken, sPattern, sNegPattern):
+    "analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
+    if not "dMultiToken" in dToken:
+        return False
+    lMorph = dToken["dMultiToken"]["lMorph"]
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
 def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
     if nLeft is not None:

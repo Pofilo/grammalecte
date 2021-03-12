@@ -780,10 +780,10 @@ class TextParser {
                                     "lTokens": this.lTokens.slice(nTokenStart, nTokenEnd+1),
                                     "lMorph": (sAction) ? sAction.split("|") : [":HM"]
                                 }
-                                this.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd
-                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart
-                                this.lTokens[nTokenStart]["dMultiToken"] = dMultiToken
-                                this.lTokens[nTokenEnd]["dMultiToken"] = dMultiToken
+                                this.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd;
+                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart;
+                                this.lTokens[nTokenStart]["oMultiToken"] = oMultiToken;
+                                this.lTokens[nTokenEnd]["oMultiToken"] = oMultiToken;
                             }
                             else {
                                 console.log("# error: unknown action at " + sLineId);

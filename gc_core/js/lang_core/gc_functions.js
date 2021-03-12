@@ -238,6 +238,31 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
+function g_morphx (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
+    // analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
+    if (!oToken.hasOwnProperty("oMultiToken")) {
+        return false;
+    }
+    let lMorph = oToken["oMultiToken"]["lMorph"];
+    if (lMorph.length == 0) {
+        return false;
+    }
+    // check negative condition
+    if (sNegPattern) {
+        if (sNegPattern == "*") {
+            // all morph must match sPattern
+            return lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
+        }
+        else {
+            if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
+                return false;
+            }
+        }
+    }
+    // search sPattern
+    return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
+}
+
 function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
