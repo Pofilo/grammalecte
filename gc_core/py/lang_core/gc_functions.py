@@ -236,12 +236,10 @@ def g_morphx (dToken, sPattern, sNegPattern):
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
+def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
     if nLeft is not None:
         lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-        if bMemorizeMorph:
-            dToken["lMorph"] = lMorph
     else:
         lMorph = _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph:

@@ -263,15 +263,12 @@ function g_morphx (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {
         let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
         lMorph = gc_engine.oSpellChecker.getMorph(sValue);
-        if (bMemorizeMorph) {
-            oToken["lMorph"] = lMorph;
-        }
     } else {
         lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     }
