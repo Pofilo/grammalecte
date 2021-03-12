@@ -184,7 +184,6 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         nCheckEnd = 0
         for xErr in aErrors:
             nCheckEnd = max(xErr.nErrorStart + xErr.nErrorLength, nCheckEnd)
-        nCheckEnd = min(nCheckEnd+10, len(sText))
         # list thresholds of offsets
         lThresholds = []
         for iCursor in range(nCheckEnd):
@@ -194,14 +193,11 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             except:
                 traceback.print_exc()
         # modify errors position according to thresholds
-        print(lThresholds)
         for xErr in aErrors:
-            print(xErr.nErrorStart, xErr.nErrorLength, "->", end=" ")
             nErrorEnd = xErr.nErrorStart + xErr.nErrorLength
             xErr.nErrorStart += bisect_right(lThresholds, xErr.nErrorStart)
             nErrorEnd += bisect_right(lThresholds, nErrorEnd)
             xErr.nErrorLength = nErrorEnd - xErr.nErrorStart
-            print(xErr.nErrorStart, xErr.nErrorLength)
         return len(lThresholds)
 
 
