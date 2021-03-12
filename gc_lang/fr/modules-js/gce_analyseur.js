@@ -13,7 +13,7 @@ function g_morphVC (oToken, sPattern, sNegPattern="") {
             nEnd = oToken["sValue"].slice(0,nEnd).lastIndexOf("-");
         }
     }
-    return g_morph(oToken, sPattern, sNegPattern, 0, nEnd, false);
+    return g_morph(oToken, sPattern, sNegPattern, 0, nEnd);
 }
 
 function apposition (sWord1, sWord2) {

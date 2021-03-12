@@ -202,7 +202,7 @@ function g_value (oToken, sValues, nLeft=null, nRight=null) {
     return false;
 }
 
-function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (oToken.hasOwnProperty("lMorph")) {
@@ -212,9 +212,6 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
         if (nLeft !== null) {
             let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
             lMorph = gc_engine.oSpellChecker.getMorph(sValue);
-            if (bMemorizeMorph) {
-                oToken["lMorph"] = lMorph;
-            }
         } else {
             lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
         }
