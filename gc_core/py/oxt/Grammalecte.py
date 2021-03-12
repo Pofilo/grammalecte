@@ -10,7 +10,7 @@ import traceback
 
 from collections import deque
 from operator import itemgetter
-from bisect import bisect_left
+from bisect import bisect_left, bisect_right
 
 import uno
 import unohelper
@@ -180,21 +180,28 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         # To see if errors position is correct, try with:
         #   J'en ai mare, 𝐴𝐴𝐴𝐴𝐴, je vient, (𝑉ᵣ = 𝐴·𝑣H). C'est sa, mais oui... Je suis très fâchés.
         #   Qu'il sais, 𝐴𝐴𝐴, je vient, (𝑉ᵣ = 𝐴·𝑣H). Oui... Je suis fâchés
-
+        #   C’est ça. Ça existe sur 𝐴               (activer option “ponctuation en fin de ligne”)
         nCheckEnd = 0
         for xErr in aErrors:
             nCheckEnd = max(xErr.nErrorStart + xErr.nErrorLength, nCheckEnd)
+        nCheckEnd = min(nCheckEnd+10, len(sText))
         # list thresholds of offsets
         lThresholds = []
         for iCursor in range(nCheckEnd):
-            if ord(sText[iCursor]) > 65535:         # \U00010000: each chars beyond this point has a length of 2
-                lThresholds.append(iCursor + 1)     # +1 because only chars after are shifted
+            try:
+                if ord(sText[iCursor]) > 65535:         # \U00010000: each chars beyond this point has a length of 2
+                    lThresholds.append(iCursor+1)     # +1 because only chars after are shifted
+            except:
+                traceback.print_exc()
         # modify errors position according to thresholds
+        print(lThresholds)
         for xErr in aErrors:
+            print(xErr.nErrorStart, xErr.nErrorLength, "->", end=" ")
             nErrorEnd = xErr.nErrorStart + xErr.nErrorLength
-            xErr.nErrorStart += bisect_left(lThresholds, xErr.nErrorStart)
-            nErrorEnd += bisect_left(lThresholds, nErrorEnd)
+            xErr.nErrorStart += bisect_right(lThresholds, xErr.nErrorStart)
+            nErrorEnd += bisect_right(lThresholds, nErrorEnd)
             xErr.nErrorLength = nErrorEnd - xErr.nErrorStart
+            print(xErr.nErrorStart, xErr.nErrorLength)
         return len(lThresholds)
 
 
