@@ -2952,6 +2952,7 @@ __da_certains_certaines__
 
 __da_contre__
     contre {_pronom_obj_}
+    contre la montre
         <<- =>> select(\1, ":R")
 
     [la|les|des|une|cette|ma|ta|sa|notre|votre|leur+s] >lutte           ?$:A¬:G¿  contre
@@ -3019,6 +3020,7 @@ __da_entre__
     entre [nous|vous|eux|elles|iels]
     entre [moi|toi|soi|lui|elle|iel] et [moi|toi|soi|lui|elle|iel|nous|vous|eux|elles|iels]
     entre autres
+    entre [les|ces|mes|tes|ses|nos|vos|leurs] [cuisses|doigts|fesses|gouttes|jambes|mains|oreilles]
         <<- =>> define(\1, ":R")
 
     >choisir entre
@@ -9462,7 +9464,7 @@ __conf_à_a_locutions__
     a vue d’ œil
     a y [réfléchir|songer|penser]
     a y regarder [de|d’] plus près
-        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|iel|on|y|") and not before("(?i)n’en +$")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
@@ -9471,7 +9473,7 @@ __conf_à_a_locutions__
     a [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
     a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
-        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|iel|on|y|") and not before("(?i)n’en +$")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Utilisez la préposition “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a bonne distance                                                                                [de|d’|des|du|<end>|,]
@@ -9479,11 +9481,15 @@ __conf_à_a_locutions__
     a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]           [de|d’|des|du|<end>|,]
     a l’ autre bout                                                                                 [de|d’|des|du|<end>|,]
     a la [portée|suite]                                                                             [de|d’|des|du|<end>|,]
-        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|iel|on|y|") and not before("(?i)n’en +$")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
     a caractère @:A.*:[me]:[si]¬:G
-        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$") and morph(<1, ":N")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|iel|on|y|") and not before("(?i)n’en +$") and morph(<1, ":N")
+        -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
+
+    a la cour
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|iel|on|y|") and not before("(?i)n’en +$") and not morph(>1, ":A")
         -1>> à              && Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|https://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.                            ->> à
@@ -9501,6 +9507,7 @@ TEST: des planètes {{a}} la portée des nouveaux vaisseaux.                    
 TEST: Il l’a fait {{a}} cause de toi.                                                   ->> à
 TEST: Seront exclus d’office tous contenus {{a}} caractère haineux                      ->> à
 TEST: {{a}} court et moyen terme                                                        ->> à
+TEST: Déjà, {{a}} la cour, vous aviez cette drôle d’habitude                            ->> à
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -9508,6 +9515,7 @@ TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout
 TEST: jusqu’à parfois se mettre en danger
 TEST: les méthodes de l’à-peu-près ne suffisent pas.
 TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumière
+TEST: cet homme a la cour entière pour ennemi
 
 
 ## substantifs
@@ -17103,8 +17111,8 @@ __purge_locutions__
     à qui [que|qu’] ce soit
     à quelque distance
     à quelques [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière] près
-    à quelques-uns d’ entre [nous|vous|eux]
-    à quelques-unes d’ entre [nous|vous|elles]
+    à quelques-uns d’ entre [nous|vous|eux|iels]
+    à quelques-unes d’ entre [nous|vous|elles|iels]
     à ras [de|d’] terre
     à ras [bord|bords]
     à ras [le|du] sol
@@ -17183,7 +17191,7 @@ __purge_locutions__
     au lieu [de|d’] [cela|ceci|ça|quoi]
     au milieu [de|d’] nulle part
     au moment opportun
-    au même titre [que|qu’] n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
+    au même titre [que|qu’] n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles|iels]
     au pas [de|d’] [charge|course]
     au petit bonheur la chance
     au plan [local|cantonal|départemental|régional|national|européen|américain|africaine|asiatique|continental|international|planétaire|galactique|universel]
@@ -27898,92 +27906,99 @@ TEST: elles sont vites.
 !!!! Verbe et verbe                                                                               !!
 
 __conj_je_v_et_v__
-    [je|j’]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:1s¬:G  et  @:V¬:(?:[PQG]|1s|V[23].*:Y)
-    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:1s¬:G  et  @:V¬:(?:[PQG]|1s|V[23].*:Y)
-    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:1s¬:G  et  @:V¬:(?:[PQG]|1s|V[23].*:Y)
-    [je|j’]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:1s¬:G  et  @:V¬:(?:[PQG]|1s|V[23].*:Y)
+    [je|j’]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:1s¬:G  et  @:V¬:(?:[YPQG]|1s)
+    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:1s¬:G  et  @:V¬:(?:[YPQG]|1s)
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:1s¬:G  et  @:V¬:(?:[YPQG]|1s)
+    [je|j’]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:1s¬:G  et  @:V¬:(?:[YPQG]|1s)
         <<- /conj/ not tagbefore(\1, "_propsub_")
         --1>> =suggVerb(\-1, ":1s")                           && Conjugaison erronée. Si “je” est le sujet de “\-1”, ce verbe devrait être à la 1ʳᵉ personne du singulier.
 
 TEST: je vois et {{connait}} la réponse                                         ->> connais
+TEST: je vais abondamment et incessamment parler
 
 
 __conj_tu_v_et_v__
-    tu  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:2s¬:G  et  @:V¬:(?:[PQG]|2s|V[23].*:Y)
-    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:2s¬:G  et  @:V¬:(?:[PQG]|2s|V[23].*:Y)
-    tu  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:2s¬:G  et  @:V¬:(?:[PQG]|2s|V[23].*:Y)
-    tu  ?[ne|n’]¿  [lui|leur|y]                    en                          @:2s¬:G  et  @:V¬:(?:[PQG]|2s|V[23].*:Y)
+    tu  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:2s¬:G  et  @:V¬:(?:[YPQG]|2s)
+    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:2s¬:G  et  @:V¬:(?:[YPQG]|2s)
+    tu  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:2s¬:G  et  @:V¬:(?:[YPQG]|2s)
+    tu  ?[ne|n’]¿  [lui|leur|y]                    en                          @:2s¬:G  et  @:V¬:(?:[YPQG]|2s)
         <<- /conj/ not tagbefore(\1, "_propsub_") and not morph(<1, ":V0")
         --1>> =suggVerb(\-1, ":2s")                                             && Conjugaison erronée. Si “tu” est le sujet de “\-1”, ce verbe devrait être à la 2ᵉ personne du singulier.
 
 TEST: tu connais et {{voit}} la réponse                                         ->> vois
+TEST: tu dois toujours et à jamais énoncer la vérité
 
 
 __conj_il_on_v_et_v__
-    [il|on]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [il|on]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [il|on]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [il|on]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
+    [il|on]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [il|on]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [il|on]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [il|on]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
         <<- /conj/ not tagbefore(\1, "_propsub_")
         --1>> =suggVerb(\-1, ":3s")                                             && Conjugaison erronée. Si “\1” est le sujet de “\-1”, ce verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: tu sais, il connaissait et {{savaient}} la réponse                        ->> savait
+TEST: on peut fréquemment et innocemment parler de ces choses
 
 
 __conj_elle_iel_v_et_v__
-    [elle|iel]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [elle|iel]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [elle|iel]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
-    [elle|iel]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3s¬:G  et  @:V¬:(?:[PQG]|3s|V[23].*:Y)
+    [elle|iel]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [elle|iel]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [elle|iel]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
+    [elle|iel]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3s¬:G  et  @:V¬:(?:[YPQG]|3s)
         <<- /conj/ not tagbefore(\1, "_propsub_") and not morph(<1, ":R")
         --1>> =suggVerb(\-1, ":3s")                                             && Conjugaison erronée. Si “\1” est le sujet de “\-1”, ce verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: tu sais, elle connaissait et {{savaient}} la réponse                      ->> savait
+TEST: elle pouvait toujours et abondamment travailler sa prose
 
 
 __conj_nous_v_et_v__
-    nous  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:1p¬:G  et  @:V¬:(?:[PQGE]|1p|V[23].*:Y)
-    nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:1p¬:G  et  @:V¬:(?:[PQGE]|1p|V[23].*:Y)
-    nous  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:1p¬:G  et  @:V¬:(?:[PQGE]|1p|V[23].*:Y)
-    nous  ?[ne|n’]¿  [lui|leur|y]                    en                          @:1p¬:G  et  @:V¬:(?:[PQGE]|1p|V[23].*:Y)
+    nous  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:1p¬:G  et  @:V¬:(?:[YPQGE]|1p)
+    nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:1p¬:G  et  @:V¬:(?:[YPQGE]|1p)
+    nous  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:1p¬:G  et  @:V¬:(?:[YPQGE]|1p)
+    nous  ?[ne|n’]¿  [lui|leur|y]                    en                          @:1p¬:G  et  @:V¬:(?:[YPQGE]|1p)
         <<- /conj/ not tagbefore(\1, "_propsub_") and not morph(<1, ":R")
         --1>> =suggVerb(\-1, ":1p")                                             && Conjugaison erronée. Si “nous” est le sujet de “\-1”, ce verbe devrait être à la 1ʳᵉ personne du pluriel.
 
 TEST: nous arriverons et {{admireront}} vos œuvres                              ->> admirerons
+TEST: nous voulons souvent et abondamment frotter leurs oreilles
 
 
 __conj_vous_v_et_v__
-    vous  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:2p¬:G  et  @:V¬:(?:[PQG]|2p|V[23].*:Y)
-    vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:2p¬:G  et  @:V¬:(?:[PQG]|2p|V[23].*:Y)
-    vous  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:2p¬:G  et  @:V¬:(?:[PQG]|2p|V[23].*:Y)
-    vous  ?[ne|n’]¿  [lui|leur|y]                    en                          @:2p¬:G  et  @:V¬:(?:[PQG]|2p|V[23].*:Y)
+    vous  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:2p¬:G  et  @:V¬:(?:[YPQG]|2p)
+    vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:2p¬:G  et  @:V¬:(?:[YPQG]|2p)
+    vous  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:2p¬:G  et  @:V¬:(?:[YPQG]|2p)
+    vous  ?[ne|n’]¿  [lui|leur|y]                    en                          @:2p¬:G  et  @:V¬:(?:[YPQG]|2p)
         <<- /conj/ not tagbefore(\1, "_propsub_") and not morph(<1, ":R")
         --1>> =suggVerb(\-1, ":2p")                                             && Conjugaison erronée. Si “vous” est le sujet de “\-1”, ce verbe devrait être à la 2ᵉ personne du pluriel.
 
-TEST: vous voyez et {{deviner}} tout au premier coup d’œil                      ->> devinez|deviniez|devinâtes
+TEST: vous voyez et {{pensait}} tout au premier coup d’œil                      ->> pensiez
+TEST: vous devez souvent et abondamment laver la table à l’eau claire
 
 
 __conj_ils_v_et_v__
-    ils  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    ils  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    ils  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
+    ils  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    ils  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    ils  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
         <<- /conj/ not tagbefore(\1, "_propsub_")
         --1>> =suggVerb(\-1, ":3p")                                             && Conjugaison erronée. Si “\1” est le sujet de “\-1”, ce verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: ils viennent et {{devine}} aussitôt le subterfuge                         ->> devinent
+TEST: ils venaient parfois et bruyamment dire leur colère
 
 
 __conj_elles_iels_v_et_v__
-    [elles|iels]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    [elles|iels]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    [elles|iels]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
-    [elles|iels]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3p¬:G  et  @:V¬:(?:[PQG]|3p|V[23].*:Y)
+    [elles|iels]  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    [elles|iels]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    [elles|iels]  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
+    [elles|iels]  ?[ne|n’]¿  [lui|leur|y]                    en                          @:3p¬:G  et  @:V¬:(?:[YPQG]|3p)
         <<- /conj/ not tagbefore(\1, "_propsub_") and not morph(<1, ":R")
         --1>> =suggVerb(\-1, ":3p")                                             && Conjugaison erronée. Si “\1” est le sujet de “\-1”, ce verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: elles arrivent et {{saute}} aussitôt dans le train                        ->> sautent
-
+TEST: iels venaient souvent et violemment faire un raffut insupportable
 
 
 __ppas_immunités__
