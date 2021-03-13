@@ -82,7 +82,11 @@ var cregex = {
     ///// FONCTIONS
 
     getLemmaOfMorph: function (sMorph) {
-        return this._zLemma.exec(sMorph)[1];
+        let m = this._zLemma.exec(sMorph);
+        if (m) {
+            return m[1];
+        }
+        return "";
     },
 
     agreement: function (l1, l2) {
