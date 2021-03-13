@@ -708,7 +708,9 @@ class TextParser:
                                 self.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart
                                 self.lTokens[nTokenStart]["dMultiToken"] = dMultiToken
                                 self.lTokens[nTokenEnd]["dMultiToken"] = dMultiToken
-                                print(dMultiToken)
+                                if bDebug:
+                                    echo("    MULTI-TOKEN: ({})  [{}:{}]".format(sAction, self.lTokens[nTokenOffset+1]["sValue"], self.lTokens[nLastToken]["sValue"]))
+                                #print(dMultiToken)
                             else:
                                 echo("# error: unknown action at " + sLineId)
                         elif cActionType == ">":

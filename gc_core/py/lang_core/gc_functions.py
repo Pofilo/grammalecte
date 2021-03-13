@@ -213,7 +213,7 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None):
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_morphx (dToken, sPattern, sNegPattern):
+def g_morphx (dToken, sPattern, sNegPattern=""):
     "analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
     if not "dMultiToken" in dToken:
         return False

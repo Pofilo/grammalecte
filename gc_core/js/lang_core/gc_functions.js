@@ -235,7 +235,7 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_morphx (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
+function g_morphx (oToken, sPattern, sNegPattern="") {
     // analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     if (!oToken.hasOwnProperty("oMultiToken")) {
         return false;
