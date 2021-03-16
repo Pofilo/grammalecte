@@ -181,6 +181,9 @@ class TextParser {
             if (dToken.hasOwnProperty("aTags")) {
                 s += "\t" + dToken["aTags"].toString();
             }
+            if (dToken.hasOwnProperty("nMultiStartTo")) {
+                s += "\t>>" + dToken["nMultiStartTo"].toString();
+            }
             s += "\n";
         }
         return s;
@@ -637,7 +640,7 @@ class TextParser {
                         if (oToken["i"] < oPointer["nMultiEnd"]) {
                             continue;
                         }
-                        if (oToken["i"] == oPointer["nMultiEnd"]) {
+                        if (oToken["i"] >= oPointer["nMultiEnd"]) {
                             oPointer["nMultiEnd"] = -1;
                         }
                     }
@@ -770,7 +773,7 @@ class TextParser {
                                     }
                                 }
                             }
-                            else if (cActionType == "#") {
+                            else if (cActionType == "&") {
                                 // multi-tokens
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
@@ -780,10 +783,13 @@ class TextParser {
                                     "lTokens": this.lTokens.slice(nTokenStart, nTokenEnd+1),
                                     "lMorph": (sAction) ? sAction.split("|") : [":HM"]
                                 }
-                                this.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd;
-                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart;
+                                this.lTokens[nTokenStart]["nMultiStartTo"] = this.lTokens[nTokenEnd]["i"];
+                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = this.lTokens[nTokenStart]["i"];
                                 this.lTokens[nTokenStart]["oMultiToken"] = oMultiToken;
                                 this.lTokens[nTokenEnd]["oMultiToken"] = oMultiToken;
+                                if (bDebug) {
+                                    console.log(`"    MULTI-TOKEN: ${sAction}  [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]`);
+                                }
                             }
                             else {
                                 console.log("# error: unknown action at " + sLineId);

@@ -254,6 +254,8 @@ class TextParser:
                 s += "\t" + str(dToken["lMorph"])
             if "aTags" in dToken:
                 s += "\t" + str(dToken["aTags"])
+            if "nMultiStartTo" in dToken:
+                s += "\t>>" + str(dToken["nMultiStartTo"])
             s += "\n"
         #for nPos, dToken in self.dTokenPos.items():
         #    s += "{}\t{}\n".format(nPos, dToken)
@@ -595,7 +597,7 @@ class TextParser:
                 if dPointer["nMultiEnd"] != -1:
                     if dToken["i"] < dPointer["nMultiEnd"]:
                         continue
-                    if dToken["i"] == dPointer["nMultiEnd"]:
+                    if dToken["i"] >= dPointer["nMultiEnd"]:
                         dPointer["nMultiEnd"] = -1
                 if "<rules>" in dGraph[dPointer["iNode"]]:
                     bChange = self._executeActions(dGraph, dGraph[dPointer["iNode"]]["<rules>"], dPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
@@ -704,12 +706,12 @@ class TextParser:
                                     "lTokens": self.lTokens[nTokenStart:nTokenEnd+1],
                                     "lMorph": sAction.split("|")  if sAction else  [":HM"]
                                 }
-                                self.lTokens[nTokenStart]["nMultiStartTo"] = nTokenEnd
-                                self.lTokens[nTokenEnd]["nMultiEndFrom"] = nTokenStart
+                                self.lTokens[nTokenStart]["nMultiStartTo"] = self.lTokens[nTokenEnd]["i"]
+                                self.lTokens[nTokenEnd]["nMultiEndFrom"] = self.lTokens[nTokenStart]["i"]
                                 self.lTokens[nTokenStart]["dMultiToken"] = dMultiToken
                                 self.lTokens[nTokenEnd]["dMultiToken"] = dMultiToken
                                 if bDebug:
-                                    echo("    MULTI-TOKEN: ({})  [{}:{}]".format(sAction, self.lTokens[nTokenOffset+1]["sValue"], self.lTokens[nLastToken]["sValue"]))
+                                    echo("    MULTI-TOKEN: ({})  [{}:{}]".format(sAction, self.lTokens[nTokenStart]["sValue"], self.lTokens[nTokenEnd]["sValue"]))
                                 #print(dMultiToken)
                             else:
                                 echo("# error: unknown action at " + sLineId)
