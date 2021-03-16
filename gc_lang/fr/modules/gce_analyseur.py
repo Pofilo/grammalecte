@@ -11,7 +11,7 @@ def g_morphVC (dToken, sPattern, sNegPattern=""):
             nEnd = nEnd - 2
         elif re.search("-l(?:es?|a)-(?:[mt]oi|nous|leur)$|(?:[nv]ous|lui|leur)-en$", dToken["sValue"]):
             nEnd = dToken["sValue"][0:nEnd].rfind("-")
-    return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, False)
+    return g_morph(dToken, sPattern, sNegPattern, 0, nEnd)
 
 
 def apposition (sWord1, sWord2):

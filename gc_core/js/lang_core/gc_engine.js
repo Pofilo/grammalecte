@@ -181,6 +181,9 @@ class TextParser {
             if (dToken.hasOwnProperty("aTags")) {
                 s += "\t" + dToken["aTags"].toString();
             }
+            if (dToken.hasOwnProperty("nMultiStartTo")) {
+                s += "\t>>" + dToken["nMultiStartTo"].toString();
+            }
             s += "\n";
         }
         return s;
@@ -301,7 +304,7 @@ class TextParser {
                     if (!gc_engine.aIgnoredRules.has(sRuleId)) {
                         while ((m = zRegex.gl_exec2(sText, lGroups, lNegLookBefore)) !== null) {
                             let bCondMemo = null;
-                            for (let [sFuncCond, cActionType, sWhat, ...eAct] of lActions) {
+                            for (let [sFuncCond, cActionType, sAction, ...eAct] of lActions) {
                                 // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
                                     bCondMemo = (!sFuncCond || gc_functions[sFuncCond](sText, sText0, m, this.dTokenPos, sCountry, bCondMemo));
@@ -312,7 +315,7 @@ class TextParser {
                                                 //console.log("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
                                                 let nErrorStart = nOffset + m.start[eAct[0]];
                                                 if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart)) {
-                                                    this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext));
+                                                    this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sAction, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext));
                                                     this.dErrorPriority.set(nErrorStart, nPriority);
                                                     this.dSentenceError.set(nErrorStart, this.dError.get(nErrorStart));
                                                 }
@@ -320,7 +323,7 @@ class TextParser {
                                             case "~":
                                                 // text processor
                                                 //console.log("-> text processor by " + sLineId + "\nzRegex: " + zRegex.source);
-                                                sText = this.rewriteText(sText, sWhat, eAct[0], m, bUppercase);
+                                                sText = this.rewriteText(sText, sAction, eAct[0], m, bUppercase);
                                                 bChange = true;
                                                 if (bDebug) {
                                                     console.log("~ " + sText + "  -- " + m[eAct[0]] + "  # " + sLineId);
@@ -329,7 +332,7 @@ class TextParser {
                                             case "=":
                                                 // disambiguation
                                                 //console.log("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
-                                                gc_functions[sWhat](sText, m, this.dTokenPos);
+                                                gc_functions[sAction](sText, m, this.dTokenPos);
                                                 if (bDebug) {
                                                     console.log("= " + m[0] + "  # " + sLineId, "\nDA:", this.dTokenPos);
                                                 }
@@ -391,7 +394,7 @@ class TextParser {
         }
     }
 
-    * _getMatches (oGraph, oToken, oNode, bKeep=false) {
+    * _getNextNodes (oGraph, oToken, oNode, bKeep=false) {
         // generator: return matches where <oToken> “values” match <oNode> arcs
         try {
             let bTokenFound = false;
@@ -547,6 +550,41 @@ class TextParser {
                         }
                     }
                 }
+                // regex multi morph arcs
+                if (oNode.hasOwnProperty("<re_mmorph>")) {
+                    if (oToken.hasOwnProperty("nMultiStartTo")) {
+                        let lMorph = oToken["oMultiToken"]["lMorph"];
+                        for (let sRegex in oNode["<re_mmorph>"]) {
+                            if (!sRegex.includes("¬")) {
+                                // no anti-pattern
+                                if (lMorph.some(sMorph  =>  (sMorph.search(sRegex) !== -1))) {
+                                    yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                    bTokenFound = true;
+                                }
+                            } else {
+                                // there is an anti-pattern
+                                let [sPattern, sNegPattern] = sRegex.split("¬", 2);
+                                if (sNegPattern == "*") {
+                                    // all morphologies must match with <sPattern>
+                                    if (sPattern) {
+                                        if (lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                            yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                            bTokenFound = true;
+                                        }
+                                    }
+                                } else {
+                                    if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
+                                        continue;
+                                    }
+                                    if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                        yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                        bTokenFound = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             // token tags
             if (oToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
@@ -579,7 +617,7 @@ class TextParser {
             // JUMP
             // Warning! Recurssion!
             if (oNode.hasOwnProperty("<>")) {
-                yield* this._getMatches(oGraph, oToken, oGraph[oNode["<>"]], bKeep=true);
+                yield* this._getNextNodes(oGraph, oToken, oGraph[oNode["<>"]], bKeep=true);
             }
         }
         catch (e) {
@@ -589,7 +627,7 @@ class TextParser {
 
     parseGraph (oGraph, sCountry="${country_default}", dOptions=null, bShowRuleId=false, bDebug=false, bContext=false) {
         // parse graph with tokens from the text and execute actions encountered
-        let lPointer = [];
+        let lPointers = [];
         let bTagAndRewrite = false;
         try {
             for (let [iToken, oToken] of this.lTokens.entries()) {
@@ -597,32 +635,50 @@ class TextParser {
                     console.log("TOKEN: " + oToken["sValue"]);
                 }
                 // check arcs for each existing pointer
-                let lNextPointer = [];
-                for (let oPointer of lPointer) {
-                    for (let [cActionType, sMatch, iNode] of this._getMatches(oGraph, oToken, oGraph[oPointer["iNode"]])) {
-                        if (cActionType === null) {
-                            lNextPointer.push(oPointer);
+                let lNextPointers = [];
+                for (let oPointer of lPointers) {
+                    if (oPointer["nMultiEnd"] != -1) {
+                        if (oToken["i"] <= oPointer["nMultiEnd"]) {
+                            lNextPointers.push(oPointer);
+                        }
+                        if (oToken["i"] != oPointer["nMultiEnd"]) {
+                            continue;
+                        }
+                    }
+                    for (let [cNodeType, sMatch, iNode] of this._getNextNodes(oGraph, oToken, oGraph[oPointer["iNode"]])) {
+                        if (cNodeType === null) {
+                            lNextPointers.push(oPointer);
                             continue;
                         }
                         if (bDebug) {
-                            console.log("  MATCH: " + cActionType + sMatch);
+                            console.log("  MATCH: " + cNodeType + sMatch);
                         }
-                        lNextPointer.push({ "iToken1": oPointer["iToken1"], "iNode": iNode });
+                        let nMultiEnd = (cNodeType != "&") ? -1 : oToken["nMultiStartTo"];
+                        lNextPointers.push({ "iToken1": oPointer["iToken1"], "iNode": iNode, "nMultiEnd": nMultiEnd });
                     }
                 }
-                lPointer = lNextPointer;
+                lPointers = lNextPointers;
                 // check arcs of first nodes
-                for (let [cActionType, sMatch, iNode] of this._getMatches(oGraph, oToken, oGraph[0])) {
-                    if (cActionType === null) {
+                for (let [cNodeType, sMatch, iNode] of this._getNextNodes(oGraph, oToken, oGraph[0])) {
+                    if (cNodeType === null) {
                         continue;
                     }
                     if (bDebug) {
-                        console.log("  MATCH: " + cActionType + sMatch);
+                        console.log("  MATCH: " + cNodeType + sMatch);
                     }
-                    lPointer.push({ "iToken1": iToken, "iNode": iNode });
+                    let nMultiEnd = (cNodeType != "&") ? -1 : oToken["nMultiStartTo"];
+                    lPointers.push({ "iToken1": iToken, "iNode": iNode, "nMultiEnd": nMultiEnd });
                 }
                 // check if there is rules to check for each pointer
-                for (let oPointer of lPointer) {
+                for (let oPointer of lPointers) {
+                    if (oPointer["nMultiEnd"] != -1) {
+                        if (oToken["i"] < oPointer["nMultiEnd"]) {
+                            continue;
+                        }
+                        if (oToken["i"] >= oPointer["nMultiEnd"]) {
+                            oPointer["nMultiEnd"] = -1;
+                        }
+                    }
                     if (oGraph[oPointer["iNode"]].hasOwnProperty("<rules>")) {
                         let bChange = this._executeActions(oGraph, oGraph[oPointer["iNode"]]["<rules>"], oPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext);
                         if (bChange) {
@@ -653,12 +709,13 @@ class TextParser {
                     if (bDebug) {
                         console.log("   >TRY: " + sRuleId + " " + sLineId);
                     }
-                    let [_, sOption, sFuncCond, cActionType, sWhat, ...eAct] = gc_rules_graph.dRule[sRuleId];
+                    let [_, sOption, sFuncCond, cActionType, sAction, ...eAct] = gc_rules_graph.dRule[sRuleId];
                     // Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, iURL ]
                     // TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     // Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     // Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     // Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
+                    // Immunity      [ option, condition, "&", "",                            iTokenStart, iTokenEnd ]
                     // Test          [ option, condition, ">", "" ]
                     if (!sOption || dOptions.gl_get(sOption, false)) {
                         bCondMemo = !sFuncCond || gc_functions[sFuncCond](this.lTokens, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
@@ -672,7 +729,7 @@ class TextParser {
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lTokens[nTokenErrorStart]["nStart"] : this.lTokens[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lTokens[nTokenErrorEnd]["nEnd"] : this.lTokens[nTokenErrorEnd]["nStart"]);
                                     if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
-                                        this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty,
+                                        this.dError.set(nErrorStart, this._createErrorFromTokens(sAction, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty,
                                                                                                  sMessage, gc_rules_graph.dURL[iURL], bShowRuleId, sOption, bContext));
                                         this.dErrorPriority.set(nErrorStart, nPriority);
                                         this.dSentenceError.set(nErrorStart, this.dError.get(nErrorStart));
@@ -686,17 +743,17 @@ class TextParser {
                                 // text processor
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
-                                this._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug);
+                                this._tagAndPrepareTokenForRewriting(sAction, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug);
                                 bChange = true;
                                 if (bDebug) {
-                                    console.log(`    TEXT_PROCESSOR: [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]  > ${sWhat}`);
+                                    console.log(`    TEXT_PROCESSOR: [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]  > ${sAction}`);
                                 }
                             }
                             else if (cActionType == "=") {
                                 // disambiguation
-                                gc_functions[sWhat](this.lTokens, nTokenOffset, nLastToken);
+                                gc_functions[sAction](this.lTokens, nTokenOffset, nLastToken);
                                 if (bDebug) {
-                                    console.log(`    DISAMBIGUATOR: (${sWhat})  [${this.lTokens[nTokenOffset+1]["sValue"]}:${this.lTokens[nLastToken]["sValue"]}]`);
+                                    console.log(`    DISAMBIGUATOR: (${sAction})  [${this.lTokens[nTokenOffset+1]["sValue"]}:${this.lTokens[nLastToken]["sValue"]}]`);
                                 }
                             }
                             else if (cActionType == ">") {
@@ -711,15 +768,15 @@ class TextParser {
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 for (let i = nTokenStart; i <= nTokenEnd; i++) {
                                     if (this.lTokens[i].hasOwnProperty("aTags")) {
-                                        this.lTokens[i]["aTags"].add(...sWhat.split("|"))
+                                        this.lTokens[i]["aTags"].add(...sAction.split("|"))
                                     } else {
-                                        this.lTokens[i]["aTags"] = new Set(sWhat.split("|"));
+                                        this.lTokens[i]["aTags"] = new Set(sAction.split("|"));
                                     }
                                 }
                                 if (bDebug) {
-                                    console.log(`    TAG:  ${sWhat} > [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]`);
+                                    console.log(`    TAG:  ${sAction} > [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]`);
                                 }
-                                for (let sTag of sWhat.split("|")) {
+                                for (let sTag of sAction.split("|")) {
                                     if (!this.dTags.has(sTag)) {
                                         this.dTags.set(sTag, [nTokenStart, nTokenEnd]);
                                     } else {
@@ -734,7 +791,7 @@ class TextParser {
                                 }
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
-                                let sImmunity = sWhat || "*";
+                                let sImmunity = sAction || "*";
                                 if (nTokenEnd - nTokenStart == 0) {
                                     this.lTokens[nTokenStart]["sImmunity"] = sImmunity;
                                     let nErrorStart = this.nOffsetWithinParagraph + this.lTokens[nTokenStart]["nStart"];
@@ -750,7 +807,26 @@ class TextParser {
                                         }
                                     }
                                 }
-                            } else {
+                            }
+                            else if (cActionType == "&") {
+                                // multi-tokens
+                                let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
+                                let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
+                                let oMultiToken = {
+                                    "nTokenStart": nTokenStart,
+                                    "nTokenEnd": nTokenEnd,
+                                    "lTokens": this.lTokens.slice(nTokenStart, nTokenEnd+1),
+                                    "lMorph": (sAction) ? sAction.split("|") : [":HM"]
+                                }
+                                this.lTokens[nTokenStart]["nMultiStartTo"] = this.lTokens[nTokenEnd]["i"];
+                                this.lTokens[nTokenEnd]["nMultiEndFrom"] = this.lTokens[nTokenStart]["i"];
+                                this.lTokens[nTokenStart]["oMultiToken"] = oMultiToken;
+                                this.lTokens[nTokenEnd]["oMultiToken"] = oMultiToken;
+                                if (bDebug) {
+                                    console.log(`"    MULTI-TOKEN: ${sAction}  [${this.lTokens[nTokenStart]["sValue"]}:${this.lTokens[nTokenEnd]["sValue"]}]`);
+                                }
+                            }
+                            else {
                                 console.log("# error: unknown action at " + sLineId);
                             }
                         }
@@ -878,9 +954,9 @@ class TextParser {
         return sText.slice(0, m.start[iGroup]) + sNew + sText.slice(m.end[iGroup]);
     }
 
-    _tagAndPrepareTokenForRewriting (sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug) {
+    _tagAndPrepareTokenForRewriting (sAction, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug) {
         // text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position
-        if (sWhat === "*") {
+        if (sAction === "*") {
             // purge text
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
                 this.lTokens[nTokenRewriteStart]["bToRemove"] = true;
@@ -890,16 +966,16 @@ class TextParser {
                 }
             }
         }
-        else if (sWhat === "␣") {
+        else if (sAction === "␣") {
             // merge tokens
             this.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
         }
-        else if (sWhat.startsWith("␣")) {
-            sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
+        else if (sAction.startsWith("␣")) {
+            sAction = this._expand(sAction, nTokenOffset, nLastToken);
             this.lTokens[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd;
-            this.lTokens[nTokenRewriteStart]["sMergedValue"] = sWhat.slice(1);
+            this.lTokens[nTokenRewriteStart]["sMergedValue"] = sAction.slice(1);
         }
-        else if (sWhat === "_") {
+        else if (sAction === "_") {
             // neutralized token
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
                 this.lTokens[nTokenRewriteStart]["sNewValue"] = "_";
@@ -910,22 +986,22 @@ class TextParser {
             }
         }
         else {
-            if (sWhat.startsWith("=")) {
-                sWhat = gc_functions[sWhat.slice(1)](this.lTokens, nTokenOffset, nLastToken);
+            if (sAction.startsWith("=")) {
+                sAction = gc_functions[sAction.slice(1)](this.lTokens, nTokenOffset, nLastToken);
             } else {
-                sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
+                sAction = this._expand(sAction, nTokenOffset, nLastToken);
             }
             let bUppercase = bCaseSvty && this.lTokens[nTokenRewriteStart]["sValue"].slice(0,1).gl_isUpperCase();
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
                 // one token
                 if (bUppercase) {
-                    sWhat = sWhat.gl_toCapitalize();
+                    sAction = sAction.gl_toCapitalize();
                 }
-                this.lTokens[nTokenRewriteStart]["sNewValue"] = sWhat;
+                this.lTokens[nTokenRewriteStart]["sNewValue"] = sAction;
             }
             else {
                 // several tokens
-                let lTokenValue = sWhat.split("|");
+                let lTokenValue = sAction.split("|");
                 if (lTokenValue.length != (nTokenRewriteEnd - nTokenRewriteStart + 1)) {
                     if (bDebug) {
                         console.log("Error. Text processor: number of replacements != number of tokens.");

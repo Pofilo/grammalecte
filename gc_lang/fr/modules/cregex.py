@@ -82,7 +82,10 @@ NPe = re.compile(":(?:M[12P]|T):e")
 
 def getLemmaOfMorph (s):
     "return lemma in morphology <s>"
-    return Lemma.search(s).group(1)
+    m = Lemma.search(s)
+    if m:
+        return m.group(1)
+    return ""
 
 def agreement (l1, l2):
     "returns True if agreement in gender and number is possible between morphologies <l1> and <l2>"

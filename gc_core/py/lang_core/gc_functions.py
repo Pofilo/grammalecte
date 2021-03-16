@@ -188,15 +188,13 @@ def g_value (dToken, sValues, nLeft=None, nRight=None):
     return False
 
 
-def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
+def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
     if "lMorph" in dToken:
         lMorph = dToken["lMorph"]
     else:
         if nLeft is not None:
             lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-            if bMemorizeMorph:
-                dToken["lMorph"] = lMorph
         else:
             lMorph = _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph:
@@ -215,12 +213,31 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
+def g_morphx (dToken, sPattern, sNegPattern=""):
+    "analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
+    if not "dMultiToken" in dToken:
+        return False
+    lMorph = dToken["dMultiToken"]["lMorph"]
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
+def g_morph0 (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
     if nLeft is not None:
         lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
-        if bMemorizeMorph:
-            dToken["lMorph"] = lMorph
     else:
         lMorph = _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph:

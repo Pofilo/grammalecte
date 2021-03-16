@@ -216,9 +216,10 @@ class Node:
     def getNodeAsDict (self):
         "returns the node as a dictionary structure"
         dNode = {}
-        dReValue = {}   # regex for token values
-        dReMorph = {}   # regex for morph
-        dMorph = {}     # simple search in morph
+        dReValue = {}       # regex for token values
+        dReMorph = {}       # regex for morph
+        dMorph = {}         # simple search in morph
+        dReMultiMorph = {}  # regex for morph in multi-tokens
         dLemma = {}
         dPhonet = {}
         dMeta = {}
@@ -229,6 +230,8 @@ class Node:
                 dReMorph[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("$") and len(sArc) > 1:
                 dMorph[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("&") and len(sArc) > 1:
+                dReMultiMorph[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("~") and len(sArc) > 1:
                 dReValue[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith(">") and len(sArc) > 1:
@@ -247,6 +250,8 @@ class Node:
             dNode["<re_value>"] = dReValue
         if dReMorph:
             dNode["<re_morph>"] = dReMorph
+        if dReMultiMorph:
+            dNode["<re_mmorph>"] = dReMultiMorph
         if dMorph:
             dNode["<morph>"] = dMorph
         if dLemma:

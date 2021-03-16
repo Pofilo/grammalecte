@@ -202,7 +202,7 @@ function g_value (oToken, sValues, nLeft=null, nRight=null) {
     return false;
 }
 
-function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (oToken.hasOwnProperty("lMorph")) {
@@ -212,9 +212,6 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
         if (nLeft !== null) {
             let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
             lMorph = gc_engine.oSpellChecker.getMorph(sValue);
-            if (bMemorizeMorph) {
-                oToken["lMorph"] = lMorph;
-            }
         } else {
             lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
         }
@@ -238,15 +235,37 @@ function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morphx (oToken, sPattern, sNegPattern="") {
+    // analyse a multi-token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
+    if (!oToken.hasOwnProperty("oMultiToken")) {
+        return false;
+    }
+    let lMorph = oToken["oMultiToken"]["lMorph"];
+    if (lMorph.length == 0) {
+        return false;
+    }
+    // check negative condition
+    if (sNegPattern) {
+        if (sNegPattern == "*") {
+            // all morph must match sPattern
+            return lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
+        }
+        else {
+            if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
+                return false;
+            }
+        }
+    }
+    // search sPattern
+    return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
+}
+
+function g_morph0 (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {
         let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
         lMorph = gc_engine.oSpellChecker.getMorph(sValue);
-        if (bMemorizeMorph) {
-            oToken["lMorph"] = lMorph;
-        }
     } else {
         lMorph = gc_engine.oSpellChecker.getMorph(oToken["sValue"]);
     }
