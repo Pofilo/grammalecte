@@ -550,6 +550,41 @@ class TextParser {
                         }
                     }
                 }
+                // regex multi morph arcs
+                if (oNode.hasOwnProperty("<re_mmorph>")) {
+                    if (oToken.hasOwnProperty("nMultiStartTo")) {
+                        let lMorph = oToken["oMultiToken"]["lMorph"];
+                        for (let sRegex in oNode["<re_mmorph>"]) {
+                            if (!sRegex.includes("¬")) {
+                                // no anti-pattern
+                                if (lMorph.some(sMorph  =>  (sMorph.search(sRegex) !== -1))) {
+                                    yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                    bTokenFound = true;
+                                }
+                            } else {
+                                // there is an anti-pattern
+                                let [sPattern, sNegPattern] = sRegex.split("¬", 2);
+                                if (sNegPattern == "*") {
+                                    // all morphologies must match with <sPattern>
+                                    if (sPattern) {
+                                        if (lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                            yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                            bTokenFound = true;
+                                        }
+                                    }
+                                } else {
+                                    if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
+                                        continue;
+                                    }
+                                    if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                        yield ["&", sRegex, oNode["<re_mmorph>"][sRegex]];
+                                        bTokenFound = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             // token tags
             if (oToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
@@ -618,7 +653,7 @@ class TextParser {
                         if (bDebug) {
                             console.log("  MATCH: " + cNodeType + sMatch);
                         }
-                        let nMultiEnd = (cNodeType != "&") ? -1 : dToken["nMultiStartTo"];
+                        let nMultiEnd = (cNodeType != "&") ? -1 : oToken["nMultiStartTo"];
                         lNextPointers.push({ "iToken1": oPointer["iToken1"], "iNode": iNode, "nMultiEnd": nMultiEnd });
                     }
                 }
@@ -631,7 +666,7 @@ class TextParser {
                     if (bDebug) {
                         console.log("  MATCH: " + cNodeType + sMatch);
                     }
-                    let nMultiEnd = (cNodeType != "&") ? -1 : dToken["nMultiStartTo"];
+                    let nMultiEnd = (cNodeType != "&") ? -1 : oToken["nMultiStartTo"];
                     lPointers.push({ "iToken1": iToken, "iNode": iNode, "nMultiEnd": nMultiEnd });
                 }
                 // check if there is rules to check for each pointer
