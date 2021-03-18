@@ -3057,6 +3057,8 @@ __da_entre__
 
     entre [dans|sur]
     entre à l’ intérieur
+    entre par la [fenêtre|meurtrière|porte]
+    entre par le [portail|soupirail|toit|trou|velux]
         <<- =>> select(\1, ":V")
 
     entre [nous|vous|eux|elles|iels]
@@ -5811,7 +5813,7 @@ __locutions__
     en ?[assez|si|très|trop]¿ forte [baisse|hausse]
     en gage [de|d’] bonne foi
     en garde à vue ?prolongée¿
-    en ?[assez|si|très|trop|plus|moins]¿ grand nombre
+    en ?[assez|si|très|trop|plus|moins]¿ grand [apparat|nombre]
     en ?[assez|si|très|trop]¿            grande [difficulté|majorité|partie|pompe]
     en ?[assez|si|très|trop|plus|moins]¿ haut lieu
     en ?[assez|si|très|trop]¿            haute [estime|mer|montagne]
@@ -5901,10 +5903,10 @@ __locutions__
     en voie [de|d’] développement
     en vrac
     en y [réfléchissant|songeant] bien
-    en [mon|ton|son|leur|notre|votre] âme et conscience
-    en [mon|ton|son|leur|notre|votre] for intérieur
-    en [mon|ton|son|leur|notre|votre] nom propre
-    en ce qui [me|te|le|la|les|nous|vous] [concerne|concernait]
+    en [mon|ton|son|notre|votre|leur] âme et conscience
+    en [mon|ton|son|notre|votre|leur] for intérieur
+    en [mon|ton|son|notre|votre|leur] nom propre
+    en ce qui [me|m’|te|t’|le|l’|la|les|nous|vous] [concerne|concernait]
     en voilà ?bien¿ [assez|trop|suffisamment]
     encore et [encore|toujours]
     entre chien et loup
@@ -6046,7 +6048,7 @@ __locutions__
     pour [ce|c’] [que|qu’] nous en [savons|savions|sûmes|saurons|saurions]
     pour [ce|c’] [que|qu’] vous en [savez|saviez|sûtes|saurez|sauriez]
     pour [ce|c’] [que|qu’] [ils|elles|iels] en [savent|savaient|surent|sauront|sauraient]
-    pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] [que|qu’] [ça|cela|ceci] intéresse
+    pour [celui|celle|ceux|celles] [et|ou] [celui|celle|ceux|celles] [que|qu’] [ça|cela|ceci] intéresse
     pour [celui|celle|ceux|celles] [que|qu’] [ça|cela|ceci] intéresse
     pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
     pour [mon|ton|son|notre|votre|leur] propre [compte|bien]
@@ -6061,7 +6063,7 @@ __locutions__
     pour la plupart
     pour la suite
     pour [le|l’] [mieux|moment|moins]
-    pour [le|l’] meilleur et pour [le|l’] pire
+    pour [le|l’] meilleur [et|ou] pour [le|l’] pire
     pour l’ amour du ciel
     pour l’ [essentiel|instant|heure]
     pour quelque part
@@ -6073,10 +6075,10 @@ __locutions__
     pour y parvenir
     pour ça [vaut|valait]
     quand bien même
-    quand bon [me|te|lui|nous|vous|leur] [semble|semblera|semblait]
+    quand bon [me|te|lui|nous|vous|leur] [semble|sembla|semblera|semblait]
     quant à [ça|cela|ceci]
     qu’ à cela ne tienne
-    [que|qu’] [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
+    [que|qu’] [il|elle|iel|on|ça|ceci|cela|tout] [me|te|lui|leur|nous|vous] [plaise|plut|plût] ou non
     ##
     [que|qu’] je [le|l’] veuille ou non
     [que|qu’] tu [le|l’] veuilles ou non
@@ -11367,9 +11369,9 @@ TEST: Celui qui y croit {{à les}} moyens d’y parvenir.                  ->> a
 TEST: à tous les sots, je dis “merde”.
 
 
-    à [et|ou|pour|avec|parce]
+    à [et|ou|pour|avec|parce] *WORD
         <<- space(\1, 1, 1) and not tag(\1, "egxmot") and \2.islower() and not tag(\2, "egxmot")
-            and not value(<1, "|quinze|trente|") and not morph(>1, ":É?R")
+            and not value(<1, "|quinze|trente|") and not morph(\-1, ":É?R")
         -1>> a                                                                                      && Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
 TEST: {{À}} et B                                                        ->> A
@@ -19571,7 +19573,7 @@ __substantifs_multi_mots__
     tenants et aboutissants
     >ténor du barreau
     >tentative [de|d’] suicide
-    >tenue [de|d’] [rechange|route]
+    >tenue [de|d’] [apparat|rechange|route]
     >terrain [de|d’] [atterrissage|chasse|entente|golf|prédilection]
     >tête à claques
     >tête d’ enterrement
@@ -19638,7 +19640,7 @@ __substantifs_multi_mots__
     >ver [de|d’] terre
     >ver à soie
     >verre à pied
-    >vêtement [de|d’] rechange
+    >vêtement [de|d’] [apparat|rechange]
     >vidéo X
     >vie [de|d’] bohème
     >violence [par|sur] personne dépositaire de l’ autorité publique
@@ -28771,8 +28773,14 @@ __infi_qqch_de__
     [de|d’]  crainte                            [de|d’]  [l’|la|leur]                         ~..(?:ée?s?|ez)$
         <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":[MN]") --1>> =suggVerbInfi(\-1)                       && Après “de crainte de”, le verbe devrait être à l’infinitif.
 
-    en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
+    en  [droit|état|mesure|train]               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":M") --1>> =suggVerbInfi(\-1)                          && Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+
+    en  vue                                     [de|d’]  ?[le|les|nous|vous|lui]¿             ~..(?:ée?s?|ez)$
+        <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":M") --1>> =suggVerbInfi(\-1)                          && Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+
+    en  vue                                     [de|d’]  [l’|la|leur]                         ~..(?:ée?s?|ez)$
+        <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":[MN]") --1>> =suggVerbInfi(\-1)                       && Après “\1 \2 de”, le verbe devrait être à l’infinitif.
 
     >faire  [exprès|semblant|mine]              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph0(\-1, ":(?:Q|2p)", ":M") --1>> =suggVerbInfi(\-1)                          && Après “faire \2 de”, le verbe devrait être à l’infinitif.
@@ -28877,6 +28885,10 @@ TEST: de crainte de {{poussée}} cette fille dans ses derniers retranchements   
 TEST: d’crainte d’l’{{touché}}, m’sieur…                                                            ->> toucher
 TEST: il faut bien prendre garde de la {{foulée}} au pied                                           ->> fouler
 TEST: ils auront tôt fait de la {{poussée}} dans ses derniers retranchements                        ->> pousser
+TEST: en vue de nous {{trouvé}}                                                                     ->> trouver
+TEST: en vue de leur {{fabriqué}} un bureau                                                         ->> fabriquer
+TEST: en vue de l’éternité
+TEST: en vue de la jetée
 TEST: il avait besoin d’alliés.
 
 
@@ -29355,12 +29367,16 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 
 __infi_sembler_paraître__
-    [>sembler|>paraître|>paraitre]  [le|la|l’|les|m’|t’|s’|nous|vous]  @:V1.*:(?:Q|Iq.*:[123]s|Ip.*:2p)
+    [>sembler|>paraître|>paraitre]  [le|la|l’|leur|les]  @:V1.*:(?:Q|Iq.*:[123]s|Ip.*:2p)
+        <<- /infi/ not tagbefore(\1, "_propsub_") and space(\2, 1, 1) --1>> =suggVerbInfi(\-1)      && Ce verbe devrait être à l’infinitif.
+
+    [>sembler|>paraître|>paraitre]  [me|m’|te|t’|se|s’|lui|nous|vous]  @:V1.*:(?:Q|Iq.*:[123]s|Ip.*:2p)
         <<- /infi/ not tagbefore(\1, "_propsub_") --1>> =suggVerbInfi(\-1)                          && Ce verbe devrait être à l’infinitif.
 
 TEST: Ça semblait les {{intéressés}}                                                                ->> intéresser
 TEST: elle paraissait s’{{intéressait}}                                                             ->> intéresser
 TEST: Rien n’a semblé les {{touchés}}.                                                              ->> toucher
+TEST: elles semblaient les plus intéressées
 
 
 __infi_verbes__
@@ -36110,48 +36126,6 @@ TEST: c’était si attendu qu’il avait renoncé avant même d’y aller
 TEST: des femmes si attendues que Marie avait tout préparé des mois à l’avance
 
 
-__vmode_il_importe_que_subjonctif__
-    il  >importer  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
-
-    il  >importer  [que|qu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
-
-    il  >importer  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
-
-    il  >importer  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]   @:N.*:[pi] @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
-
-TEST: il importera que nous {{devenons}} prêts.                                     ->> devenions|devinssions
-TEST: il importait que Nadia {{est}} prête                                          ->> soit|fût|ait
-TEST: il importait que la femme {{est}} prête                                       ->> soit|fût|ait
-TEST: il importe que les hommes {{trouveront}} la solution                          ->> trouvent|trouvassent
-
-
-__vmode_prendre_garde_que_subjonctif__
-    >prendre    garde  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
-
-    >prendre    garde  [que|qu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
-
-    >prendre    garde  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
-
-    >prendre    garde  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
-
-TEST: prends garde que vous {{revenez}} en un seul morceau.                         ->> reveniez|revinssiez
-TEST: nous avions pris garde que Marie {{est}} bien accueillie                      ->> soit|fût|ait
-TEST: nous avions pris garde que notre mère {{est}} bien accueillie                 ->> soit|fût|ait
-TEST: prenez garde que les femmes {{sont}} bien traitées                            ->> soient|fussent
-
-
 __vmode_avoir_envie_espoir_que_subjonctif__
     >avoir      ?[très|trop]¿   envie      [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
     >avoir      ?[bon|grand]¿   espoir     [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:([GYSK]|If)
@@ -36175,6 +36149,35 @@ TEST: j’ai bon espoir qu’il {{vient}} vite.                                 
 TEST: elle a envie que Paul {{est}} intelligent.                                    ->> soit|fût|ait
 TEST: ils avaient grand espoir que le chat {{trouva}} la chatière                   ->> trouve|trouvât
 TEST: nous avions bon espoir que les femmes {{succédèrent}} à ce type               ->> succèdent|succédassent
+
+
+__vmode_douter_que_subjonctif__
+    >douter  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:(?:[GYSK]|If)
+        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
+        --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “douter que”, ce verbe devrait probablement être au subjonctif.
+
+    >douter  [que|qu’]  $:M  @:I¬:(?:[GYSK]|If)
+        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
+
+    >douter  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:(?:[GYSKA]|If)
+        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
+
+    >douter  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:(?:[GYSKA]|If)
+        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
+
+TEST: je doute qu’il {{vient}} demain.                                              ->> vienne|vînt
+TEST: elle doutait que Viviane {{fut}} au courant                                   ->> soit|fût
+TEST: elle doutait que notre mère {{fut}} au courant                                ->> soit|fût
+TEST: il doutait que ces idiots {{furent}} au courant                               ->> soient|fussent
+TEST: Je ne doute pas qu’ils réussiront leur mission.
+TEST: Je me doutais bien qu’Apple pourrait marcher
+TEST: Je me doutais bien qu’elle me détestait
+TEST: Ne doute pas qu’il viendra demain.
+TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
+TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
 
 
 __vmode_s_étonner_que_subjonctif__
@@ -36216,6 +36219,87 @@ TEST: je ferai attention à ce que Paula {{est}} bien traitée                  
 TEST: je ferai attention à ce que le petit {{trouva}} la solution                   ->> trouve|trouvât
 TEST: fais attention à ce que les hommes {{trouvèrent}} la sortie                   ->> trouvent|trouvassent
 TEST: pas grand-chose à proposer à part faire attention à ce qu’on fait.
+
+
+__vmode_il_importe_que_subjonctif__
+    il  >importer  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
+
+    il  >importer  [que|qu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
+
+    il  >importer  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
+
+    il  >importer  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]   @:N.*:[pi] @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après le syntagme “il importe que”, ce verbe devrait être au subjonctif.
+
+TEST: il importera que nous {{devenons}} prêts.                                     ->> devenions|devinssions
+TEST: il importait que Nadia {{est}} prête                                          ->> soit|fût|ait
+TEST: il importait que la femme {{est}} prête                                       ->> soit|fût|ait
+TEST: il importe que les hommes {{trouveront}} la solution                          ->> trouvent|trouvassent
+
+
+__vmode_se_pouvoir_que_subjonctif__
+    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+
+    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+
+    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+
+    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “\1 se peut que”, le verbe devrait être au subjonctif.
+
+    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “se peut-il que”, le verbe devrait être au subjonctif.
+
+    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “se peut-il que”, le verbe devrait être au subjonctif.
+
+    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ tag(\1, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “se peut-il que”, le verbe devrait être au subjonctif.
+
+    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ tag(\1, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “se peut-il que”, le verbe devrait être au subjonctif.
+
+TEST: il se peut que nous {{avons}} tort.                                           ->> ayons|eussions
+TEST: il se pouvait que Paul {{avait}} tort                                         ->> ait|eût
+TEST: il se pouvait que le petit {{avait}} tort                                     ->> ait|eût
+TEST: ça se pouvait que les chiens {{avaient}} mordu                                ->> aient|eussent
+TEST: se peut-il que je {{viens}}                                                   ->> vienne|vinsse
+TEST: se pouvait-il que Léa {{arriva}} si tard                                      ->> arrive|arrivât
+TEST: se pouvait-il que la grande {{arriva}} si tard                                ->> arrive|arrivât
+TEST: se pourrait-il que les chats {{sont}} morts                                   ->> soient|fussent
+
+
+__vmode_prendre_garde_que_subjonctif__
+    >prendre    garde  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
+
+    >prendre    garde  [que|qu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
+
+    >prendre    garde  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
+
+    >prendre    garde  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après le syntagme “prendre garde que”, ce verbe devrait être au subjonctif.
+
+TEST: prends garde que vous {{revenez}} en un seul morceau.                         ->> reveniez|revinssiez
+TEST: nous avions pris garde que Marie {{est}} bien accueillie                      ->> soit|fût|ait
+TEST: nous avions pris garde que notre mère {{est}} bien accueillie                 ->> soit|fût|ait
+TEST: prenez garde que les femmes {{sont}} bien traitées                            ->> soient|fussent
 
 
 __vmode_tenir_à_ce_que_subjonctif__
@@ -36261,74 +36345,6 @@ TEST: Veille à ce qu’il y {{est}} des gâteaux.                              
 TEST: je veillerai à ce que Paula {{finit}} son assiette                            ->> finisse|finît
 TEST: je veillerai à ce que la petite {{finit}} son assiette                        ->> finisse|finît
 TEST: elle veillait à ce que les garçons {{trouveront}} la solution                 ->> trouvent|trouvassent
-
-
-__vmode_douter_que_subjonctif__
-    >douter  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
-        --1>> =suggVerbMode(\-1, ":S", \-2)                                                         && Après “douter que”, ce verbe devrait probablement être au subjonctif.
-
-    >douter  [que|qu’]  $:M  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N")
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
-
-    >douter  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:(?:[GYSKA]|If)
-        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
-
-    >douter  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:(?:[GYSKA]|If)
-        <<- /vmode/ not tag(\1, "_upron_") and not tag(\1, "neg") and morph(\1, ":V", ":N") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “douter que”, ce verbe devrait probablement être au subjonctif.
-
-TEST: je doute qu’il {{vient}} demain.                                              ->> vienne|vînt
-TEST: elle doutait que Viviane {{fut}} au courant                                   ->> soit|fût
-TEST: elle doutait que notre mère {{fut}} au courant                                ->> soit|fût
-TEST: il doutait que ces idiots {{furent}} au courant                               ->> soient|fussent
-TEST: Je ne doute pas qu’ils réussiront leur mission.
-TEST: Je me doutais bien qu’Apple pourrait marcher
-TEST: Je me doutais bien qu’elle me détestait
-TEST: Ne doute pas qu’il viendra demain.
-TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
-TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
-
-
-__vmode_se_pouvoir_que_subjonctif__
-    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “\1 se peut que”, le verbe devrait être au subjonctif.
-
-    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “\1 se peut que”, le verbe devrait être au subjonctif.
-
-    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “\1 se peut que”, le verbe devrait être au subjonctif.
-
-    [il|ça|cela]  [peut|pourrait|pouvait]  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “\1 se peut que”, le verbe devrait être au subjonctif.
-
-    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “se peut-il que”, le verbe devrait être au subjonctif.
-
-    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ tag(\1, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “se peut-il que”, le verbe devrait être au subjonctif.
-
-    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ tag(\1, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “se peut-il que”, le verbe devrait être au subjonctif.
-
-    [peut-il|pourrait-il|pouvait-il|pourra-t-il] [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ tag(\1, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “se peut-il que”, le verbe devrait être au subjonctif.
-
-TEST: il se peut que nous {{avons}} tort.                                           ->> ayons|eussions
-TEST: il se pouvait que Paul {{avait}} tort                                         ->> ait|eût
-TEST: il se pouvait que le petit {{avait}} tort                                     ->> ait|eût
-TEST: ça se pouvait que les chiens {{avaient}} mordu                                ->> aient|eussent
-TEST: se peut-il que je {{viens}}                                                   ->> vienne|vinsse
-TEST: se pouvait-il que Léa {{arriva}} si tard                                      ->> arrive|arrivât
-TEST: se pouvait-il que la grande {{arriva}} si tard                                ->> arrive|arrivât
-TEST: se pourrait-il que les chats {{sont}} morts                                   ->> soient|fussent
 
 
 __vmode_il_arrive_que_subjonctif__
@@ -36379,120 +36395,6 @@ TEST: il est possible que le petit {{vient}} demain.                            
 TEST: il serait possible que les hommes {{poussaient}} le bouchon trop loin         ->> poussent|poussassent
 
 
-__vmode_si_tant_est_que_subjonctif__
-    si  tant    est     [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “si tant est que”, ce verbe devrait être au subjonctif.
-
-    si  tant    est     [que|qu’]   $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “si tant est que”, ce verbe devrait être au subjonctif.
-
-    si  tant    est     [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “si tant est que”, ce verbe devrait être au subjonctif.
-
-    si  tant    est     [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “si tant est que”, ce verbe devrait être au subjonctif.
-
-TEST: si tant est qu’il y en {{eut}} assez                                          ->> ait|eût
-TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.                    ->> comprenne|comprît
-TEST: ça ira, si tant est que le petit {{comprend}} ce qui se passe.                ->> comprenne|comprît
-TEST: si tant est que les animaux {{sont}} protégés                                 ->> soient|fussent
-TEST: si tant est que nous {{prenons}} notre temps                                  ->> prenions|prissions
-TEST: Nous irons là-bas, si tant est qu’on veuille encore de nous.
-TEST: J’irai si tant est que je puisse.
-TEST: J’irai si tant est que je le puisse.
-
-
-__vmode_peu_s_en_falloir_que_subjonctif__
-    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-    peu     [est|était] fallu                       [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
-
-    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   $:M  @:I¬:[GYS]
-    peu     [est|était] fallu                       [que|qu’]   $:M  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
-
-    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-    peu     [est|était] fallu                       [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
-
-    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYS]
-    peu     [est|était] fallu                       [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
-
-TEST: peu s’en est fallu qu’il {{devient}} estropié.                                ->> devienne|devînt
-TEST: peu s’en faudrait que Paul {{est}} emporté                                    ->> soit|fût|ait
-TEST: peu s’en faudrait que le toit {{est}} emporté                                 ->> soit|fût|ait
-TEST: peu s’en était fallu que les filles {{demeurèrent}} là-bas                    ->> demeurent|demeurassent
-TEST: il eût fallu que je vous fisse la grâce de m’expliquer
-
-
-__vmode_mieux_vaut_que_subjonctif__
-    >valoir mieux           [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-    mieux >valoir           [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-    mieux aurait valu       [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-    il aurait mieux valu    [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
-
-    >valoir mieux           [que|qu’]   $:M  @:I¬:[GYS]
-    mieux >valoir           [que|qu’]   $:M  @:I¬:[GYS]
-    mieux aurait valu       [que|qu’]   $:M  @:I¬:[GYS]
-    il aurait mieux valu    [que|qu’]   $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
-
-    >valoir mieux           [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-    mieux >valoir           [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-    mieux aurait valu       [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-    il aurait mieux valu    [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
-
-    >valoir mieux           [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-    mieux >valoir           [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-    mieux aurait valu       [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-    il aurait mieux valu    [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
-
-TEST: Vaudrait mieux qu’elle {{meurt}}                                              ->> meure|mourût
-TEST: il aurait mieux valu qu’elle {{meurt}}                                        ->> meure|mourût
-TEST: mieux aurait valu que Paulina {{resta}} avec nous                             ->> reste|restât
-TEST: mieux aurait valu que la petite {{resta}} avec nous                           ->> reste|restât
-TEST: mieux vaut que vous {{êtes}} cachés                                           ->> soyez|fussiez
-TEST: mieux valait que Paul {{demeura}} caché                                       ->> demeure|demeurât
-TEST: il vaudrait mieux que les hommes {{furent}} là                                ->> soient|fussent
-TEST: Mieux que tu saches comment faire avec précision
-
-
-__vmode_quoique_subjonctif__
-    [quoique|quoiqu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \2)                                              && Après “quoique”, ce verbe devrait être au subjonctif.
-
-    [quoique|quoiqu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “quoique”, ce verbe devrait être au subjonctif.
-
-    [quoique|quoiqu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “quoique”, ce verbe devrait être au subjonctif.
-
-    [quoique|quoiqu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “quoique”, ce verbe devrait être au subjonctif.
-
-TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.                     ->> soit|fût|ait
-TEST: quoiqu’Émilie {{devenait}} folle                                                              ->> devienne|devînt
-TEST: quoique le grand {{devenait}} fou                                                             ->> devienne|devînt
-TEST: quoique les partis {{imaginaient}} le pire                                                    ->> imaginent|imaginassent
-TEST: Quoique je dise.
-TEST: Quoique je te dise.
-TEST: Quoique tu fasses bien, il te le reprochera.
-TEST: quoi que nous autres hommes ayons pu faire
-TEST: Quoi que je fasse, il fait la gueule.
-
-
 __vmode_qqch_que_subjonctif__
     [afin|avant|malgré|pour|pourvu|qui|quoi|sans]   [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
     moyennant                                       [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
@@ -36526,41 +36428,11 @@ TEST: il trahit certaine tendresse pour ce monde d’avant que le mouvement qu�
 TEST: j’ai surpris mon fils de huit ans en train d’essayer de s’arracher une dent pour que la petite souris lui donne de l’argent.
 
 
-__vmode_où_que_subjonctif__
-    où  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \3)      && Après “\1 que”, ce verbe devrait être au subjonctif.
-        <<- /vmode/ -1>> ou
-        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
-
-    où  [que|qu’]  $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")   && Après “\1 que”, ce verbe devrait être au subjonctif.
-        <<- /vmode/ -1>> ou
-        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
-
-    où  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")               && Après “\1 que”, ce verbe devrait être au subjonctif.
-        <<- /vmode/ __also__ -1>> ou
-        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
-
-    où  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")               && Après “\1 que”, ce verbe devrait être au subjonctif.
-        <<- /vmode/ __also__ -1>> ou
-        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
-
-TEST: {{où}} qu’il {{est}}, on le trouvera                                                          ->> ou|||soit|fût|ait
-TEST: {{où}} que Paul {{va}} se faire examiner                                                      ->> ou|||aille|allât
-TEST: {{où}} que le petit {{va}} se faire examiner                                                  ->> ou|||aille|allât
-TEST: {{où}} que les petites {{allaient}}                                                           ->> ou|||aillent|allassent
-TEST: Si bien que l’on se dit : « Ce mode de vie où je travaille moins en ayant beaucoup plus de disponibilités sensibles, n’est-ce pas le bon équilibre à trouver ? »
-
-
 __vmode_locution_que_subjonctif__
     à       [condition|moins|supposer]  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
     de      [crainte|peur]              [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
     de      [façon|manière]             [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:(?:[GYS]|Iq)
-    en      sorte                       [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:(?:[GYS]|If)
+    en      sorte                       [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:(?:[GYS]|I[fs])
     pour    peu                         [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
     pour    autant                      [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “\1 \2 que”, ce verbe devrait être au subjonctif.
@@ -36576,7 +36448,7 @@ __vmode_locution_que_subjonctif__
     à       [condition|moins|supposer]  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
     de      [crainte|peur]              [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
     de      [façon|manière]             [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:(?:[GYSA]|Iq)
-    en      sorte                       [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:(?:[GYSA]|If)
+    en      sorte                       [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:(?:[GYSA]|I[fs])
     pour    peu                         [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
     pour    autant                      [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
         <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
@@ -36585,7 +36457,7 @@ __vmode_locution_que_subjonctif__
     à       [condition|moins|supposer]  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
     de      [crainte|peur]              [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
     de      [façon|manière]             [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:(?:[GYSA]|Iq)
-    en      sorte                       [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:(?:[GYSA]|If)
+    en      sorte                       [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:(?:[GYSA]|I[fs])
     pour    peu                         [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
     pour    autant                      [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
         <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
@@ -36602,27 +36474,6 @@ TEST: À condition que tu réussisses.
 TEST: À condition que tu me prennes.
 TEST: Je travaille de façon que nous puissions vivre.
 TEST: Je travaille de façon qu’il puisse vivre.
-
-
-__vmode_non_que_subjonctif__
-    [<start>|,|(]   non     [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “non que”, ce verbe devrait probablement être au subjonctif.
-
-    [<start>|,|(]   non     [que|qu’]   $:M  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “non que”, ce verbe devrait probablement être au subjonctif.
-
-    [<start>|,|(]   non     [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “non que”, ce verbe devrait probablement être au subjonctif.
-
-    [<start>|,|(]   non     [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
-        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
-        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “non que”, ce verbe devrait probablement être au subjonctif.
-
-TEST: non qu’il {{prend}} son temps                                                                 ->> prenne|prît
-TEST: non que Marie {{prit}} le temps de se renseigner                                              ->> prenne|prît
-TEST: non que la petite {{prit}} le temps de se renseigner                                          ->> prenne|prît
-TEST: non que les heureux {{sont}} plus bienveillants                                               ->> soient|fussent
 
 
 __vmode_en_admettant_que_subjonctif__
@@ -36745,6 +36596,171 @@ TEST: Demander jusqu’à ce qu’il réponde.
 TEST: Demander jusqu’à ce qu’il réponde.
 TEST: Demander jusqu’à ce qu’il me réponde.
 TEST: nous restâmes, jusqu’à ce que la lumière nous manquât
+
+
+__vmode_mieux_vaut_que_subjonctif__
+    >valoir mieux           [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+    mieux >valoir           [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+    mieux aurait valu       [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+    il aurait mieux valu    [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
+
+    >valoir mieux           [que|qu’]   $:M  @:I¬:[GYS]
+    mieux >valoir           [que|qu’]   $:M  @:I¬:[GYS]
+    mieux aurait valu       [que|qu’]   $:M  @:I¬:[GYS]
+    il aurait mieux valu    [que|qu’]   $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
+
+    >valoir mieux           [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+    mieux >valoir           [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+    mieux aurait valu       [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+    il aurait mieux valu    [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
+
+    >valoir mieux           [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+    mieux >valoir           [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+    mieux aurait valu       [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+    il aurait mieux valu    [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “mieux valoir que”, ce verbe devrait être au subjonctif.
+
+TEST: Vaudrait mieux qu’elle {{meurt}}                                              ->> meure|mourût
+TEST: il aurait mieux valu qu’elle {{meurt}}                                        ->> meure|mourût
+TEST: mieux aurait valu que Paulina {{resta}} avec nous                             ->> reste|restât
+TEST: mieux aurait valu que la petite {{resta}} avec nous                           ->> reste|restât
+TEST: mieux vaut que vous {{êtes}} cachés                                           ->> soyez|fussiez
+TEST: mieux valait que Paul {{demeura}} caché                                       ->> demeure|demeurât
+TEST: il vaudrait mieux que les hommes {{furent}} là                                ->> soient|fussent
+TEST: Mieux que tu saches comment faire avec précision
+
+
+__vmode_non_que_subjonctif__
+    [<start>|,|(]   non     [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “non que”, ce verbe devrait probablement être au subjonctif.
+
+    [<start>|,|(]   non     [que|qu’]   $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “non que”, ce verbe devrait probablement être au subjonctif.
+
+    [<start>|,|(]   non     [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “non que”, ce verbe devrait probablement être au subjonctif.
+
+    [<start>|,|(]   non     [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “non que”, ce verbe devrait probablement être au subjonctif.
+
+TEST: non qu’il {{prend}} son temps                                                                 ->> prenne|prît
+TEST: non que Marie {{prit}} le temps de se renseigner                                              ->> prenne|prît
+TEST: non que la petite {{prit}} le temps de se renseigner                                          ->> prenne|prît
+TEST: non que les heureux {{sont}} plus bienveillants                                               ->> soient|fussent
+
+
+__vmode_où_que_subjonctif__
+    où  [que|qu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \3)      && Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ -1>> ou
+        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
+
+    où  [que|qu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")   && Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ -1>> ou
+        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
+
+    où  [que|qu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")               && Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ __also__ -1>> ou
+        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
+
+    où  [que|qu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")               && Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ __also__ -1>> ou
+        && La forme verbale “\-1” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\-1” au subjonctif.
+
+TEST: {{où}} qu’il {{est}}, on le trouvera                                                          ->> ou|||soit|fût|ait
+TEST: {{où}} que Paul {{va}} se faire examiner                                                      ->> ou|||aille|allât
+TEST: {{où}} que le petit {{va}} se faire examiner                                                  ->> ou|||aille|allât
+TEST: {{où}} que les petites {{allaient}}                                                           ->> ou|||aillent|allassent
+TEST: Si bien que l’on se dit : « Ce mode de vie où je travaille moins en ayant beaucoup plus de disponibilités sensibles, n’est-ce pas le bon équilibre à trouver ? »
+
+
+__vmode_peu_s_en_falloir_que_subjonctif__
+    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+    peu     [est|était] fallu                       [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", \-2)                          && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
+
+    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   $:M  @:I¬:[GYS]
+    peu     [est|était] fallu                       [que|qu’]   $:M  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") --1>> =suggVerbMode(\-1, ":S", ":3s")                        && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
+
+    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+    peu     [est|était] fallu                       [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
+
+    peu     [faut|fallait|fallut|faudra|faudrait]   [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYS]
+    peu     [est|était] fallu                       [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "_upron_") and not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “peu s’en faut que”, ce verbe devrait être au subjonctif.
+
+TEST: peu s’en est fallu qu’il {{devient}} estropié.                                ->> devienne|devînt
+TEST: peu s’en faudrait que Paul {{est}} emporté                                    ->> soit|fût|ait
+TEST: peu s’en faudrait que le toit {{est}} emporté                                 ->> soit|fût|ait
+TEST: peu s’en était fallu que les filles {{demeurèrent}} là-bas                    ->> demeurent|demeurassent
+TEST: il eût fallu que je vous fisse la grâce de m’expliquer
+
+
+__vmode_quoique_subjonctif__
+    [quoique|quoiqu’]  [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \2)                                              && Après “quoique”, ce verbe devrait être au subjonctif.
+
+    [quoique|quoiqu’]  $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “quoique”, ce verbe devrait être au subjonctif.
+
+    [quoique|quoiqu’]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “quoique”, ce verbe devrait être au subjonctif.
+
+    [quoique|quoiqu’]  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “quoique”, ce verbe devrait être au subjonctif.
+
+TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.                     ->> soit|fût|ait
+TEST: quoiqu’Émilie {{devenait}} folle                                                              ->> devienne|devînt
+TEST: quoique le grand {{devenait}} fou                                                             ->> devienne|devînt
+TEST: quoique les partis {{imaginaient}} le pire                                                    ->> imaginent|imaginassent
+TEST: Quoique je dise.
+TEST: Quoique je te dise.
+TEST: Quoique tu fasses bien, il te le reprochera.
+TEST: quoi que nous autres hommes ayons pu faire
+TEST: Quoi que je fasse, il fait la gueule.
+
+
+__vmode_si_tant_est_que_subjonctif__
+    si  tant    est     [que|qu’]   [je|j’|tu|il|elle|iel|nous|vous|ils|elles|iels]  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             && Après “si tant est que”, ce verbe devrait être au subjonctif.
+
+    si  tant    est     [que|qu’]   $:M  @:I¬:[GYS]
+        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", ":3s")                                           && Après “si tant est que”, ce verbe devrait être au subjonctif.
+
+    si  tant    est     [que|qu’]   [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|chaque]  @:N.*:[si]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3s")                                                       && Après “si tant est que”, ce verbe devrait être au subjonctif.
+
+    si  tant    est     [que|qu’]   [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines|maints|maintes]  @:N.*:[pi]  @:I¬:[GYSA]
+        <<- /vmode/ not (morph(\-1, ":N") and morph(\-2, ":A") and agreement(\-2, \-1))
+        --1>> =suggVerbMode(\-1, ":S", ":3p")                                                       && Après “si tant est que”, ce verbe devrait être au subjonctif.
+
+TEST: si tant est qu’il y en {{eut}} assez                                          ->> ait|eût
+TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.                    ->> comprenne|comprît
+TEST: ça ira, si tant est que le petit {{comprend}} ce qui se passe.                ->> comprenne|comprît
+TEST: si tant est que les animaux {{sont}} protégés                                 ->> soient|fussent
+TEST: si tant est que nous {{prenons}} notre temps                                  ->> prenions|prissions
+TEST: Nous irons là-bas, si tant est qu’on veuille encore de nous.
+TEST: J’irai si tant est que je puisse.
+TEST: J’irai si tant est que je le puisse.
 
 
 
