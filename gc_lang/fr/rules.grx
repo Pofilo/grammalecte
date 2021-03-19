@@ -4700,6 +4700,7 @@ __locutions_temporelles_communes__
         <<- &>> :LW;T
 
 
+
 __locutions_temps_après_avant__
     peu de          [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   [après|avant]
     plusieurs       [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   [après|avant]
@@ -4707,7 +4708,7 @@ __locutions_temps_après_avant__
     de nombreux     [jours|ans|siècles|millénaires]                                                                                     [après|avant]
     de nombreuses   [nanosecondes|millisecondes|secondes|minutes|heures|semaines|années|décennies]                                      [après|avant]
         <<- not value(<1, "|de|d’|")
-            and ( morph(>1, ">[,)]|<end>|:(?:Ov|3[sp])", ":D") or ( value(>1, "|le|la|l’|leur|les|") and morph(>2, ":V", ":[NAQ]") ) )
+            and ( morph(>1, ">[,)]|<end>|:(?:O|3[sp]|R)", ":D") or ( value(>1, "|le|la|l’|leur|les|") and morph(>2, ":V", ":[NAQ]") ) )
         &>> :LW;T
 
     peu de          [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   auparavant
@@ -4715,8 +4716,6 @@ __locutions_temps_après_avant__
     quelques        [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   auparavant
     de nombreux     [jours|ans|siècles|millénaires]                                                                                     auparavant
     de nombreuses   [nanosecondes|millisecondes|secondes|minutes|heures|semaines|années|décennies]                                      auparavant
-        <<- &>> :LW;T
-
     peu de          [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   plus [tôt|tard]
     plusieurs       [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   plus [tôt|tard]
     quelques        [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   plus [tôt|tard]
@@ -4724,6 +4723,15 @@ __locutions_temps_après_avant__
     de nombreuses   [nanosecondes|millisecondes|secondes|minutes|heures|semaines|années|décennies]                                      plus [tôt|tard]
         <<- &>> :LW;T
 
+    $:B             [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   [après|avant]
+        <<- not value(<1, "|de|d’|")
+            and ( morph(>1, ">[,)]|<end>|:(?:Ov|3[sp])", ":D") or ( value(>1, "|le|la|l’|leur|les|") and morph(>2, ":V", ":[NAQ]") ) )
+            and not morph(<1, ":B")
+        &>> :LW;T
+
+    $:B             [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   auparavant
+    $:B             [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   plus [tôt|tard]
+        <<- not morph(<1, ":B") &>> :LW;T
 
 __locutions_énumération_temporelle__
     [de|d’] nanoseconde   en  nanoseconde
@@ -11012,19 +11020,19 @@ __conf_préposition_det_verbe__
         --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] le  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D") and not morphx(\1, ":LW")
         --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] la  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D") and not morphx(\1, ":LW")
         --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                                            && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] [l’|leur]  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D") and not morphx(\1, ":LW")
         --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] les  @:V¬:[GNAWMB]
-        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D")
+        <<- /conf/ not tag(\-1, "_Maj_") and not morph(<1, ":D") and not morphx(\1, ":LW")
         --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                                                 && Incohérence : après « \1 \2 », on devrait trouver un groupe nominal.
 
     [à|après|avant|avec|par|pour|contre|sans|envers|chez|dès|malgré|selon|parmi] leurs  @:V¬:[GNAWMB]
@@ -11064,6 +11072,7 @@ TEST: en un {{emploie}} stable                                                  
 TEST: tu croyais en la {{cingler}}                                              ->> cinglée
 TEST: en leur {{tarer}} de père                                                 ->> taré|tarée|tare
 TEST: il faut croire en leurs {{ponds}}                                         ->> ponts
+TEST: il les ignora puis plusieurs jours après leur demanda leur avis
 TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
 TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
 TEST: malgré les deux précédentes erreurs
@@ -19209,6 +19218,7 @@ __substantifs_multi_mots__
     >emballage sous vide
     >emploi du temps
     >employé [de|d’] maison
+    >enfant [de|d’] [*NUM|$:B] ans
     >ennemi d’ État
     ennemi public numéro [un|$:B|*NUM]
     ennemie publique numéro [un|une|$:B|*NUM]
@@ -19251,6 +19261,7 @@ __substantifs_multi_mots__
     >fée du logis
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage|paix|parole|pouvoir|valeur]
     >femme d’ âge mûr
+    >femme [de|d’] [*NUM|$:B] ans ?passés¿
     >femme à poigne
     >femme à tout faire
     >fer à cheval
@@ -19271,6 +19282,8 @@ __substantifs_multi_mots__
     >file d’ attente
     >fille à [papa|maman|>soldat]
     >fille au pair
+    >fille [de|d’] [*NUM|$:B] ans
+    >fillette [de|d’] [*NUM|$:B] ans
     >film X
     fils à [papa|maman]
     fils [de|d’] pute
@@ -19307,6 +19320,7 @@ __substantifs_multi_mots__
     >gala [de|d’] charité
     >galerie d’ art ?[contemporain|moderne]¿
     >galette des rois
+    >garçon [de|d’] [*NUM|$:B] ans
     >garde à vue
     >garde du corps
     >gardien [de|d’] nuit
@@ -19341,6 +19355,7 @@ __substantifs_multi_mots__
     >hochement [de|d’] tête
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille|paix|parole|pouvoir|valeur]
     >homme d’ âge mûr
+    >homme [de|d’] [*NUM|$:B] ans ?passés¿
     >homme à poigne
     >homme à tout faire
     >horaire à rallonge
@@ -21393,6 +21408,7 @@ TEST: La danse est d’ailleurs en ce sens salvatrice.
 TEST: La gauche a fait main basse sur la plupart des villes vaudoises, les Verts bondissent aux législatifs.
 TEST: un rien peut nous déconcentrer
 TEST: cette organisation est à partir de 1945 composée de membres venus de…
+TEST: On vit dans une société qui trouve qu’une femme de 57 ans grande et mince est une ruine.
 
 
 
@@ -29895,6 +29911,26 @@ __purge_prépositions_pronoms__
         <<- ~2>> *
 
 TODO: comme
+
+
+__purge_entre__
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  [lui|leur|y]    en                      @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]¬:V0  @:(?:[123][sp]|P)¬:A
+        <<- ~4:6>> *
+
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  [lui|leur|y]    en                      @:(?:[123][sp]|P)
+    [<start>|(]  $:D  @:[NA]  entre  $:D  @:[NA]¬:V0  et  $:D @:[NA]¬:V0  @:(?:[123][sp]|P)¬:A
+        <<- ~4:9>> *
+
+TEST: Le conflit entre la Malaisie et l’Indonésie s’est récemment aggravé.
 
 
 __purge_pronoms_après_sujet_verbe__
