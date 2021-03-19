@@ -3034,6 +3034,10 @@ __da_devant__
     devant $:B [euros|dollars|francs]
         <<- =>> select(\1, ":V")
 
+    devant $:D¬:R [>administration|>appartement|>arsenal|>bar|>bibliothèque|>boucherie|>boulangerie|>boutique|>building|>bureau|>bâtiment|>cabinet|>camp|>caserne|>casernement|>champ|>chemin|>château|>cité|>collège|>dortoir|>fac|>forêt|>garage|>hospice|>hypermarché|>hôpital|>hôtel|>immeuble|>librairie|>lycée|>magasin|>mairie|>maison|>manoir|>navire|>palais|>parking|>prairie|>pub|>rectorat|>restaurant|>route|>rue|>stade|>supermarché|>tour|>université|>usine|>vaisseau|>villa|>ville|>école|>épicerie]
+        <<- =>> select(\1, ":R")
+
+
 __da_derrière__
     derrière [<end>|,|)]
         <<- not morph(<1, ":D.*:[me]:[si]") =>> select(\1, ":W")
@@ -4306,16 +4310,21 @@ __locutions_dates_mois__
     dans la nuit du         [1er|1ᵉʳ|~^\d\d?$]  ?{_mois_}¿ au  [1er|1ᵉʳ|~^\d\d?$]  {_mois_} ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
         <<- &>> :LW;T
 
-    au cours         [de|d’]    {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    au cours du mois [de|d’]    {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-        <<- &>> :LW;T
-
-    à l’ orée du mois [de|d’]   {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    à [compter|partir] [de|d’]  {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    ?jusqu’¿ [en|à]             {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    [avant|après]               {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    [dès|depuis|de|d’]          {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
-    par rapport au              {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    au cours [de|d’]                    {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    au cours du mois [de|d’]            {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    à l’ orée du mois [de|d’]           {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    à [compter|partir] [de|d’]          {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    à [compter|partir] du mois [de|d’]  {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    ?jusqu’¿ [en|à]                     {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    ?jusqu’¿ au mois [de|d’]            {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    ?d’¿ [avant|après]                  {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    ?d’¿ [avant|après] le mois [de|d’]  {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    [dès|depuis]                        {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    [dès|depuis] le mois [de|d’]        {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    [de|d’]                             {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    du mois [de|d’]                     {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    par rapport à                       {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
+    par rapport au mois [de|d’]         {_mois_}  ?[dernier|passé|précédent|prochain|~^[0-9]{2,5}$]¿
         <<- &>> :LW;T
 
     ?[à|avant|après|de|d’|depuis]¿ [début|milieu|fin] {_mois_} ?~^[0-9]{2,5}$¿
@@ -4898,6 +4907,7 @@ __locutions_temporelles_diverses__
     comme d’ [habitude|hab]
     comme toujours
     dans [ma|ta|sa|notre|votre|leur] prime jeunesse
+    dans les bons [et|ou|comme] dans les mauvais jours
     dans un lointain passé
     depuis belle lurette
     depuis des lustres
@@ -5076,8 +5086,112 @@ __locutions_fois__
     une fois n’ est pas coutume
     une ?bonne¿ fois pour toutes
     une prochaine fois
-    une seule fois
         <<- not morph(<1, ":R") &>> :LW;T
+
+    une seule fois
+    une ou deux fois
+    deux ou trois fois
+    trois ou quatre fois
+    quatre ou cinq fois
+    cinq ou six fois
+    six ou sept fois
+    huit ou neuf fois
+    neuf ou dix fois
+    dix ou onze fois
+    onze ou douze fois
+    douze ou treize fois
+    treize ou quatorze fois
+    quatorze ou quinze fois
+    quinze ou seize fois
+    seize ou dix-sept fois
+    dix-sept ou dix-huit fois
+    dix-huit ou dix-neuf fois
+    dix-neuf ou vingt fois
+    vingt ou trente fois
+    trente ou quarante fois
+    quarante ou cinquante fois
+    cinquante ou soixante fois
+    soixante ou soixante-dix fois
+    quatre-vingts ou quatre-vingt-dix fois
+    quatre-vingt-dix ou cent fois
+    cent ou deux cents fois
+    deux cents ou trois cents fois
+    trois cents ou quatre cents fois
+    quatre cents ou cinq cents fois
+    cinq cents ou six cents fois
+    six cents ou sept cents fois
+    sept cents ou huit cents fois
+    huit cents ou neuf cents fois
+    neuf cents ou mille fois
+    mille ou deux mille fois
+    deux ?mille¿ ou trois mille fois
+    trois ?mille¿ ou quatre mille fois
+    quatre ?mille¿ ou cinq mille fois
+    cinq ?mille¿ ou six mille fois
+    six ?mille¿ ou sept mille fois
+    sept ?mille¿ ou huit mille fois
+    huit ?mille¿ ou neuf mille fois
+    neuf ?mille¿ ou dix mille fois
+    onze ?mille¿ ou douze mille fois
+    douze ?mille¿ ou treize mille fois
+    treize ?mille¿ ou quatorze mille fois
+    quatorze ?mille¿ ou quinze mille fois
+    quinze ?mille¿ ou seize mille fois
+    seize ?mille¿ ou dix-sept mille fois
+    dix-sept ?mille¿ ou dix-huit mille fois
+    dix-huit ?mille¿ ou dix-neuf mille fois
+    dix-neuf ?mille¿ ou vingt mille fois
+    vingt ?mille¿ ou trente mille fois
+    trente ?mille¿ ou quarante mille fois
+    quarante ?mille¿ ou cinquante mille fois
+    cinquante ?mille¿ ou soixante mille fois
+    soixante ?mille¿ ou soixante-dix mille fois
+    quatre-vingts ?mille¿ ou quatre-vingt-dix mille fois
+    quatre-vingt-dix ?mille¿ ou cent mille fois
+    cent ?mille¿ ou deux cents mille fois
+    deux ?cents¿ ou trois cents mille fois
+    trois ?cents¿ ou quatre cents mille fois
+    quatre ?cents¿ ou cinq cents mille fois
+    cinq ?cents¿ ou six cents mille fois
+    six ?cents¿ ou sept cents mille fois
+    sept ?cents¿ ou huit cents mille fois
+    huit ?cents¿ ou neuf cents mille fois
+    neuf cents mille ou un million de fois
+    une ou deux million de fois
+    deux ou trois million de fois
+    trois ou quatre million de fois
+    quatre ou cinq million de fois
+    cinq ou six million de fois
+    six ou sept million de fois
+    huit ou neuf million de fois
+    neuf ou dix million de fois
+    dix ou onze million de fois
+    onze ou douze million de fois
+    douze ou treize million de fois
+    treize ou quatorze million de fois
+    quatorze ou quinze million de fois
+    quinze ou seize million de fois
+    seize ou dix-sept million de fois
+    dix-sept ou dix-huit million de fois
+    dix-huit ou dix-neuf million de fois
+    dix-neuf ou vingt million de fois
+    vingt ou trente million de fois
+    trente ou quarante million de fois
+    quarante ou cinquante million de fois
+    cinquante ou soixante million de fois
+    soixante ou soixante-dix million de fois
+    quatre-vingts ou quatre-vingt-dix million de fois
+    quatre-vingt-dix ou cent million de fois
+    cent ou deux cents million de fois
+    deux ou trois cents million de fois
+    trois ou quatre cents million de fois
+    quatre ou cinq cents million de fois
+    cinq ou six cents million de fois
+    six ou sept cents million de fois
+    sept ou huit cents million de fois
+    huit ou neuf cents million de fois
+    neuf ou mille million de fois
+        <<- not morph(<1, ":[BR]") &>> :LW;T
 
 __locutions_circonstances__
     dans d’ autres circonstances
@@ -5358,7 +5472,7 @@ __locutions__
     à [mes|tes|ses|nos|vos|leurs] [côtés|dépens|trousses]
     à [mes|tes|ses|nos|vos|leurs] risques et périls
     à [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
-    à [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
+    à [ma|ta|sa|notre|votre|leur] ?très¿ grande [surprise|tristesse]
     à [ma|ta|sa|notre|votre|leur] juste mesure
     à [mon|ton|son|notre|votre|leur] [avis|détriment|encontre|égard|gré|insu|sujet|tour]
     à [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
@@ -5374,13 +5488,13 @@ __locutions__
     à partir [de|d’]  rien
     à pas [de|d’] [géant|loup|tortue|velours]
     à pas feutrés
+    à peine
     à personne en danger
     à perte [de|d’] vue
     à petit feu
     à ?[si|très|trop|plus|moins]¿  petite [dose|échelle]
     à ?[si|très|trop]¿ peu [de|d’] choses près
     à ?[si|très|trop]¿ peu [de|d’] frais
-    à peine
     à peu près
     à pied d’ œuvre
     à pieds joints
@@ -5746,7 +5860,7 @@ __locutions__
     [de|d’] [mon|ton|son|notre|votre|leur] propre [cru|chef|fait]
     [de|d’] [mon|ton|son|notre|votre|leur] vivant
     [de|d’] [ma|ta|sa|notre|votre|leur] part
-    [de|d’] [ma|ta|sa|notre|votre|leur] propre volonté
+    [de|d’] [ma|ta|sa|notre|votre|leur] propre [initiative|volonté]
     derrière tout [cela|ceci|ça]
     des pieds à la tête
     Dieu [m’|t’|l’|nous|vous|les] en [garde|préserve]
@@ -5948,6 +6062,7 @@ __locutions__
     jusqu’ à satiété
     jusqu’ à un certain point
     jusqu’ à l’ écœurement
+    jusqu’ à ?en¿ perdre le souffle
     jusqu’ au trognon
     jusque-là
     [de|d’] là
@@ -5974,7 +6089,7 @@ __locutions__
     le cœur battant la chamade
     le cœur ?[plus|moins|si|très]¿ [léger|gros|serré]
     le moins du monde
-    le moment venu
+    les bras ballants
     les [choses|événements|évènements] suivant leur cours ?[endiablé|effréné|frénétique|implacable|inarrêtable]¿
     loin d’ être
     loin s’ en [faut|fallait]
@@ -8009,7 +8124,7 @@ TEST: Dans ce drive in douze hommes mangent.
 
 
 __tu_préfixe_mi__
-    mi  @:[NAQ]¬:G
+    mi  @:[NA]¬:G
         <<- /tu/ not value(\2, "|a|dièse|") ->> mi-\2                       && S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: J’ai été engagé pour un {{mi temps}}.                                     ->> mi-temps
@@ -19331,7 +19446,7 @@ __substantifs_multi_mots__
     >monnaie [de|d’] [échange|réserve|singe]
     >montée en puissance
     >montre à gousset
-    >mot [de|d’] passe
+    >mot [de|d’] [passe|travers]
     >mot d’ ordre
     >moteur [>essence|>diésel|>diesel]
     >moteur à réaction
@@ -19546,6 +19661,7 @@ __substantifs_multi_mots__
     >sonnette d’ alarme
     >sortie [de|d’] secours
     >soue à >cochon
+    >soupir [de|d’] [exaspération|soulagement]
     >sourate [*NUM|$:B] ?,¿ verset [*NUM|$:B]
     >sourire [de|d’] [complaisance|connivence|contentement|convenance]
     >souvenir d’ enfance
@@ -20218,6 +20334,10 @@ __purge_avant_adjectifs_adverbes__
 
     [plus|moins|peu] @:[AQW]
         <<- ~1>> *
+
+    [plus|moins] @:[AQW] qu’ à l’ [accoutumée|ordinaire]
+    [plus|moins] @:[AQW] [que|qu’] d’ habitude
+        <<- ~3:0>> *
 
     plus $:W que jamais
         <<- ~>> *
