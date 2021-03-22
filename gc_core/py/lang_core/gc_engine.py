@@ -278,7 +278,7 @@ class TextParser:
         # parse sentences
         sText = self._getCleanText()
         for iStart, iEnd in text.getSentenceBoundaries(sText):
-            if 4 < (iEnd - iStart) < 2000:
+            if 2 < (iEnd - iStart) < 3000:
                 try:
                     self.sSentence = sText[iStart:iEnd]
                     self.sSentence0 = self.sText0[iStart:iEnd]

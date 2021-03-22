@@ -1807,6 +1807,23 @@ TEST: Allons (re)voir ce film
 TEST: et ce malgré [une] condamnation pénale.
 
 
+!!
+!!
+!!!! Typographie des unités de mesure                                                             !!
+!!
+!!
+
+__typo_unités__
+    *NUM [Kg|KG]
+        <<- /typo/ space(\1, 1, 1) -2:>> kg                                 && Le symbole du kilogramme est “kg” toujours en minuscules.|https://fr.wiktionary.org/wiki/kg
+
+    *NUM L
+        <<- /typo/ space(\1, 1, 1) -2:>> l|ℓ                                && Le symbole du litre est préférablement “l” (minuscule) ou éventuellement le symbole typographique dédié “ℓ” (désuet).
+
+TEST: masse : 2 {{KG}}                                          ->> kg
+TEST: masse : 2,4 {{Kg}}                                        ->> kg
+TEST: volume : 3 {{L}}                                          ->> l|ℓ
+
 
 !!
 !!
@@ -1875,33 +1892,23 @@ TEST: A., dans le meilleur des cas, s’abstenait de tout commentaire
 
 
 __virg_pronoms__
-    <start> moi je
-    <start> toi tu
-    <start> lui il
     <start> elle elle
     <start> nous nous nous
     <start> vous nous nous
-    <start> eux ils
     <start> elles elles
     <start> iels iels
         <<- /virg/ -2>> \2,                                                 && Mettez une virgule pour mettre ce pronom en incise.
 
-    <start> moi aussi je
-    <start> toi aussi tu
-    <start> lui aussi il
     <start> elle aussi elle
     <start> iel aussi iel
     <start> nous aussi nous nous
     <start> vous aussi nous nous
-    <start> eux aussi ils
     <start> elles aussi elles
     <start> iels aussi iels
         <<- /virg/ -2:3>> \2 \3,                                            && Mettez une virgule pour mettre ce pronom en incise.
 
-TEST: {{Nous}} nous nous sommes                                             ->> Nous,
-TEST: {{moi}} je suis là                                                    ->> moi,
-TEST: {{elles aussi}} elles savent s’y prendre                              ->> elles aussi,
-TEST: {{iel aussi}} iel connaît son affaire                                 ->> iel aussi,
+TEST: {{nous}} nous nous sommes fâchés avec tout le monde                   ->> nous,
+TEST: {{elle aussi}} elle est malade                                        ->> elle aussi,
 
 
 # Fin de paragraphe
@@ -5885,7 +5892,7 @@ __locutions__
     du tac au tac
     du tout au tout
     eh bien
-    en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|distanciel|douce|effet|émoi|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|présentiel|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
+    en [aparté|apparence|arrière|avance|avant|catimini|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|distanciel|douce|effet|émoi|enfilade|filigrane|général|goguette|hâte|loucedé|majorité|moyenne|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|présentiel|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|tapinois|théorie|trompe-l’œil|vain|vérité]
     en réalité ?[augmentée|virtuelle]¿
     en âge [de|d’] procréer
     en aucun cas
@@ -6099,6 +6106,7 @@ __locutions__
     le moins du monde
     les bras ballants
     les [choses|événements|évènements] suivant leur cours ?[endiablé|effréné|frénétique|implacable|inarrêtable]¿
+    les larmes aux yeux
     loin d’ être
     loin s’ en [faut|fallait]
     malgré [ça|cela|ceci|tout]
@@ -6219,6 +6227,13 @@ __locutions__
     [que|qu’] vous vous en réjouissez ou que vous le déploriez
     qu’ [ils|elles|iels] s’ en réjouissent ou qu’ [ils|elles|iels] le déplorent
     ##
+    que j’ en [aie|eusse] conscience ou non
+    que tu en [aies|eusses] conscience ou non
+    qu’ [il|elle|iel] en [ait|eût] conscience ou non
+    que nous en [ayons|eussions] conscience ou non
+    que vous en [ayez|eussiez] conscience ou non
+    qu’ [ils|elles|iels] en [aient|eussent] conscience ou non
+    ##
     quel qu’ en soit [le|l’] [moyen|prix|danger]
     quel qu’ en soit [le|l’] risque ?[économique|financier|légal|juridique|militaire]¿
     quelle qu’ en soit la [cause|raison]
@@ -6289,6 +6304,7 @@ __locutions__
     sans [croiser|rencontrer|voir] âme qui vive
     sans ?jamais¿ [ciller|flancher|tergiverser]
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer [de|d’] respect
+    sans y aller par [quatre|4] chemins
     sans y [croire|parvenir|réussir|réfléchir|songer|penser]
     sans y [faire|prêter] attention
     sans y prendre [garde|goût|gout|ombrage]
@@ -6477,9 +6493,9 @@ TEST: le {{puits de dôme}}                                      ->> Puy-de-Dôm
 !!
 !!
 # presque : élision
-__typo_presque__
+__eleu_presque__
     presqu’  *WORD
-        <<- /typo/ not morph(\2, ">[iî]le/") -1>> "presque "            && Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+        <<- /eleu/ not morph(\2, ">[iî]le/") -1>> "presque "            && Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
 
 TEST: {{Presqu’}}exclusivement bâtie en pierre.                 ->> "Presque "
 TEST: C’est une presqu’île.
@@ -6487,9 +6503,9 @@ TEST: Cette presqu’ile est particulièrement venteuse.
 
 
 # quelque : élision
-__typo_quelque__
+__eleu_quelque__
     quelqu’  *WORD
-        <<- /typo/ not value(\2, "|un|une|") -1>> "quelque "            && Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+        <<- /eleu/ not value(\2, "|un|une|") -1>> "quelque "            && Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
 
 TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.          ->> "Quelque "
 TEST: quelqu’un vient.
@@ -19031,6 +19047,7 @@ __substantifs_multi_mots__
     >bonnet [de|d’] nuit
     [bonne+s|>bonniche] à tout faire
     >bordereau d’ expédition
+    >bouche d’ aération
     >boucle d’ >oreille
     >bouée [de|d’] sauvetage
     >bouffée d’ air [frais|pur]
@@ -19181,7 +19198,7 @@ __substantifs_multi_mots__
     >date d’ expiration
     >débat sans fin
     >déclaration sur l’ honneur
-    >défaut [de|d’] paiement
+    >défaut [de|d’] [conception|fabrication|paiement]
     >degré d’ arc
     >délai [de|d’] [attente|carence|connexion|prescription|préavis|rétraction|rigueur]
     >demande d’ asile
@@ -19280,6 +19297,7 @@ __substantifs_multi_mots__
     >fiche S
     >fil à retordre
     >file d’ attente
+    >filet [de|d’] sécurité
     >fille à [papa|maman|>soldat]
     >fille au pair
     >fille [de|d’] [*NUM|$:B] ans
@@ -19510,6 +19528,7 @@ __substantifs_multi_mots__
     >palais d’ [été|hiver]
     >panier à linge
     >papier à [>lettre|musique]
+    >papier d’ emballage
     >parc à [bestiaux|thème]
     >parc d’ attractions
     >parc [de|d’] stationnement
@@ -19626,10 +19645,11 @@ __substantifs_multi_mots__
     >retour à la normale
     >retour [de|d’] [bâton|flamme]
     >retour en arrière
+    >rêve d’ enfance
     revers [de|d’] fortune
     >revue [de|d’] presse
     >rivière à sec
-    >robe [de|d’] [chambre|soirée]
+    >robe [de|d’] [chambre|mariée|soirée]
     >robe du soir
     >robe sans >manche
     >roi [de|d’] [carreau|cœur|pique|trèfle]
@@ -19789,8 +19809,9 @@ __substantifs_multi_mots__
     >volée [de|d’] bois vert
     >voie à double sens
     >voie à sens unique
-    >voiture [de|d’] [location|luxe]
+    >voiture [de|d’] [location|luxe|sport]
     >vote par correspondance ?électronique¿
+    >voyage [de|d’] noces
     [vue+s] d’ ensemble
     >wagon à bestiaux
     >zone [de|d’] [confort|non-droit]
@@ -29957,6 +29978,30 @@ __purge_pronoms_après_sujet_verbe__
     elles       ?[ne|n’]¿   >être       elles-mêmes
     iels        ?[ne|n’]¿   >être       iels-mêmes
         <<- ~-1>> *
+
+
+__purge_pronoms_objets__
+    [<start>|,|(] moi je
+    [<start>|,|(] toi tu
+    [<start>|,|(] lui il
+    [<start>|,|(] elle elle
+    [<start>|,|(] nous nous nous
+    [<start>|,|(] vous nous nous
+    [<start>|,|(] eux ils
+    [<start>|,|(] elles elles
+    [<start>|,|(] iels iels
+        <<- ~2>> *
+
+    [<start>|,|(] moi aussi je
+    [<start>|,|(] toi aussi tu
+    [<start>|,|(] lui aussi il
+    [<start>|,|(] elle aussi elle
+    [<start>|,|(] nous aussi nous nous
+    [<start>|,|(] vous aussi nous nous
+    [<start>|,|(] eux aussi ils
+    [<start>|,|(] elles aussi elles
+    [<start>|,|(] iels aussi iels
+        <<- ~2:3>> *
 
 
 __purge_prep_pronom_comparaison__
