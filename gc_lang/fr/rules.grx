@@ -2998,6 +2998,11 @@ __da_certains_certaines__
     certaines @:3p¬:(?:G|[NA].*:[fe]:[pi]|V.e)
         <<- not morph(<1, ":[NAD].*:[fe]:[pi]") =>> select(\1, ":O")
 
+    certains d’ entre [nous|vous|eux|iels]
+    certaines d’ entre [nous|vous|elles|iels]
+        <<- =>> select(\1, ":G")
+
+
 __da_contre__
     contre {_pronom_obj_}
     contre la montre
@@ -3746,7 +3751,7 @@ __locutions_prépositives__
     à [bord|bout|charge|cause|contre-courant|côté|défaut|destination|disposition|distance|droite]                       [de|du|d’|des]
     à [flanc|gauche|hauteur|mesure|mi-chemin|portée|proximité|propos|raison|rebours]                                    [de|du|d’|des]
     à [compter|partir]                                                                                                  [de|du|d’|des]
-    à [base|concurrence|court|titre]                                                                                    [de|d’]
+    à [base|concurrence|contre-courant|court|titre]                                                                     [de|d’]
     à [bonne|faible|grande] distance                                                                                    [de|du|d’|des]
     à peu [de|d’] distance                                                                                              [de|du|d’|des]
     à l’ [abri|adresse|affût|affut|approche|arrière|attention|aune|aulne|avant]                                         [de|du|d’|des]
@@ -3865,6 +3870,7 @@ __fusions_noms_communs__
     machine [learning+s]
     standing >ovation
     star [system+s]
+    qr >code
     quantitative easing
     R & D
     think >tank
@@ -4480,6 +4486,7 @@ __locutions_horaires_et_durée__
     à toute heure du jour
     à toute heure du jour et de la nuit
     à une heure ?[aussi|très|trop]¿ [décente|indue|tardive]
+    à [mes|tes|ses|nos|vos|leurs] heures perdues
     au jour et à l’ heure dits
     au cours de la [dernière|précédente|prochaine] [seconde|minute|heure]
     au cours de l’ heure ?[dernière|passée|précédente|prochaine]¿
@@ -4708,7 +4715,6 @@ __locutions_temporelles_communes__
         <<- &>> :LW;T
 
 
-
 __locutions_temps_après_avant__
     peu de          [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   [après|avant]
     plusieurs       [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   [après|avant]
@@ -4740,6 +4746,7 @@ __locutions_temps_après_avant__
     $:B             [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   auparavant
     $:B             [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|ans|décennies|siècles|millénaires]   plus [tôt|tard]
         <<- not morph(<1, ":B") &>> :LW;T
+
 
 __locutions_énumération_temporelle__
     [de|d’] nanoseconde   en  nanoseconde
@@ -4847,7 +4854,7 @@ __locutions_temps__
     par temps [de|d’] pluie
     pendant ce temps-là
     pendant quelque temps
-    pendant un [court|certain|petit] laps de temps
+    pendant [ce|un] ?[court|certain|petit]¿ laps de temps
     pendant qu’ il ?en¿ est ?encore¿ temps
     peu [de|d’] temps auparavant
     pour quelque temps
@@ -4910,6 +4917,7 @@ __locutions_temporelles_diverses__
     [d’|dès|jusqu’|pour|après|avant] après-demain
     après cette date ?fatidique¿
     au commencement
+    au [coucher|lever] du soleil
     au début
     au fur et à mesure
     au jour j
@@ -4924,11 +4932,6 @@ __locutions_temporelles_diverses__
     dans [ma|ta|sa|notre|votre|leur] prime jeunesse
     dans les bons [et|ou|comme] dans les mauvais jours
     dans un lointain passé
-    depuis belle lurette
-    depuis des lustres
-    depuis lors
-    depuis toujours
-    depuis un bail
     dès à présent
     dès [demain|hier] ?[soir|matin|après-midi]¿
     dès [maintenant|lors|aujourd’hui]
@@ -4964,6 +4967,13 @@ __locutions_temporelles_diverses__
     [de|d’] nos jours
     [de|d’] si bon matin
     [de|d’] toute éternité
+    depuis belle lurette
+    depuis des lustres
+    depuis [la|ma|ta|sa|notre|votre|leur] [petite|prime] enfance
+    depuis lors
+    depuis que le monde [est|était] monde
+    depuis toujours
+    depuis un bail
     en début [de|d’] [journée|matinée|soirée|après-midi]
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
     en fin [de|d’] [journée|matinée|soirée|après-midi]
@@ -4985,8 +4995,8 @@ __locutions_temporelles_diverses__
     jusqu’ à ce que tu en saches plus
     jusqu’ à ce que vous en sachiez plus
     jusqu’ à la dernière [minute|seconde]
-    jusqu’ à la fin
-    jusqu’ à la fin [de|d’] [mes|tes|ses|nos|vos|leurs] jours
+    jusqu’ à la ?toute¿ fin
+    jusqu’ à la ?toute¿ fin [de|d’] [mes|tes|ses|nos|vos|leurs] jours
     jusqu’ à la tombée [de|d’] la nuit
     jusqu’ à épuisement
     jusqu’ à épuisement ?[presque|quasi|vraiment]¿  [absolu|complet|total]
@@ -5341,6 +5351,7 @@ __locutions_latines__
     ne varietur
     pro domo
     recto tono
+    urbi [et|&] orbi
         <<- &>> :LW
 
     in anima vili
@@ -5645,9 +5656,17 @@ __locutions__
     aussi [con|étonnant|habile|idiot|inattendu|insolite|invraisemblable|maladroit|stupide|surprenant] [que|qu’] que [cela|ceci|ça] puisse [paraitre|paraître]
     aux [abois|aguets|miens|miennes|tiens|tiennes|siens|siennes|nôtres|vôtres|leurs]
     autant [que|qu’] à l’ accoutumée
-    autant [que|qu’] de coutume
+    autant [que|qu’] [de|d’] coutume
     autant [que|qu’] [nécessaire|possible|prévu]
     autant [que|qu’] faire se peut
+    ##
+    autant [que|qu’] je [puisse|pusse] en juger
+    autant [que|qu’] tu [puisses|pusses] en juger
+    autant qu’ [il|elle|iel|on] [puisse|pût] en juger
+    autant [que|qu’] nous [puissions|pussions] en juger
+    autant [que|qu’] vous [puissiez|pussiez] en juger
+    autant [que|qu’] [ils|elles|iels] [puissent|pussent] en juger
+    ##
     autrement dit
     avant tout le monde
     avant toute chose
@@ -5913,6 +5932,7 @@ __locutions__
     en ?[assez|si|très|trop]¿ bon état [de|d’] [fonctionnement|marche]
     en ?[assez|si|très|trop]¿ bonne [compagnie|logique|place|posture|voie]
     en bonne et due forme
+    en bonne logique
     en ?[assez|si|très|trop]¿ bonne santé ?[générale|physique|mentale|psychique]¿
     en bout [de|d’] course
     en cas [de|d’] besoin ?[absolu|impérieux]¿
@@ -5979,6 +5999,7 @@ __locutions__
     en nombre plus [que|qu’] suffisant
     en odeur [de|d’] sainteté
     en ordre [dispersé|serré]
+    en pareil cas
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
@@ -6176,6 +6197,7 @@ __locutions__
     par [un|le] simple effet du hasard
     par tous les moyens [imaginables|possibles]
     par toutes les méthodes [imaginables|possibles]
+    par voie [maritime|terrestre]
     partant [de|d’] là
     pas du tout
     pas [le|l’] moins du monde
@@ -6288,8 +6310,9 @@ __locutions__
     sans faire [de|d’] vagues
     sans foi ?,¿ ni loi
     sans grand résultat
+    sans la moindre hésitation
     sans [le|l’] faire exprès
-    sans [le|l’] moindre scrupule
+    sans [le|l’] moindre [doute|scrupule]
     sans [le|l’] vouloir
     sans l’ aide [de|d’] personne
     sans l’ ombre d’ un doute
@@ -6400,7 +6423,6 @@ __locutions__
     un peu partout
     un tant soit peu
     un tout petit peu
-    urbi et orbi
     vaille que vaille
     ventre à terre
     vers nulle part
@@ -6456,10 +6478,12 @@ __locutions_x_par_après_x__
     grain [après|par] grain
     graine [après|par] graine
     homme [après|par] homme
+    lettre [après|par] lettre
     ligne [après|par] ligne
     livre [après|par] livre
-    maison [après|par] maison
     machine [après|par] machine
+    maison [après|par] maison
+    marche [après|par] marche
     morceau [après|par] morceau
     mot [après|par] mot
     niveau [après|par] niveau
@@ -6471,6 +6495,7 @@ __locutions_x_par_après_x__
     page [après|par] page
     pays [après|par] pays
     pièce [après|par] pièce
+    plat [après|par] plat
     poignée [après|par] poignée
     quartier [après|par] quartier
     région [après|par] région
@@ -11487,6 +11512,12 @@ TEST: elle nous {{à}} pris par suprise.                                 ->> a
 TEST: Cette femme {{à}} été confondue avec une autre.                   ->> a
 
 
+    à [honte|peur] [de|d’|du|des]
+        <<- /conf/ -1>> a                                           && Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+TEST: la petite {{à}} peur des cafards                                  ->> a
+
+
     qui  à  $:Q¬:M
         <<- /conf/ \3.islower() -2>> a                              && Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
@@ -12714,6 +12745,14 @@ TEST: Elles avaient bien l’intention d’en parler.
 TEST: J’ai mis ces trésors de côté spécialement à votre intention
 
 
+# auparavant
+__conf_auparavant__
+    [>nanoseconde|>milliseconde|>seconde|>minute|>heure|>jour|>journée|>semaine|mois|>trimestre|>semestre|>an|>année|>décennie|>siècle|>millénaire] au paravent
+        <<- /conf/ -2:3>> auparavant        && Confusion probable. Si vous voulez désigner un moment antérieur, écrivez “auparavant”.|https://fr.wiktionary.org/wiki/auparavant
+
+TEST: deux ans {{au paravent}}                                          ->> auparavant
+
+
 # au temps / autant
 __loc_au_temps_pour_moi__
     !! au temps pour moi ¡¡
@@ -12966,7 +13005,7 @@ __conf_se_ceux_ce!6__
     [ne|n’] [c’|ç’]
         <<- /conf/ -2>> s’                              && Confusion. Ce chien, ce chat… Se demander, se croire…
 
-    qui  ce  @:V¬:[NAQ].*:[me]
+    qui  ce  @:V¬:[NAQ].*:[me]|>être/
         <<- /conf/ -2>> se                              && Confusion probable. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
 
     [ça|cela|ceci] >finir <> par ce savoir
@@ -12986,6 +13025,7 @@ TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, étei
 TEST: à qui ce texte doit tant, à qui ce texte est dédié
 TEST: il y aurait, ce faisant, des complications interminables.
 TEST: Ce en quoi personne ne trouvera à redire.
+TEST: Mais qui ce serait alors ?
 
 
 # ce à quoi
@@ -13289,11 +13329,16 @@ __conf_coup_cout_cou1__
     la bride sur le [coup|coût|cout]
         <<- /conf/ --1>> cou            && Confusion probable. Le coût est le prix d’une chose. Le coup est ce qui frappe. Le cou est la partie joignant le tronc à la tête.|https://fr.wiktionary.org/wiki/cou
 
+    [un|le] [>coût|>cout|>cou] d’ avance
+    [un|le] [>coût|>cout|>cou] [de|d’] retard
+        <<- /conf/ -2>> coup                    && Confusion. Locution “avoir un coup d’avance” ou un “coup de retard”.
+
     [>cou|>coût|>cout] [au-dessous|en-dessous] [de|d’] la ceinture
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hachette|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|monté+s|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>crayon|>dé|>dent|>déprime|>éponge|>feu|>froid|fil|>filet|>folie|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hachette|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>menton|monté+s|>nostalgie|>pied|>poing|>poignard|>poignet|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>semonce|>sonnette|>sifflet|>soleil|>sonde|>sort|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>arrêt|>éclat|>épée|>état|>épaule|œil|oeil|>estoc]
     [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur+s]
+    [>cou|>coût|>cout] monté
     >cou d’ envoi
         <<- /conf/ -1>> coup|coups      && Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
 
@@ -13368,6 +13413,7 @@ __conf_cour_cours_court_courre__
         || [>administration|>agriculture|>agronomie|>art|>biologie|>chant|>commerce|>culture|>cristallographie|conduite|>cuisine|>danse|>dessin|>ébénisterie|>écriture|>épistémologie|>droit|>éducation|>électronique|>électrotechnique|>élocution|>éthique|>géographie|>gestion|>histoire|>karaté|>kung-fu|>informatique|>interpellation|>langue|>lettre|>littérature|>orientation|>moral|maintien|>mathématique|>math|>mécanique|>médecine|>menuiserie|>musique|>odontologie|>pâtisserie|>peinture|>philosophie|>philo|>physique|>programmation|>psychologie|>science|>sport|>théâtre|>théologie]
         <<- /conf/ -2>> cours                               && Confusion probable : “court” signifie “de peu de longueur”. Pour un enseignement, écrivez “cours”.|https://fr.wiktionary.org/wiki/cours
 
+TEST: ils ont un {{cou}} d’avance                                       ->> coup
 TEST: au {{court}} de cette journée                                     ->> cours
 TEST: les exercices {{en cour}} se déroulent bien.                      ->> en cours
 TEST: elle va en {{court}} de lettres                                   ->> cours
@@ -14826,13 +14872,16 @@ __conf_nez_né__
     !! à vue [de|d’] nez ¡¡
     [à|a] [vu+ses|vut] [de|d’] [né+ses|nais|nait|nez]
         <<- /loc/ ->> à vue de nez                          && Confusion. Locution “à vue de nez”.|https://fr.wiktionary.org/wiki/%C3%A0_vue_de_nez
+        <<- !-1>>
 
     !! nez à nez ¡¡
     [né+ses|ne|nez|nait|nais] [à|a] [né+ses|ne|nez|nait|nais]
         <<- /loc/ ->> nez à nez                             && Confusion. Locution “nez à nez”.|https://fr.wiktionary.org/wiki/nez_%C3%A0_nez
+        <<- !-1>>
 
     [à|a] [mon|ton|son|notre|votre|leur] né
     au [né+ses]
+    du [né+ses]
     [dans|sur|sous] le [né+ses]
     [>crotte|>pied] [de|d’] [né+ses]
     >saignement [de|d’] [né+ses]
@@ -14840,7 +14889,6 @@ __conf_nez_né__
     >pendre ?@:[WX]¿ [au|aux] [né+s]
     >voir ?@:[WX]¿ plus loin [que|qu’] [le|mon|ton|son|notre|votre|leur] [né+ses]
     >voir ?@:[WX]¿ plus loin [que|qu’] le bout [de|d’] [mon|ton|son|notre|votre|leur] [né+ses]
-    >avoir du [né+ses]
         <<- /conf/ --1>> nez                                && Confusion. Pour l’organe olfactif, écrivez “nez”.|https://fr.wiktionary.org/wiki/nez
 
     [né+ses] au vent
@@ -15172,6 +15220,7 @@ __conf_par_le_bout_du_nez__
     !! par le bout du nez ¡¡
     [par|>part|pare+s] [le|l’] [bout|bous] du [né|nez]
         <<- /loc/ ->> par le bout du nez                                    && Confusion. Locution “par le bout du nez”.
+        <<- !-1>>
 
 TEST: se faire mener {{par le bout du né}}.                         ->> par le bout du nez
 
@@ -16533,10 +16582,13 @@ TEST: soit elle était passée par une autre porte
 
 __conf_soie_soi_soit__
     [>drap|>chemise|>chemisier|>mouchoir|>nuisette|>robe] [en|de] soi
-        <<- /conf/ -3>> soie                                    && Confusion probable. Pour la matière utilisée dans le textile, écrivez “soie”.
+    de la [soit|soi|sois]
+        <<- /conf/ --1>> soie                                   && Confusion probable. Pour la matière utilisée dans le textile, écrivez “soie”.
+        <<- !2>>
 
 TEST: elle portait une robe en {{soi}}.                                                 ->> soie
 TEST: je n’aime que les draps de {{soi}}.                                               ->> soie
+TEST: la route de la {{soi}}                                                            ->> soie
 
 
 __conf_soit_soi_soie__
@@ -16640,7 +16692,7 @@ TEST: ils ont froid
 
 
 # sot / sceau / seau
-__conf_sot_seau_sceau__
+__conf_sot_seau_sceau1__
     [>sceau|sot+s] d’ [acier|avoine|eau]
     [>sceau|sot+s] [d’|de] [bois|boue|ciment|glace|>glaçon|gravats|>gravier|>gravillon|plage|lait|maçon|nettoyage|peinture|sable]
     [>sceau|sot+s] à [glace|champagne|>glaçon]
@@ -17253,7 +17305,7 @@ TEST: ne pas voir le mal
 TEST: ne jamais voir le mal
 TEST: n’en voir que le mal
 TEST: il risque d’y voir rouge
-
+TEST: Vous voir bien portant est un grand soulagement.
 
 
 
@@ -18199,6 +18251,7 @@ TEST: __neg__ c’est pas mal
 TEST: __neg__ ça devient pas mal
 TEST: __neg__ nous avançons pas mal
 TEST: __neg__ Je suis de beaucoup l’homme le plus terrible qu’il y eut jamais
+TEST: __neg__ ils n’obéiront à personne d’autre
 
 
 !!
@@ -18277,11 +18330,16 @@ TEST: Essayez de ne pas tous chanter en même temps.
 
 
 __infi_de_bon_ton_de__
-    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~(?:é?es?|ez|ai[ts]?)$
-    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~(?:é?es?|ez|ai[ts]?)$
-    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~(?:é?es?|ez|ai[ts]?)$
-    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~(?:é?es?|ez|ai[ts]?)$
-    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [lui|leur|y]                    en                        ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler|>apparaitre|>apparaître] ?[pas|plus|jamais|guère]¿ ?*WORD¿
+        || de bon ton [de|d’] ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler|>apparaitre|>apparaître] ?[pas|plus|jamais|guère]¿ ?*WORD¿
+        || de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler|>apparaitre|>apparaître] ?[pas|plus|jamais|guère]¿ ?*WORD¿
+        || de bon ton [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler|>apparaitre|>apparaître] ?[pas|plus|jamais|guère]¿ ?*WORD¿
+        || de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler|>apparaitre|>apparaître] ?[pas|plus|jamais|guère]¿ ?*WORD¿
+        || de bon ton [de|d’] ?[ne|n’]¿   [lui|leur|y]                    en                        ~(?:é?es?|ez|ai[ts]?)$
         <<- /infi/ morph0(\-1, ":V") --1>> =suggVerbInfi(\-1)                                       && Incohérence. Après “de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
 
 TEST: il est souvent de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.       ->> penser
@@ -18781,6 +18839,9 @@ __purge_conditionnelle__
     au hasard  @:¬:[AQ].*:[me]:[si]
         <<- ~1:2>> *
 
+    au trois quarts [vide|plein]
+        <<- ~1:3>> *
+
     aussi $:W que [nécessaire|possible]
         <<- ~>> *
 
@@ -19046,7 +19107,7 @@ __substantifs_multi_mots__
     >âge d’ or
     >agence d’ interim
     >agence [de|d’] >voyage
-    >agent [de|d’] [liaison|police]
+    >agent [de|d’] [liaison|police|terrain]
     >agité du bocal
     >aide [de|d’] camp
     >aire d’ atterrissage
@@ -19064,12 +19125,11 @@ __substantifs_multi_mots__
     [>arbre|>arbuste|>plant] à feuillage [caduc|persistant]
     [>arbre|>arbuste|>plant] à feuilles [caduques|persistantes]
     >arc à poulies
-    >arme à feu
-    >armée [de|d’] l’ air
-    >armée [de|d’] [occupation|réserve|terre]
-    >arme à enquerre
+    >arme à [enquerre|feu]
     >arme [de|d’] [poing|guerre]
     >arme [de|d’] destruction massive
+    >armée [de|d’] l’ air
+    >armée [de|d’] [occupation|réserve|terre]
     >armoire à [>glace|>pharmacie]
     >argent [de|d’] poche
     >arnaque à l’ assurance
@@ -19106,6 +19166,7 @@ __substantifs_multi_mots__
     [>beauté|>beau] à couper le souffle
     >bête [de|d’] somme
     >billet [de|d’] [*NUM|@:B:.:p] [euros|dollars|centimes|cents|livres|shillings]
+    >billet [de|d’] [avion|train]
     >bisphénol A
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à [bijoux|gants|outils|sardines]
@@ -19169,7 +19230,7 @@ __substantifs_multi_mots__
     >chair [de|d’] poule
     >chalet d’ alpage
     >chambre à [coucher|gaz]
-    >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
+    >chambre [de|d’] [agriculture|ami|enfant|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
     >champion du monde
     >chance [de|d’] [succès|réussite]
     >changement [de|d’] cap
@@ -19215,6 +19276,7 @@ __substantifs_multi_mots__
     >code [de|d’] la route
     >collègue [de|d’] bureau
     >colosse aux pieds d’ argile
+    >combinaison de plongée
     >comité d’ accueil
     >commandant en chef
     >commis d’ office
@@ -19309,6 +19371,7 @@ __substantifs_multi_mots__
     >emploi du temps
     >employé [de|d’] maison
     >enfant [de|d’] [*NUM|$:B] ans
+    >enfant à [charge|naître|naitre]
     >ennemi d’ État
     ennemi public numéro [un|$:B|*NUM]
     ennemie publique numéro [un|une|$:B|*NUM]
@@ -19354,6 +19417,7 @@ __substantifs_multi_mots__
     >femme [de|d’] [*NUM|$:B] ans ?passés¿
     >femme à poigne
     >femme à tout faire
+    >fenêtre à guillotine
     >fer à cheval
     >fer à [repasser|souder]
     >fer [de|d’] lance
@@ -19362,7 +19426,7 @@ __substantifs_multi_mots__
     >fermeture éclair
     >fermoir à [cliquet|levier|ressort]
     >feu d’ artifice
-    >feu [de|d’] [camp|paille|position]
+    >feu [de|d’] [camp|joie|paille|position]
     >feu [de|d’] la rampe
     >feuille [de|d’] route
     >fibre [de|d’] verre
@@ -19424,7 +19488,7 @@ __substantifs_multi_mots__
     >gilet [de|d’] sauvetage
     >goulet d’ étranglement
     >gouvernement d’ union nationale
-    >grain [de|d’] [blé|maïs|sable]
+    >grain [de|d’] [beauté|blé|maïs|sable]
     >grenade [de|d’]  désencerclement
     >grenouille [de|d’] bénitier
     >grève [de|d’] la faim
@@ -19433,6 +19497,7 @@ __substantifs_multi_mots__
     >guerre éclair
     >guerre à outrance
     >guerre d’ usure
+    >guerrier d’ élite
     >hall d’ entrée
     >hall [de|d’] gare
     >harcèlement [de|d’] rue
@@ -19477,7 +19542,7 @@ __substantifs_multi_mots__
     jus [de|d’] chaussettes ?sales¿
     jus [de|d’] >poubelle
     >langue [de|d’] bois
-    >lame [de|d’] fond
+    >lame [de|d’] [fond|rasoir]
     >lampe à [huile|incandescence|pétrole]
     >lampe [de|d’] chevet
     >langage [de|d’] programmation
@@ -19508,6 +19573,7 @@ __substantifs_multi_mots__
     lois [no|nos|n°|nᵒˢ] ~^[0-9]+ du ~^[0-9][0-9]?$ {_mois_} ~^[0-9]{2,5}$ et [no|nos|n°|nᵒˢ] ~^[0-9-]+ du ~^[0-9][0-9]?$ {_mois_} ~^[0-9]{2,5}$
     >longueur d’ avance
     >lopin [de|d’] terre ?[desséchée|glaiseuse|grise|jaune|noire|ocre|rouge|sableuse|sèche]¿
+    >loup [de|d’] mer
     >lune [de|d’] miel
     lunettes [de|d’] [soleil|vue]
     >lutte à outrance
@@ -19519,6 +19585,7 @@ __substantifs_multi_mots__
     >maison à colombages
     >maison [de|d’] [campagne|passe|retraite]
     [>maître|>maitre] d’ hôtel
+    [>maître|>maitre] [de|d’] conférence
     >mal [de|d’] [tête|poitrine|ventre|mer]
     >manche à balai
     >mandat [de|d’] [arrêt|dépôt]
@@ -19570,7 +19637,7 @@ __substantifs_multi_mots__
     >niveau [de|d’] vie
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nom à particule
-    >nom [de|d’] famille
+    >nom [de|d’] [emprunt|famille]
     >notice [de|d’] [montage|utilisation]
     >nounou à domicile
     >nourrice à domicile
@@ -19581,13 +19648,14 @@ __substantifs_multi_mots__
     >numéro IBAN
     >occasion en or ?massif¿
     >œuf [de|d’] Pâques
-    >officier [de|d’] liaison
+    >officier [de|d’] [liaison|renseignement]
     >oiseau [de|d’] [malheur|nuit|proie]
     >oiseau [de|d’] mauvais augure
     >ombre à >paupière
     >ombre au tableau
     >onde [de|d’] choc
-    >opération [de|d’] nuit
+    >opération [de|d’] [nuit|sauvetage]
+    >ordinateur d’ occasion
     >ordre du jour
     orge [perlé|mondé|carré]
     os à ronger
@@ -19613,6 +19681,9 @@ __substantifs_multi_mots__
     >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
     >pavillon [de|d’] chasse
+    pays en développement
+    PC d’ occasion
+    >peignoir [de|d’] bain
     >peinture à l’ huile
     >peloton d’ exécution
     >pendaison [de|d’] crémaillère
@@ -19631,6 +19702,7 @@ __substantifs_multi_mots__
     >pièce [de|d’] *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >pied [de|d’] biche
     >pile à [combustible|hydrogène]
+    >pilote [de|d’] ligne
     >pince à [linge|>ongle]
     [>piqûre|>piqure] [de|d’] rappel
     >piscine à débordement
@@ -19667,6 +19739,7 @@ __substantifs_multi_mots__
     >porte d’ entrée
     >pot [de|d’] [chambre|colle|départ|échappement]
     >poteau d’ exécution
+    >poudre à canon
     >poudre aux yeux
     >poudre d’ escampette
     >poudre [de|d’] perlimpinpin
@@ -19683,6 +19756,7 @@ __substantifs_multi_mots__
     >prisonnier [de|d’] guerre
     prix à payer
     prix [de|d’] revient
+    >promesse en l’ air
     puits [de|d’] [carbone|forage|lumière|pétrole|science]
     >puissance [de|d’] feu
     >punaise [de|d’] lit
@@ -19740,15 +19814,15 @@ __substantifs_multi_mots__
     >route [de|d’] la soie
     [>ru|>ruisseau] à sec
     >ruée vers l’ or
-    >sac à [bandoulière|dos|main|langer|merde|foutre]
+    >sac à [bandoulière|dos|main|langer|merde|foutre|vomi]
     >sac [de|d’] [couchage|sport|voyage]
     >saignement [de|d’] nez
     >salaire à vie
     >salle à manger
-    >salle [de|d’] [attente|>bain|bal|conférence|lecture|séjour|vente]
+    >salle [de|d’] [attente|audience|>bain|bal|conférence|lecture|séjour|vente]
     >salon [de|d’] coiffure
     sas [de|d’] [confinement|décompression|décontamination|désinfection|livraison|protection|secours|sécurité]
-    >scène [de|d’] crime
+    >scène [de|d’] [crime|ménage]
     >sclérose en plaques
     >seau à [champagne|glace]
     >seconde d’ arc
@@ -19776,6 +19850,7 @@ __substantifs_multi_mots__
     >souvenir d’ enfance
     >star du x
     >station [de|d’] [radio|ski]
+    >stylo à bille
     >sujet [de|d’] [prédilection|préoccupation]
     >suspension [de|d’] séance
     >syndicat du crime
@@ -19810,6 +19885,7 @@ __substantifs_multi_mots__
     >terrain [de|d’] jeu
     >terrain d’ entente
     >théâtre [de|d’] boulevard
+    >ticket [de|d’] caisse
     >tigre à dents [de|d’] sabre
     >tigre [de|d’] papier ?mâché¿
     >tir à boulets rouges
@@ -19858,7 +19934,7 @@ __substantifs_multi_mots__
     >valet [de|d’] [carreau|cœur|pique|trèfle]
     >variable d’ ajustement
     >vecteur [>accélération|>position|>rotation|>vitesse]
-    >véhicule [de|d’] location
+    >véhicule [de|d’] [location|occasion]
     >vélo d’ appartement
     >vente à [découvert|domicile|emporter]
     >vente aux enchères
@@ -19882,9 +19958,10 @@ __substantifs_multi_mots__
     >vol à la [sauvette|tire]
     >vol à main armée
     >volée [de|d’] bois vert
+    >volonté [de|d’] fer
     >voie à double sens
     >voie à sens unique
-    >voiture [de|d’] [location|luxe|sport]
+    >voiture [de|d’] [location|luxe|occasion|sport]
     >vote par correspondance ?électronique¿
     >voyage [de|d’] noces
     [vue+s] d’ ensemble
@@ -22680,7 +22757,7 @@ __conf_côte_cote_cotte__
         <<- /conf/ -3>> côtes                                       && Confusion : écrivez “côtes” pour les os du thorax.|https://fr.wiktionary.org/wiki/c%C3%B4te
 
     [>côte|>cotte] [>mobilier|>foncier]
-    [>côte|>cotte] [de|d’] [niveau|popularité|confiance|alerte|altitude|amour]
+    [>côte|>cotte] [de|d’] [crédit|niveau|popularité|confiance|alerte|altitude|amour]
         <<- /conf/ -1>> =\1.replace("ô", "o").replace("tt", "t")    && Confusion : utilisez « cote » pour chiffrer (cotation).|https://fr.wiktionary.org/wiki/cote
 
     [>cote|>côte] de >maille
@@ -22721,16 +22798,20 @@ __conf_coup_cout_cou2__
     >prendre ces jambes à son >cou
         <<- /conf/ -2>> ses                     && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
 
-    >prendre [ses|ces] jambes à son [>cout|>cout|>coup]
+    >prendre [ses|ces] jambes à son [>coût|>cout|>coup]
         <<- /conf/ --1>> cou                    && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
         <<- /conf/ value(\2, "|ces|") -2>> ses  && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
 
-    >prendre mes jambes à mon [>cout|>cout|>coup]
-    >prendre tes jambes à ton [>cout|>cout|>coup]
-    >prendre nos jambes à notre [>cout|>cout|>coup]
-    >prendre vos jambes à votre [>cout|>cout|>coup]
-    >prendre leurs jambes à leur [>cout|>cout|>coup]
+    >prendre mes jambes à mon [>coût|>cout|>coup]
+    >prendre tes jambes à ton [>coût|>cout|>coup]
+    >prendre nos jambes à notre [>coût|>cout|>coup]
+    >prendre vos jambes à votre [>coût|>cout|>coup]
+    >prendre leurs jambes à leur [>coût|>cout|>coup]
         <<- /conf/ --1>> cou                    && Confusion. Locution “prendre ses jambes à son cou”, c’est-à-dire “s’enfuir précipitamment”.|https://fr.wiktionary.org/wiki/prendre_ses_jambes_%C3%A0_son_cou
+
+    en >prendre un [>coût|>cout|>cou]
+    en >avoir pris un [>coût|>cout|>cou]
+        <<- /conf/ --1>> coup                   && Confusion. Le cou est la partie séparant la tête du corps. Le coût indique ce que ça coûte. Pour ce qui frappe, écrivez “coup”.
 
     >rouer de [>cou|>cout|>coût]
         <<- /conf/ --1>> coups                  && Confusion. Le coût indique ce que ça coûte. Le cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
@@ -22760,6 +22841,7 @@ TEST: il a pris {{ces}} jambes à son cou                                       
 TEST: il a pris {{ces}} jambes à son {{cout}}                                           ->> ses|||cou
 TEST: il faut porter un {{cou}} à ces salauds                                           ->> coup
 TEST: encaisser les {{cous}}                                                            ->> coups
+TEST: le moral en a pris un {{cou}}                                                     ->> coup
 
 
 # cuire / cuir
@@ -23047,11 +23129,11 @@ TEST: je veux savoir où et lequel je dois flinguer
 
 
 __conf_été_était__
-    [le|ce|cet|mon|ton|son|notre|votre|leur|du|quel]  *WORD  >été
+    [le|l’|ce|cet|mon|ton|son|notre|votre|leur|du|quel]  *WORD  >été
         <<- /conf/ morph(\2, ":N.*:m:[si]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>[(,]") --1>> était
         && Confusion possible. Si le syntagme “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
-    [la|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]  *WORD  >été
+    [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]  *WORD  >été
         <<- /conf/ morph(\2, ":N.*:f:[si]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>[(,]") --1>> était
         && Confusion possible. Si le syntagme “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
@@ -23064,6 +23146,7 @@ TEST: Quelle solution {{été}} à notre portée ?                             
 TEST: Les questions {{étés}} incompréhensibles.                                     ->> étaient
 TEST: Le bel été indien que nous avons cette année.
 TEST: Quel a été le déclencheur de cet ouvrage ?
+TEST: ces gens qui ont par hasard été frappés par la foudre
 
 
 __conf_faisceau_vaisseau__
@@ -23858,11 +23941,16 @@ __conf_pâte_patte_pat__
     >montrer [>pâte|pat] [blanche+s]
         <<- /conf/ -2:3>> patte blanche                         && Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
 
+    >tirer dans [mes|tes|ses|ces|nos|vos|leurs] [>pâte|pat]
     >retomber sur [mes|tes|ses|ces|nos|vos|leur|leurs] [>pâte|pat]
         <<- /conf/ --1>> pattes                                 && Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
 
     >court sur [>pâte|pat]
         <<- /conf/ --1>> pattes                                 && Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
+
+    !! bas les pattes ¡¡
+    [bas|ba|bat+s|>bât] les [>pâte|pat|patte+s]
+        <<- /loc/ ->> bas les pattes                            && Locution “bas les pattes”.|https://fr.wiktionary.org/wiki/bas_les_pattes
 
 TEST: Prépare la {{patte}} à tarte.                                     ->> pâte|pâtes
 TEST: Ils mangent souvent des {{pattes}} au thon.                       ->> pâte|pâtes
@@ -23877,6 +23965,8 @@ TEST: donne-moi un coup de {{pâte}}                                     ->> pat
 TEST: elle retombe toujours sur ses {{pâtes}}.                          ->> pattes
 TEST: il est court sur {{pâtes}}                                        ->> pattes
 TEST: elle va montrer {{pâte blanche}} et tout ira bien.                ->> patte blanche
+TEST: {{bat les pâtes}}, petit.                                         ->> bas les pattes
+TEST: bas les pattes
 
 
 # péché / pêcher
@@ -24079,8 +24169,12 @@ __conf_pris_prix__
     [>avoir|>être] prix
         <<- /conf/ --1>> pris                                   && Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
 
+    >payer le pris
+        <<- /conf/ --1>> prix                                   && Confusion probable : pour le coût de quelque chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
+
 TEST: elle ne l’a pas {{prix}}, par dépit.                      ->> pris
 TEST: ils ont été {{prix}}.                                     ->> pris
+TEST: il faudra en payer le {{pris}}                            ->> prix
 
 
 # pu / pus
@@ -24329,6 +24423,14 @@ TEST: ça va de {{soie}}                                                 ->> soi
 TEST: cela ne va pas de {{soit}}.                                       ->> soi
 TEST: ça ne va guère de {{soit}}                                        ->> soi
 TEST: ce qui ne va jamais de {{soie}}                                   ->> soi
+
+
+## sot / sceau / seau
+__conf_sot_seau_sceau2__
+    >apposer [un|le|ce|mon|ton|son|notre|votre|leur] [>sot|>seau]
+        <<- /conf/ --1>> sceau                              && Confusion. Écrivez “sceau” pour sceller.|https://fr.wiktionary.org/wiki/sceau
+
+TEST: tu apposeras ce {{sot}} quand on te le dira                       ->> sceau
 
 
 ## soufflet / soufflé
@@ -24652,14 +24754,20 @@ __conf_ver_vers_verre_vert2__
 
     !! >tirer les vers du nez ¡¡
     >tirer les [>verre|verts|vers] du [nez|né]
+        <<- !-1>>
         <<- /conf/ --3:0>> vers du nez
         && Confusion. Locution “tirer les vers du nez”.|https://fr.wiktionary.org/wiki/tirer_les_vers_du_nez
+
+    ver @:[DM]
+        <<- morph(<1, ":V", "*") -1>> vers
+        && Confusion probable. Un ver est un animal invertébré rampant. Pour la préposition signifiant “en direction de”, écrivez “vers”.|https://fr.wiktionary.org/wiki/vers
 
 TEST: On va lui tirer les {{verts du nez}}                              ->> vers du nez
 TEST: il vient {{ver}} moi                                              ->> vers
 TEST: {{verre}} nous, il approchait                                     ->> vers
 TEST: il arriva {{ver}} eux                                             ->> vers
 TEST: nous allâmes {{ver}} Notre-Dame                                   ->> vers
+TEST: il se dirigea {{ver}} la maison                                   ->> vers
 TEST: on va lui tirer les vers du nez
 TEST: il est revenu vert de rage
 
@@ -27645,7 +27753,7 @@ __gn_couleurs_composées!5__
     >bleu [>ciel|>indigo|>marine|>roi|>saphir|>turquoise|>vert]
     >blond >platine
     >gris [>acier|>anthracite|>perle|souris]
-    >vert [>émeraude|>olive|>pistache|>pomme]
+    >vert [>bouteille|>émeraude|>olive|>pistache|>pomme]
         <<- /gn/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
         ->> =suggMasSing(\1) + " " + suggSing(\2)
         && Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
@@ -28512,6 +28620,9 @@ __conf_qui_adj_det_subst__
     qui  $:Q  <end>
         <<- /conf/ not morph(\2, ":3[sp]") -2>> =suggVerb(\2, ":3s")                                && Confusion probable entre participe passé et forme verbale conjuguée.
 
+    qui >été @:[AQY]
+        <<- /conf/ not value(<1, "|ce|") -2>> était|étaient                                         && Confusion probable entre participe passé et forme verbale conjuguée.
+
     [celui|celle]  qui  $:Q¬:G   [ne|n’|me|m’|te|t’|se|s’]
     [celui|celle]  qui  $:Q¬:G   [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
     [celui|celle]  qui  $:Q¬:G   [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
@@ -28533,6 +28644,7 @@ TEST: Qui {{voulu}} la paix ?                                       ->> veut|vo
 TEST: le prix sera pour celui qui {{réussi}}                        ->> réussit|réussissait
 TEST: celui qui {{réussi}} aura la vie éternelle                    ->> réussit|réussissait
 TEST: celles qui {{demandées}} viendront demain.                    ->> demandent|demandaient|demandèrent
+TEST: qui {{été}} déterminé                                         ->> était|étaient
 
 
 __conf_conj_suj_verbe_adj__
@@ -31329,27 +31441,28 @@ __ppas_3sg_mas_verbe_état__
     [<start>|,|(|/_start_] tout ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
     [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
     [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
-        <<- /ppas/ morph(\1, "[123][sp]") --1>> =suggMasSing(\-1)                                                       && Accord avec le sujet “tout” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\1, "[123]s") --1>> =suggMasSing(\-1)                                                          && Accord avec le sujet “tout” : “\-1” devrait être au masculin singulier.
 
-    lui [ne|n’|y]                   /_VE_                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui [ne|n’|y]                   /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui n’ [en|y]                   /_VE_                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui n’ [en|y]                   /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-        <<- /ppas/ not morph(<1, ":[RV]") and not tag(<1, "_ceque_") --1>> =suggMasSing(\-1)    && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+    lui [ne|n’|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui [ne|n’|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui n’ [en|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui n’ [en|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+        <<- /ppas/ not tag(<1, "_ceque_") and morph(\1, ":(?:[123]s|P)") and not morph(<1, ":[RV]")
+        --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “lui” : “\-1” devrait être au masculin singulier.
 
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_") --1>> =suggMasSing(\-1) && Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_") --1>> =suggMasSing(\-1)    && Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
 
     lequel ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     lequel ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
     lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-        <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)                                                          && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)                                      && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[me]:[si])
     [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[me]:[si])
@@ -31464,6 +31577,7 @@ TEST: tout en restant bien sages
 TEST: Celles et ceux qui n’auront que cela seront vraiment appauvris. D’autres, qui seront plus aisés, iront compléter par de la capitalisation.
 TEST: dès que l’occasion lui en fut laissée
 TEST: ç’a été charmant
+TEST: Tareq a dit que les gens comme lui ne peuvent pas devenir pilotes
 
 
 __ppas_3sg_fem_verbe_état__
@@ -36457,6 +36571,7 @@ TEST: Je me doutais bien qu’elle me détestait
 TEST: Ne doute pas qu’il viendra demain.
 TEST: cela tient sans doute à ce qu’ils n’ont pas acquis une connaissance suffisante de la doctrine
 TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
+TEST: Tu devrais te douter que tu es là pour ça.
 
 
 __vmode_s_étonner_que_subjonctif__
