@@ -2418,7 +2418,7 @@ __inte_verbes_composés_interrogatifs__
         <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") ->> =suggVerb(\1, ":1ś", True)                      && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":1[sśŝ]", False, True)    && Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- />> -je|_VCint_
-        <<- value(<1, "|me|m’|") />> _upron_
+        <<- value(<1, "|me|m’|") or value(<2, "|me|m’|") />> _upron_
 
     aie-je
         <<- /vmode/ ->> ai-je                                                                       && Forme interrogative. N’employez pas le subjonctif présent.
@@ -2427,34 +2427,34 @@ __inte_verbes_composés_interrogatifs__
         <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", True)                  && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":2s", False, True)        && Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- />> -tu|_VCint_
-        <<- value(<1, "|te|t’|") />> _upron_
+        <<- value(<1, "|te|t’|") or value(<2, "|te|t’|") />> _upron_
 
     ~\w-[iI]l$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"                    && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)                       && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:t|voilà)/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -il|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[eE]lle$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"          && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)             && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -elle|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[iI]el$
         <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", True) + "|" + \1+"s"          && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)             && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “iel”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -iel|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[oO]n$
         <<- /inte/ morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", True)                          && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   && Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -on|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[cCs]e$
         <<- /inte/ morphVC(\1, ":V", ":(?:3s|V0e.*:3p)")
@@ -2463,25 +2463,25 @@ __inte_verbes_composés_interrogatifs__
         ->> =suggSimil(\1, ":3s", False, True)              && Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- /conf/ \1.endswith("se") ->> =\1[:-2]+"ce"      && Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- />> -ce|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[iI]ls$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -ils|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[eE]lles$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -elles|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
     ~\w-[iI]els$
         <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", True)                          && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   && Forme interrogative. Désaccord avec “iels”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -iels|_VCint_
-        <<- value(<1, "|se|s’|") />> _upron_
+        <<- value(<1, "|se|s’|") or value(<2, "|se|s’|") />> _upron_
 
 TEST: {{Vas-je}}                                                                        ->> Vais-je
 TEST: mais {{aie-je}} seulement le choix ?                                              ->> ai-je
@@ -18136,7 +18136,7 @@ TEST: comment les inégalités sociales impactent la santé des tout petits
 __gn_tous_nom__
     [<start>|,|(]   tous  @:[NA].*:[fs]¬:(?:W|P|V0|G|M|[me]:[ip]|3p)
     de              tous  @:[NA].*:[fs]¬:(?:W|P|V0|G|M|Y|[me]:[ip]|3[sp])
-        <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        && Accord avec “tous” : “\3” devrait être au masculin pluriel.
+        <<- /gn/ not value(\-1, "|ensemble|") -3>> =suggMasPlur(\3, True)                           && Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
     tous  @:[NA].*:[fs]¬:(?:W|V0|G|M|Y|P|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        && Accord avec “tous” : “\2” devrait être au masculin pluriel.
@@ -18147,6 +18147,7 @@ TEST: par tous {{homme}} capable de comprendre                                  
 TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
 TEST: la survie de tous est plus importante que les profits de quelques-uns
 TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
+TEST: Tous ensemble
 
 
 __gn_toute_nom__
@@ -31647,7 +31648,7 @@ __ppas_3sg_fem_verbe_état__
         --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
 
     /-elle  @:[NAQ].*:[pm]¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morphVC(\1, ":V.e.*:[123]s") and not value(<1, "|se|s’|")
+        <<- /ppas/ morphVC(\1, ":V.e.*:[123]s") and not tag(\1, "_upron_")
         -2>> =suggFemSing(\2)                                                                       && Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
 
     /-elle  @:(?:[123][sp]|Y)¬:[GWNAQ]
@@ -31811,7 +31812,7 @@ __ppas_nous_verbe_état__
         --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
     /-nous  @:[NAQ].*:s¬:[GWpi]|>dire/
-        <<- /ppas/ morphVC(\1, ":V.e.*:1p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not value(<1, "|nous|")
+        <<- /ppas/ morphVC(\1, ":V.e.*:1p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(\1, "_upron_")
         -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “nous” : “\2” devrait être au pluriel.
 
     /-nous  @:(?:[123][sp]|Y)¬:[GWNAQ]
@@ -31883,7 +31884,7 @@ __ppas_3pl_mas_verbe_état__
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
     /-ils  @:[NAQ].*:[sf]¬:(?:G|W|[me]:[pi])|>dire/
-        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not value(<1, "|se|s’|")
+        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(\1, "_upron_")
         -2>> =suggMasPlur(\2)                                                                       && Accord avec le sujet “ils” : “\2” devrait être au masculin pluriel.
 
     /-ils  @:(?:[123][sp]|Y)¬:[GWNAQ]
@@ -31996,7 +31997,7 @@ __ppas_3pl_fem_verbe_état__
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
 
     /-elles  @:[NAQ].*:[sm]¬:(?:G|W|[fe]:[pi])|>dire/
-        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not value(<1, "|se|s’|")
+        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(\1, "_upron_")
         -2>> =suggFemPlur(\2)                                                                       && Accord avec le sujet “elles” : “\2” devrait être au féminin pluriel.
 
     /-elles  @:(?:[123][sp]|Y)¬:[GWNAQ]
@@ -32071,7 +32072,7 @@ __ppas_3pl_épi_verbe_état__
         --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “\1” : “\-1” devrait être au pluriel.
 
     /-iels  @:[NAQ].*:s¬:[GWpi]|>dire/
-        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not value(<1, "|se|s’|")
+        <<- /ppas/ morphVC(\1, ":V.e.*:3p") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(\1, "_upron_")
         -2>> =suggPlur(\2)                                                                          && Accord avec le sujet “iels” : “\2” devrait être au pluriel.
 
     /-iels  @:(?:[123][sp]|Y)¬:[GWNAQ]
