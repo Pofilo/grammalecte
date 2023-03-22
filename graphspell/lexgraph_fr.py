@@ -7,7 +7,7 @@ Lexicographer for the French language
 #     <dSugg> : a dictionary for default suggestions.
 #     <bLexicographer> : a boolean False
 #       if the boolean is True, 4 functions are required:
-#           split(sWord) -> returns a list of string (that will be analyzed)
+#           split(sWord) -> returns a list of strings (that will be analyzed)
 #           analyze(sWord) -> returns a string with the meaning of word
 #           readableMorph(sMorph) -> returns a string with the meaning of tags
 #           setLabelsOnToken(dToken) -> adds readable information on token
@@ -22,16 +22,18 @@ dSugg = {
     "bcp": "beaucoup",
     "ca": "ça",
     "cad": "c’est-à-dire",
+    "càd": "c’est-à-dire",
     "cb": "combien|CB",
     "cdlt": "cordialement",
     "construirent": "construire|construisirent|construisent|construiront",
-    "càd": "c’est-à-dire",
     "chai": "j’sais|je sais",
     "chais": "j’sais|je sais",
     "chui": "j’suis|je suis",
     "chuis": "j’suis|je suis",
-    "done": "donc|donne",
     "dc": "de|donc",
+    "done": "donc|donne",
+    "dp": "depuis|de|du",
+    "dps": "depuis|des|dos|dès|dés",
     "email": "courriel|e-mail|émail",
     "emails": "courriels|e-mails",
     "ete": "êtes|été",
@@ -61,13 +63,16 @@ dSugg = {
     "qqch": "quelque chose",
     "qqn": "quelqu’un",
     "qqne": "quelqu’une",
+    "qqp": "quelque part",
     "qqs": "quelques",
     "qqunes": "quelques-unes",
     "qquns": "quelques-uns",
     "tdq": "tandis que",
     "tj": "toujours",
     "tjs": "toujours",
+    "tps": "temps|tes",
     "tq": "tant que|tandis que",
+    "ttq": "tant que",
     "ts": "tous",
     "tt": "tant|tout",
     "tte": "toute",
