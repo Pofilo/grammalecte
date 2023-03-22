@@ -8,4 +8,5 @@ dDefaultOpt = {
     'typo': 1, 'typo1': 1, 'typo2': 1, 'typo3': 1, 'typo4': 1, 'typo5': 1, 'typo6': 1, 'typo7': 1, 'typo8': 0, 'typo3a': 0, 'typo3b': 1, 'typo4a': 1, 'typo4b': 0, 'typo8a': 0, 'typo8b': 1, 'typo_ff': 1, 'typo_fi':1, 'typo_ffi':1, 'typo_fl':1, 'typo_ffl':1, 'typo_ft':1, 'typo_st': 1,
     'misc': 1, 'misc1': 1, 'misc2': 1, 'misc3': 1, 'misc5': 1, 'misc1a': 0, 'misc5b': 0, 'misc5c': 0, 'misccustom': 0,
     'struct': 0, 'struct1': 1, 'struct2': 1, 'struct3': 0,
+    'bsel': 0,
 }

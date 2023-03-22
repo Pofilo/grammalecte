@@ -18,13 +18,18 @@ import TextFormatterEditor
 
 import unohelper
 import uno
+
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+from com.sun.star.beans import PropertyValue
+from com.sun.star.lang import IllegalArgumentException
 
 from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
 # DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
 from com.sun.star.awt.MessageBoxType import INFOBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+from com.sun.star.style.NumberingType import CHAR_SPECIAL
+
 
 
 def MessageBox (xParentWin, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
@@ -243,6 +248,23 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
 
+        # progress bar
+        self.pbar = self._addWidget('pbar', 'ProgressBar', 22, y+50, 115, 10)
+        self.pbar.ProgressValueMin = 0
+        self.pbar.ProgressValueMax = 32
+        # time counter
+        self.time_res = self._addWidget('time_res', 'FixedText', 140, self.xDialog.Height-16, 20, nHeight, Label = "", Align = 2)
+        # selection only
+        self.bsel = self._addWidget('bsel', 'CheckBox', 170, self.xDialog.Height-15, 90, nHeight, Label = ui.get('bsel'))
+
+        # buttons
+        self.bdefault = self._addWidget('default', 'Button', 5, y+47, 15, 15, Label = ui.get('default'), \
+                                        HelpText = ui.get('default_help'), FontDescriptor = xFD2, TextColor = 0x444444)
+        self.bapply = self._addWidget('apply', 'Button', self.xDialog.Width-55, self.xDialog.Height-19, 50, 15, Label = ui.get('apply'), \
+                                      FontDescriptor = xFD2, TextColor = 0x004400)
+        self.binfo = self._addWidget('info', 'Button', self.xDialog.Width-15, 0, 10, 9, Label = ui.get('info'), \
+                                     HelpText = ui.get('infotitle'), FontDescriptor = xFDsmall, TextColor = 0x444444)
+
         # lists of checkbox widgets
         self.dCheckboxWidgets = {
             "ssp":      [self.ssp1, self.ssp2, self.ssp3, self.ssp4, self.ssp5, self.ssp6, self.ssp7],
@@ -253,29 +275,14 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                          self.typo7, self.typo8, self.typo8a, self.typo8b, self.typo_ff, self.typo_fi, self.typo_ffi, self.typo_fl, self.typo_ffl, \
                          self.typo_ft, self.typo_st],
             "misc":     [self.misc1, self.misc2, self.misc3, self.misc5, self.misc1a, self.misc5b, self.misc5c, self.misccustom], #self.misc4,
-            "struct":   [self.struct1, self.struct2, self.struct3]
+            "struct":   [self.struct1, self.struct2, self.struct3],
+            "other":    [self.bsel]
         }
-
-        # progress bar
-        self.pbar = self._addWidget('pbar', 'ProgressBar', 22, self.xDialog.Height-16, 210, 10)
-        self.pbar.ProgressValueMin = 0
-        self.pbar.ProgressValueMax = 32
-        # time counter
-        self.time_res = self._addWidget('time_res', 'FixedText', self.xDialog.Width-80, self.xDialog.Height-15, 20, nHeight, Label = "", Align = 2)
-
-        # buttons
-        self.bdefault = self._addWidget('default', 'Button', 5, self.xDialog.Height-19, 15, 15, Label = ui.get('default'), \
-                                        HelpText = ui.get('default_help'), FontDescriptor = xFD2, TextColor = 0x444444)
-        #self.bsel = self._addWidget('bsel', 'CheckBox', x2, self.xDialog.Height-40, nWidth-55, nHeight, Label = ui.get('bsel'))
-        self.bapply = self._addWidget('apply', 'Button', self.xDialog.Width-55, self.xDialog.Height-19, 50, 15, Label = ui.get('apply'), \
-                                      FontDescriptor = xFD2, TextColor = 0x004400)
-        self.binfo = self._addWidget('info', 'Button', self.xDialog.Width-15, 0, 10, 9, Label = ui.get('info'), \
-                                     HelpText = ui.get('infotitle'), FontDescriptor = xFDsmall, TextColor = 0x444444)
 
         # load configuration
         self.dTransRules = {}
-        self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", True)
-        self._loadConfig("${lang}")
+        self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
+        self._loadConfig("fr")
 
         ## container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -314,29 +321,35 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                 if self.bClose:
                     self.xContainer.endExecute()
                 else:
-                    xDesktop = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
-                    xElem = xDesktop.getCurrentComponent()
+                    try:
+                        xDesktop = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
+                        xElem = xDesktop.getCurrentComponent()
+                        # Writer
+                        self._saveConfig("fr")
+                        self.xUndoManager = xElem.UndoManager
+                        if self.bsel.State:
+                            # modify selected text only
+                            xElem.lockControllers()
+                            self.xViewCursor = xElem.CurrentController.ViewCursor
+                            # some magic to workaround xTextTableCursor in multicell selection
+                            if xElem.CurrentSelection.supportsService("com.sun.star.text.TextTableCursor"):
+                                xElem.CurrentController.select(self.xViewCursor)
+                            self.xSelections = xElem.CurrentSelection
 
-                    # Writer
-                    if True:
-                        # no selection
-                        self._saveConfig("${lang}")
                         self._replaceAll(xElem)
-                    else:
-                        # modify selected text only
-                        pass
-                        #xSelecList = xDoc.getCurrentSelection()
-                        #xSel = xSelecList.getByIndex(0)
 
-                    # Impress
-                    # Note: impossible to format text on Impress right now as ReplaceDescriptors don’t accept regex!
-                    #xPages = xElem.getDrawPages()
-                    #for i in range(xPages.Count):
-                    #    self._replaceAll(xPages.getByIndex(i))
-                    #xPages = xElem.getMasterPages()
-                    #for i in range(xPages.Count):
-                    #    self._replaceAll(xPages.getByIndex(i))
-                    self._setApplyButtonLabel()
+                        # Impress
+                        # Note: impossible to format text on Impress right now as ReplaceDescriptors don’t accept regex!
+                        #xPages = xElem.getDrawPages()
+                        #for i in range(xPages.Count):
+                        #    self._replaceAll(xPages.getByIndex(i))
+                        #xPages = xElem.getMasterPages()
+                        #for i in range(xPages.Count):
+                        #    self._replaceAll(xPages.getByIndex(i))
+                        self._setApplyButtonLabel()
+                    finally:
+                        if xElem.hasControllersLocked():
+                            xElem.unlockControllers()
             elif xActionEvent.ActionCommand == 'SwitchSsp':
                 self._switchCheckBox(self.ssp)
                 self._setApplyButtonLabel()
@@ -410,8 +423,9 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             # create options dictionary
             dOpt = {}
             for sKey, lWidget in self.dCheckboxWidgets.items():
-                w = getattr(self, sKey)
-                dOpt[w.Name] = w.State
+                if sKey != 'other':
+                    w = getattr(self, sKey)
+                    dOpt[w.Name] = w.State
                 for w in lWidget:
                     dOpt[w.Name] = w.State
             # save option to LO profile as JSON string
@@ -731,82 +745,289 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             xRD.ReplaceString = sRepl
             xRD.SearchRegularExpression = bRegex
             xRD.SearchCaseSensitive = bCaseSensitive
-            return xElem.replaceAll(xRD)
+            if not self.bsel.State:
+                # no selection
+                return xElem.replaceAll(xRD)
+            else:
+                # selection only
+                import re
+                def isinselection(xTextRange):
+                    try:
+                        if (xSel.Text.compareRegionStarts(xTextRange, xSel) < 1 and
+                            xSel.Text.compareRegionEnds(xTextRange, xSel) > -1):
+                            return True
+                    except IllegalArgumentException:
+                        try:
+                            return isinselection(xTextRange.TextFrame.Anchor)
+                        except AttributeError:
+                            try:
+                                return isinselection(xTextRange.TextTable.Anchor)
+                            except AttributeError:
+                                return False
+                    except Exception:
+                        # xray(xTextRange)
+                        traceback.print_exc()
+                    return False
+                # endof isinselection()
+
+                xAllFound = [ f for f in xElem.findAll(xRD) ]
+
+                if xElem.CurrentSelection.supportsService("com.sun.star.text.TextTableCursor"):
+                    xElem.CurrentController.select(xElem.CurrentController.ViewCursor)
+
+                fs = []
+                for xSel in self.xSelections:
+                    for f in xAllFound[::-1]:
+                        if isinselection(f):
+                            fs.append(f)
+                            xAllFound.remove(f)
+                if fs:
+                    bResub = False
+                    if bRegex:
+                        if sRepl == r'\n':
+                            sRepl = r'\r'
+                        if "$" in sRepl:    #py regex substitution is only needed here
+                            bResub = True
+                            sRepl = sRepl.replace("$", "\\")
+                            sPattern = sPattern.replace("[:alpha:]", "[^\\W\\d]").replace("[:digit:]", "\\d")
+                            if bCaseSensitive:
+                                replacer = re.compile(sPattern)
+                            else:
+                                replacer = re.compile(sPattern, flags=re.IGNORECASE)
+
+                    try:
+                        self.xUndoManager.enterUndoContext('Remplacer : {}x "{}" → "{}"'.format(len(fs), truncateString(sPattern), sRepl))
+                        for f in fs:
+                            if bResub:
+                                f.setString(replacer.sub(sRepl, f.String))
+                            else:
+                                f.setString(sRepl)
+                    finally:
+                        self.xUndoManager.leaveUndoContext()
+                return len(fs)
+
         except:
             traceback.print_exc()
         return 0
 
     def _replaceHyphenAtEndOfParagraphs (self, xDoc):
-        self._replaceText(xDoc, "-[  ]+$", "-", True) # remove spaces at end of paragraphs if - is the last character
+        def getCursors(xContainer):
+            nonlocal islastmodified
+            for xPara in xContainer:
+                islastmodified = False
+                try:
+                    if xPara.String.endswith("-"):
+                        xCursor = xPara.Text.createTextCursorByRange(xPara.End)
+                        xCursor.gotoStartOfWord(False)
+                        xCursor.gotoEndOfWord(True)
+                        if xCursor.String:    # first part ok
+                            xCursor.gotoNextParagraph(True)
+                            xCursor.gotoEndOfWord(True)
+                            if xCursor.String.endswith(linesep):    # no second part
+                                continue
+                            elif xCursor.createContentEnumeration("com.sun.star.text.TextContent").hasMoreElements():   # do not erase text content
+                                continue
+                            xWord = xCursor.String.replace('-' + linesep, '')
+                            if linesep in xWord:     # we have a table here, do not merge
+                                continue
+                            elif xWord and xHunspell.isValid(xWord, xCursor.CharLocale, ()):
+                                cursors.append((xCursor, xWord))
+                                islastmodified = True
+                except AttributeError:  # not a real paragraph
+                    if xPara.supportsService('com.sun.star.text.TextTable'):
+                        for cellname in xPara.CellNames:
+                            cell = xPara.getCellByName(cellname)
+                            getCursors(cell)
+                    else:
+                        # xray(xPara)
+                        pass
+        # endof getCursors()
+
+        self._replaceText(xDoc, r"-\s+$", "-", True) # remove spaces at end of paragraphs if - is the last character
+        from os import linesep
+        cursors = []
         n = 0
+        islastmodified = False
         try:
             xHunspell = self.xSvMgr.createInstanceWithContext("com.sun.star.linguistic2.SpellChecker", self.ctx)
-            xCursor = xDoc.Text.createTextCursor()
-            xCursor.gotoStart(False)
-            while xCursor.gotoNextParagraph(False):
-                xCursor.goLeft(2, True)
-                if xCursor.String.startswith("-"):
-                    xCursor.gotoStartOfWord(False)
-                    xLocale = xCursor.CharLocale
-                    xCursor.gotoEndOfWord(True)
-                    sWord1 = xCursor.String
-                    xCursor.gotoNextParagraph(False)
-                    xCursor.gotoEndOfWord(True)
-                    sWord2 = xCursor.String
-                    if sWord1 and sWord2 and xHunspell.isValid(sWord1+sWord2, xLocale, ()):
-                        xCursor.gotoStartOfParagraph(False)
-                        xCursor.goLeft(2, True)
-                        xCursor.setString("")
-                        n += 1
-                else:
-                    xCursor.goRight(2, False)
-        except:
+            if self.bsel.State:
+                for xSel in self.xSelections:
+                    try:
+                        xText = xSel.Text
+                    except AttributeError:
+                        continue
+                    xTCursor = xText.createTextCursorByRange(xSel)
+                    getCursors(xTCursor)
+                    for xFrame in xDoc.TextFrames:
+                        xAnchor = xFrame.Anchor
+                        if self._isAnchorInSelection(xAnchor, xSel):
+                            getCursors(xFrame)
+            else:
+                getCursors(xDoc.Text)
+                for xFrame in xDoc.TextFrames:
+                    getCursors(xFrame)
+
+            # ignore last paragraph if selection only
+            if self.bsel.State and islastmodified:
+                cursors.pop()
+
+            if cursors:
+                n = len(cursors)
+                # TODO: translate string
+                self.xUndoManager.enterUndoContext("Césure en fin de paragraphe : {} {}".format(n, n > 1 and 'occurrences' or 'occurrence'))
+                try:
+                    for xCursor, xWord in cursors:
+                        xCursor.setString(xWord)
+                finally:
+                    self.xUndoManager.leaveUndoContext()
+        except Exception:
             traceback.print_exc()
         return n
 
     def _mergeContiguousParagraphs (self, xDoc):
-        self._replaceText(xDoc, "^[  ]+$", "", True) # clear empty paragraphs
+        def getCursors(xContainer):
+            nonlocal islastmodified
+            for xPara in xContainer:
+                islastmodified = False
+                try:
+                    if xPara.String:
+                        xCursor = xPara.Text.createTextCursorByRange(xPara.End)
+                        xCursor.goRight(1, True)
+                        if xCursor.String == linesep:
+                            cursors.append([xCursor, " "])
+                            islastmodified = True
+                    else:
+                        if cursors:
+                            cursors[-1][1] = ""
+                except AttributeError:  # not a actual paragraph
+                    if xPara.supportsService('com.sun.star.text.TextTable'):
+                        for cellname in xPara.CellNames:
+                            cell = xPara.getCellByName(cellname)
+                            getCursors(cell)
+                    else:
+                        # xray(xPara)
+                        pass
+        # endof getCursors()
+
+        from os import linesep
+        self._replaceText(xDoc, r"^\s+$", "", True)    # clear empty paragraphs
+        cursors = []
         n = 0
+        islastmodified = False
         try:
-            xCursor = xDoc.Text.createTextCursor()
-            xCursor.gotoStart(False)
-            while xCursor.gotoNextParagraph(False):
-                xCursor.gotoEndOfParagraph(True)
-                if xCursor.String != "":
-                    xCursor.gotoStartOfParagraph(False)
-                    xCursor.goLeft(1, True)
-                    xCursor.setString(" ")
-                    n += 1
-        except:
+            if self.bsel.State:
+                for xSel in self.xSelections:
+                    try:
+                        xText = xSel.Text
+                    except AttributeError:
+                        continue
+                    xTCursor = xText.createTextCursorByRange(xSel)
+                    getCursors(xTCursor)
+                    for xFrame in xDoc.TextFrames:
+                        xAnchor = xFrame.Anchor
+                        if self._isAnchorInSelection(xAnchor, xSel):
+                            getCursors(xFrame)
+            else:
+                getCursors(xDoc.Text)
+                for xFrame in xDoc.TextFrames:
+                    getCursors(xFrame)
+
+            # ignore last paragraph if selection only
+            if self.bsel.State and islastmodified:
+                cursors.pop()
+
+            if cursors:
+                n = len(cursors)
+                # TODO: translate string
+                self.xUndoManager.enterUndoContext("Fusionner les paragraphes : {} {}".format(n, n > 1 and 'occurrences' or 'occurrence'))
+                try:
+                    for xCursor, sRepl in cursors:   # ignore first paragraph
+                        xCursor.setString(sRepl)
+                finally:
+                    self.xUndoManager.leaveUndoContext()
+        except Exception:
             traceback.print_exc()
-        self._replaceText(xDoc, "  +", " ", True)
         return n
 
     def _replaceBulletsByEmDash (self, xDoc):
-        xCursor = xDoc.Text.createTextCursor()
-        #helpers.xray(xCursor)
+        def hasBullet (xPara):
+            try:
+                numrule = xPara.NumberingRules[xPara.NumberingLevel]
+                for prop in numrule:
+                    if prop.Name == "NumberingType" and prop.Value == CHAR_SPECIAL:
+                        return True
+                return False
+            except TypeError:   # no numbering rules
+                return False
+        # endof hasBullet()
+
+        def getParagraphs (xContainer):
+            for xPara in xContainer:
+                try:
+                    if hasBullet(xPara):
+                        starts.append(xPara.Start)
+                except AttributeError:  # not a real paragraph
+                    if xPara.supportsService('com.sun.star.text.TextTable'):
+                        for cellname in xPara.CellNames:
+                            cell = xPara.getCellByName(cellname)
+                            getParagraphs(cell)
+                    else:
+                        # xray(xPara)
+                        pass
+        # endof getParagraphs()
+
+        starts = []
         n = 0
         try:
-            xCursor.gotoStart(False)
-            sParaStyleName = ""
-            if not self.delete2c.State:
-                sParaStyleName = "Standard"  if self.delete2a.State  else "Text body"
-            if xCursor.NumberingStyleName != "":
-                xCursor.NumberingStyleName = ""
-                if sParaStyleName:
-                    xCursor.ParaStyleName = sParaStyleName
-                xDoc.Text.insertString(xCursor, "— ", False)
-                n += 1
-            while xCursor.gotoNextParagraph(False):
-                if xCursor.NumberingStyleName != "":
-                    xCursor.NumberingStyleName = ""
-                    if sParaStyleName:
-                        xCursor.ParaStyleName = sParaStyleName
-                    xDoc.Text.insertString(xCursor, "— ", False)
-                    n += 1
-        except:
+            if self.bsel.State:
+                for xSel in self.xSelections:
+                    try:
+                        xText = xSel.Text
+                    except AttributeError:
+                        continue
+                    xTCursor = xText.createTextCursorByRange(xSel)
+                    getParagraphs(xTCursor)
+                    for xFrame in xDoc.TextFrames:
+                        xAnchor = xFrame.Anchor
+                        if self._isAnchorInSelection(xAnchor, xSel):
+                            getParagraphs(xFrame)
+            else:
+                getParagraphs(xDoc.Text)
+                for xFrame in xDoc.TextFrames:
+                    getParagraphs(xFrame)
+
+            if starts:
+                n = len(starts)
+                sParaStyleName = ""
+                if not self.delete2c.State:
+                    sParaStyleName = "Standard" if self.delete2a.State else "Text body"
+                # TODO: translate string
+                self.xUndoManager.enterUndoContext('Remplacer : {} {}'.format(n, n > 1 and 'puces' or 'puce'))
+                try:
+                    for xStart in starts:
+                        if not self.delete2c.State:
+                            xStart.ParaStyleName = sParaStyleName
+                        xStart.NumberingStyleName = ""
+                        xStart.String = "— "
+                finally:
+                    self.xUndoManager.leaveUndoContext()
+        except Exception:
             traceback.print_exc()
         return n
+
+    def _isAnchorInSelection (self, anchor, selection):
+            try:
+                if (selection.Text.compareRegionStarts(anchor, selection) < 1 and
+                    selection.Text.compareRegionEnds(anchor, selection) > -1):
+                    return True
+                return False
+            except IllegalArgumentException:
+                return False
+
+
+def truncateString (sText):
+    "shorten text if len(sText) > 20"
+    return '{}...{}'.format(sText[:8], sText[-8:])  if len(sText) > 20  else sText
 
 
 def getTimeRes (n):

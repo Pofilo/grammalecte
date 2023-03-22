@@ -118,7 +118,8 @@ dTableRepl = {
                     ("([:digit:])[  ]([:digit:])",      "$1 $2",        True,   True)
     ],
     "nbsp5": [
-                    ("(?<=[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµnd]?(?:[slgJKΩΩℓ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", " $1", True, True)
+                    # ("(?<=[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµnd]?(?:[slgJKΩΩℓ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", " $1", True, True)
+                    ("([0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµnd]?(?:[slgJKΩΩℓ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", "$1 $2", True, True)   # adapted for selection only option
     ],
     "nbsp6": [
                     ("M(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M$1 ",     True,   True),

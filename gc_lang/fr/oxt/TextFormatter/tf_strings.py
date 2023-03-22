@@ -94,7 +94,7 @@ dStrings = {
         "default": "[·]",
         "default_help": "Options par défaut",
 
-        "bsel": "Sur la sélection active",
+        "bsel": "Sur la sélection a~ctive",
         "editor": "~Editeur…",
         "editor_help": "Éditeur de transformations",
         "apply": "~Appliquer",
@@ -181,7 +181,7 @@ dStrings = {
         "default": "[·]",
         "default_help": "Default options",
 
-        "bsel": "On current selection",
+        "bsel": "~On current selection",
         "editor": "~Editor…",
         "editor_help": "Transformations editor",
         "apply": "~Apply",
