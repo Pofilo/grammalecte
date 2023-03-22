@@ -451,11 +451,13 @@ class Verb ():
         try:
             if not bPro and self.sVerbAux == "avoir":
                 return self.dConj[":Q"][":m:s"]
-            if not bFem:
-                return self.dConj[":Q"][":f:s"]  if bPlur and self.dConj[":Q"][":f:s"]  else  self.dConj[":Q"][":m:s"]
-            if not bPlur:
-                return self.dConj[":Q"][":m:p"]  if self.dConj[":Q"][":m:p"]  else  self.dConj[":Q"][":m:s"]
-            return self.dConj[":Q"][":f:p"]  if self.dConj[":Q"][":f:p"]  else  self.dConj[":Q"][":m:s"]
+            if bFem and bPlur:
+                return self.dConj[":Q"][":f:p"] or self.dConj[":Q"][":m:s"]
+            if bFem and not bPlur:
+                return self.dConj[":Q"][":f:s"] or self.dConj[":Q"][":m:s"]
+            if bPlur:
+                return self.dConj[":Q"][":m:p"] or self.dConj[":Q"][":m:s"]
+            return self.dConj[":Q"][":m:s"]
         except KeyError:
             traceback.print_exc()
             return "# erreur"

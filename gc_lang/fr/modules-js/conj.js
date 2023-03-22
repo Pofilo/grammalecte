@@ -494,13 +494,16 @@ class Verb {
         if (!bPro && this.sVerbAux == "avoir") {
             return this.dConj.get(":Q").get(":m:s");
         }
-        if (!bFem) {
-            return (bPlur && this.dConj.get(":Q").get(":f:s")) ? this.dConj.get(":Q").get(":f:s") : this.dConj.get(":Q").get(":m:s");
+        if (bFem && bPlur) {
+            return this.dConj.get(":Q").get(":f:p") || this.dConj.get(":Q").get(":m:s");
         }
-        if (!bPlur) {
-            return (this.dConj.get(":Q").get(":m:p")) ? this.dConj.get(":Q").get(":m:p") : this.dConj.get(":Q").get(":m:s");
+        else if (bFem && !bPlur) {
+            return this.dConj.get(":Q").get(":f:s") || this.dConj.get(":Q").get(":m:s");
         }
-        return (this.dConj.get(":Q").get(":f:p")) ? this.dConj.get(":Q").get(":f:p") : this.dConj.get(":Q").get(":m:s");
+        if (bPlur) {
+            return this.dConj.get(":Q").get(":m:p") || this.dConj.get(":Q").get(":m:s");
+        }
+        return this.dConj.get(":Q").get(":m:s");
     }
 
     createConjTable (bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
