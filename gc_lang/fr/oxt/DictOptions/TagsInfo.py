@@ -117,7 +117,7 @@ class TagsInfo (unohelper.Base, XActionListener):
             {"Title": ui.get("meaning"), "ColumnWidth": 190}
         ])
 
-        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0xBB5555)
 
         self.loadData()
 

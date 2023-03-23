@@ -135,7 +135,7 @@ class SearchWords (unohelper.Base, XActionListener):
         self._addWidget("search_section", 'FixedLine', nX1, nY0, 120, nHeight, Label = ui.get("search_section"), FontDescriptor = xFDTitle)
         self._addWidget("similar_search_section", 'FixedLine', nX1, nY1, 120, nHeight, Label = ui.get("similar_search_section"), FontDescriptor = xFDSubTitle)
         self.xWord = self._addWidget('word', 'Edit', nX1, nY1+10, 100, nHeight)
-        self._addWidget('similar_search_button', 'Button', nX1, nY1+22, 55, 12, Label = ui.get('similar_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('similar_search_button', 'Button', nX1, nY1+22, 55, 12, Label = ui.get('similar_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x55BB55)
 
 
         self._addWidget("regex_search_section", 'FixedLine', nX1, nY2, 120, nHeight, Label = ui.get("regex_search_section"), FontDescriptor = xFDSubTitle)
@@ -143,7 +143,7 @@ class SearchWords (unohelper.Base, XActionListener):
         self.xFlexion = self._addWidget('flexion', 'Edit', nX1+35, nY2+10, 85, nHeight)
         self._addWidget('tags_label', 'FixedText', nX1, nY2+22, 30, nHeight, Label = ui.get('tags'))
         self.xTags = self._addWidget('tags', 'Edit', nX1+35, nY2+22, 85, nHeight)
-        self._addWidget('regex_search_button', 'Button', nX1, nY2+34, 55, 12, Label = ui.get('regex_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('regex_search_button', 'Button', nX1, nY2+34, 55, 12, Label = ui.get('regex_search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x55BB55)
         self._addWidget('result_warning', 'FixedText', nX1, nY2+50, 120, nHeight*7, Label = ui.get('result_warning'), MultiLine = True)
 
         #### Results
@@ -154,7 +154,7 @@ class SearchWords (unohelper.Base, XActionListener):
             {"Title": ui.get("res_tags"), "ColumnWidth": 70}
         ])
 
-        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-50, self.xDialog.Height-20, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0xBB5555)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)

@@ -79,6 +79,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         ## fonts
         xFD1 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFD1.Height = 12
+        xFD1.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFD1.Name = "Verdana"
 
         xFD2 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
@@ -98,7 +99,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         nWidth = 140
         nWidthHalf = (nWidth // 2) - 10
         nHeight = 10
-        nColor = 0xAA2200
+        nGroupColor = 0xBB5555
 
         # close or apply
         self.bClose = False
@@ -107,8 +108,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         y = 10
         nPosRes = nRightLimit1 - 20
         self.ssp = self._addWidget('ssp', 'CheckBox', x, y+2, nWidth, nHeight, Label = ui.get('ssp'), FontDescriptor = xFD1, \
-                                   FontRelief = 1, TextColor = nColor, State = True)
-        self._addWidget("section1", 'FixedLine', nRightLimit1-(nWidth//5), y, nWidth//5, nHeight)
+                                   TextColor = nGroupColor, State = True)
+        self._addWidget("section1", 'FixedLine', nRightLimit1-(nWidth//6), y, nWidth//6, nHeight)
         self.ssp1 = self._addWidget('ssp1', 'CheckBox', x, y+15, nWidth, nHeight, Label = ui.get('ssp1'), State = True)
         self.ssp2 = self._addWidget('ssp2', 'CheckBox', x, y+25, nWidth, nHeight, Label = ui.get('ssp2'), State = True)
         self.ssp3 = self._addWidget('ssp3', 'CheckBox', x, y+35, nWidth, nHeight, Label = ui.get('ssp3'), State = True)
@@ -127,8 +128,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # group box // missing spaces
         y = y + 85
         self.space = self._addWidget('space', 'CheckBox', x, y+2, nWidth, nHeight, Label = ui.get('space'), FontDescriptor = xFD1, \
-                                     FontRelief = 1, TextColor = nColor, State = True)
-        self._addWidget("section2", 'FixedLine', nRightLimit1-(nWidth//3), y, nWidth//3, nHeight)
+                                     TextColor = nGroupColor, State = True)
+        self._addWidget("section2", 'FixedLine', nRightLimit1-(nWidth//4), y, nWidth//4, nHeight)
         self.space1 = self._addWidget('space1', 'CheckBox', x, y+15, nWidth, nHeight, Label = ui.get('space1'), State = True)
         self.space2 = self._addWidget('space2', 'CheckBox', x, y+25, nWidth, nHeight, Label = ui.get('space2'), State = True)
         self.space1_res = self._addWidget('space1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
@@ -137,8 +138,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # group box // non-breaking spaces
         y = y + 35
         self.nbsp = self._addWidget('nbsp', 'CheckBox', x, y+2, nWidth, nHeight, Label = ui.get('nbsp'), FontDescriptor = xFD1, \
-                                    FontRelief = 1, TextColor = nColor, State = True)
-        self._addWidget("section3", 'FixedLine', nRightLimit1-(nWidth//3), y, nWidth//3, nHeight)
+                                    TextColor = nGroupColor, State = True)
+        self._addWidget("section3", 'FixedLine', nRightLimit1-(nWidth//4), y, nWidth//4, nHeight)
         self.nbsp1 = self._addWidget('nbsp1', 'CheckBox', x, y+15, 85, nHeight, Label = ui.get('nbsp1'), State = True)
         self.nbsp2 = self._addWidget('nbsp2', 'CheckBox', x, y+25, 85, nHeight, Label = ui.get('nbsp2'), State = True)
         self.nbsp3 = self._addWidget('nbsp3', 'CheckBox', x, y+35, nWidth, nHeight, Label = ui.get('nbsp3'), State = True)
@@ -158,8 +159,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # group box // deletion
         y = y + 75
         self.delete = self._addWidget('delete', 'CheckBox', x, y+2, nWidth, nHeight, Label = ui.get('delete'), FontDescriptor = xFD1, \
-                                      FontRelief = 1, TextColor = nColor, State = True)
-        self._addWidget("section7", 'FixedLine', nRightLimit1-(nWidth//2), y, nWidth//2, nHeight)
+                                      TextColor = nGroupColor, State = True)
+        self._addWidget("section7", 'FixedLine', nRightLimit1-(nWidth//3), y, nWidth//3, nHeight)
         self.delete1 = self._addWidget('delete1', 'CheckBox', x, y+15, nWidth, nHeight, Label = ui.get('delete1'), State = True)
         self.delete2 = self._addWidget('delete2', 'CheckBox', x, y+25, nWidth, nHeight, Label = ui.get('delete2'), State = True)
         self.delete2a = self._addWidget('delete2a', 'RadioButton', x+10, y+35, 50, nHeight, Label = ui.get('delete2a'))
@@ -173,8 +174,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         y = 10
         nPosRes = nRightLimit2 - 20
         self.typo = self._addWidget('typo', 'CheckBox', x2, y+2, nWidth, nHeight, Label = ui.get('typo'), FontDescriptor = xFD1, \
-                                    FontRelief = 1, TextColor = nColor, State = True)
-        self._addWidget("section4", 'FixedLine', nRightLimit2-(nWidth//5), y, nWidth//5, nHeight)
+                                    TextColor = nGroupColor, State = True)
+        self._addWidget("section4", 'FixedLine', nRightLimit2-(nWidth//6), y, nWidth//6, nHeight)
         self.typo1 = self._addWidget('typo1', 'CheckBox', x2, y+15, nWidth, nHeight, Label = ui.get('typo1'), State = True)
         self.typo2 = self._addWidget('typo2', 'CheckBox', x2, y+25, nWidth, nHeight, Label = ui.get('typo2'), State = True)
         self.typo3 = self._addWidget('typo3', 'CheckBox', x2, y+35, nWidth, nHeight, Label = ui.get('typo3'), State = True)
@@ -209,7 +210,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # group box // misc.
         y = y + 125
         self.misc = self._addWidget('misc', 'CheckBox', x2, y+2, nWidth, nHeight, Label = ui.get('misc'), FontDescriptor = xFD1, \
-                                    FontRelief = 1, TextColor = nColor, State = True)
+                                    TextColor = nGroupColor, State = True)
         self._addWidget("section5", 'FixedLine', nRightLimit2-(nWidth//2), y, nWidth//2, nHeight)
         self.misc1 = self._addWidget('misc1', 'CheckBox', x2, y+15, 80, nHeight, Label = ui.get('misc1'), State = True)
         self.misc1a = self._addWidget('misc1a', 'CheckBox', x2+80, y+15, 30, nHeight, Label = ui.get('misc1a'), State = True)
@@ -232,8 +233,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # group box // restructuration
         y = y + 75
         self.struct = self._addWidget('struct', 'CheckBox', x2, y+2, nWidth, nHeight, Label = ui.get('struct'), FontDescriptor = xFD1, \
-                                      FontRelief = 1, TextColor = nColor, HelpText = ui.get('struct_help'), State = False)
-        self._addWidget("section6", 'FixedLine', nRightLimit2-(nWidth//3), y, nWidth//3, nHeight)
+                                      TextColor = nGroupColor, HelpText = ui.get('struct_help'), State = False)
+        self._addWidget("section6", 'FixedLine', nRightLimit2-(nWidth//4), y, nWidth//4, nHeight)
         self.struct1 = self._addWidget('struct1', 'CheckBox', x2, y+15, nWidth, nHeight, Label = ui.get('struct1'), State = True, Enabled = False)
         self.struct2 = self._addWidget('struct2', 'CheckBox', x2, y+25, nWidth, nHeight, Label = ui.get('struct2'), State = True, Enabled = False)
         self.struct3 = self._addWidget('struct3', 'CheckBox', x2, y+35, nWidth, nHeight, Label = ui.get('struct3'), \
@@ -259,11 +260,11 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
 
         # buttons
         self.bdefault = self._addWidget('default', 'Button', 5, y+47, 15, 15, Label = ui.get('default'), \
-                                        HelpText = ui.get('default_help'), FontDescriptor = xFD2, TextColor = 0x444444)
+                                        HelpText = ui.get('default_help'), FontDescriptor = xFD2)
         self.bapply = self._addWidget('apply', 'Button', self.xDialog.Width-55, self.xDialog.Height-19, 50, 15, Label = ui.get('apply'), \
-                                      FontDescriptor = xFD2, TextColor = 0x004400)
+                                      FontDescriptor = xFD2, TextColor = 0x55BB55)
         self.binfo = self._addWidget('info', 'Button', self.xDialog.Width-15, 0, 10, 9, Label = ui.get('info'), \
-                                     HelpText = ui.get('infotitle'), FontDescriptor = xFDsmall, TextColor = 0x444444)
+                                     HelpText = ui.get('infotitle'), FontDescriptor = xFDsmall)
 
         # lists of checkbox widgets
         self.dCheckboxWidgets = {
@@ -443,11 +444,11 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         if self.ssp.State or self.space.State or self.nbsp.State or self.delete.State or self.typo.State or self.misc.State or self.struct.State:
             self.bClose = False
             self.bapply.Label = ui.get('apply')
-            self.bapply.TextColor = 0x004400
+            self.bapply.TextColor = 0x55BB55
         else:
             self.bClose = True
             self.bapply.Label = ui.get('close')
-            self.bapply.TextColor = 0x440000
+            self.bapply.TextColor = 0xBB5555
         self.xContainer.setVisible(True)
 
     def _replaceAll (self, xElem):

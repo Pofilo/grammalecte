@@ -50,7 +50,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
 
             # xWidgets
             nLblWidth = 140
-            nURLcolor = 0x4444FF
+            nURLcolor = 0x559999
 
             xFD1 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
             xFD1.Height = 10
@@ -79,10 +79,10 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
                             URL="https://grammalecte.net/?from=grammalecte-lo", FontDescriptor = xFD1, TextColor = nURLcolor)
 
             # Python
-            self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth//2, 10, Align = 1, TextColor = 0x666666, FontDescriptor = xFD2, \
+            self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth//2, 10, Align = 1, TextColor = 0x777777, FontDescriptor = xFD2, \
                             Label = ui.get('pythonver') + "{0[0]}.{0[1]}.{0[2]}".format(sys.version_info))
             self._addWidget('console_button', 'Button', nLblWidth-40, 124, 40, 10, \
-                            Label = ui.get('console'), FontDescriptor = xFD2, TextColor = 0x666666)
+                            Label = ui.get('console'), FontDescriptor = xFD2, TextColor = 0x777777)
 
             # other
             self._addWidget('line', 'FixedLine', 10, 140, nLblWidth, 10)

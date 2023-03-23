@@ -59,16 +59,16 @@ class Author (unohelper.Base, XActionListener):
             # widgets
             nTextWidth = self.xDialog.Width - 20
             state = self._addWidget('state', 'FixedText', 10, 10, nTextWidth, 10, Label = ui.get('state'))
-            value = self._addWidget('value', 'FixedText', 10, 20, nTextWidth, 10, Label = sAuthor, FontSlant = 2, TextColor = 0x000044)
+            value = self._addWidget('value', 'FixedText', 10, 20, nTextWidth, 10, Label = sAuthor, FontSlant = 2, TextColor = 0x559999)
 
             inputlbl = self._addWidget('inputlbl', 'FixedText', 10, 34, nTextWidth, 10, Label = ui.get('newvalue'))
             self.inputtxt = self._addWidget('input', 'Edit', 10, 45, nTextWidth-20, 12, Text=self.xDoc.DocumentProperties.Author, MaxTextLen=150)
-            but0 = self._addWidget('reset', 'Button', self.xDialog.Width-25, 45, 15, 12, Label = "×", FontDescriptor = xFDBut, TextColor = 0x440000)
+            but0 = self._addWidget('reset', 'Button', self.xDialog.Width-25, 45, 15, 12, Label = "×", FontDescriptor = xFDBut, TextColor = 0xBB5555)
 
             but1 = self._addWidget('modify', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, \
-                                   Label = ui.get('modify'), FontDescriptor = xFDBut, TextColor = 0x004400)
+                                   Label = ui.get('modify'), FontDescriptor = xFDBut, TextColor = 0x55BB55)
             but2 = self._addWidget('cancel', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, \
-                                   Label = ui.get('cancel'), FontDescriptor = xFDBut, TextColor = 0x440000)
+                                   Label = ui.get('cancel'), FontDescriptor = xFDBut, TextColor = 0xBB5555)
 
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)

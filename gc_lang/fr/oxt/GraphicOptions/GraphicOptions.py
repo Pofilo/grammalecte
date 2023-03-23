@@ -88,11 +88,11 @@ class GraphicOptions (unohelper.Base, XActionListener, XJobExecutor):
         self._addWidget('multicolor_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*4, Label = ui.get('multicolor_descr'), MultiLine = True)
 
         # Restart message
-        self._addWidget('restart', 'FixedText', nX, nY4, nWidth, nHeight*2, Label = ui.get('restart'), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
+        self._addWidget('restart', 'FixedText', nX, nY4, nWidth, nHeight*2, Label = ui.get('restart'), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0xBB5555)
 
         # Button
-        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = ui.get('apply_button'), FontDescriptor = xFDTitle, TextColor = 0x005500)
-        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = ui.get('cancel_button'), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, Label = ui.get('apply_button'), FontDescriptor = xFDTitle, TextColor = 0x55BB55)
+        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = ui.get('cancel_button'), FontDescriptor = xFDTitle, TextColor = 0xBB5555)
 
         self._loadOptions()
 

@@ -99,8 +99,8 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         nWidth = (self.xDialog.Width-30) // 2
         nHeight = 10
         nHeightCj = 8
-        nTitleColor = 0x660000
-        nSubTitleColor = 0x000033
+        nTitleColor = 0xBB5555
+        nSubTitleColor = 0x559999
 
         # grid
         nX1 = 10; nX2 = nX1+145;
@@ -229,7 +229,7 @@ class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.condb5 = self._addWidget('condb5', 'FixedText', nX2, nY7b+49, nWidth, nHeightCj, Label = "")
         self.condb6 = self._addWidget('condb6', 'FixedText', nX2, nY7b+56, nWidth, nHeightCj, Label = "")
 
-        self.copybutton = self._addWidget('copybutton', 'Button', nX1, nY7+68, 10, 10, Label = ">", TextColor = 0x000088, HelpText="Presse-papiers")
+        self.copybutton = self._addWidget('copybutton', 'Button', nX1, nY7+68, 35, 10, Label = "Copier", HelpText="dans le presse-papiers")
 
         # dialog height
         self.xDialog.Height = 350

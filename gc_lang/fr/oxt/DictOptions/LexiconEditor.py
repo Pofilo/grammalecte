@@ -154,19 +154,19 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         nHeight = 10
 
         #### Dictionary section
-        self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 170, nHeight, Label = ui.get("dictionary_section"), FontDescriptor = xFDTitle, TextColor = 0x000088)
-        self._addWidget("save_date_label", 'FixedText', nXB, nY0+2, 80, nHeight, Label = ui.get("save_date_label"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = ui.get("num_of_entries_label"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = ui.get("void"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xImport = self._addWidget('import_button', 'Button', self.xDialog.Width-90, nY0, 40, 12, Label = ui.get('import_button'), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
-        self.xExport = self._addWidget('export_button', 'Button', self.xDialog.Width-45, nY0, 40, 12, Label = ui.get('export_button'), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
+        self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 170, nHeight, Label = ui.get("dictionary_section"), FontDescriptor = xFDTitle, TextColor = 0x559999)
+        self._addWidget("save_date_label", 'FixedText', nXB, nY0+2, 80, nHeight, Label = ui.get("save_date_label"), FontDescriptor = xFDSubTitle, TextColor = 0x559999)
+        self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = ui.get("num_of_entries_label"), FontDescriptor = xFDSubTitle, TextColor = 0x559999)
+        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = ui.get("void"), FontDescriptor = xFDSubTitle)
+        self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle)
+        self.xImport = self._addWidget('import_button', 'Button', self.xDialog.Width-90, nY0, 40, 12, Label = ui.get('import_button'), FontDescriptor = xFDSubTitle)
+        self.xExport = self._addWidget('export_button', 'Button', self.xDialog.Width-45, nY0, 40, 12, Label = ui.get('export_button'), FontDescriptor = xFDSubTitle)
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 170, nHeight, Label = ui.get("add_section"), FontDescriptor = xFDTitle)
         self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 100, 14, Text = sWord, FontDescriptor = xFDTitle)
-        self._addWidget('search_button', 'Button', nX1+105, nY1+11, 45, 12, Label = ui.get('search_button'), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
-        self._addWidget('information_button', 'Button', nX1+155, nY1+11, 15, 12, Label = ui.get('information_button'), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
+        self._addWidget('search_button', 'Button', nX1+105, nY1+11, 45, 12, Label = ui.get('search_button'), FontDescriptor = xFDSubTitle)
+        self._addWidget('information_button', 'Button', nX1+155, nY1+11, 15, 12, Label = ui.get('information_button'), FontDescriptor = xFDSubTitle)
 
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -243,8 +243,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
             {"Title": ui.get("lex_flex"), "ColumnWidth": 80},
             {"Title": ui.get("lex_tags"), "ColumnWidth": 80}
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
-        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+255, 75, 12, Label = ui.get('add_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500, Enabled = False)
-        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+255, 80, 12, Label = ui.get('delete_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+255, 75, 12, Label = ui.get('add_button'), FontDescriptor = xFDSubTitle, TextColor = 0x55BB55, Enabled = False)
+        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+255, 80, 12, Label = ui.get('delete_button'), FontDescriptor = xFDSubTitle, TextColor = 0xBB5555)
 
         #### Lexicon section
         self._addWidget("lexicon_section", 'FixedLine', nXC, nY1, 200, nHeight, Label = ui.get("lexicon_section"), FontDescriptor = xFDTitle)
@@ -255,8 +255,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
         self._addWidget("num_of_entries_label1", 'FixedText', nXC, nY1+257, 60, nHeight, Label = ui.get("num_of_entries_label"), FontDescriptor = xFDSubTitle)
         self.xNumLex = self._addWidget("num_of_entries1", 'FixedText', nXC+65, nY1+257, 40, nHeight, Label = "0", FontDescriptor = xFDSubTitle)
-        self.xSave = self._addWidget('save_button', 'Button', nXC+110, nY1+255, 45, 12, Label = ui.get('save_button'), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
-        self._addWidget('close_button', 'Button', nXC+160, nY1+255, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self.xSave = self._addWidget('save_button', 'Button', nXC+110, nY1+255, 45, 12, Label = ui.get('save_button'), FontDescriptor = xFDSubTitle, TextColor = 0x55BB55)
+        self._addWidget('close_button', 'Button', nXC+160, nY1+255, 40, 12, Label = ui.get('close_button'), FontDescriptor = xFDSubTitle, TextColor = 0xBB5555)
 
         self.loadLexicon()
 

@@ -163,17 +163,17 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
         self.xEditRegex = self._addWidget('editregex', 'CheckBox', nX+305, nY2+22, 35, nHeight, Label = ui.get("regex"), HelpText=ui.get("regex_help"), Enabled = False)
         self.xEditCaseSens = self._addWidget('editcasesens', 'CheckBox', nX+340, nY2+22, 40, nHeight, Label = ui.get("casesens"), HelpText=ui.get("casesens_help"), Enabled = False)
 
-        self.xDeleteButton = self._addWidget('delete', 'Button', nX, nY2+31, 40, 11, Label = ui.get('delete'), TextColor = 0xAA0000, Enabled = False)
-        self.xApplyButton = self._addWidget('apply', 'Button', nX + (self.xDialog.Width/2)-20, nY2+31, 40, 11, Label = ui.get('apply'), HelpText="apply_help", TextColor = 0x0000AA, Enabled = False)
+        self.xDeleteButton = self._addWidget('delete', 'Button', nX, nY2+31, 40, 11, Label = ui.get('delete'), TextColor = 0xBB5555, Enabled = False)
+        self.xApplyButton = self._addWidget('apply', 'Button', nX + (self.xDialog.Width/2)-20, nY2+31, 40, 11, Label = ui.get('apply'), HelpText=ui.get("apply_help"), Enabled = False)
         self.xApplyRes = self._addWidget('apply_res', 'FixedText', nX + (self.xDialog.Width/2)+30, nY2+33, 60, 10, Label = "", Align = 2, Enabled = False)
-        self.xModifyButton = self._addWidget('modify', 'Button', self.xDialog.Width-50, nY2+31, 40, 11, Label = ui.get('modify'), TextColor = 0x00AA00, Enabled = False)
+        self.xModifyButton = self._addWidget('modify', 'Button', self.xDialog.Width-50, nY2+31, 40, 11, Label = ui.get('modify'), TextColor = 0x55BB55, Enabled = False)
 
         # import, export, save, close
         self._addWidget("buttons_line", 'FixedLine', nX, self.xDialog.Height-30, nWidth, nHeight)
-        self._addWidget('import', 'Button', nX, self.xDialog.Height-20, 50, 14, Label = ui.get('import'), FontDescriptor = xFDTitle, TextColor = 0x0000AA)
-        self._addWidget('export', 'Button', nX+55, self.xDialog.Height-20, 50, 14, Label = ui.get('export'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
-        self._addWidget('delete_all', 'Button', nX + (self.xDialog.Width/2)-35, self.xDialog.Height-20, 70, 14, Label = ui.get('delete_all'), FontDescriptor = xFDTitle, TextColor = 0xAA0000)
-        self._addWidget('save_and_close', 'Button', self.xDialog.Width-110, self.xDialog.Height-20, 100, 14, Label = ui.get('save_and_close'), FontDescriptor = xFDTitle, TextColor = 0x00AA00)
+        self._addWidget('import', 'Button', nX, self.xDialog.Height-20, 50, 14, Label = ui.get('import'), FontDescriptor = xFDTitle)
+        self._addWidget('export', 'Button', nX+55, self.xDialog.Height-20, 50, 14, Label = ui.get('export'), FontDescriptor = xFDTitle)
+        self._addWidget('delete_all', 'Button', nX + (self.xDialog.Width/2)-35, self.xDialog.Height-20, 70, 14, Label = ui.get('delete_all'), FontDescriptor = xFDTitle, TextColor = 0xBB5555)
+        self._addWidget('save_and_close', 'Button', self.xDialog.Width-110, self.xDialog.Height-20, 100, 14, Label = ui.get('save_and_close'), FontDescriptor = xFDTitle, TextColor = 0x55BB55)
 
         # data
         self.dRules = {}

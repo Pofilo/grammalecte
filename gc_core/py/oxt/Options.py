@@ -135,11 +135,11 @@ class GC_Options (unohelper.Base, XActionListener):
             self.xDialog.PositionY = int((xWindowSize.Height // 2) - (self.xDialog.Height // 2))
 
             self._addWidget('default', 'Button', 10, self.xDialog.Height-20, 50, 14, \
-                            Label = dUI.get('default', "#err"), FontDescriptor = xFDBut, TextColor = 0x000044)
+                            Label = dUI.get('default', "#err"), FontDescriptor = xFDBut, TextColor = 0x559999)
             self._addWidget('apply', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, \
-                            Label = dUI.get('apply', "#err"), FontDescriptor = xFDBut, TextColor = 0x004400)
+                            Label = dUI.get('apply', "#err"), FontDescriptor = xFDBut, TextColor = 0x55BB55)
             self._addWidget('cancel', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14,
-                            Label = dUI.get('cancel', "#err"), FontDescriptor = xFDBut, TextColor = 0x440000)
+                            Label = dUI.get('cancel', "#err"), FontDescriptor = xFDBut, TextColor = 0xBB5555)
 
             dOpt = loadOptions("${lang}")
             self._setWidgets(dOpt)

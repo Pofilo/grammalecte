@@ -156,7 +156,7 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xStrongAccent = self._addWidget('strong_emphasis', 'RadioButton', nX+60, nY2+12, 70, nHeight, Label = ui.get('strong_emphasis'))
         self.xNoAccent = self._addWidget('nostyle', 'RadioButton', nX+140, nY2+12, 45, nHeight, Label = ui.get('nostyle'))
 
-        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = ui.get('tag_button'), FontDescriptor = xFDTitle, TextColor = 0x005500, Enabled=False)
+        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = ui.get('tag_button'), FontDescriptor = xFDTitle, TextColor = 0x55BB55, Enabled=False)
 
         # Progress bar
         self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
@@ -164,7 +164,7 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xProgressBar.ProgressValueMax = 1 # to calculate later
 
         # Close
-        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = ui.get('close_button'), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = ui.get('close_button'), FontDescriptor = xFDTitle, TextColor = 0xBB5555)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
