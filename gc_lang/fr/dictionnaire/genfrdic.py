@@ -12,11 +12,14 @@ import collections
 import zipfile
 import math
 import argparse
+import tags
 from enum import Enum
 
 from distutils import dir_util
 from distutils import file_util
 from string import Template
+
+import tags
 
 import metagraphe
 import metaphone2
@@ -646,7 +649,7 @@ class Entree:
         self.flags = ''
         # champs morphologiques Hunspell
         self.po = ''
-        self.iz = ''
+        self.iz = '' # hunspell attribute: is
         self.ds = ''
         self.ts = ''
         self.ip = ''
@@ -663,7 +666,7 @@ class Entree:
         self.et = ''
         self.di = '*'
         self.fq = ''
-        self.iD = '0'
+        self.iD = '0' # hunspell attribute: id
 
         # autres
         self.comment = ''
@@ -691,50 +694,31 @@ class Entree:
         # morph
         for i in range(1, nElems):
             if len(elems[i]) > 3 and elems[i][2] == ':':
-                fields = elems[i].split(':', 1)
-                if fields[0] == 'po':
-                    self.po = fields[1]  if self.po == ''  else self.po + ' ' + fields[1]
-                elif fields[0] == 'is':
-                    self.iz = fields[1]  if self.iz == ''  else self.iz + ' ' + fields[1]
-                elif fields[0] == 'ds':
-                    self.ds = fields[1]  if self.ds == ''  else self.ds + ' ' + fields[1]
-                elif fields[0] == 'ts':
-                    self.ts = fields[1]  if self.ts == ''  else self.ts + ' ' + fields[1]
-                elif fields[0] == 'ip':
-                    self.ip = fields[1]  if self.ip == ''  else self.ip + ' ' + fields[1]
-                elif fields[0] == 'dp':
-                    self.dp = fields[1]  if self.dp == ''  else self.dp + ' ' + fields[1]
-                elif fields[0] == 'tp':
-                    self.tp = fields[1]  if self.tp == ''  else self.tp + ' ' + fields[1]
-                elif fields[0] == 'sp':
-                    self.sp = fields[1]  if self.sp == ''  else self.sp + ' ' + fields[1]
-                elif fields[0] == 'pa':
-                    self.pa = fields[1]  if self.pa == ''  else self.pa + ' ' + fields[1]
-                elif fields[0] == 'st':
-                    self.st = fields[1]  if self.st == ''  else self.st + ' ' + fields[1]
-                elif fields[0] == 'al':
-                    self.al = fields[1]  if self.al == ''  else self.al + ' ' + fields[1]
-                elif fields[0] == 'ph':
-                    self.ph = fields[1]  if self.ph == ''  else self.ph + ' ' + fields[1]
-                elif fields[0] == 'lx':
-                    self.lx = fields[1]  if self.lx == ''  else self.lx + ' ' + fields[1]
-                elif fields[0] == 'se':
-                    self.se = fields[1]  if self.se == ''  else self.se + ' ' + fields[1]
-                elif fields[0] == 'et':
-                    self.et = fields[1]  if self.et == ''  else self.et + ' ' + fields[1]
-                elif fields[0] == 'di':
-                    self.di = fields[1]
-                elif fields[0] == 'fq':
-                    self.fq = fields[1]
-                elif fields[0] == 'id':
-                    self.iD = fields[1]
+                sAttr, sContent = elems[i].split(':', 1)
+                if sAttr in {"po", "is", "ds", "ts", "ip", "dp", "tp", "sp", "pa", "st", "al", "ph", "lx", "se", "et", "di", "fq", "id"}:
+                    # vérification
+                    if sAttr in {"po", "is", "lx", "se", "et"} \
+                        and ( sContent not in tags.dTags[sAttr] and not (sAttr == "po" and re.match("v[0123][ea_][ix_][tx_][nx_][pqrex_][mx_][eaz_]", sContent)) ):
+                        echo("  ## Étiquette inconnue pour le tag <{}>: {} @ {}/{}".format(sAttr, sContent, self.lemma, self.flags))
+                    # renommage des attributs
+                    if sAttr == "is":
+                        sAttr = "iz"
+                    if sAttr == "id":
+                        sAttr = "iD"
+                    # modification
+                    try:
+                        if sAttr in {"po", "iz", "ds", "ts", "ip", "dp", "tp", "sp", "pa", "st", "al", "ph", "lx", "se", "et"}:
+                            sContent = getattr(self, sAttr) + " " + sContent
+                        setattr(self, sAttr, sContent.strip())
+                    except:
+                        echo('  ## Erreur. Attribut non attribuable: {}  @  {}/{}'.format(sAttr, self.lemma, self.flags))
                 else:
-                    echo('  ## Champ inconnu: {}  dans  {}/{}'.format(fields[0], self.lemma, self.flags))
+                    echo('  ## Champ inconnu: {} @ {}/{}'.format(sAttr, self.lemma, self.flags))
             else:
                 self.err = self.err + elems[i]
         if self.err:
             echo("\n## Erreur dans le dictionnaire : {}".format(self.err))
-            echo("   dans : " + self.lemma)
+            echo("   @ : " + self.lemma)
 
     def __str__ (self):
         return "{0.lemma}/{0.flags} {1}".format(self, self.getMorph(2))
@@ -744,7 +728,7 @@ class Entree:
         if self.lemma == '':
             sErr += 'lemme vide'
         if re.match(r"^\s", self.lemma):
-            sErr += 'premier caractère un espace dans <' + self.lemma + '>'
+            sErr += 'premier caractère un espace @ <' + self.lemma + '>'
         if re.search(r"\s$", self.lemma):
             sErr += 'espace en fin de lemme'
         if re.match(r"v[0123]", self.po) and not re.match(r"[eas_][ix_][tx_][nx_][pqreuvx_][mx_][ex_z][ax_z]\b", self.po[2:]):
@@ -752,15 +736,15 @@ class Entree:
         if (re.match(r"S[.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[.]", self.flags) and not re.search("[ul]$", self.lemma)):
             sErr += 'drapeau inutile'
         if self.iz == '' and re.match(r"[SXAI](?!=)", self.flags) and self.po:
-            sErr += '[is] vide'
+            sErr += '<is> vide'
         if re.match(r"pl|sg|inv", self.iz):
-            sErr += '[is] incomplet'
+            sErr += '<is> incomplet'
         if re.match(r"[FW]", self.flags) and re.search(r"epi|mas|fem|inv|sg|pl", self.iz):
-            sErr += '[is] incohérent'
+            sErr += '<is> incohérent'
         if re.search(r"pl|sg|inv", self.iz) and re.match(r"[SXAIFW](?!=)", self.flags):
-            sErr += '[is] incohérent'
+            sErr += '<is> incohérent'
         if self.iz.endswith(("mas", "fem", "epi")) and (not self.flags or not self.flags.startswith(("S", "X", "F", "W", "A", "I", "U"))):
-            sErr += '[is] incomplet'
+            sErr += '<is> incomplet'
         if self.flags.startswith(("a0", "b0", "c0", "d0")) and not self.lemma.endswith("er"):
             sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
         if self.flags.startswith("f") and not self.lemma.endswith(("ir", "ïr")):
@@ -956,7 +940,7 @@ class Entree:
     def getConjugation (self):
         sRes = self.lemma + "\t" + self.po[1:10] + "\n"
         for oFlex in self.lFlexions:
-            sMorph = oFlex.sMorph[11:].rstrip("!").replace("ppas adj", "ppas").replace("ppas 1jsg", "ppas")
+            sMorph = oFlex.sMorph[11:].rstrip("!").replace("ppas adj", "ppas").replace("1jsg", "").strip()
             if not sMorph.startswith("ppas") and sMorph.find(" ") > 1:
                 # complex tags
                 for s in getVerbMultiMorph(sMorph):
@@ -968,10 +952,7 @@ class Entree:
     def getDeclination (self):
         sRes = self.lemma + "\t" + self.flags + "\n"
         for oFlex in self.lFlexions:
-            if "ppas" in oFlex.sMorph:
-                sMorph = oFlex.sMorph.replace("ppas adj", "adj").replace("ppas 1jsg", "adj")
-                sRes += "_\t" + sMorph + "\t" + oFlex.sFlexion + "\n"
-            elif "adj" in oFlex.sMorph or "nom" in oFlex.sMorph:
+            if "adj" in oFlex.sMorph or "nom" in oFlex.sMorph:
                 sRes += "_\t" + oFlex.sMorph + "\t" + oFlex.sFlexion + "\n"
         return sRes + "$\n"
 
@@ -1125,7 +1106,7 @@ class Flexion:
     _dTagReplacement = {
         # POS
         "nom": ":N", "adj": ":A", "adv": ":W", "negadv": ":X", "mg": ":G", "nb": ":B", "nbro": ":Br",
-        "loc.nom": ":ÉN", "loc.adj": ":ÉA", "loc.adv": ":ÉW", "loc.verb": ":ÉV",
+        "loc.nom": ":ÉN", "loc.adj": ":ÉA", "loc.adv": ":ÉW",
         "interj": ":J", "loc.interj": ":ÉJ", "titr": ":T",
         "mas": ":m", "fem": ":f", "epi": ":e", "sg": ":s", "pl": ":p", "inv": ":i",
         "infi": ":Y",
@@ -1317,7 +1298,7 @@ class AffixRule:
                 elif fields[0] == 'di':
                     self.di = fields[1]
                 else:
-                    echo('Champ inconnu: {}  dans  {}'.format(fields[0], self.sFlagName))
+                    echo('Champ inconnu: {} @ {}'.format(fields[0], self.sFlagName))
             else:
                 echo("  # Erreur affixe : {}".format(line))
 

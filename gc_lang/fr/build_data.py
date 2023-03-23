@@ -130,7 +130,7 @@ def makeConj (sp, bJS=False):
                         # comment gérer les autres graphies ?
                         pass
                 except:
-                    echo(sInfi, " - ", sTag, " - non géré: ", mode, " / ", g)
+                    echo(f"{sInfi} - {sTag} - non géré: {mode} /  {g}")
             # looking for names derivating from verb
             for sMorph in oDict.getMorph(sFlex):
                 if ":N" in sMorph:
