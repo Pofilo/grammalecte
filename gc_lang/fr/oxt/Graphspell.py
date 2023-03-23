@@ -132,7 +132,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             if not self.bHunspell:
                 # Graphspell
                 lSugg = []
-                for l in self.oGraphspell.suggest(aWord):
+                for l in self.oGraphspell.suggest(aWord.rstrip(".")):
                     lSugg.extend(l)
                 return SpellAlternatives(aWord, tuple(lSugg))
             # fallback dictionary suggestions (Hunspell)
