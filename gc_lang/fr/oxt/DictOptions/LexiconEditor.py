@@ -5,6 +5,7 @@
 import unohelper
 import uno
 import json
+import urllib.parse
 import re
 import os
 import traceback
@@ -421,6 +422,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 spfImported = lFile[0][5:].lstrip("/") # remove file://
                 if platform.system() != "Windows":
                     spfImported = "/" + spfImported
+                spfImported = urllib.parse.unquote(spfImported)
         except:
             spfImported = os.path.join(os.path.expanduser("~"), "fr.__personal__.json") # workaround
         if spfImported and os.path.isfile(spfImported):
@@ -474,6 +476,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 spfExported = lFile[0][5:].lstrip("/") # remove file://
                 if platform.system() != "Windows":
                     spfExported = "/" + spfExported
+                spfExported = urllib.parse.unquote(spfExported)
                 #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
                 sJSON = self.xOptionNode.getPropertyValue("personal_dic")
                 if sJSON:
