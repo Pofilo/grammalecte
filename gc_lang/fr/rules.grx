@@ -1988,7 +1988,7 @@ __écritures_épicènes_invariables__
     *WORD  ·  [ves|ives|dives|sives|tives]
     *WORD  ·  [tes|ates|ètes|ites|ttes]
         <<- ~>> ␣
-        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:i")
 
     *WORD  ·  [e|fe|le|ne|se|te]
         <<- not value(>1, "|·|") >>>
@@ -1998,7 +1998,7 @@ __écritures_épicènes_invariables__
     *WORD  ·  s
         <<- not value(<1, "|·|") >>>
         <<- ~>> ␣
-        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:p")
+        <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, ":N:A:Q:e:i")
 
 
 __immunités_termes_grammaticaux__
@@ -11476,7 +11476,7 @@ TEST: Aussi {{désobligeante}} que furent ces réponses, il fallut trouver un te
 
 __conf_start_nom_ppas__
     [<start>|,|(]  *WORD  @:V1.*:Y
-        <<- /conf/ morph(\2, ":N", "*") and not(morph(\2, ":A") and morph(\3, ":N")) --1>> =suggVerbPpas(\-1)
+        <<- /conf/ not tag(\-1, "_Maj_") and morph(\2, ":N", "*") and not(morph(\2, ":A") and morph(\3, ":N")) --1>> =suggVerbPpas(\-1)
         && Confusion probable. Si “\-1” est un qualificatif se rapportant au nom “\2”, n’utilisez pas un verbe à l’infinitif, mais le participe passé.
 
     [<start>|,|(]  *WORD  [assez|aussi|presque|très|trop|peu]  @:V1.*:Y
@@ -11493,6 +11493,7 @@ TEST: savoir bien tirer à l’arc
 TEST: savoir tirer au pistolet est indispensable
 TEST: mieux former les enseignants et formuler des attentes plus claires
 TEST: ancien conseiller d’État genevois
+TEST: Opération Danser avec les loups
 
 
 !!
@@ -15427,6 +15428,9 @@ __conf_peu_peut_peux!6__
     ## peu
     !! peu à peu ¡¡
     [peux|peut|peu] [a|à|ah|ha|as] [peux|peut|peu]
+        <<- /loc/ not value(>1, "|près|pré|prés|prêt|prêts|")
+        ->> peu à peu                                                       && Confusion : « peu à peu » ou « petit à petit ».
+
     peu-a-peu
     peu-à-peu
     peut-a-peu
@@ -15502,6 +15506,8 @@ TEST: aucun pays – ou très peu alors – n’a réussi à faire ça de façon
 TEST: pour peu qu’ils soient entendus.
 TEST: Il est guéri et peut de nouveau travailler.
 TEST: l’homme peut bel et bien devenir immortel
+TEST: On peut à peu près tout imaginer.
+TEST: Je peux à peu près tout faire.
 
 
 __conf_peut_être__
@@ -16313,10 +16319,10 @@ __conf_quoique_quoi_que__
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels] en >penser
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels] ?en¿ >dire [<end>|,|)]
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels] >avoir pu faire
-        <<- /conf/ -1>> quoi que|quoi qu’                       && Confusion probable.|https://fr.wiktionary.org/wiki/quoi_que
+        <<- /conf/ -1>> quoi que|quoi qu’                       && Confusion probable. “Quoique” ≠ “quoi que”.|https://fr.wiktionary.org/wiki/quoi_que
 
     quoi [que|qu’] @:A¬:G
-        <<- /conf/ space(\1, 1, 1) -1:2>> \1\2                  && Confusion. Pour évoquer une nuance, écrivez “quoique”.|https://fr.wiktionary.org/wiki/quoique
+        <<- /conf/ space(\1, 1, 1) -1:2>> \1\2                  && Confusion. “Quoique” ≠ “quoi que”. Pour évoquer une nuance, écrivez “quoique”.|https://fr.wiktionary.org/wiki/quoique
 
 TEST: mais {{quoique}} tu en penses, c’est comme ça que ça fonctionne.              ->> quoi que|quoi qu’
 TEST: {{Quoiqu’}}il se soit passé réellement passé, je vais lui faire la peau.      ->> Quoi que|Quoi qu’
@@ -19379,6 +19385,7 @@ __substantifs_multi_mots__
     [>chaîne|>chaine] d’ [>information|>info] en continu
     >chair à [pâté|>canon]
     >chair [de|d’] poule
+    >chaise à porteurs
     >chalet d’ alpage
     >chambre à [coucher|gaz]
     >chambre [de|d’] [agriculture|ami|compensation|enfant|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
@@ -19645,6 +19652,7 @@ __substantifs_multi_mots__
     >genou à terre
     gens de confiance
     >geste >barrière
+    >gibier [de|d’] potence
     >gilet [de|d’] sauvetage
     [>goulet|>goulot] d’ étranglement
     >gouvernement d’ union nationale
@@ -21313,6 +21321,7 @@ __da_locutions_verbales__
     >dormir comme un loir
     [>donner|>redonner] quartier libre
     >élire domicile
+    >entendre comme ?des¿ larrons en foire
     >entendre raison
     >étouffer dans l’ œuf
     >faire acte [de|d’] [contrition|présence]
@@ -22305,11 +22314,13 @@ __conf_annales_anales__
         <<- /conf/ -1>> annales                         && Confusion : “\1” est un adjectif relatif à l’anus.|https://fr.wiktionary.org/wiki/annales
 
     [les|ces|des|mes|tes|ses|nos|vos|leurs|plusieurs] >anal
-        <<- /conf/ -2>> annales                         && Confusion : “\2” est un adjectif relatif à l’anus.|https://fr.wiktionary.org/wiki/annales
+    >rester dans [les|mes|tes|ses|ces|nos|vos|leurs|plusieurs] anales
+        <<- /conf/ --1>> annales                        && Confusion : “\-1” est un adjectif relatif à l’anus.|https://fr.wiktionary.org/wiki/annales
 
 TEST: {{anales}} du bac                                                         ->> annales
 TEST: des {{anales}} littéraires                                                ->> annales
 TEST: il a bachoté les {{anales}}.                                              ->> annales
+TEST: Ça restera dans les {{anales}}                                            ->> annales
 
 
 # air / aire / ère
@@ -24565,18 +24576,25 @@ __conf_sans_s_en__
     [il|ça|cela|ceci] >aller s’ en dire
         <<- /conf/ -3:4>> sans                                      && Confusion. Locution “aller sans dire”.|https://fr.wiktionary.org/wiki/cela_va_sans_dire#fr
 
-    >savoir [à|a] quoi [sans|sens|san] tenir
+    s’ [en|an] [me|te|se|m’|t’|s’|nous|vous|leur|lui] ?[en|y]¿ $:Y
+    s’ [en|an] [en|y] $:Y
+        <<- /conf/ -1:2>> sans                                      && Confusion probable.|https://fr.wiktionary.org/wiki/sans
+
+    >savoir [à|a] quoi [sans|sens|san|sent] tenir
         <<- /conf/ --2>> s’en                                       && Confusion. Locution “savoir à quoi s’en tenir”.
 
     pas [de|d’] quoi sans $:V
         <<- /conf/ --2>> s’en                                       && Confusion. Vous confondez “sans” avec “s’en”. Exemple : s’en priver, sans frémir.
 
 TEST: Évidemment, cela va {{s’en}} dire.                            ->> sans
+TEST: {{s’en}} s’y perdre                                           ->> sans
 TEST: avec ceux-là, elle avait su à quoi {{sans}} tenir             ->> s’en
 TEST: pas de quoi {{sans}} prendre à eux                            ->> s’en
 TEST: pas de quoi {{sans}} faire une montagne                       ->> s’en
 TEST: ils ne savaient par à quoi s’en tenir
 TEST: mais, cela va sans dire, je n’ajouterai à ce sujet
+TEST: s’en prendre à lui, c’est une erreur.
+
 
 
 # sceptique / septique
@@ -29626,21 +29644,21 @@ __infi_pouvoir!5__
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ée?s?|ez)$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":M")
+        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":(?:M|V0)")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     >pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~..(?:ai(?:s|t|ent))$
     >pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~..(?:ai(?:s|t|ent))$
-        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":M") and not tagbefore(\1, "_ceque_")
+        <<- /infi/ morph(\1, ":V", ">puis/") and morph(\-1, ":V", ":(?:M|V0)") and not tagbefore(\1, "_ceque_")
         --1>> =suggVerbInfi(\-1)                                                                    && S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
     [de|d’]  pouvoir  ?[ne|n’]¿  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~(?:ée?s?|ez|ais)$
     [de|d’]  pouvoir  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~(?:ée?s?|ez|ais)$
     [de|d’]  pouvoir  ?[ne|n’]¿  [le|la|l’|les]                  [lui|leur|en|y]             ~(?:ée?s?|ez|ais)$
     [de|d’]  pouvoir  ?[ne|n’]¿  [lui|leur|y]                    en                          ~(?:ée?s?|ez|ais)$
-        <<- /infi/ morph(\-1, ":V", ":[MN]")
+        <<- /infi/ morph(\-1, ":V", ":(?:[MN]|V0)")
         --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “\2”, ce verbe devrait être à l’infinitif.
 
 TEST: vous pouvez les {{détectez}}.                                                     ->> détecter
@@ -29652,6 +29670,8 @@ TEST: faire seulement ce que tu pouvais ne satisfaisait pas tes patrons.
 TEST: un immense pouvoir l’animait.
 TEST: une antichambre du pouvoir décriée
 TEST: il ne put jamais le lire sans pleurer.
+TEST: le pouvoir était sa seule passion
+TEST: les mots de pouvoir n’étaient que des pis-aller.
 
 
 __infi_savoir!5__
@@ -29820,16 +29840,16 @@ TEST: Et il faut en fait, pour les expliquer, tenir compte de trois éléments c
 __infi_faire__
     >faire  ~(?:ée?s?|ez)$
         <<- /infi/ not morph(<1, ">(?:en|[mtsnd][e’]|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
-        -2>> =suggVerbInfi(\2)                                                                      && Après le verbe “faire”, ce verbe devrait être à l’infinitif.
+        -2>> =suggVerbInfi(\2)                                                                      && Après le verbe “faire”, s’il s’agit d’une action, le verbe devrait être à l’infinitif.
 
     [ne|n’|me|m’|te|t’|se|s’]  >faire  ~(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M") and not value(\-1, "|varié|variée|variés|variées|")
-        --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “faire”, le verbe devrait être à l’infinitif.
+        --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “faire”, s’il s’agit d’une action, le verbe devrait être à l’infinitif.
 
     de  ?[nous|vous|lui|les|le|la|l’]¿  faire   ~(?:ée?s?|ez)$
     faire faire                                 ~(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M")
-        --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “faire”, ce verbe devrait être à l’infinitif.
+        --1>> =suggVerbInfi(\-1)                                                                    && Après le verbe “faire”, s’il s’agit d’une action, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants                                                    ->> manger
 TEST: Tu fais {{décoloré}} tes cheveux ?                                                    ->> décolorer
@@ -32954,7 +32974,7 @@ __ppas_avoir_l_air__
     <start>  [la|une|cette|ma|ta|sa|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morph(\3, ":[NA].*:[fe]", ":m") --1>> =suggFemSing(\-1)      && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [<start>]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:m:[si]|G)
+    [<start>]  *WORD  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morph(\2, ":M.*:m", ":M.*:[fe]") --1>> =suggMasSing(\-1)     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
     ils  ?[ne|n’]¿  >avoir  ?eu¿  l’  air  @:A¬:(?:A.*:[me]|G)
@@ -32978,7 +32998,7 @@ __ppas_avoir_l_air__
     [/-je|/-tu|/-iel]  ?eu¿  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggSing(\-1)                     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [/-nous|/-iels]  ?eu¿  l’  air  @:A¬:(?:A.*:(?:m:[si]|p)|G)
+    [/-nous|/-iels]  ?eu¿  l’  air  @:A¬:(?:A.*:(?:[me]:[si]|p)|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggPlur(\-1)                     && Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
     /-il  ?eu¿  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
@@ -33033,6 +33053,7 @@ TEST: Elle n’avait pas l’air inquiet et troublé des personnes préoccupées
 TEST: Ses enfants ont l’air espiègle que leur père avait à leur âge.
 TEST: Sa robe a l’air élégant des créations des grands couturiers.
 TEST: Ses amies ont l’air distant, mais l’âme généreuse.
+TEST: Patrick a l’air sombre des mauvais jours.
 
 
 
