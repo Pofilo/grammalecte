@@ -28,8 +28,6 @@ def main ():
     xParser.add_argument("lang_name", type=str, help="language name")
     xParser.add_argument("dic_filename", type=str, help="dictionary file name (without extension)")
     xParser.add_argument("-js", "--json", help="Build dictionary in JSON", action="store_true")
-    xParser.add_argument("-s", "--stemming", help="stemming method: S=suffixes, A=affixes, N=no stemming", type=str, choices=["S", "A", "N"], default="S")
-    xParser.add_argument("-c", "--compress", help="compression method: 1, 2 (beta), 3, (beta)", type=int, choices=[1, 2, 3], default=1)
     xArgs = xParser.parse_args()
     build(xArgs.src_lexicon, xArgs.lang_code, xArgs.lang_name, xArgs.dic_filename, xArgs.json)
 
