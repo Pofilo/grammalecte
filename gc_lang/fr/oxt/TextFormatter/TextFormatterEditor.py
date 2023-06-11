@@ -6,6 +6,7 @@ import unohelper
 import uno
 import traceback
 import platform
+import urllib.parse
 import os
 import json
 import re
@@ -391,10 +392,11 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
             if not sTFEditorOptions:
                 return
             self.dRules = json.loads(sTFEditorOptions)
-            xGridDataModel = self.xGridModel.GridDataModel
-            for sRuleName in self.dRules:
-                xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
-            xGridDataModel.sortByColumn(0, True)
+            if self.dRules:
+                xGridDataModel = self.xGridModel.GridDataModel
+                for sRuleName in self.dRules:
+                    xGridDataModel.addRow(xGridDataModel.RowCount + 1, self._getValuesForRow(sRuleName))
+                xGridDataModel.sortByColumn(0, True)
         except:
             sMessage = traceback.format_exc()
             MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
@@ -427,6 +429,7 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
                 spfImported = lFile[0][5:].lstrip("/") # remove file://
                 if platform.system() != "Windows":
                     spfImported = "/" + spfImported
+                spfImported = urllib.parse.unquote(spfImported)
         except:
             sMessage = traceback.format_exc()
             MessageBox(self.xDocument, sMessage, ui.get('error'), ERRORBOX)
@@ -476,6 +479,9 @@ class TextFormatterEditor (unohelper.Base, XActionListener, XGridSelectionListen
                 spfExported = lFile[0][5:].lstrip("/") # remove file://
                 if platform.system() != "Windows":
                     spfExported = "/" + spfExported
+                spfExported = urllib.parse.unquote(spfExported)
+                if not spfExported.endswith((".json", ".JSON")):
+                    spfExported += ".json"
                 #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
                 with open(spfExported, "w", encoding="utf-8") as hDst:
                     hDst.write(sText)
