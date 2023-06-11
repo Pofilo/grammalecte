@@ -477,6 +477,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyLi
                 if platform.system() != "Windows":
                     spfExported = "/" + spfExported
                 spfExported = urllib.parse.unquote(spfExported)
+                if not spfExported.endswith((".json", ".JSON")):
+                    spfExported += ".json"
                 #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
                 sJSON = self.xOptionNode.getPropertyValue("personal_dic")
                 if sJSON:
