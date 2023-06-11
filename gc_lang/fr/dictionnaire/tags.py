@@ -211,7 +211,7 @@ dTags = {
         "méca": "Mécanique",
         "métal": "Métallurgie",
         "techni": "Technique",
-        "video": "Vidéo",
+        "vidéo": "Vidéo",
         # Blabla
         "admin": "Administration",
         "comm": "Communication",

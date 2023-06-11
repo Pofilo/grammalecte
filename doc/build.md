@@ -58,7 +58,12 @@ For testing:
 
 `-fx --firefox`
 
-> Launch Firefox Developper.
+> Launch Firefox.
+> Unit tests can be launched from the menu (Tests section).
+
+`-fxd --firefox_dev`
+
+> Launch Firefox Developer.
 > Unit tests can be launched from the menu (Tests section).
 
 `-fxn --firefox_nightly`
