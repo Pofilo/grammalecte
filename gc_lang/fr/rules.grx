@@ -24485,6 +24485,15 @@ TEST: il va rester en {{contacte}} avec eux                     ->> contact
 TEST: Restons en contact.
 
 
+# passer en revue
+__conf_revue_revu__
+    >passer en [revu+s|revues]
+        <<- /conf/ --1>> revue                                      && Confusion. Locution “passer en revue”.
+
+TEST: il passe en {{revu}} son existence                        ->> revue
+TEST: passer en revue ses investissements
+
+
 # rôder / roder
 __conf_roder_rôder__
     >rôder $:D [>moteur|>voiture|>auto|>moto|>soupape]
@@ -33399,7 +33408,8 @@ __ppas_det_sing_COD_que_avoir__
     [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
     [une|la|cette|ma|ta|sa]  *WORD  [que|qu’]  $:D¬:R  @:[NA]                                          ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
         <<- /ppas/ morph(\2, ":[NA].*:[fe]", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|ÉV)|>qu[e’]/")
-            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
@@ -33468,7 +33478,8 @@ __ppas_det_plur_COD_que_avoir__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
     [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’]  $:D¬:R  @:[NA]                                          ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA]") >>>
         <<- /ppas/ morph(\2, ":[NA].*:m", ":[fe]") and morph(\-1, ":Q.*:[fs]", ":[me]:[pi]") --1>> =suggVerbPpas(\-1, ":m:p")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -33480,14 +33491,16 @@ __ppas_det_plur_COD_que_avoir__
     [certains|maints]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
     [certains|maints]  *WORD  [que|qu’]  $:D¬:R  @:[NA]                                          ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[me]:[pi]") --1>> =suggVerbPpas(\-1, ":m:p")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
     [certaines|maintes]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|$:M]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
     [certaines|maintes]  *WORD  [que|qu’]  $:D¬:R  @:[NA]                                          ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:[GWÉ]
         <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
-            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|") and value(>1, "|de|d’|")) or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
             and morph(\2, ":[NA].*:[fe]:[pi]") --1>> =suggVerbPpas(\-1, ":f:p")
         && Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin pluriel.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
@@ -33543,13 +33556,69 @@ TEST: c’est aux femmes que tu m’as présenté.
 TEST: les drogues qu’il a recommencé à mettre dans ses rations.
 
 
-__ppas_ceque_pronom_avoir__
-    ce  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|[me]:[si])
+__ppas_ce_que_pronom_avoir__
+    ce  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿             >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
+    ce  [que|qu’]  $:D¬:R  @:[NA]                                                   ?[ne|n’]¿  ?[m’|t’|nous|vous]¿      >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
         <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")
         && Accord avec le COD “ce”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ce que ça a {{donnée}}                                        ->> donné
 TEST: ce qu’il leur a {{données}}                                   ->> donné
+TEST: ce que les ennemis nous ont {{donnée}}                        ->> donné
+
+
+__ppas_celui_que_pronom_avoir__
+    celui  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿          >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
+    celui  [que|qu’]  $:D¬:R  @:[NA]                                                   ?[ne|n’]¿  ?[m’|t’|nous|vous]¿   >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|É|[me]:[si])
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")
+        && Accord avec le COD “celui”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: celui que ce con a {{détruite}}                               ->> détruit
+TEST: celui que j’ai {{oubliée}}                                    ->> oublié
+TEST: celui que nous avons pensé rétablir
+
+
+__ppas_celle_que_pronom_avoir__
+    celle  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿          >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
+    celle  [que|qu’]  $:D¬:R  @:[NA]                                                   ?[ne|n’]¿  ?[m’|t’|nous|vous]¿   >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|É|[fe]:[si])
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+        --1>> =suggVerbPpas(\-1, ":f:s")
+        && Accord avec le COD “celle”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: celle que nous avons {{oublié}}                               ->> oubliée
+TEST: celle que les services ont {{remplacé}}                       ->> remplacée
+TEST: celle qu’ils ont pensé remplacer
+
+
+__ppas_ceux_que_pronom_avoir__
+    ceux  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿           >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:(?:G|W|É|[me]:[pi])
+    ceux  [que|qu’]  $:D¬:R  @:[NA]                                                   ?[ne|n’]¿  ?[m’|t’|nous|vous]¿    >avoir  @:V[0-3]..t.*:Q.*:[fs]¬:(?:G|W|É|[me]:[pi])
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+        --1>> =suggVerbPpas(\-1, ":m:p")
+        && Accord avec le COD “ceux”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: ceux que vous avez {{attaqué}}                                ->> attaqués
+TEST: ceux que les grands ont {{mangé}}                             ->> mangés
+TEST: ceux que nous avons cru perdre.
+
+
+__ppas_celles_que_pronom_avoir__
+    celles  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿         >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:(?:G|W|É|[fe]:[pi])
+    celles  [que|qu’]  $:D¬:R  @:[NA]                                                   ?[ne|n’]¿  ?[m’|t’|nous|vous]¿  >avoir  @:V[0-3]..t.*:Q.*:[ms]¬:(?:G|W|É|[fe]:[pi])
+        <<- /ppas/ not morph(>1, ":(?:Y|Ov|D|LV|ÉV)")
+            and not ((value(\-1, "|commencé|décidé|essayé|fini|imaginé|ordonné|oublié|recommencé|supplié|tenté|cru|") and value(>1, "|de|d’|"))
+                    or (value(\-1, "|commencé|recommencé|réussi|pensé|échoué|") and value(>1, "|à|")))
+        --1>> =suggVerbPpas(\-1, ":f:p")
+        && Accord avec le COD “celles”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: celles que nous avons {{détourné}}                            ->> détournées
+TEST: celles que le chien a {{mangé}}                               ->> mangées
+TEST: celles que nous avons oublié de prévenir
+TEST: celles que nous avons pensé détruire
 
 
 
