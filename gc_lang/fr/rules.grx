@@ -31632,12 +31632,12 @@ TEST: elles se font fort de parvenir au résultat avec brio
 !!
 
 __ppas_je_tu_verbe_état__
-    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                   @:[NAQ].*:p¬:[GWYsi]
-    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:[NAQ].*:p¬:[GWYsi]
-    [je|j’]    ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_VEP_                                                  @:[NAQ].*:p¬:[GWYsi]
-    tu         ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_VEP_                                                  @:[NAQ].*:p¬:[GWYsi]
-    [je|j’]    ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:[NAQ].*:p¬:[GWYsi]
-    tu         ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:[NAQ].*:p¬:[GWYsi]
+    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                   @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    [je|j’]    ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_VEP_                                                  @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    tu         ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_VEP_                                                  @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    [je|j’]    ?[ne|n’]¿ [me|m’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    tu         ?[ne|n’]¿ [te|t’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:[NAQ].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ not tag(<1, "_ceque_") --1>> =suggSing(\-1)                                  && Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
     [/-je|/-tu]  @:[NAQ].*:p¬:[GWsi]
@@ -31735,10 +31735,10 @@ __ppas_3sg_mas_verbe_état__
     tout en [étant|semblant|devenant|restant|demeurant|redevenant|paraissant] @:A
         <<- !4>>
 
-    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([il|quiconque])          ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
         <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_")
         --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
@@ -31773,44 +31773,44 @@ __ppas_3sg_mas_verbe_état__
         <<- /ppas/ morphVC(\1, ":V0e.*:3s") -2>> =suggVerbPpas(\2, ":s")                            && Incohérence. Il faudrait ici un participe passé, pas une forme verbale conjuguée.
         <<- /ppas/ __else__ and morphVC(\1, ":V0e.*:3p") -2>> =suggVerbPpas(\2, ":p")               && Incohérence. Il faudrait ici un participe passé, pas une forme verbale conjuguée.
 
-    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([ça|ceci|cela|celui-ci|celui-là|aucun|chacun]) ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
         <<- /ppas/ not tag(\1, "_enum_") and morph(\2, ":(?:3s|P)") and not morph(<1, ":[RV]|>(?:et|ou)/") and not tag(<1, "_ceque_")
         --1>> =suggMasSing(\-1)                                                                                         && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [<start>|,|(|/_start_] tout ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
-    [<start>|,|(|/_start_] tout ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
-    [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
-    [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si])
+    [<start>|,|(|/_start_] tout ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si]|V0)
+    [<start>|,|(|/_start_] tout ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si]|V0)
+    [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si]|V0)
+    [<start>|,|(|/_start_] tout ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ].*:[fp]¬:(?:[GWYN]|[me]:[si]|V0)
         <<- /ppas/ morph(\1, "[123]s") --1>> =suggMasSing(\-1)                                                          && Accord avec le sujet “tout” : “\-1” devrait être au masculin singulier.
 
-    lui [ne|n’|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui [ne|n’|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui n’ [en|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui n’ [en|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lui [ne|n’|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lui [ne|n’|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lui n’ [en|y]                   (/_VE_)                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lui n’ [en|y]                   (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lui ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
         <<- /ppas/ not tag(<1, "_ceque_") and morph(\1, ":(?:[123]s|P)") and not morph(<1, ":[RV]")
         --1>> =suggMasSing(\-1)                                                                     && Accord avec le sujet “lui” : “\-1” devrait être au masculin singulier.
 
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
         <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_") --1>> =suggMasSing(\-1)    && Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
 
-    lequel ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lequel ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
-    lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si])
+    lequel ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lequel ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
+    lequel ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[me]:[si]|V0)
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)                                      && Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ un  ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":(?:[123]s|P)")
         --1>> =suggMasSing(\-1)                                                                     && Accord erroné : “un” et “\-1” ne sont pas accordés, l’adjectif devrait être au masculin singulier.
 
@@ -31924,17 +31924,17 @@ TEST: Tareq a dit que les gens comme lui ne peuvent pas devenir pilotes
 
 
 __ppas_3sg_fem_verbe_état__
-    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                               @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle-ci|celle-là|aucune|chacune]) ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
         <<- /ppas/ not tag(\1, "_enum_") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_")
         --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    ([elle|celle|celle-ci|celle-là|aucune|chacune]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
         <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not tag(<1, "_ceque_")
         --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
 
@@ -31960,16 +31960,16 @@ __ppas_3sg_fem_verbe_état__
         <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3s") and not value(\-1, "|néant|")
         --1>> =suggFemSing(\-1)                                                                     && Accord avec le sujet “elle” : “\-1” devrait être au féminin singulier.
 
-    laquelle ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    laquelle ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
-    laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si])
+    laquelle ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    laquelle ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
+    laquelle ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:p|[AQ])¬:(?:[GWY]|[fe]:[si]|V0)
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)                                      && Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  ?l’¿ une  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
         <<- /ppas/ not value(\-1, "|néant|") and morph(\1, ":(?:[123]s|P)")
         --1>> =suggFemSing(\-1)                                                                     && Accord erroné : “une” et “\-1” ne sont pas accordés, l’adjectif devrait être au féminin singulier.
 
@@ -32045,10 +32045,10 @@ TEST: ne serait-on pas surpris par la mort
 
 
 __ppas_iel_verbe_état__
-    iel ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:[NAQ].*:p¬:[GWYsi]
-    iel ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:p¬:[GWYsi]
-    iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[NAQ].*:p¬:[GWYsi]
-    iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:p¬:[GWYsi]
+    iel ?[ne|n’]¿ ?[en|y]¿          (/_VE_)                                                 @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    iel ?[ne|n’]¿ ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[NAQ].*:p¬:(?:[GWYsi]|V0)
+    iel ?[ne|n’]¿ [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:p¬:(?:[GWYsi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and not morph(<1, ":[RV]") and morph(\1, ":(?:3s|P)") and not tag(<1, "_ceque_")
         --1>> =suggSing(\-1)                                                                        && Accord avec le sujet “iel” : “\-1” devrait être au pluriel.
 
@@ -32095,10 +32095,10 @@ TEST: iel est devenu fort.
 
 
 __ppas_nous_verbe_état__
-    nous ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:[NAQ].*:s¬:[GWYpi]
-    nous ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:s¬:[GWYpi]
-    nous ?[ne|n’]¿ nous ?[en|y]¿    (/_VEP_)                                                @:[NAQ].*:s¬:[GWYpi]
-    nous ?[ne|n’]¿ nous ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:[GWYpi]
+    nous ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    nous ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    nous ?[ne|n’]¿ nous ?[en|y]¿    (/_VEP_)                                                @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    nous ?[ne|n’]¿ nous ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:(?:[GWYpi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and not morph(<1, ":[RV]|>(?:ne|nous)/") and morph(\1, ":(?:1p|P)") and not tag(<1, "_ceque_")
         --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
@@ -32168,10 +32168,10 @@ TEST: Ton rendez-vous arrive bientôt.
 
 
 __ppas_3pl_mas_verbe_état__
-    ils ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ils ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ils ?[ne|n’]¿ ?[en|y]¿          /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ils ?[ne|n’]¿ ?[en|y]¿          /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ils ?[ne|n’]¿ [se|s’] ?[en|y]¿  /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
@@ -32198,24 +32198,24 @@ __ppas_3pl_mas_verbe_état__
         <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|pléthore|néant|réalité|")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “ils” : “\-1” devrait être au masculin pluriel.
 
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux-ci|ceux-là|certains|quelques-uns|maints|tous]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    ([eux|ceux|ceux-ci|ceux-là|certains|quelques-uns|maints]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
-    lesquels ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    lesquels ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
-    lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi])
+    lesquels ?[ne|n’]¿ ?[en|y]¿         /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    lesquels ?[ne|n’]¿ ?[en|y]¿         /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
+    lesquels ?[ne|n’]¿ [se|s’] ?[en|y]¿ /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[me]:[pi]|V0)
         <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|pléthore|néant|réalité|")
         --1>> =suggMasPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
@@ -32274,17 +32274,17 @@ TEST: Peut-être s’en sont-ils aperçu ?
 
 
 __ppas_3pl_fem_verbe_état__
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ ?[en|y]¿            (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles-ci|celles-là|certaines|quelques-unes|maintes|toutes]) ?[ne|n’]¿ [se|s’] ?[en|y]¿    (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_VE_)                                                 @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_VEP_)                                                @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    ([elles|celles|celles-ci|celles-là|certaines|quelques-unes|maintes]) qui ?[ne|n’]¿ [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
         <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|pléthore|néant|réalité|") and not tag(<1, "_ceque_")
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
 
@@ -32311,10 +32311,10 @@ __ppas_3pl_fem_verbe_état__
         <<- /ppas/ tag(\2, "_LVEPID_") and morphVC(\2, ":3p") and not value(\-1, "|légion|pléthore|néant|réalité|")
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “elles” : “\-1” devrait être au féminin pluriel.
 
-    lesquelles ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    lesquelles ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
-    lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi])
+    lesquelles ?[ne|n’]¿ ?[en|y]¿           /_VE_                                                   @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    lesquelles ?[ne|n’]¿ ?[en|y]¿           /_LVED_ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_     @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_VEP_                                                  @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
+    lesquelles ?[ne|n’]¿ [se|s’] ?[en|y]¿   /_LVEPD_ ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_         @:(?:N.*:s|[AQ])¬:(?:[GWY]|[fe]:[pi]|V0)
         <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|pléthore|néant|réalité|")
         --1>> =suggFemPlur(\-1)                                                                     && Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
@@ -32356,10 +32356,10 @@ TEST: lesquelles se savaient à en croire certains estimées en haut lieu
 
 
 __ppas_3pl_épi_verbe_état__
-    ([iels|plusieurs]) ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:[NAQ].*:s¬:[GWYpi]
-    ([iels|plusieurs]) ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:s¬:[GWYpi]
-    ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[NAQ].*:s¬:[GWYpi]
-    ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:[GWYpi]
+    ([iels|plusieurs]) ?[ne|n’]¿ ?[en|y]¿           (/_VE_)                                                 @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    ([iels|plusieurs]) ?[ne|n’]¿ ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[NAQ].*:s¬:(?:[GWYpi]|V0)
+    ([iels|plusieurs]) ?[ne|n’]¿ [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[NAQ].*:s¬:(?:[GWYpi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not tag(<1, "_ceque_")
         --1>> =suggPlur(\-1)                                                                        && Accord avec le sujet “\1” : “\-1” devrait être au pluriel.
 
@@ -32453,13 +32453,13 @@ TEST: la femme qu’elle avait été accueillait avec enthousiasme les surprises
 !!!! Participes passés: accord en nombre avec la conjugaison de « être » (et équivalent)          !!
 
 __ppas_être_accord_sing!3__
-    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:p¬:[GMWYsi]
-    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:p¬:[GMWYsi]
+    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:p¬:(?:[GMWYsi]|V0)
+    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:p¬:(?:[GMWYsi]|V0)
         <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p|[123]p)")
         --1>> =suggSing(\-1)                                                                        && Accord avec la forme verbale “\2” : “\-1” devrait être au singulier.
 
-    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:p¬:[GMWYsi]
-    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_    @:[NAQ].*:p¬:[GMWYsi]
+    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:p¬:(?:[GMWYsi]|V0)
+    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_    @:[NAQ].*:p¬:(?:[GMWYsi]|V0)
         <<- /ppas/ morph(\1, ":[123]s", ":(?:C|N.*:p|[123]p)") --1>> =suggSing(\-1)                 && Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
 
 TEST: cette petite chienne à poil roux avait été longtemps {{malades}}.                             ->> malade
@@ -32481,13 +32481,13 @@ TEST: Non ! Nous, musulmans, ne sommes pas persécutés en France. Nous sommes 
 
 
 __ppas_être_accord_plur!3__
-    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:s¬:[GMWYpi]
-    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:s¬:[GMWYpi]
+    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                @:[NAQ].*:s¬:(?:[GMWYpi]|V0)
+    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[NAQ].*:s¬:(?:[GMWYpi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and not morph(\1, ":G") and morph(\2, ":[13]p")
         --1>> =suggPlur(\-1)                                                                                            && Accord avec la forme verbale “\2” : “\-1” devrait être au pluriel.
 
-    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:s¬:[GMWYpi]
-    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_    @:[NAQ].*:s¬:[GMWYpi]
+    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_VE_)                                                  @:[NAQ].*:s¬:(?:[GMWYpi]|V0)
+    [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_    @:[NAQ].*:s¬:(?:[GMWYpi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":[13]p") --1>> =suggPlur(\-1)                && Accord avec la forme verbale “\1” : “\-1” devrait être au pluriel.
 
 TEST: lui et son staff y sont très {{favorable}}                                                    ->> favorables
@@ -32538,24 +32538,24 @@ __ppas_sujet_être_accord_immunités__
 
 
 __ppas_sujet_être_accord_singulier__
-    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                               @:[AQ]¬:(?:[GWM]|[me]:[si])
-    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ]¬:(?:[GWM]|[me]:[si])
+    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                               @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
+    [<start>|,|(|/_start_]  [un|le|ce|cet|tout]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ]¬:(?:[GWM]|[me]:[si]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":[NA].*:[me]", ":[GW]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =suggMasSing(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés.
 
-    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿         (/_VE_)                                                @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿ (/_VEP_)                                               @:[AQ]¬:(?:[GWM]|[fe]:[si])
-    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ]¬:(?:[GWM]|[fe]:[si])
+    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿         (/_VE_)                                                @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿         (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_  @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿ (/_VEP_)                                               @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
+    [<start>|,|(|/_start_]  [une|la|ma|ta|sa|cette]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿ (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_      @:[AQ]¬:(?:[GWM]|[fe]:[si]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":[NA].*:[fe]", ":[GW]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =suggFemSing(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés.
 
-    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:[GWM]
-    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:[GWM]
-    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:[GWM]
-    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:[GWM]
+    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|V0)
+    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|V0)
+    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|V0)
+    [<start>|,|(|/_start_]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P"))) >>>
         <<- /ppas/ morph(\1, ":[NA].*:f", ":[me]") and morph(\-1, ":m", ":[fe]") --1>> =suggFemSing(\-1)                && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin singulier.
         <<- /ppas/ __else__ and morph(\1, ":[NA].*:m", ":[fe]") and morph(\-1, ":f", ":[me]") --1>> =suggMasSing(\-1)   && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin singulier.
@@ -32594,29 +32594,29 @@ TEST: où l’on sera par exemple capables de chiffrer le nombre d’incarcérat
 
 __ppas_sujet_être_accord_pluriel__
     [<start>|,|(|/_start_]  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|@:B:.:p]  (*WORD)
-        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:[GWM]
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GWM]|V0)
     [<start>|,|(|/_start_]  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|@:B:.:p]  (*WORD)
-        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:[GWM]
+        || ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GWM]|V0)
     [<start>|,|(|/_start_]  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|@:B:.:p]  (*WORD)
-        || ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:[GWM]
+        || ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GWM]|V0)
     [<start>|,|(|/_start_]  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|@:B:.:p]  (*WORD)
-        || ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:[GWM]
+        || ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GWM]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\2, ":(?:[123]p|P)") >>>
         <<- /ppas/ morph(\1, ":f", ":[me]") and morph(\-1, ":m", ":[fe]") --1>> =suggFemPlur(\-1)               && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin pluriel.
         <<- /ppas/ __else__ and morph(\1, ":m", ":[fe]") and morph(\-1, ":f", ":[me]") --1>> =suggMasPlur(\-1)  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
         <<- /ppas/ __else__ and morph(\-1, ":s", ":[pi]") --1>> =suggPlur(\-1)                                  && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au pluriel.
 
-    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certains|maints]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿   (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":[NA].*:[me]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
         --1>> =suggMasPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin pluriel.
 
-    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[fe]:[pi])
-    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[fe]:[pi])
-    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi])
-    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi])
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_VE_)                                                 @:[AQ]¬:(?:[GW]|[fe]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿          (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GW]|[fe]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
+    [<start>|,|(|/_start_]  [certaines|maintes]  (*WORD)  ?qui¿  ?[ne|n’]¿  [se|s’] ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GW]|[me]:[pi]|V0)
         <<- /ppas/ not value(\-1, "|légion|pléthore|néant|réalité|") and morph(\1, ":[NA].*:[fe]:[pi]", ":[GW]") and morph(\2, ":(?:[123]p|P)")
         --1>> =suggFemPlur(\-1)                                                                     && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin pluriel.
 
@@ -32653,10 +32653,10 @@ TEST: Les « jours » ménagés dans les parois n’étaient donc point obstru
 
 
 __ppas_nom_propre_être_accord__
-    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:[GMW]
-    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:[GMW]
-    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:[GMW]
-    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:[GMW]
+    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_VE_)                                                 @:[AQ]¬:(?:[GMW]|V0)
+    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿           (/_LVED_) ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ ?/_LVE_¿ /_LVEF_   @:[AQ]¬:(?:[GMW]|V0)
+    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_VEP_)                                                @:[AQ]¬:(?:[GMW]|V0)
+    [<start>|,|(|/_start_]  ($:M)  ?qui¿  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  (/_LVEPD_) ?/_LVEP_¿ ?/_LVEP_¿ ?/_LVEP_¿ /_LVEPF_       @:[AQ]¬:(?:[GMW]|V0)
         <<- /ppas/ not tag(\1, "_enum_") and not value(\-1, "|légion|pléthore|néant|réalité|") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P"))) >>>
         <<- /ppas/ morph(\1, ":M.*:f", ":[me]") and morph(\-1, ":[AQ].*:m", ":[fe]") --1>> =suggFemSing(\-1)                && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au féminin singulier.
         <<- /ppas/ __else__ and morph(\1, ":M.*:m", ":[fe]") and morph(\-1, ":[AQ].*:f", ":[me]") --1>> =suggMasSing(\-1)   && Accord erroné : “\1” et “\-1” ne sont pas accordés. Mettez au masculin singulier.
