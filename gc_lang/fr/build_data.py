@@ -59,7 +59,7 @@ def loadDictionary ():
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
         if platform.system() == "Windows":
-            os.system("genfrdic.py -s -gl -v "+sVersion)
+            os.system("python genfrdic.py -s -gl -v "+sVersion)
         else:
             os.system("python3 ./genfrdic.py -s -gl -v "+sVersion)
 

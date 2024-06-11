@@ -169,7 +169,7 @@ class TestMasFemSingPlur (unittest.TestCase):
     @classmethod
     def setUpClass (cls):
         cls.lPlural = [
-            ("travail", ["travaux"]),
+            ("travail", ["travaux", "travails"]),
             ("vœu", ["vœux"]),
             ("gentleman", ["gentlemans", "gentlemen"])
         ]
