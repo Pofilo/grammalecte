@@ -29,7 +29,7 @@ def purge (sFolderName, bDeleteContentOnly):
 def main ():
     "purge cruft and other files"
     print("Python: " + sys.version)
-    if sys.version < "3.7":
+    if sys.version_info < (3, 7):
         print("Python 3.7+ required")
         return
 
