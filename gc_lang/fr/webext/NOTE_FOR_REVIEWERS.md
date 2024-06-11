@@ -1,7 +1,7 @@
 # Grammalecte for Firefox and Chrome and for Thunderbird
 
 * [Website](https://grammalecte.net)
-* [Source code](http://code.grammalecte.net:8080/home)
+* [Source code](http://grammalecte.net:8080/)
 
 This extension offers a grammar checking tool for the French Language.
 
