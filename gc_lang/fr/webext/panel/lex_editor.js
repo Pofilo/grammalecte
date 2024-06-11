@@ -737,7 +737,7 @@ const oBinaryDict = {
     },
 
     setDictData: function (nEntries, sDate) {
-        document.getElementById("dic_num_entries").textContent = nEntries.toString() + ((this.nEntry > 1) ? " entrées" : " entrée");
+        document.getElementById("dic_num_entries").textContent = nEntries.toString() + ((nEntries > 1) ? " entrées" : " entrée");
         document.getElementById("dic_save_date").textContent = sDate;
         if (nEntries == 0) {
             hideElement("export_button");
