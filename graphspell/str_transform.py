@@ -194,7 +194,8 @@ def distanceJaroWinkler (sWord1, sWord2, fBoost = .666):
 
 def distanceSift4 (s1, s2, nMaxOffset=5):
     "implementation of general Sift4."
-    # https://siderite.blogspot.com/2014/11/super-fast-and-accurate-string-distance.html
+    # faster than Damerau-Levenshtein and Jaro-Winkler
+    # https://siderite.dev/blog/super-fast-and-accurate-string-distance.html
     if not s1:
         return len(s2)
     if not s2:
@@ -255,10 +256,10 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
 
 def showDistance (s1, s2):
     "display Damerau-Levenshtein distance and Sift4 distance between <s1> and <s2>"
-    print("Jaro-Winkler: " + s1 + "/" + s2 + " = " + distanceJaroWinkler(s1, s2))
-    print("Damerau-Levenshtein: " + s1 + "/" + s2 + " = " + distanceDamerauLevenshtein(s1, s2))
-    print("Sift4:" + s1 + "/" + s2 + " = " + distanceSift4(s1, s2))
-
+    nDL = distanceDamerauLevenshtein(s1, s2)
+    nS4 = distanceSift4(s1, s2)
+    fJW = distanceJaroWinkler(s1, s2)
+    print(s1, "≠", s2, "\tDL:", nDL, "\tS4:", nS4, "\tJW:", fJW)
 
 
 
