@@ -44,57 +44,47 @@ class SuggResult:
     def __init__ (self, sWord, nSuggLimit=10, nDistLimit=-1):
         self.sWord = sWord
         self.sSimplifiedWord = st.simplifyWord(sWord)
-        self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
+        self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1 # used in suggest()
         self.nMinDist = 1000
         # Temporary sets
         self.aAllSugg = set()   # All suggestions, even the one rejected
-        self.dGoodSugg = {}     # Acceptable suggestions
-        self.dBestSugg = {}     # Best suggestions
+        self.dAccSugg = {}      # Accepted suggestions
         # Parameters
+
         self.nSuggLimit = nSuggLimit
-        self.nSuggLimitExt = nSuggLimit + 2             # we add few entries in case suggestions merge after casing modifications
-        self.nBestSuggLimit = floor(nSuggLimit * 2)     # n times the requested limit
-        self.nGoodSuggLimit = nSuggLimit * 15           # n times the requested limit
+        self.nTempSuggLimit = nSuggLimit * 6
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
         if sSugg in self.aAllSugg:
             return
         self.aAllSugg.add(sSugg)
-        nDistJaro = 1 - st.distanceJaroWinkler(self.sSimplifiedWord, st.simplifyWord(sSugg))
-        nDist = floor(nDistJaro * 10)
-        if nDist < self.nMinDist:
-            self.nMinDist = nDist
-        #logging.info((nDeep * "  ") + "__" + sSugg + "__ " + str(round(nDistJaro*1000)))
-        if nDistJaro < .11:     # Best suggestions
-            self.dBestSugg[sSugg] = round(nDistJaro*1000)
-            if len(self.dBestSugg) > self.nBestSuggLimit:
-                self.nDistLimit = -1  # make suggest() to end search
-        elif nDistJaro < .33:   # Good suggestions
-            self.dGoodSugg[sSugg] = round(nDistJaro*1000)
-            if len(self.dGoodSugg) > self.nGoodSuggLimit:
-                self.nDistLimit = -1  # make suggest() to end search
+        nSimDist = st.distanceSift4(self.sSimplifiedWord, st.simplifyWord(sSugg))
+        st.showDistance(self.sSimplifiedWord, st.simplifyWord(sSugg))
+        if nSimDist < self.nMinDist:
+            self.nMinDist = nSimDist
+        if nSimDist <= (self.nMinDist + 1):
+            nDist = st.distanceJaroWinkler(self.sWord, sSugg)
+            st.showDistance(self.sWord, sSugg)
+            self.dAccSugg[sSugg] = min(nDist, nSimDist+1)
+            if len(self.dAccSugg) > self.nTempSuggLimit:
+                self.nDistLimit = -1  # suggest() ends searching when this variable = -1
         self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
 
     def getSuggestions (self):
         "return a list of suggestions"
         # we sort the better results with the original word
         lRes = []
-        if len(self.dBestSugg) > 0:
-            # sort only with simplified words
-            lResTmp = sorted(self.dBestSugg.items(), key=lambda x: x[1])
-            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
-                lRes.append(lResTmp[i][0])
-        if len(lRes) < self.nSuggLimitExt:
-            # sort with simplified words and original word
-            lResTmp = sorted(self.dGoodSugg.items(), key=lambda x: ((1-st.distanceJaroWinkler(self.sWord, x[0]))*10, x[1]))
-            for i in range(min(self.nSuggLimitExt, len(lResTmp))):
-                lRes.append(lResTmp[i][0])
+        # sort only with simplified words
+        lResTmp = sorted(self.dAccSugg.items(), key=lambda x: (x[1], x[0]))
+        for i in range(min(self.nSuggLimit, len(lResTmp))):
+            lRes.append(lResTmp[i][0])
+            #st.showDistance(self.sWord, lResTmp[i][0])
         # casing
         if self.sWord.isupper():
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
-            # dont’ use <.istitle>
+            # don’t use <.istitle>
             lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))) # use dict, when Python 3.6+
         return lRes[:self.nSuggLimit]
 
