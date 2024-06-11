@@ -19,6 +19,8 @@ import re
 #### Suggestions
 
 dSugg = {
+    "apr": "après",
+    "avt": "avant",
     "bcp": "beaucoup",
     "ca": "ça",
     "cad": "c’est-à-dire",
@@ -33,7 +35,7 @@ dSugg = {
     "chuis": "j’suis|je suis",
     "dc": "de|donc",
     "dj": "DJ|déjà",
-    "done": "donc|donne",
+    "done": "donc|donne|dôme",
     "dp": "depuis|de|du",
     "dps": "depuis|des|dos|dès|dés",
     "email": "courriel|e-mail|émail",
@@ -42,6 +44,8 @@ dSugg = {
     "Etes-vous": "Êtes-vous",
     "Etiez-vous": "Étiez-vous",
     "Etions-nous": "Étions-nous",
+    "jm": "jamais",
+    "jms": "jamais",
     "loins": "loin",
     "mn": "min",
     "mns": "min",
@@ -58,7 +62,7 @@ dSugg = {
     "pk": "pourquoi",
     "pkoi": "pourquoi",
     "pq": "pourquoi|PQ",
-    "prq": "presque",
+    "prq": "pourquoi|presque",
     "prsq": "presque",
     "qcq": "quiconque",
     "qd": "quand",
@@ -71,6 +75,7 @@ dSugg = {
     "qqunes": "quelques-unes",
     "qquns": "quelques-uns",
     "ss": "se|sa|si|SS|sans|sous",
+    "svt": "souvent",
     "tdq": "tandis que",
     "tj": "toujours",
     "tjs": "toujours",

@@ -10,6 +10,8 @@ ${map}
 //// Default Suggestions
 
 const _dSugg = new Map ([
+    ["apr", "après"],
+    ["avt", "avant"],
     ["bcp", "beaucoup"],
     ["ca", "ça"],
     ["cad", "c’est-à-dire"],
@@ -24,7 +26,7 @@ const _dSugg = new Map ([
     ["chuis", "j’suis|je suis"],
     ["dc", "de|donc"],
     ["dj", "DJ|déjà"],
-    ["done", "donc|donne"],
+    ["done", "donc|donne|dôme"],
     ["dp", "depuis|de|du"],
     ["dps", "depuis|des|dos|dès|dés"],
     ["email", "courriel|e-mail|émail"],
@@ -33,6 +35,8 @@ const _dSugg = new Map ([
     ["Etes-vous", "Êtes-vous"],
     ["Etiez-vous", "Étiez-vous"],
     ["Etions-vous", "Étions-nous"],
+    ["jm", "jamais"],
+    ["jms", "jamais"],
     ["loins", "loin"],
     ["mn", "min"],
     ["mns", "min"],
@@ -49,7 +53,7 @@ const _dSugg = new Map ([
     ["pk", "pourquoi"],
     ["pkoi", "pourquoi"],
     ["pq", "pourquoi|PQ"],
-    ["prq", "presque"],
+    ["prq", "pourquoi|presque"],
     ["prsq", "presque"],
     ["qcq", "quiconque"],
     ["qd", "quand"],
@@ -62,6 +66,7 @@ const _dSugg = new Map ([
     ["qqunes", "quelques-unes"],
     ["qquns", "quelques-uns"],
     ["ss", "se|sa|si|SS|sans|sous"],
+    ["svt", "souvent"],
     ["tdq", "tandis que"],
     ["tj", "toujours"],
     ["tjs", "toujours"],
