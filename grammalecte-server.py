@@ -320,7 +320,7 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiC
 
     # Python version
     print("Python: " + sys.version)
-    if sys.version_info.major < (3, 7):
+    if sys.version_info < (3, 7):
         print("Python 3.7+ required")
         return
     # Grammalecte
